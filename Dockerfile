@@ -30,5 +30,5 @@ RUN mvn --batch-mode \
 # CMD [ "catalina.sh", "run" ]
 
 FROM openjdk:11 as back-server
-COPY --from=web-image /app/web/target/*.jar /app/kalidoc.jar
+COPY --from=build-image /build/web/target/*.jar /app/kalidoc.jar
 ENTRYPOINT ["java","-jar","/app/kalidoc.jar"]
