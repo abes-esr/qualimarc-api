@@ -28,7 +28,6 @@ RUN mvn --batch-mode \
 # FROM tomcat:9-jdk11 as web-image
 # COPY --from=build-image /build/web/target/*.war /usr/local/tomcat/webapps/ROOT.war
 # CMD [ "catalina.sh", "run" ]
-
-FROM openjdk:11 as back-server
+FROM openjdk:11 as web-image
 COPY --from=build-image /build/web/target/*.jar /app/kalidoc.jar
 ENTRYPOINT ["java","-jar","/app/kalidoc.jar"]
