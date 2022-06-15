@@ -25,10 +25,10 @@ RUN mvn --batch-mode \
 
 ###
 # Image pour le module web
-FROM tomcat:9-jdk11 as web-image
-COPY --from=build-image /build/web/target/*.war /usr/local/tomcat/webapps/ROOT.war
-CMD [ "catalina.sh", "run" ]
+# FROM tomcat:9-jdk11 as web-image
+# COPY --from=build-image /build/web/target/*.war /usr/local/tomcat/webapps/ROOT.war
+# CMD [ "catalina.sh", "run" ]
 
-#FROM openjdk:11 as back-server
-#COPY --from=web-build /app/web/target/*.jar /app/licences-nationales.jar
-#ENTRYPOINT ["java","-jar","/app/licences-nationales.jar"]
+FROM openjdk:11 as back-server
+COPY --from=web-image /app/web/target/*.jar /app/kalidoc.jar
+ENTRYPOINT ["java","-jar","/app/kalidoc.jar"]
