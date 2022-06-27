@@ -6,7 +6,7 @@ name: "build-test-pubtodockerhub"
 # exemple, si vous indiquez : abesesr/abes-hello
 #   alors l'image sera poussée sur https://hub.docker.com/r/abesesr/abes-hello
 env:
-  DOCKERHUB_IMAGE_PREFIX: abesesr/kalidoc
+  DOCKERHUB_IMAGE_PREFIX: abesesr/qualimarc
 
 on:
   push:
