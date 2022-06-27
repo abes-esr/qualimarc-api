@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>fr.abes.kalidoc</groupId>
-    <artifactId>kalidoc-backoffice</artifactId>
+    <groupId>fr.abes.qualimarc</groupId>
+    <artifactId>qualimarc-backoffice</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
@@ -14,7 +14,7 @@
     </modules>
 
     <properties>
-        <warName>kalidoc</warName>
+        <warName>qualimarc</warName>
         <webBaseDir>./target/</webBaseDir>
         <batchBaseDir>./target/</batchBaseDir>
         <java.version>11</java.version>
@@ -156,7 +156,7 @@
         </pluginManagement>
     </build>
     <scm>
-        <connection>scm:git:https://github.com/abes-esr/kalidoc-back.git</connection>
+        <connection>scm:git:https://github.com/abes-esr/qualimarc-back.git</connection>
         <tag>HEAD</tag>
     </scm>
 </project>
