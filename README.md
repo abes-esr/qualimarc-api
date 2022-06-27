@@ -1,6 +1,6 @@
-# qualimarc-back
+# qualimarc-api
 
-[![build-test-pubtodockerhub](https://github.com/abes-esr/qualimarc-back/actions/workflows/build-test-pubtodockerhub.yml/badge.svg)](https://github.com/abes-esr/qualimarc-back/actions/workflows/build-test-pubtodockerhub.yml) [![Docker Pulls](https://img.shields.io/docker/pulls/abesesr/qualimarc.svg)](https://hub.docker.com/r/abesesr/qualimarc/)
+[![build-test-pubtodockerhub](https://github.com/abes-esr/qualimarc-api/actions/workflows/build-test-pubtodockerhub.yml/badge.svg)](https://github.com/abes-esr/qualimarc-api/actions/workflows/build-test-pubtodockerhub.yml) [![Docker Pulls](https://img.shields.io/docker/pulls/abesesr/qualimarc.svg)](https://hub.docker.com/r/abesesr/qualimarc/)
 
 Outils de diagnostic des notices du Sudoc (backend)
 

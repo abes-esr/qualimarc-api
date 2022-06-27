@@ -156,7 +156,7 @@
         </pluginManagement>
     </build>
     <scm>
-        <connection>scm:git:https://github.com/abes-esr/qualimarc-back.git</connection>
+        <connection>scm:git:https://github.com/abes-esr/qualimarc-api.git</connection>
         <tag>HEAD</tag>
     </scm>
 </project>
