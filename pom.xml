@@ -14,7 +14,8 @@
     </modules>
 
     <properties>
-        <warName>qualimarc</warName>
+        <finalName>qualimarc-${project.artifactId}-${project.version}</finalName>
+        <warName>qualimarc-api</warName>
         <webBaseDir>./target/</webBaseDir>
         <batchBaseDir>./target/</batchBaseDir>
         <java.version>11</java.version>
@@ -132,17 +133,17 @@
         </dependency>
     </dependencies>
 
-    <distributionManagement>
-        <site>
-            <id>abes</id>
-            <url>${url.doc.abes}doc${doc.root.path}/${doc.root.path}-${project.version}</url>
-        </site>
-    </distributionManagement>
-
     <!-- Pour que maven se charge de générer les releases -->
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.3.1</version>
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>3.0.0-M5</version>
