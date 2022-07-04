@@ -21,10 +21,10 @@ public class NoticeXml {
     private String leader;
 
     @JacksonXmlProperty(localName = "controlfield")
-    private List<ControlField> controlFields;
+    private List<Controlfield> controlfields;
 
     @JacksonXmlProperty(localName = "datafield")
-    private List<DataField> dataFields;
+    private List<Datafield> datafields;
 
     @Override
     public String toString() {

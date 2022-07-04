@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class DataField {
+public class Datafield {
 
     @JacksonXmlProperty(isAttribute = true)
     private String tag;

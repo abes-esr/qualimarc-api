@@ -7,11 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ControlField {
+public class Controlfield {
 
     @JacksonXmlProperty(isAttribute = true)
     private String tag;
 
-    @JacksonXmlText
+    @JacksonXmlText(value = true)
     private String value;
 }

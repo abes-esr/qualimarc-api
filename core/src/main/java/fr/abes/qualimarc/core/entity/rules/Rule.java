@@ -1,14 +1,22 @@
 package fr.abes.qualimarc.core.entity.rules;
 
 import fr.abes.qualimarc.core.entity.notice.NoticeXml;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public abstract class Rule {
     private Integer id;
     private String message;
     private String zone;
 
-    protected abstract Boolean isValid(NoticeXml notice);
+    public Rule(Integer id, String message, String zone) {
+        this.id = id;
+        this.message = message;
+        this.zone = zone;
+    }
+
+    protected abstract boolean isValid(NoticeXml notice);
 
 }

@@ -1,6 +1,5 @@
 package fr.abes.qualimarc.core.configuration;
 
-import fr.abes.qualimarc.core.configuration.BaseXMLConfiguration;
 import oracle.xdb.XMLType;
 import org.hibernate.dialect.Oracle12cDialect;
 
