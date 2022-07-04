@@ -1,6 +1,7 @@
 package fr.abes.qualimarc.core.service;
 
 import fr.abes.qualimarc.core.CoreTestConfiguration;
+import fr.abes.qualimarc.core.configuration.BaseXMLConfiguration;
 import fr.abes.qualimarc.core.entity.notice.NoticesBibio;
 import fr.abes.qualimarc.core.repository.basexml.NoticesBibioRepository;
 import org.apache.commons.io.IOUtils;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.Resource;
 
 import javax.sql.rowset.serial.SerialClob;
@@ -21,6 +23,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 @SpringBootTest(classes = {CoreTestConfiguration.class})
+@ComponentScan(excludeFilters = @ComponentScan.Filter(BaseXMLConfiguration.class))
 public class NoticeBibioServiceTest {
     @Autowired
     private NoticeBibioService service;
@@ -28,7 +31,7 @@ public class NoticeBibioServiceTest {
     @MockBean
     private NoticesBibioRepository repository;
 
-    @Value("classpath:noticeXml/143519379.xml")
+    @Value("classpath:143519379.xml")
     private Resource xmlFileNotice;
 
     @Test
