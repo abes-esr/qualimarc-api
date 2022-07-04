@@ -42,3 +42,4 @@ hs_err_pid*
 
 ## Fichier de propriétés de test contenant les identifiants / mdp
 **/test/resources/application.properties
+**/resources/log4j2-localhost.xml
