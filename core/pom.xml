@@ -20,6 +20,51 @@
     <!-- =========================================================== -->
     <!--     Gestion des dependances                                 -->
     <!-- =========================================================== -->
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-logging</artifactId>
+                    </exclusion>
+            </exclusions>
+        </dependency>
 
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+
+        <!-- BDD -->
+        <dependency>
+            <groupId>oracle.ojdbc</groupId>
+            <artifactId>ojdbc</artifactId>
+            <version>12.1.0.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>oracle.ojdbc</groupId>
+            <artifactId>xdb6</artifactId>
+            <version>12.1.0.1.0</version>
+        </dependency>
+        <!-- parser xml -->
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>saxon</artifactId>
+            <version>8.7</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>saxon-dom</artifactId>
+            <version>8.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>2.9.9</version>
+        </dependency>
+    </dependencies>
 
 </project>
