@@ -1,8 +1,6 @@
 package fr.abes.qualimarc.core.service;
 
-import fr.abes.qualimarc.core.CoreTestConfiguration;
-import fr.abes.qualimarc.core.configuration.BaseXMLConfiguration;
-import fr.abes.qualimarc.core.entity.notice.NoticesBibio;
+import fr.abes.qualimarc.core.model.entity.notice.NoticesBibio;
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.repository.basexml.NoticesBibioRepository;
 import org.apache.commons.io.IOUtils;
@@ -14,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 

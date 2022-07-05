@@ -2,8 +2,8 @@ package fr.abes.qualimarc.core.service;
 
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import fr.abes.qualimarc.core.entity.notice.NoticeXml;
-import fr.abes.qualimarc.core.entity.notice.NoticesBibio;
+import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.notice.NoticesBibio;
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.repository.basexml.NoticesBibioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class NoticeBibioService {
     @Autowired
     private NoticesBibioRepository repository;
 
-    public NoticeXml getByPpn(String ppn) throws SQLException, IOException {
+    public NoticeXml getByPpn(String ppn) throws SQLException, IOException, IllegalPpnException {
         if (ppn == null)
             throw new IllegalPpnException("Le PPN ne peut pas être null");
         Optional<NoticesBibio> noticesBibio = repository.getByPpn(ppn);

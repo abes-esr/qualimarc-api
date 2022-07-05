@@ -1,4 +1,4 @@
-package fr.abes.qualimarc.core.entity.notice;
+package fr.abes.qualimarc.core.model.entity.notice;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Getter;
