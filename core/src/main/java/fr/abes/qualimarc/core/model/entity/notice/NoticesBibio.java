@@ -1,4 +1,4 @@
-package fr.abes.qualimarc.core.entity.notice;
+package fr.abes.qualimarc.core.model.entity.notice;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

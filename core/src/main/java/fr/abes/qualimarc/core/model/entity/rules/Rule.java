@@ -1,8 +1,9 @@
-package fr.abes.qualimarc.core.entity.rules;
+package fr.abes.qualimarc.core.model.entity.rules;
 
-import fr.abes.qualimarc.core.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -13,20 +14,22 @@ public abstract class Rule {
     private String message;
     private String zone;
 
-    private List<String> type_documents;
+    private List<String> typeDocuments;
 
     public Rule(Integer id, String message, String zone) {
         this.id = id;
         this.message = message;
         this.zone = zone;
+        this.typeDocuments = new ArrayList<>();
     }
+
     public Rule(Integer id, String message, String zone, List<String> typeDocuments){
         this.id = id;
         this.message = message;
         this.zone = zone;
-        this.type_documents = typeDocuments;
+        this.typeDocuments = typeDocuments;
     }
 
-    protected abstract boolean isValid(NoticeXml notice);
+    public abstract boolean isValid(NoticeXml notice);
 
 }

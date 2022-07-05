@@ -66,7 +66,7 @@ public class BaseXmlConfig {
                 = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(baseXmlDataSource());
         em.setPackagesToScan(
-                new String[]{"fr.abes.qualimarc.core.entity.notice"});
+                new String[]{"fr.abes.qualimarc.core.domain.entity.notice"});
         configHibernate(em);
         return em;
     }

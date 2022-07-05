@@ -1,8 +1,10 @@
-package fr.abes.qualimarc.core.entity.rules.structure;
+package fr.abes.qualimarc.core.model.entity.rules.structure;
 
-import fr.abes.qualimarc.core.entity.notice.NoticeXml;
-import fr.abes.qualimarc.core.entity.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.rules.Rule;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,8 +18,13 @@ public class PresenceZone extends Rule {
         this.isPresent = isPresent;
     }
 
+    public PresenceZone(Integer id, String message, String zone, List<String> typeDocuments, boolean isPresent) {
+        super(id, message, zone, typeDocuments);
+        this.isPresent = isPresent;
+    }
+
     @Override
-    protected boolean isValid(NoticeXml notice) {
+    public boolean isValid(NoticeXml notice) {
         if(this.isPresent) {
             return notice.getDatafields().stream().anyMatch(dataField -> dataField.getTag().equals(this.getZone()));
         }

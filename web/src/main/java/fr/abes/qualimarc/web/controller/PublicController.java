@@ -1,6 +1,6 @@
 package fr.abes.qualimarc.web.controller;
 
-import fr.abes.qualimarc.core.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

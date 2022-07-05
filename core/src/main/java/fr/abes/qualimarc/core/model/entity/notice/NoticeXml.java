@@ -1,4 +1,4 @@
-package fr.abes.qualimarc.core.entity.notice;
+package fr.abes.qualimarc.core.model.entity.notice;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -91,7 +91,7 @@ public class NoticeXml {
             case "ls":
             case "ms":
             case "is":
-                return "bd";
+                return "BD";
             //FAMILLE MONOGRAPHIE
             case "am":
             case "ad":

@@ -21,7 +21,7 @@ public class QualimarcInitializer {
         tempMap.put("V", "OBJET");
         tempMap.put("G", "MUSIQUE");
         tempMap.put("M", "PARTITION");
-        tempMap.put("bd", "RESSOURCE CONTINUE");
+        tempMap.put("BD", "RESSOURCE CONTINUE");
         tempMap.put("A", "MONOGRAPHIE");
         tempMap.put("TS", "THESE SOUTENANCE");
         tempMap.put("TR", "THESE REPRODUCTION");
