@@ -29,15 +29,32 @@ public class NoticeXml {
 
     @Override
     public String toString() {
-        return "Notice {"+ "leader="+ leader+"}";
+        return "Notice {" + "leader=" + leader + "}";
     }
 
-    //Retourne le type de document de la notice en se basant sur les caractères en position 6 et 7 du leader
+    /**
+     * Retourne le type de document de la notice en se basant sur les caractères en position 6 et 7 du leader
+     *
+     * @return les 2 caractères du code correspondant au type de document
+     */
     public String getTypeDocument() {
-        return this.leader.substring(6, 8);
+        if (this.leader.length() >= 9)
+            return this.leader.substring(6, 8);
+        return "xx";
     }
 
+    /**
+     * Analyse le type de document d'une notice pour en déduire la famille de type de document
+     *
+     * @return famille de type de document
+     */
     public String getFamilleDocument() {
+        if (this.isTheseSoutenance()) {
+            return "TS";
+        }
+        if (this.isTheseRepro()) {
+            return "TR";
+        }
         switch (this.getTypeDocument()) {
             //Famille AUDIOVISUEL
             case "gm":
@@ -101,6 +118,40 @@ public class NoticeXml {
             default:
                 throw new IllegalTypeDocumentException("Type de document inconnu");
         }
+    }
+
+    /**
+     * Teste si la notice est de type "thèse reproduite"
+     * Vérifie si le caractère v est présent en position 4 à 7 inclus de la zone 105$a Unimarc d'export
+     *
+     * @return true si la notice est une thèse reproduite false sinon
+     */
+    private boolean isTheseRepro() {
+        Datafield zone105 = this.getDatafields().stream().filter(zone -> zone.getTag().equals("105")).findFirst().get();
+        SubField a = zone105.getSubFields().stream().filter(sousZone -> sousZone.getCode().equals("a")).findFirst().get();
+        if (a.getValue().length() > 7) {
+            if (a.getValue().substring(4, 8).contains("v")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Teste si la notice est de type "thèse de soutenance"
+     * Vérifie si les caractères m ou 7 sont présents en position 4 à 7 inclus de la zone 105$a Unimarx d'export
+     *
+     * @return true si la notice est une thèse de soutenance false sinon
+     */
+    private boolean isTheseSoutenance() {
+        Datafield zone105 = this.getDatafields().stream().filter(zone -> zone.getTag().equals("105")).findFirst().get();
+        SubField a = zone105.getSubFields().stream().filter(sousZone -> sousZone.getCode().equals("a")).findFirst().get();
+        if (a.getValue().length() > 7) {
+            if (a.getValue().substring(4, 8).contains("m") || a.getValue().substring(4, 8).contains("7")) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

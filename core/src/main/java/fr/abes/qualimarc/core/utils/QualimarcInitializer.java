@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.core.utils;
 
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +10,7 @@ import java.util.Map;
 @Component
 public class QualimarcInitializer {
     @EventListener
-    public void afterPropertiesSet(){
+    public void afterPropertiesSet(ContextRefreshedEvent event){
         Map<String, String> tempMap = new HashMap<>();
         tempMap.put("B", "AUDIOVISUEL");
         tempMap.put("K", "CARTE");
