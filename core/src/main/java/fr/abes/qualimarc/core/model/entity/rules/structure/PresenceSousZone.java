@@ -38,6 +38,6 @@ public class PresenceSousZone extends Rule {
                 return dataField.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(this.getSousZone()));
             });
         }
-        return false;
+        return notice.getDatafields().stream().noneMatch(dataField -> dataField.getTag().equals(this.getZone()));
     }
 }
