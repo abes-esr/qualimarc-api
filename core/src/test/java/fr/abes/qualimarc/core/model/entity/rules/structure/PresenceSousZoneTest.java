@@ -23,9 +23,6 @@ class PresenceSousZoneTest {
     @Value("classpath:444444444.xml")
     private Resource xmlFileNotice1;
 
-    @Value("classpath:555555555.xml")
-    private Resource xmlFileNotice2;
-
     @Test
     void isValid() throws IOException {
         String xml = IOUtils.toString(new FileInputStream(xmlFileNotice1.getFile()), StandardCharsets.UTF_8);
@@ -34,22 +31,23 @@ class PresenceSousZoneTest {
         XmlMapper mapper = new XmlMapper(module);
         NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
 
-        PresenceSousZone rule1 = new PresenceSousZone(1, "puisque la ressource n'est pas de type audiovisuel ni multimédia, la sous-zone $j n'a pas lieu d'être", "101", "j", true);
+        PresenceSousZone rule1 = new PresenceSousZone(1, "la sous-zone $j doit être présente et elle est présente", "101", "j", true);
         Assertions.assertTrue(rule1.isValid(notice));
 
-        PresenceSousZone rule2 = new PresenceSousZone(1, "puisque la ressource n'est pas de type audiovisuel ni multimédia, la sous-zone $j n'a pas lieu d'être", "101", "j", false);
+        PresenceSousZone rule2 = new PresenceSousZone(2, "la sous-zone $a doit être présente mais elle n'est pas présente", "101", "a", true);
         Assertions.assertFalse(rule2.isValid(notice));
 
-        String xml2 = IOUtils.toString(new FileInputStream(xmlFileNotice2.getFile()), StandardCharsets.UTF_8);
-        JacksonXmlModule module2 = new JacksonXmlModule();
-        module2.setDefaultUseWrapper(false);
-        XmlMapper mapper2 = new XmlMapper(module2);
-        NoticeXml notice2 = mapper2.readValue(xml2, NoticeXml.class);
+        PresenceSousZone rule3 = new PresenceSousZone(3, "la sous-zone $b ne doit pas être présente mais elle est présente", "101", "b", false);
+        Assertions.assertFalse(rule3.isValid(notice));
 
-        PresenceSousZone rule3 = new PresenceSousZone(1, "puisque la ressource n'est pas de type audiovisuel ni multimédia, la sous-zone $j n'a pas lieu d'être", "101", "j", true);
-        Assertions.assertFalse(rule3.isValid(notice2));
-
-        PresenceSousZone rule4 = new PresenceSousZone(1, "puisque la ressource n'est pas de type audiovisuel ni multimédia, la sous-zone $j n'a pas lieu d'être", "101", "j", false);
-        Assertions.assertTrue(rule4.isValid(notice2));
+        PresenceSousZone rule4 = new PresenceSousZone(4, "la sous-zone $c ne doit pas être présente et elle n'est pas présente", "101", "c", false);
+        Assertions.assertTrue(rule4.isValid(notice));
     }
 }
+
+        /*if isPresent = TRUE alors :
+            si elle est présente return TRUE
+            si elle n'est pas présente' return FALSE
+        if isPresent = FALSE alors :
+            si elle est présente return FALSE
+            si elle n'est pas présente' return TRUE*/
