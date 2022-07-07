@@ -1,6 +1,5 @@
 package fr.abes.qualimarc.core.model.entity.notice;
 
-import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -30,10 +29,10 @@ class NoticeXmlTest {
         datafield.setSubFields(subFields);
         datafields.add(datafield);
         notice.setDatafields(datafields);
-        Assertions.assertEquals("TS", notice.getFamilleDocument());
+        Assertions.assertTrue(notice.isTheseSoutenance());
 
         subField.setValue("       7  ");
-        Assertions.assertEquals("TS", notice.getFamilleDocument());
+        Assertions.assertTrue(notice.isTheseSoutenance());
     }
 
     @Test
@@ -51,12 +50,13 @@ class NoticeXmlTest {
         datafield.setSubFields(subFields);
         datafields.add(datafield);
         notice.setDatafields(datafields);
-        Assertions.assertEquals("TR", notice.getFamilleDocument());
+        Assertions.assertTrue(notice.isTheseRepro());
 
         subField.setValue("       v  ");
-        Assertions.assertEquals("TR", notice.getFamilleDocument());
+        Assertions.assertTrue(notice.isTheseRepro());
+
 
         subField.setValue("");
-        Assertions.assertThrows(IllegalTypeDocumentException.class, () -> notice.getFamilleDocument());
+        Assertions.assertFalse(notice.isTheseRepro());
     }
 }
