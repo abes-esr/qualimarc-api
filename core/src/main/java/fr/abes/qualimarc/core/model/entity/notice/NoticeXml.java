@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Représente une notice au format d'export UnimarcXML
@@ -49,12 +50,6 @@ public class NoticeXml {
      * @return famille de type de document
      */
     public String getFamilleDocument() {
-        if (this.isTheseSoutenance()) {
-            return "TS";
-        }
-        if (this.isTheseRepro()) {
-            return "TR";
-        }
         switch (this.getTypeDocument()) {
             //Famille AUDIOVISUEL
             case "gm":
@@ -126,12 +121,18 @@ public class NoticeXml {
      *
      * @return true si la notice est une thèse reproduite false sinon
      */
-    private boolean isTheseRepro() {
-        Datafield zone105 = this.getDatafields().stream().filter(zone -> zone.getTag().equals("105")).findFirst().get();
-        SubField a = zone105.getSubFields().stream().filter(sousZone -> sousZone.getCode().equals("a")).findFirst().get();
-        if (a.getValue().length() > 7) {
-            if (a.getValue().substring(4, 8).contains("v")) {
-                return true;
+    public boolean isTheseRepro() {
+        Optional<Datafield> zone105 = this.getDatafields().stream().filter(zone -> zone.getTag().equals("105")).findFirst();
+        if (zone105.isPresent()) {
+            Datafield datafield = zone105.get();
+            Optional<SubField> sousZoneA = datafield.getSubFields().stream().filter(sousZone -> sousZone.getCode().equals("a")).findFirst();
+            if (sousZoneA.isPresent()) {
+                SubField a = sousZoneA.get();
+                if (a.getValue().length() > 7) {
+                    if (a.getValue().substring(4, 8).contains("v")) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -143,12 +144,18 @@ public class NoticeXml {
      *
      * @return true si la notice est une thèse de soutenance false sinon
      */
-    private boolean isTheseSoutenance() {
-        Datafield zone105 = this.getDatafields().stream().filter(zone -> zone.getTag().equals("105")).findFirst().get();
-        SubField a = zone105.getSubFields().stream().filter(sousZone -> sousZone.getCode().equals("a")).findFirst().get();
-        if (a.getValue().length() > 7) {
-            if (a.getValue().substring(4, 8).contains("m") || a.getValue().substring(4, 8).contains("7")) {
-                return true;
+    public boolean isTheseSoutenance() {
+        Optional<Datafield> zone105 = this.getDatafields().stream().filter(zone -> zone.getTag().equals("105")).findFirst();
+        if (zone105.isPresent()) {
+            Datafield datafield = zone105.get();
+            Optional<SubField> sousZoneA = datafield.getSubFields().stream().filter(sousZone -> sousZone.getCode().equals("a")).findFirst();
+            if (sousZoneA.isPresent()) {
+                SubField a = sousZoneA.get();
+                if (a.getValue().length() > 7) {
+                    if (a.getValue().substring(4, 8).contains("m") || a.getValue().substring(4, 8).contains("7")) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
