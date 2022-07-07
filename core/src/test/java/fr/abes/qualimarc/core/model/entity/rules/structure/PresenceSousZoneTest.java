@@ -44,10 +44,3 @@ class PresenceSousZoneTest {
         Assertions.assertTrue(rule4.isValid(notice));
     }
 }
-
-        /*if isPresent = TRUE alors :
-            si elle est présente return TRUE
-            si elle n'est pas présente' return FALSE
-        if isPresent = FALSE alors :
-            si elle est présente return FALSE
-            si elle n'est pas présente' return TRUE*/
