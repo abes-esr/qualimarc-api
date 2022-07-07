@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 @ComponentScan(excludeFilters = @ComponentScan.Filter(BaseXMLConfiguration.class))
 class PresenceSousZoneTest {
 
-    @Value("classpath:444444444.xml")
+    @Value("classpath:143519379.xml")
     private Resource xmlFileNotice1;
 
     @Test
@@ -31,16 +31,16 @@ class PresenceSousZoneTest {
         XmlMapper mapper = new XmlMapper(module);
         NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
 
-        PresenceSousZone rule1 = new PresenceSousZone(1, "la sous-zone $j doit être présente et elle est présente", "101", "j", true);
+        PresenceSousZone rule1 = new PresenceSousZone(1, "la sous-zone $j doit être présente et elle est présente", "010", "a", true);
         Assertions.assertTrue(rule1.isValid(notice));
 
-        PresenceSousZone rule2 = new PresenceSousZone(2, "la sous-zone $a doit être présente mais elle n'est pas présente", "101", "a", true);
+        PresenceSousZone rule2 = new PresenceSousZone(2, "la sous-zone $a doit être présente mais elle n'est pas présente", "010", "j", true);
         Assertions.assertFalse(rule2.isValid(notice));
 
-        PresenceSousZone rule3 = new PresenceSousZone(3, "la sous-zone $b ne doit pas être présente mais elle est présente", "101", "b", false);
+        PresenceSousZone rule3 = new PresenceSousZone(3, "la sous-zone $b ne doit pas être présente mais elle est présente", "020", "a", false);
         Assertions.assertFalse(rule3.isValid(notice));
 
-        PresenceSousZone rule4 = new PresenceSousZone(4, "la sous-zone $c ne doit pas être présente et elle n'est pas présente", "101", "c", false);
+        PresenceSousZone rule4 = new PresenceSousZone(4, "la sous-zone $c ne doit pas être présente et elle n'est pas présente", "020", "j", false);
         Assertions.assertTrue(rule4.isValid(notice));
     }
 }
