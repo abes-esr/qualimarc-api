@@ -31,6 +31,9 @@ class PresenceSousZoneTest {
         XmlMapper mapper = new XmlMapper(module);
         NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
 
+        PresenceSousZone rule0 = new PresenceSousZone(1, "la zone n'existe pas", "190", "a", true);
+        Assertions.assertFalse(rule0.isValid(notice));
+
         PresenceSousZone rule1 = new PresenceSousZone(1, "la sous-zone $j doit être présente et elle est présente", "010", "a", true);
         Assertions.assertTrue(rule1.isValid(notice));
 
