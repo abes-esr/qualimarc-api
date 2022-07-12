@@ -1,0 +1,130 @@
+<record>
+    <leader>     cam0 22        450 </leader>
+    <controlfield tag="001">143519379</controlfield>
+    <controlfield tag="003">http://www.sudoc.fr/143519379</controlfield>
+    <controlfield tag="004">20100427</controlfield>
+    <controlfield tag="005">20180830193231.000</controlfield>
+    <controlfield tag="006">4994</controlfield>
+    <controlfield tag="007">4994</controlfield>
+    <controlfield tag="008">Aax3</controlfield>
+    <datafield tag="010" ind1=" " ind2=" ">
+        <subfield code="a">978-2-7597-0105-6</subfield>
+        <subfield code="b">br</subfield>
+        <subfield code="d">19,90 EUR</subfield>
+    </datafield>
+    <datafield tag="020" ind1=" " ind2=" ">
+        <subfield code="a">FR</subfield>
+        <subfield code="b">01017889</subfield>
+    </datafield>
+    <datafield tag="021" ind1=" " ind2=" ">
+        <subfield code="a">FR</subfield>
+    </datafield>
+    <datafield tag="033" ind1=" " ind2=" ">
+        <subfield code="a">http://catalogue.bnf.fr/ark:/12148/cb42167002j</subfield>
+        <subfield code="d">20180731</subfield>
+    </datafield>
+    <datafield tag="035" ind1=" " ind2=" ">
+        <subfield code="a">FRBNF421670020000009</subfield>
+        <subfield code="z">FRBNF42167002</subfield>
+        <subfield code="d">20180731</subfield>
+    </datafield>
+    <datafield tag="073" ind1=" " ind2="0">
+        <subfield code="a">9782759701056</subfield>
+    </datafield>
+    <datafield tag="100" ind1=" " ind2=" ">
+        <subfield code="a">20100427d2010    m  y0frey50      ba</subfield>
+    </datafield>
+    <datafield tag="101" ind1="0" ind2=" ">
+        <subfield code="a">fre</subfield>
+    </datafield>
+    <datafield tag="102" ind1=" " ind2=" ">
+        <subfield code="a">FR</subfield>
+    </datafield>
+    <datafield tag="105" ind1=" " ind2=" ">
+        <subfield code="a">||||n   00|y|</subfield>
+    </datafield>
+    <datafield tag="106" ind1=" " ind2=" ">
+        <subfield code="a">r</subfield>
+    </datafield>
+    <datafield tag="181" ind1=" " ind2=" ">
+        <subfield code="6">z01</subfield>
+        <subfield code="c">txt</subfield>
+        <subfield code="2">rdacontent</subfield>
+    </datafield>
+    <datafield tag="181" ind1=" " ind2="1">
+        <subfield code="6">z01</subfield>
+        <subfield code="a">i#</subfield>
+        <subfield code="b">xxxe##</subfield>
+    </datafield>
+    <datafield tag="182" ind1=" " ind2=" ">
+        <subfield code="6">z01</subfield>
+        <subfield code="c">n</subfield>
+        <subfield code="2">rdamedia</subfield>
+    </datafield>
+    <datafield tag="182" ind1=" " ind2="1">
+        <subfield code="6">z01</subfield>
+        <subfield code="a">n</subfield>
+    </datafield>
+    <datafield tag="200" ind1="1" ind2=" ">
+        <subfield code="a">Convention collective, audio-video informatique</subfield>
+        <subfield code="b">Texte imprimé</subfield>
+        <subfield code="e">[brochure n° 3296]</subfield>
+        <subfield code="f">[publiée par] JuriTravail.com</subfield>
+    </datafield>
+    <datafield tag="205" ind1=" " ind2=" ">
+        <subfield code="a">Éd. 2010</subfield>
+    </datafield>
+    <datafield tag="210" ind1=" " ind2=" ">
+        <subfield code="a">Paris</subfield>
+        <subfield code="c">Centre de ressources interactif</subfield>
+        <subfield code="d">2010</subfield>
+        <subfield code="e">95-Domont</subfield>
+        <subfield code="g">Dupli-print</subfield>
+    </datafield>
+    <datafield tag="215" ind1=" " ind2=" ">
+        <subfield code="a">1 vol. (IV-90-10 p.)</subfield>
+        <subfield code="d">21 cm</subfield>
+    </datafield>
+    <datafield tag="300" ind1=" " ind2=" ">
+        <subfield code="a">Notice réd. d&apos;après la couv.</subfield>
+    </datafield>
+    <datafield tag="300" ind1=" " ind2=" ">
+        <subfield code="a">En appendice, choix de documents</subfield>
+    </datafield>
+    <datafield tag="606" ind1=" " ind2=" ">
+        <subfield code="3">02787088X</subfield>
+        <subfield code="a">Informatique</subfield>
+        <subfield code="x">Personnel</subfield>
+        <subfield code="3">02731667X</subfield>
+        <subfield code="x">Conventions collectives</subfield>
+        <subfield code="3">027226794</subfield>
+        <subfield code="y">France</subfield>
+        <subfield code="2">rameau</subfield>
+    </datafield>
+    <datafield tag="676" ind1=" " ind2=" ">
+        <subfield code="a">344.440 18904</subfield>
+        <subfield code="v">22</subfield>
+    </datafield>
+    <datafield tag="686" ind1=" " ind2=" ">
+        <subfield code="a">340</subfield>
+        <subfield code="2">Cadre de classement de la Bibliographie nationale française</subfield>
+    </datafield>
+    <datafield tag="712" ind1="0" ind2="2">
+        <subfield code="3">161539793</subfield>
+        <subfield code="a">JuriTravail.com</subfield>
+        <subfield code="4">340</subfield>
+    </datafield>
+    <datafield tag="801" ind1=" " ind2="3">
+        <subfield code="a">FR</subfield>
+        <subfield code="b">Abes</subfield>
+        <subfield code="c">20180830</subfield>
+        <subfield code="g">AFNOR</subfield>
+    </datafield>
+    <datafield tag="801" ind1=" " ind2="0">
+        <subfield code="a">FR</subfield>
+        <subfield code="b">BNF</subfield>
+        <subfield code="c">20100324</subfield>
+        <subfield code="g">AFNOR</subfield>
+        <subfield code="2">intermrc</subfield>
+    </datafield>
+</record>

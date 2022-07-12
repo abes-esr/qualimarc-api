@@ -4,7 +4,7 @@ name: "build-test-pubtodockerhub"
 # de votre application soient pousées sur dockerhub
 # dans l'organisation/image docker ayant ce nom
 # exemple, si vous indiquez : abesesr/abes-hello
-#   alors l'image sera poussée sur https://hub.docker.com/r/abesesr/abes-hello
+#   alors l'image sera poussée sur https://hub.docker.com/r/abesesr/qualimarc
 env:
   DOCKERHUB_IMAGE_PREFIX: abesesr/qualimarc
 
@@ -23,12 +23,10 @@ jobs:
 
 
       - name: "Build: checkout source code"
-        uses: actions/checkout@v2          
+        uses: actions/checkout@v2
       - name: "Build: build docker image"
         run: |
           docker build . -t localimage:latest
-
-
       - name: "Push: prepare version from git tags/branchs"
         id: docker_tag_meta
         uses: docker/metadata-action@v3
@@ -37,7 +35,7 @@ jobs:
       - name: "Push: login to DockerHub"
         if: github.event_name != 'pull_request'
         run: |
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin  
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - name: "Push: push docker image"
         if: github.event_name != 'pull_request'
         run: |
