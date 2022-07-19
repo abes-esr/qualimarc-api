@@ -1,53 +1,60 @@
 package fr.abes.qualimarc.core.model.entity.rules;
 
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.configuration.BaseXMLConfiguration;
-import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
-import fr.abes.qualimarc.core.model.entity.rules.rulesSet.FocusedRulesSet;
 import fr.abes.qualimarc.core.model.entity.rules.rulesSet.RulesSetType;
-import org.apache.commons.io.IOUtils;
+import fr.abes.qualimarc.core.model.entity.rules.structure.PresenceZone;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootTest(classes = {RuleSet.class})
 @ComponentScan(excludeFilters = @ComponentScan.Filter(BaseXMLConfiguration.class))
 class RuleSetTest {
 
-    @Value("classpath:143519379.xml")
-    private Resource xmlFileNotice;
-
     @Test
-    void getResultQuickRulesSet() throws IOException {
-        String xml = IOUtils.toString(new FileInputStream(xmlFileNotice.getFile()), StandardCharsets.UTF_8);
-        JacksonXmlModule module = new JacksonXmlModule();
-        module.setDefaultUseWrapper(false);
-        XmlMapper mapper = new XmlMapper(module);
-        NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
+    void getResultQuickRulesSet() {
+        PresenceZone rule = new PresenceZone(1, "La zone 010 doit être présente", "010", true);
+        List<Rule> ruleListControl = new ArrayList<>();
+        ruleListControl.add(rule);
 
         //  Test du jeu de règles rapide
-        FocusedRulesSet focusedRulesSet1 = new FocusedRulesSet(false, false, false);
+        List<String> focusedRulesSet1 = new ArrayList<>();
         RulesSetType rulesSetType1 = new RulesSetType(true, false, focusedRulesSet1);
         RuleSet ruleSet1 = new RuleSet();
-        ruleSet1.getRuleList(rulesSetType1);
+        List<Rule> ruleList = ruleSet1.getRuleList(rulesSetType1);
+        Assertions.assertEquals(ruleListControl.get(0).getZone(), ruleList.get(0).getZone());
+    }
+
+    @Test
+    void getResultCompleteRuleTest() {
+        PresenceZone rule = new PresenceZone(1, "La zone 020 doit être présente", "020", true);
+        List<Rule> ruleListControl = new ArrayList<>();
+        ruleListControl.add(rule);
 
         //  Test du jeu de règles complet
-        FocusedRulesSet focusedRulesSet2 = new FocusedRulesSet(false, false, false);
+        List<String> focusedRulesSet2 = new ArrayList<>();
         RulesSetType rulesSetType2 = new RulesSetType(false, true, focusedRulesSet2);
         RuleSet ruleSet2 = new RuleSet();
-        ruleSet2.getRuleList(rulesSetType2);
+        List<Rule> ruleList = ruleSet2.getRuleList(rulesSetType2);
+        Assertions.assertEquals(ruleListControl.get(0).getZone(), ruleList.get(1).getZone());
+    }
 
-        //  Test du jeu de règles ciblé
-        FocusedRulesSet focusedRulesSet3 = new FocusedRulesSet(true, false, true);
+    @Test
+    void getResultFocusedRuleTest() {
+        PresenceZone rule = new PresenceZone(1, "La zone 030 doit être présente", "030", true);
+        List<Rule> ruleListControl = new ArrayList<>();
+        ruleListControl.add(rule);
+
+        //  Test du jeu de règles complet
+        List<String> focusedRulesSet3 = new ArrayList<>();
+        focusedRulesSet3.add("03");
         RulesSetType rulesSetType3 = new RulesSetType(false, false, focusedRulesSet3);
         RuleSet ruleSet3 = new RuleSet();
-        ruleSet3.getRuleList(rulesSetType3);
+        List<Rule> ruleList = ruleSet3.getRuleList(rulesSetType3);
+        Assertions.assertEquals(ruleListControl.get(0).getZone(), ruleList.get(0).getZone());
     }
 }
