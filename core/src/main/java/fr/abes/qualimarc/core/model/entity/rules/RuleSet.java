@@ -1,7 +1,6 @@
 package fr.abes.qualimarc.core.model.entity.rules;
 
 import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
-import fr.abes.qualimarc.core.model.entity.rules.rulesSet.FocusedRulesSet;
 import fr.abes.qualimarc.core.model.entity.rules.rulesSet.RulesSetType;
 import fr.abes.qualimarc.core.model.entity.rules.structure.PresenceZone;
 import lombok.Getter;
@@ -46,27 +45,34 @@ public class RuleSet {
     private List<Rule> getAdvancedRulesList(){
         List<Rule> ruleList = new ArrayList<>();
         //  Première règle du jeu de règles avancé
-        ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
+        ruleList.add(new PresenceZone(1, "La zone 020 doit être présente", "020", true));
         return ruleList;
     }
 
     /**
      * Gets the list of targeted rules
-     * @param focusedRulesSet FocusedRulesSet
+     * @param focusedRulesSet List<String>
      * @return ruleList
      */
-    private List<Rule> getFocusedRulesList(FocusedRulesSet focusedRulesSet){
+    private List<Rule> getFocusedRulesList(List<String> focusedRulesSet){
         List<Rule> ruleList = new ArrayList<>();
-        if (focusedRulesSet.getFocusedRulesSet01()) {
-            //  Première règle du jeu de règles ciblées
-            ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
-        } else if (focusedRulesSet.getFocusedRulesSet02()) {
-            //  Deuxième règle du jeu de règles ciblées
-            ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
-        } else if (focusedRulesSet.getFocusedRulesSet03()) {
-            //  Troisième règle du jeu de règles ciblées
-            ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
+
+        for (String ruleSet : focusedRulesSet
+             ) {
+            if (ruleSet.equals("01")) {
+                //  Première règle du jeu de règles ciblées
+                ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
+            }
+            if (ruleSet.equals("02")) {
+                //  Deuxième règle du jeu de règles ciblées
+                ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
+            }
+            if (ruleSet.equals("03")) {
+                //  Troisième règle du jeu de règles ciblées
+                ruleList.add(new PresenceZone(1, "La zone 030 doit être présente", "030", true));
+            }
         }
+
         return ruleList;
     }
 
@@ -77,6 +83,7 @@ public class RuleSet {
      */
     public List<Rule> getRuleList(RulesSetType rulesSetType) {
         List<Rule> resultRuleList = new ArrayList<>();
+
         if(rulesSetType.getQuickSetRule()){
             //  Calls up the quick rule handling methods
             List<Rule> tempListBasic = new ArrayList<>(getQuickRulesList());
@@ -97,7 +104,7 @@ public class RuleSet {
             ) {
                 resultRuleList.add(rule);
             }
-        } else if (rulesSetType.getFocusedRulesSet() != null) {
+        } else if (rulesSetType.getFocusedRulesSet().size() != 0) {
             //  Calls up the focused rules handling methods     //  rulesSetType.getFocusedRulesSet().getFocusedRulesSetOn()
             List<Rule> temp = new ArrayList<>(getFocusedRulesList(rulesSetType.getFocusedRulesSet()));
             for (Rule rule : temp
