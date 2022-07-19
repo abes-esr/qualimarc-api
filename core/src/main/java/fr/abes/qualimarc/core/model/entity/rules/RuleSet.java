@@ -51,21 +51,21 @@ public class RuleSet {
 
     /**
      * Gets the list of targeted rules
-     * @param focusedRulesSet List<String>
+     * @param focusedRulesSet FocusedRulesSet
      * @return ruleList
      */
     private List<Rule> getFocusedRulesList(List<String> focusedRulesSet){
         List<Rule> ruleList = new ArrayList<>();
 
         for (String ruleSet : focusedRulesSet
-             ) {
+        ) {
             if (ruleSet.equals("01")) {
                 //  Première règle du jeu de règles ciblées
                 ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
             }
             if (ruleSet.equals("02")) {
                 //  Deuxième règle du jeu de règles ciblées
-                ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
+                ruleList.add(new PresenceZone(1, "La zone 020 doit être présente", "020", true));
             }
             if (ruleSet.equals("03")) {
                 //  Troisième règle du jeu de règles ciblées
@@ -83,7 +83,6 @@ public class RuleSet {
      */
     public List<Rule> getRuleList(RulesSetType rulesSetType) {
         List<Rule> resultRuleList = new ArrayList<>();
-
         if(rulesSetType.getQuickSetRule()){
             //  Calls up the quick rule handling methods
             List<Rule> tempListBasic = new ArrayList<>(getQuickRulesList());
@@ -108,7 +107,7 @@ public class RuleSet {
             //  Calls up the focused rules handling methods     //  rulesSetType.getFocusedRulesSet().getFocusedRulesSetOn()
             List<Rule> temp = new ArrayList<>(getFocusedRulesList(rulesSetType.getFocusedRulesSet()));
             for (Rule rule : temp
-                 ) {
+            ) {
                 resultRuleList.add(rule);
             }
         } else {
