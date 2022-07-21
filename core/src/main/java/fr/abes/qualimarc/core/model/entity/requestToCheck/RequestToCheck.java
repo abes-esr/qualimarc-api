@@ -11,9 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 public class RequestToCheck {
 
-    private List<FileToCheck> filesToCheck;
+    private List<String> ppnList;
+    private List<String> rulesSetList;
 
-    public RequestToCheck(List<FileToCheck> filesToCheck) {
-        this.filesToCheck = filesToCheck;
+    public RequestToCheck(List<String> ppnList, List<String> rulesSetList) {
+        this.ppnList = ppnList;
+        this.rulesSetList = rulesSetList;
     }
 }

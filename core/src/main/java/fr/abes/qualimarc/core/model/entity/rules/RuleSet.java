@@ -1,7 +1,5 @@
 package fr.abes.qualimarc.core.model.entity.rules;
 
-import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
-import fr.abes.qualimarc.core.model.entity.rules.rulesSet.RulesSetType;
 import fr.abes.qualimarc.core.model.entity.rules.structure.PresenceZone;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,23 +13,23 @@ import java.util.List;
 @NoArgsConstructor
 public class RuleSet {
 
-    private String typeRuleSet;
+    private String ruleSetName;
 
-    private List<String> typeRuleSetList;
+    private List<String> ruleSetNameList;
 
-    public RuleSet(String typeRuleSet){
-        this.typeRuleSet = typeRuleSet;
+    public RuleSet(String ruleSetName){
+        this.ruleSetName = ruleSetName;
     }
 
-    public RuleSet(List<String> typeRuleSetList){
-        this.typeRuleSetList = typeRuleSetList;
+    public RuleSet(List<String> ruleSetNameList){
+        this.ruleSetNameList = ruleSetNameList;
     }
 
     /**
      * Gets the list of quick rules
      * @return ruleList
      */
-    private List<Rule> getQuickRulesList(){
+    public List<Rule> getQuickRulesList(){
         List<Rule> ruleList = new ArrayList<>();
         //  Première règle du jeu de règles basique
         ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
@@ -42,7 +40,7 @@ public class RuleSet {
      * Gets the list of advanced rules
      * @return ruleList
      */
-    private List<Rule> getAdvancedRulesList(){
+    public List<Rule> getAdvancedRulesList(){
         List<Rule> ruleList = new ArrayList<>();
         //  Première règle du jeu de règles avancé
         ruleList.add(new PresenceZone(1, "La zone 020 doit être présente", "020", true));
@@ -54,65 +52,25 @@ public class RuleSet {
      * @param focusedRulesSet FocusedRulesSet
      * @return ruleList
      */
-    private List<Rule> getFocusedRulesList(List<String> focusedRulesSet){
+    public List<Rule> getFocusedRulesList(List<String> focusedRulesSet){
         List<Rule> ruleList = new ArrayList<>();
 
         for (String ruleSet : focusedRulesSet
         ) {
-            if (ruleSet.equals("01")) {
+            if (ruleSet.equals("P4")) {
                 //  Première règle du jeu de règles ciblées
                 ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
             }
-            if (ruleSet.equals("02")) {
+            if (ruleSet.equals("P5")) {
                 //  Deuxième règle du jeu de règles ciblées
                 ruleList.add(new PresenceZone(1, "La zone 020 doit être présente", "020", true));
             }
-            if (ruleSet.equals("03")) {
+            if (ruleSet.equals("P6")) {
                 //  Troisième règle du jeu de règles ciblées
                 ruleList.add(new PresenceZone(1, "La zone 030 doit être présente", "030", true));
             }
         }
 
         return ruleList;
-    }
-
-    /**
-     * Executes the rules determined by the ruleSetList
-     * @param rulesSetType RulesSetType
-     * @return resultRuleList
-     */
-    public List<Rule> getRuleList(RulesSetType rulesSetType) {
-        List<Rule> resultRuleList = new ArrayList<>();
-        if(rulesSetType.getQuickSetRule()){
-            //  Calls up the quick rule handling methods
-            List<Rule> tempListBasic = new ArrayList<>(getQuickRulesList());
-            for (Rule rule : tempListBasic
-            ) {
-                resultRuleList.add(rule);
-            }
-        } else if(rulesSetType.getCompleteSetRule()) {
-            //  Calls up the quick rule handling methods
-            List<Rule> tempListBasic = new ArrayList<>(getQuickRulesList());
-            for (Rule rule : tempListBasic
-            ) {
-                resultRuleList.add(rule);
-            }
-            //  Calls up the advanced rule handling methods
-            List<Rule> tempListAdvanced = new ArrayList<>(getAdvancedRulesList());
-            for (Rule rule : tempListAdvanced
-            ) {
-                resultRuleList.add(rule);
-            }
-        } else if (rulesSetType.getFocusedRulesSet().size() != 0) {
-            //  Calls up the focused rules handling methods     //  rulesSetType.getFocusedRulesSet().getFocusedRulesSetOn()
-            List<Rule> temp = new ArrayList<>(getFocusedRulesList(rulesSetType.getFocusedRulesSet()));
-            for (Rule rule : temp
-            ) {
-                resultRuleList.add(rule);
-            }
-        } else {
-            throw new IllegalRulesSetException("Type de jeu de règles inconnu");
-        }
-        return resultRuleList;
     }
 }

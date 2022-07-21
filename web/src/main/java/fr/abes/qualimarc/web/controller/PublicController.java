@@ -28,8 +28,8 @@ public class PublicController {
     }
 
     @PostMapping("/check/")
-    public List<ResultRules> checkPpn(@RequestBody RequestToCheck ppnToCheck) {
-        return ruleService.checkRulesOnFiles(ppnToCheck.getFilesToCheck());
+    public List<ResultRules> checkPpn(@RequestBody RequestToCheck requestBody) {
+        return ruleService.getResultRulesList(requestBody);
     }
 
 }
