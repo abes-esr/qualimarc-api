@@ -31,7 +31,7 @@ public class RuleSet {
      */
     public List<Rule> getQuickRulesList(){
         List<Rule> ruleList = new ArrayList<>();
-        //  Première règle du jeu de règles basique
+        //  First rule of the quick rule set
         ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
         return ruleList;
     }
@@ -42,7 +42,7 @@ public class RuleSet {
      */
     public List<Rule> getAdvancedRulesList(){
         List<Rule> ruleList = new ArrayList<>();
-        //  Première règle du jeu de règles avancé
+        //  First rule of the advanced rule set
         ruleList.add(new PresenceZone(1, "La zone 020 doit être présente", "020", true));
         return ruleList;
     }
@@ -58,15 +58,15 @@ public class RuleSet {
         for (String ruleSet : focusedRulesSet
         ) {
             if (ruleSet.equals("P4")) {
-                //  Première règle du jeu de règles ciblées
+                //  First rule of the focused rule set
                 ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
             }
             if (ruleSet.equals("P5")) {
-                //  Deuxième règle du jeu de règles ciblées
+                //  Second rule of the focused rule set
                 ruleList.add(new PresenceZone(1, "La zone 020 doit être présente", "020", true));
             }
             if (ruleSet.equals("P6")) {
-                //  Troisième règle du jeu de règles ciblées
+                //  Third rule of the focused rule set
                 ruleList.add(new PresenceZone(1, "La zone 030 doit être présente", "030", true));
             }
         }

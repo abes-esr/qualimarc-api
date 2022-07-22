@@ -15,7 +15,6 @@ class RuleSetTest {
 
     @Test
     void getResultQuickRulesSet() {
-        //  Test du jeu de règles rapide
         RuleSet ruleSet1 = new RuleSet();
         List<Rule> ruleList = ruleSet1.getQuickRulesList();
         Assertions.assertFalse(ruleList.isEmpty());
@@ -23,7 +22,6 @@ class RuleSetTest {
 
     @Test
     void getResultCompleteRuleTest() {
-        //  Test du jeu de règles complet
         RuleSet ruleSet2 = new RuleSet();
         List<Rule> ruleList = ruleSet2.getAdvancedRulesList();
         Assertions.assertFalse(ruleList.isEmpty());
@@ -31,7 +29,6 @@ class RuleSetTest {
 
     @Test
     void getResultFocusedRuleTest() {
-        //  Test du jeu de règles complet
         RuleSet ruleSet3 = new RuleSet();
         List<String> focusedSetList = new ArrayList<>();
         focusedSetList.add("P4");
