@@ -14,25 +14,31 @@ import java.util.List;
 class RuleSetTest {
 
     @Test
-    void getResultQuickRulesSet() {
-        RuleSet ruleSet1 = new RuleSet();
-        List<Rule> ruleList = ruleSet1.getQuickRulesList();
+    void getResultQuickRulesListTest() {
+        List<String> setList = new ArrayList<>();
+        setList.add("quick");
+        RuleSet resulQuickSet = new RuleSet(setList);
+        List<Rule> ruleList = resulQuickSet.getResultRulesList();
         Assertions.assertFalse(ruleList.isEmpty());
     }
 
     @Test
-    void getResultCompleteRuleTest() {
-        RuleSet ruleSet2 = new RuleSet();
-        List<Rule> ruleList = ruleSet2.getAdvancedRulesList();
+    void getResultCompleteRuleListTest() {
+        List<String> setList = new ArrayList<>();
+        setList.add("complete");
+        RuleSet ruleCompletedSet = new RuleSet(setList);
+        List<Rule> ruleList = ruleCompletedSet.getResultRulesList();
         Assertions.assertFalse(ruleList.isEmpty());
     }
 
     @Test
-    void getResultFocusedRuleTest() {
-        RuleSet ruleSet3 = new RuleSet();
+    void getResultFocusedRuleListTest() {
         List<String> focusedSetList = new ArrayList<>();
-        focusedSetList.add("P4");
-        List<Rule> ruleList = ruleSet3.getFocusedRulesList(focusedSetList);
+        focusedSetList.add("focused");
+        focusedSetList.add("focused01");
+        RuleSet ruleFocusedSet = new RuleSet(focusedSetList);
+        List<Rule> ruleList = ruleFocusedSet.getFocusedRulesList(focusedSetList);
         Assertions.assertFalse(ruleList.isEmpty());
     }
+
 }

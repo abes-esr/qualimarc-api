@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.core.model.entity.rules;
 
+import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
 import fr.abes.qualimarc.core.model.entity.rules.structure.PresenceZone;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,16 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 public class RuleSet {
 
-    private String ruleSetName;
+    private List<String> ruleSetList;
 
-    private List<String> ruleSetNameList;
-
-    public RuleSet(String ruleSetName){
-        this.ruleSetName = ruleSetName;
-    }
-
-    public RuleSet(List<String> ruleSetNameList){
-        this.ruleSetNameList = ruleSetNameList;
+    public RuleSet(List<String> ruleSetList){
+        this.ruleSetList = ruleSetList;
     }
 
     /**
@@ -43,7 +38,7 @@ public class RuleSet {
     public List<Rule> getAdvancedRulesList(){
         List<Rule> ruleList = new ArrayList<>();
         //  First rule of the advanced rule set
-        ruleList.add(new PresenceZone(1, "La zone 020 doit être présente", "020", true));
+        ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
         return ruleList;
     }
 
@@ -54,23 +49,45 @@ public class RuleSet {
      */
     public List<Rule> getFocusedRulesList(List<String> focusedRulesSet){
         List<Rule> ruleList = new ArrayList<>();
-
         for (String ruleSet : focusedRulesSet
         ) {
-            if (ruleSet.equals("P4")) {
+            if (ruleSet.equals("focused01")) {
                 //  First rule of the focused rule set
                 ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
             }
-            if (ruleSet.equals("P5")) {
+            if (ruleSet.equals("focused02")) {
                 //  Second rule of the focused rule set
-                ruleList.add(new PresenceZone(1, "La zone 020 doit être présente", "020", true));
+                ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
             }
-            if (ruleSet.equals("P6")) {
+            if (ruleSet.equals("focused03")) {
                 //  Third rule of the focused rule set
-                ruleList.add(new PresenceZone(1, "La zone 030 doit être présente", "030", true));
+                ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
             }
         }
-
         return ruleList;
     }
+
+    public List<Rule> getResultRulesList() {
+        List<Rule> ruleList = new ArrayList<>();
+        //  Checks if a rule set appears more than once and if so throws an exception.
+        //  If not, calls the methods that get the list of rules corresponding to the requested ruleset
+        if(this.ruleSetList.stream().filter(i -> i.equals("quick")).count() == 1){
+            //  Calls up the quick rule handling methods
+            List<Rule> tempBasicList = new ArrayList<>(getQuickRulesList());
+            ruleList.addAll(tempBasicList);
+        } else if (this.ruleSetList.stream().filter(i -> i.equals("complete")).count() == 1) {
+            //  Calls up the quick rule handling methods
+            List<Rule> tempBasicList = new ArrayList<>(getQuickRulesList());
+            ruleList.addAll(tempBasicList);
+            //  Calls up the advanced rule handling methods
+            List<Rule> tempAdvancedList = new ArrayList<>(getAdvancedRulesList());
+            ruleList.addAll(tempAdvancedList);
+        } else if (this.ruleSetList.stream().filter(i -> i.equals("focused")).count() == 1) {
+            //  Calls up the focused rules handling methods
+            List<Rule> tempFocusedList = new ArrayList<>(getFocusedRulesList(this.ruleSetList));
+            ruleList.addAll(tempFocusedList);
+        } else throw new IllegalRulesSetException("Type de jeu de règles inconnu");
+        return ruleList;
+    }
+
 }
