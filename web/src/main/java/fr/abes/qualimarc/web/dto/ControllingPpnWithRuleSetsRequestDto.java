@@ -1,4 +1,4 @@
-package fr.abes.qualimarc.core.model.entity.requestToCheck;
+package fr.abes.qualimarc.web.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,12 +9,12 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RequestToCheck {
+public class ControllingPpnWithRuleSetsRequestDto {
 
     private List<String> ppnList;
     private List<String> rulesSetList;
 
-    public RequestToCheck(List<String> ppnList, List<String> rulesSetList) {
+    public ControllingPpnWithRuleSetsRequestDto(List<String> ppnList, List<String> rulesSetList) {
         this.ppnList = ppnList;
         this.rulesSetList = rulesSetList;
     }

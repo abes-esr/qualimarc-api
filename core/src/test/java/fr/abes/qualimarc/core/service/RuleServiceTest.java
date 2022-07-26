@@ -3,9 +3,7 @@ package fr.abes.qualimarc.core.service;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
-import fr.abes.qualimarc.core.model.entity.requestToCheck.RequestToCheck;
 import fr.abes.qualimarc.core.model.entity.rules.Rule;
-import fr.abes.qualimarc.core.model.entity.rules.RuleSet;
 import fr.abes.qualimarc.core.model.entity.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
@@ -20,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 
-import javax.xml.transform.Result;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -136,61 +133,4 @@ class RuleServiceTest {
         Assertions.assertEquals(1, resultat.get(0).getMessages().size());
         Assertions.assertEquals("Erreur d'accès à la base de données sur PPN : 111111111", resultat.get(0).getMessages().get(0));
     }
-
-//    @Test
-//    void getResultQuickRulesSet() {
-//        //  Prépare une liste de résultats pour contrôle
-//        ResultRules resultRulesControl = new ResultRules("143519379");
-//        List<ResultRules> resultRuleListControl = new ArrayList<>();
-//        resultRuleListControl.add(resultRulesControl);
-//
-//        //  Test du jeu de règles rapide
-//        List<String> ppnList = new ArrayList<>();
-//        ppnList.add("143519379");
-//        List<String> ruleSetList = new ArrayList<>();
-//        ruleSetList.add("P1");
-//        RequestToCheck request = new RequestToCheck(ppnList, ruleSetList);
-//
-//        List<ResultRules> resultRulesList = service.getResultRulesList(request);
-//        Assertions.assertEquals(resultRuleListControl.get(0).getPpn(), resultRulesList.get(0).getPpn());
-//    }
-//
-//    @Test
-//    void getResultCompleteRuleTest() {
-//        //  Prépare une liste de résultats pour contrôle
-//        ResultRules resultRulesControl = new ResultRules("143519379");
-//        List<ResultRules> resultRuleListControl = new ArrayList<>();
-//        resultRuleListControl.add(resultRulesControl);
-//
-//        //  Test du jeu de règles complet
-//        List<String> ppnList = new ArrayList<>();
-//        ppnList.add("143519379");
-//        List<String> ruleSetList = new ArrayList<>();
-//        ruleSetList.add("P2");
-//        RequestToCheck request = new RequestToCheck(ppnList, ruleSetList);
-//
-//        //  Appelle la méthode de contrôle des règles et contrôle le résultat
-//        List<ResultRules> resultRulesList = service.getResultRulesList(request);
-//        Assertions.assertEquals(resultRuleListControl.get(0).getPpn(), resultRulesList.get(0).getPpn());
-//    }
-//
-//    @Test
-//    void getResultFocusedRuleTest() {
-//        //  Prépare une liste de résultats pour contrôle
-//        ResultRules resultRulesControl = new ResultRules("143519379");
-//        List<ResultRules> resultRuleListControl = new ArrayList<>();
-//        resultRuleListControl.add(resultRulesControl);
-//
-//        //  Test du jeu de règles ciblé
-//        List<String> ppnList = new ArrayList<>();
-//        ppnList.add("143519379");
-//        List<String> ruleSetList = new ArrayList<>();
-//        ruleSetList.add("P3");
-//        RequestToCheck request = new RequestToCheck(ppnList, ruleSetList);
-//
-//        //  Appelle la méthode de contrôle des règles et contrôle le résultat
-//        List<ResultRules> resultRulesList = service.getResultRulesList(request);
-//        Assertions.assertEquals(resultRuleListControl.get(0).getPpn(), resultRulesList.get(0).getPpn());
-//    }
-
 }
