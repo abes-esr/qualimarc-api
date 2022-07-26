@@ -13,6 +13,9 @@ import java.util.List;
 @ComponentScan(excludeFilters = @ComponentScan.Filter(BaseXMLConfiguration.class))
 class RuleSetTest {
 
+    /**
+     * Test of the method to get the list of rules from the quick rule set
+     */
     @Test
     void getResultQuickRulesListTest() {
         List<String> setList = new ArrayList<>();
@@ -22,6 +25,9 @@ class RuleSetTest {
         Assertions.assertFalse(ruleList.isEmpty());
     }
 
+    /**
+     * Test of the method to get the list of rules from the complete rule set
+     */
     @Test
     void getResultCompleteRuleListTest() {
         List<String> setList = new ArrayList<>();
@@ -31,13 +37,16 @@ class RuleSetTest {
         Assertions.assertFalse(ruleList.isEmpty());
     }
 
+    /**
+     * Test of the method to get the list of rules from the focused rule set
+     */
     @Test
     void getResultFocusedRuleListTest() {
         List<String> focusedSetList = new ArrayList<>();
         focusedSetList.add("focused");
         focusedSetList.add("focused01");
         RuleSet ruleFocusedSet = new RuleSet(focusedSetList);
-        List<Rule> ruleList = ruleFocusedSet.getFocusedRulesList(focusedSetList);
+        List<Rule> ruleList = ruleFocusedSet.getResultRulesList();
         Assertions.assertFalse(ruleList.isEmpty());
     }
 

@@ -32,10 +32,10 @@ public class RuleSet {
     }
 
     /**
-     * Gets the list of advanced rules
+     * Gets the list of complete rules
      * @return ruleList
      */
-    public List<Rule> getAdvancedRulesList(){
+    public List<Rule> getCompleteRulesList(){
         List<Rule> ruleList = new ArrayList<>();
         //  First rule of the advanced rule set
         ruleList.add(new PresenceZone(1, "La zone 010 doit être présente", "010", true));
@@ -67,25 +67,25 @@ public class RuleSet {
         return ruleList;
     }
 
+    /**
+     * Method that detects the requested rule set and calls the associated methods
+     * @return ruleList
+     */
     public List<Rule> getResultRulesList() {
         List<Rule> ruleList = new ArrayList<>();
         //  Checks if a rule set appears more than once and if so throws an exception.
         //  If not, calls the methods that get the list of rules corresponding to the requested ruleset
         if(this.ruleSetList.stream().filter(i -> i.equals("quick")).count() == 1){
             //  Calls up the quick rule handling methods
-            List<Rule> tempBasicList = new ArrayList<>(getQuickRulesList());
-            ruleList.addAll(tempBasicList);
+            ruleList.addAll(getQuickRulesList());
         } else if (this.ruleSetList.stream().filter(i -> i.equals("complete")).count() == 1) {
             //  Calls up the quick rule handling methods
-            List<Rule> tempBasicList = new ArrayList<>(getQuickRulesList());
-            ruleList.addAll(tempBasicList);
+            ruleList.addAll(getQuickRulesList());
             //  Calls up the advanced rule handling methods
-            List<Rule> tempAdvancedList = new ArrayList<>(getAdvancedRulesList());
-            ruleList.addAll(tempAdvancedList);
+            ruleList.addAll(getCompleteRulesList());
         } else if (this.ruleSetList.stream().filter(i -> i.equals("focused")).count() == 1) {
             //  Calls up the focused rules handling methods
-            List<Rule> tempFocusedList = new ArrayList<>(getFocusedRulesList(this.ruleSetList));
-            ruleList.addAll(tempFocusedList);
+            ruleList.addAll(getFocusedRulesList(this.ruleSetList));
         } else throw new IllegalRulesSetException("Type de jeu de règles inconnu");
         return ruleList;
     }
