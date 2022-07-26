@@ -72,22 +72,24 @@ public class RuleSet {
      * @return ruleList
      */
     public List<Rule> getResultRulesList() {
-        List<Rule> ruleList = new ArrayList<>();
         //  Checks if a rule set appears more than once and if so throws an exception.
         //  If not, calls the methods that get the list of rules corresponding to the requested ruleset
         if(this.ruleSetList.stream().filter(i -> i.equals("quick")).count() == 1){
             //  Calls up the quick rule handling methods
-            ruleList.addAll(getQuickRulesList());
-        } else if (this.ruleSetList.stream().filter(i -> i.equals("complete")).count() == 1) {
+            return getQuickRulesList();
+        }
+        if (this.ruleSetList.stream().filter(i -> i.equals("complete")).count() == 1) {
+            List<Rule> ruleList = new ArrayList<>();
             //  Calls up the quick rule handling methods
             ruleList.addAll(getQuickRulesList());
             //  Calls up the advanced rule handling methods
             ruleList.addAll(getCompleteRulesList());
-        } else if (this.ruleSetList.stream().filter(i -> i.equals("focused")).count() == 1) {
+            return ruleList;
+        }
+        if (this.ruleSetList.stream().filter(i -> i.equals("focused")).count() == 1) {
             //  Calls up the focused rules handling methods
-            ruleList.addAll(getFocusedRulesList(this.ruleSetList));
-        } else throw new IllegalRulesSetException("Type de jeu de règles inconnu");
-        return ruleList;
+            return getFocusedRulesList(this.ruleSetList);
+        }
+        throw new IllegalRulesSetException("Type de jeu de règles inconnu");
     }
-
 }
