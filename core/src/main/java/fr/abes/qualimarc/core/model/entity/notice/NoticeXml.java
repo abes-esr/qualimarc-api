@@ -50,6 +50,12 @@ public class NoticeXml {
      * @return famille de type de document
      */
     public String getFamilleDocument() {
+        if (this.isTheseSoutenance()) {
+            return "TS";
+        }
+        if (this.isTheseRepro()) {
+            return "TR";
+        }
         switch (this.getTypeDocument()) {
             //Famille AUDIOVISUEL
             case "gm":
@@ -122,12 +128,12 @@ public class NoticeXml {
      * @return true si la notice est une thèse reproduite false sinon
      */
     public boolean isTheseRepro() {
-        Optional<Datafield> zone105 = this.getDatafields().stream().filter(zone -> zone.getTag().equals("105")).findFirst();
-        if (zone105.isPresent()) {
-            Datafield datafield = zone105.get();
-            Optional<SubField> sousZoneA = datafield.getSubFields().stream().filter(sousZone -> sousZone.getCode().equals("a")).findFirst();
-            if (sousZoneA.isPresent()) {
-                SubField a = sousZoneA.get();
+        Optional<Datafield> zone105Opt = this.getDatafields().stream().filter(zone -> zone.getTag().equals("105")).findFirst();
+        if (zone105Opt.isPresent()) {
+            Datafield zone105 = zone105Opt.get();
+            Optional<SubField> aOpt = zone105.getSubFields().stream().filter(sousZone -> sousZone.getCode().equals("a")).findFirst();
+            if (aOpt.isPresent()) {
+                SubField a = aOpt.get();
                 if (a.getValue().length() > 7) {
                     if (a.getValue().substring(4, 8).contains("v")) {
                         return true;
@@ -145,12 +151,12 @@ public class NoticeXml {
      * @return true si la notice est une thèse de soutenance false sinon
      */
     public boolean isTheseSoutenance() {
-        Optional<Datafield> zone105 = this.getDatafields().stream().filter(zone -> zone.getTag().equals("105")).findFirst();
-        if (zone105.isPresent()) {
-            Datafield datafield = zone105.get();
-            Optional<SubField> sousZoneA = datafield.getSubFields().stream().filter(sousZone -> sousZone.getCode().equals("a")).findFirst();
-            if (sousZoneA.isPresent()) {
-                SubField a = sousZoneA.get();
+        Optional<Datafield> zone105Opt = this.getDatafields().stream().filter(zone -> zone.getTag().equals("105")).findFirst();
+        if (zone105Opt.isPresent()) {
+            Datafield zone105 = zone105Opt.get();
+            Optional<SubField> aOpt = zone105.getSubFields().stream().filter(sousZone -> sousZone.getCode().equals("a")).findFirst();
+            if (aOpt.isPresent()) {
+                SubField a = aOpt.get();
                 if (a.getValue().length() > 7) {
                     if (a.getValue().substring(4, 8).contains("m") || a.getValue().substring(4, 8).contains("7")) {
                         return true;
