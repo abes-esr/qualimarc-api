@@ -12,6 +12,7 @@ import fr.abes.qualimarc.core.repository.rules.RulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import org.apache.commons.io.IOUtils;
+import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -161,10 +162,10 @@ class RuleServiceTest {
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
 
-        List<String> typesDoc1 = new ArrayList<>();
+        Set<String> typesDoc1 = new HashSet<>();
         typesDoc1.add("TS");
 
-        Rule rule = new PresenceZone(1, "La zone 010 doit être présente", "010", typesDoc1, true);
+        Rule rule = new PresenceZone(1, "La zone 010 doit être présente", "010", Priority.P1, typesDoc1, true);
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, rule));
 
     }
@@ -219,9 +220,8 @@ class RuleServiceTest {
         Assertions.assertEquals(2, result.size());
 
         result.stream().sorted();
-        Iterator<Rule> it = result.iterator();
-        Assertions.assertEquals(1, it.next().getId());
-        Assertions.assertEquals(2, it.next().getId());
+
+        Assertions.assertIterableEquals(result, rules);
     }
 
     /**
@@ -237,8 +237,7 @@ class RuleServiceTest {
         Mockito.when(rulesRepository.findByTypeDocument(Mockito.anyString())).thenReturn(rules);
 
         Set<Rule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, typesDoc, null);
-        Assertions.assertEquals(1, result.size());
-        Assertions.assertEquals(1, result.iterator().next().getId());
+        Assertions.assertIterableEquals(result, rules);
     }
 
     /**
@@ -257,8 +256,7 @@ class RuleServiceTest {
         ruleSet.add(1);
 
         Set<Rule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, null, ruleSet);
-        Assertions.assertEquals(1, result.size());
-        Assertions.assertEquals(1, result.iterator().next().getId());
+        Assertions.assertIterableEquals(result, rules);
     }
 
     /**
@@ -266,17 +264,25 @@ class RuleServiceTest {
      */
     @Test
     void checkRulesOnNoticesFocusedTypeDocRuleSet() {
+        Set<String> typesDoc = new HashSet<>();
+        typesDoc.add("B");
+
+        Rule rule1 = new PresenceZone(1, "Zone 010 obligatoire", "010", Priority.P1, null, true);
+        Rule rule2 = (new PresenceZone(2, "Zone 200 obligatoire", "200", Priority.P1, typesDoc, true));
+
+        //déclaration du set de rule utilisé pour vérifier le résultat de l'appel à la méthode testée
+        Set<Rule> rulesIn = new HashSet<>();
+        rulesIn.add(rule1);
+        rulesIn.add(rule2);
         Set<Rule> rulesSet = new HashSet<>();
-        Rule rule = new PresenceZone(1, "Zone 010 obligatoire", "010", Priority.P1, null, true);
-        rule.addRuleSet(1);
-        rulesSet.add(rule);
+        rule1.addRuleSet(1);
+        rulesSet.add(rule1);
 
         Mockito.when(rulesRepository.findByRuleSet(1)).thenReturn(rulesSet);
 
-        Set<String> typesDoc = new HashSet<>();
-        typesDoc.add("B");
+
         Set<Rule> rulesType = new HashSet<>();
-        rulesType.add(new PresenceZone(2, "Zone 200 obligatoire", "200", Priority.P1, typesDoc, true));
+        rulesType.add(rule2);
 
         Mockito.when(rulesRepository.findByTypeDocument(Mockito.anyString())).thenReturn(rulesType);
 
@@ -285,11 +291,6 @@ class RuleServiceTest {
 
         Set<Rule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, typesDoc, ruleSet);
 
-        Assertions.assertEquals(2, result.size());
-        result.stream().sorted();
-        Iterator<Rule> it = result.iterator();
-        Assertions.assertEquals(1, it.next().getId());
-        Assertions.assertEquals(2, it.next().getId());
-
+        Assertions.assertIterableEquals(result, rulesIn);
     }
 }
