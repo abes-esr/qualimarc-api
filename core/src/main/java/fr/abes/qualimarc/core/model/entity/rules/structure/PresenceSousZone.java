@@ -3,11 +3,13 @@ package fr.abes.qualimarc.core.model.entity.rules.structure;
 import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.rules.Rule;
+import fr.abes.qualimarc.core.utils.Priority;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -18,14 +20,14 @@ public class PresenceSousZone extends Rule {
     private String sousZone;
     private boolean isPresent;
 
-    public PresenceSousZone(Integer id, String message, String zone, String sousZone, boolean isPresent) {
-        super(id, message, zone);
+    public PresenceSousZone(Integer id, String message, String zone, String sousZone, Priority priority, boolean isPresent) {
+        super(id, message, zone, priority);
         this.sousZone = sousZone;
         this.isPresent = isPresent;
     }
 
-    public PresenceSousZone(Integer id, String message, String zone, List<String> typeDocuments, String sousZone, boolean isPresent) {
-        super(id, message, zone, typeDocuments);
+    public PresenceSousZone(Integer id, String message, String zone, Priority priority, Set<String> typeDocuments, String sousZone, boolean isPresent) {
+        super(id, message, zone, priority, typeDocuments);
         this.sousZone = sousZone;
         this.isPresent = isPresent;
     }

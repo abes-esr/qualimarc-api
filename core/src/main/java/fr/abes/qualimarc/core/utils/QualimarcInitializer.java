@@ -11,6 +11,21 @@ import java.util.Map;
 public class QualimarcInitializer {
     @EventListener
     public void afterPropertiesSet(ContextRefreshedEvent event){
+        initTypesDocuments();
+        initRulesSets();
+    }
+
+    private void initRulesSets() {
+        Map<Integer, String> tempMap = new HashMap<>();
+        tempMap.put(1, "Zones 210/214 (publication, production, diffusion)");
+        tempMap.put(2, "Implémentations UNM 2022");
+        tempMap.put(3, "Translitération (présence $6, $7)");
+        tempMap.put(4, "Zones de données codées (1XX)");
+        tempMap.put(5, "Zones d'indexation-matière (6XX)");
+        Constants.RULE_SET.putAll(tempMap);
+    }
+
+    private void initTypesDocuments() {
         Map<String, String> tempMap = new HashMap<>();
         tempMap.put("B", "AUDIOVISUEL");
         tempMap.put("K", "CARTE");
@@ -26,6 +41,6 @@ public class QualimarcInitializer {
         tempMap.put("A", "MONOGRAPHIE");
         tempMap.put("TS", "THESE SOUTENANCE");
         tempMap.put("TR", "THESE REPRODUCTION");
-        TypeDocument.TYPE_DOCUMENT.putAll(tempMap);
+        Constants.TYPE_DOCUMENT.putAll(tempMap);
     }
 }
