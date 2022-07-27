@@ -40,18 +40,22 @@ class RuleServiceTest {
     @MockBean
     RulesRepository rulesRepository;
 
-    @Value("classpath:111111111.xml")
+    @Value("classpath:checkRules1.xml")
     Resource xmlFileNotice1;
 
-    @Value("classpath:222222222.xml")
+    @Value("classpath:checkRules2.xml")
     Resource xmlFileNotice2;
 
-    @Value("classpath:333333333.xml")
+    @Value("classpath:checkRules3.xml")
     Resource xmlFileNotice3;
+
+    @Value("classpath:theseMono.xml")
+    Resource xmlTheseMono;
 
     NoticeXml notice1;
     NoticeXml notice2;
     NoticeXml notice3;
+    NoticeXml theseMono;
 
     List<Rule> listeRegles;
 
@@ -71,6 +75,9 @@ class RuleServiceTest {
 
         xml = IOUtils.toString(new FileInputStream(xmlFileNotice3.getFile()), StandardCharsets.UTF_8);
         notice3 = xmlMapper.readValue(xml, NoticeXml.class);
+
+        xml = IOUtils.toString(new FileInputStream(xmlTheseMono.getFile()), StandardCharsets.UTF_8);
+        theseMono = xmlMapper.readValue(xml, NoticeXml.class);
 
         Set<String> typesDoc1 = new HashSet<>();
         typesDoc1.add("A");
@@ -139,6 +146,27 @@ class RuleServiceTest {
         Assertions.assertEquals("111111111", resultat.get(0).getPpn());
         Assertions.assertEquals(1, resultat.get(0).getMessages().size());
         Assertions.assertEquals("Erreur d'accès à la base de données sur PPN : 111111111", resultat.get(0).getMessages().get(0));
+    }
+
+    @Test
+    void testIsRuleAppliedToNotice() {
+        //cas ou la règle et la notice n'ont pas le même type de document
+        Assertions.assertFalse(service.isRuleAppliedToNotice(notice1, listeRegles.stream().filter(rule -> rule.getId().equals(1)).findFirst().get()));
+        //cas ou là règle et la notice ont le même type de doc "Monographie"
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, listeRegles.stream().filter(rule -> rule.getId().equals(1)).findFirst().get()));
+        //cas ou la règle n'a pas de type de document spécifique -> s'applique à toutes les notices
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
+
+        //cas ou la règle porte sur les thèses de soutenance, et la notice aussi
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
+
+        List<String> typesDoc1 = new ArrayList<>();
+        typesDoc1.add("TS");
+
+        Rule rule = new PresenceZone(1, "La zone 010 doit être présente", "010", typesDoc1, true);
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, rule));
+
     }
 
 

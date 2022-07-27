@@ -36,7 +36,7 @@ public class RuleService {
             try {
                 NoticeXml notice = serviceBibio.getByPpn(ppn);
                 for (Rule rule : rulesList) {
-                    if (rule.getTypeDocuments().size() == 0 || rule.getTypeDocuments().stream().anyMatch(type -> notice.getFamilleDocument().equals(type))) {
+                    if (isRuleAppliedToNotice(notice, rule)) {
                         if (!rule.isValid(notice)) {
                             result.addMessage(rule.getMessage());
                         }
@@ -51,6 +51,16 @@ public class RuleService {
             }
         }
         return resultRules;
+    }
+
+    public boolean isRuleAppliedToNotice(NoticeXml notice, Rule rule) {
+        if (rule.getTypeDocuments().size() == 0 || rule.getTypeDocuments().stream().anyMatch(type -> notice.getFamilleDocument().equals(type)))
+            return true;
+        if (notice.isTheseSoutenance() && rule.getTypeDocuments().stream().anyMatch(type -> type.equals("TS")))
+            return true;
+        if (notice.isTheseRepro() && rule.getTypeDocuments().stream().anyMatch(type -> type.equals("TR")))
+            return true;
+        return false;
     }
 
 

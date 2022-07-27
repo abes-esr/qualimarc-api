@@ -25,10 +25,10 @@ RUN mvn --batch-mode \
 
 ###
 # Image pour le module API
-FROM tomcat:9-jdk11 as api-image
-COPY --from=build-image /build/web/target/*.war /usr/local/tomcat/webapps/ROOT.war
-CMD [ "catalina.sh", "run" ]
-#FROM openjdk:11 as api-image
-#WORKDIR /app/
-#COPY --from=build-image /build/web/target/*.jar /app/qualimarc.jar
-#ENTRYPOINT ["java","-jar","/app/qualimarc.jar"]
+#FROM tomcat:9-jdk11 as api-image
+#COPY --from=build-image /build/web/target/*.war /usr/local/tomcat/webapps/ROOT.war
+#CMD [ "catalina.sh", "run" ]
+FROM openjdk:11 as api-image
+WORKDIR /app/
+COPY --from=build-image /build/web/target/*.jar /app/qualimarc.jar
+ENTRYPOINT ["java","-jar","/app/qualimarc.jar"]

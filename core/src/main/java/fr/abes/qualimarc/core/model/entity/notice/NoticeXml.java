@@ -3,7 +3,6 @@ package fr.abes.qualimarc.core.model.entity.notice;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
