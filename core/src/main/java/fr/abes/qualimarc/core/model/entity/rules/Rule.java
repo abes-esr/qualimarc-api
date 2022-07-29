@@ -6,22 +6,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
+import javax.persistence.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Rule {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rule_Sequence")
+    @SequenceGenerator(name = "rule_Sequence", sequenceName = "RULE_SEQ", allocationSize = 1)
+    @Column(name = "RULE_ID")
     private Integer id;
+    @Column(name = "MESSAGE")
     private String message;
+    @Column(name = "ZONE")
     private String zone;
+    @Column(name = "PRIORITY")
     private Priority priority;
 
     //liste des types de document concernés par la règle
-    private Set<String> typeDocuments;
+    private Set<String> famillesDocuments;
     //liste des jeux de règles préconçus auxquels appartient la règle
     private Set<Integer> ruleSet;
 
@@ -31,16 +39,16 @@ public abstract class Rule {
         this.message = message;
         this.zone = zone;
         this.priority = priority;
-        this.typeDocuments = new HashSet<>();
+        this.famillesDocuments = new HashSet<>();
         this.ruleSet = new HashSet<>();
     }
 
-    public Rule(Integer id, String message, String zone, Priority priority, Set<String> typeDocuments) {
+    public Rule(Integer id, String message, String zone, Priority priority, Set<String> famillesDocuments) {
         this.id = id;
         this.message = message;
         this.zone = zone;
         this.priority = priority;
-        this.typeDocuments = typeDocuments;
+        this.famillesDocuments = famillesDocuments;
         this.ruleSet = new HashSet<>();
     }
 
@@ -49,7 +57,7 @@ public abstract class Rule {
     }
 
     public void addTypeDocument(String typeDocument) {
-        this.typeDocuments.add(typeDocument);
+        this.famillesDocuments.add(typeDocument);
     }
 
 

@@ -1,6 +1,6 @@
 package fr.abes.qualimarc.core.service;
 
-import fr.abes.qualimarc.core.model.entity.notice.NoticesBibio;
+import fr.abes.qualimarc.core.model.entity.basexml.NoticesBibio;
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.repository.basexml.NoticesBibioRepository;
 import org.apache.commons.io.IOUtils;

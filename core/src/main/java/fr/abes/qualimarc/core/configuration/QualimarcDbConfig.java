@@ -1,6 +1,5 @@
 package fr.abes.qualimarc.core.configuration;
 
-
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -8,7 +7,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
@@ -16,20 +14,19 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 
 @Configuration
-@EnableJpaRepositories(entityManagerFactoryRef = "baseXmlEntityManager",
-        basePackages = "fr.abes.qualimarc.core.repository.basexml")
+@EnableJpaRepositories(entityManagerFactoryRef = "qualimarcEntityManager",
+        basePackages = "fr.abes.qualimarc.core.repository.qualimarc")
 @NoArgsConstructor
-@BaseXMLConfiguration
-public class BaseXmlConfig {
-    @Value("${spring.jpa.basexml.show-sql}")
+@QualimarcConfiguration
+public class QualimarcDbConfig {
+    @Value("${spring.jpa.qualimarc.show-sql}")
     protected String showsql;
-    @Value("${spring.jpa.basexml.properties.hibernate.dialect}")
+    @Value("${spring.jpa.qualimarc.properties.hibernate.dialect}")
     protected String dialect;
-    @Value("${spring.jpa.basexml.hibernate.ddl-auto}")
+    @Value("${spring.jpa.qualimarc.hibernate.ddl-auto}")
     protected String ddlAuto;
-    @Value("${spring.jpa.basexml.database-platform}")
+    @Value("${spring.jpa.qualimarc.database-platform}")
     protected String platform;
-
 
     protected void configHibernate(LocalContainerEntityManagerFactoryBean em) {
         HibernateJpaVendorAdapter vendorAdapter
@@ -46,23 +43,23 @@ public class BaseXmlConfig {
     }
 
     @Bean
-    @ConfigurationProperties("spring.datasource.basexml")
-    public DataSourceProperties baseXmlDataSourceProperties() {
+    @ConfigurationProperties("spring.datasource.qualimarc")
+    public DataSourceProperties qualimarcDataSourceProperties() {
         return new DataSourceProperties();
     }
 
     @Bean
-    public DataSource baseXmlDataSource() {
-        return baseXmlDataSourceProperties().initializeDataSourceBuilder().build();
+    public DataSource qualimarcDataSource() {
+        return qualimarcDataSourceProperties().initializeDataSourceBuilder().build();
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean baseXmlEntityManager() {
+    public LocalContainerEntityManagerFactoryBean qualimarcEntityManager() {
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(baseXmlDataSource());
+        em.setDataSource(qualimarcDataSource());
         em.setPackagesToScan(
-                new String[]{"fr.abes.qualimarc.core.model.entity.basexml"});
+                new String[]{"fr.abes.qualimarc.core.model.entity.qualimarc"});
         configHibernate(em);
         return em;
     }

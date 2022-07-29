@@ -5,8 +5,7 @@ import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.rules.Rule;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
-import fr.abes.qualimarc.core.repository.rules.RulesRepository;
-import fr.abes.qualimarc.core.repository.rules.RulesRepositoryImpl;
+import fr.abes.qualimarc.core.repository.qualimarc.RulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static fr.abes.qualimarc.core.utils.Priority.P1;
+import java.util.stream.Collectors;
 
 @Service
 public class RuleService {
@@ -78,7 +76,7 @@ public class RuleService {
             case QUICK:
                 return rulesRepository.findByPriority(Priority.P1);
             case COMPLETE:
-                return rulesRepository.findAll();
+                return rulesRepository.findAll().stream().collect(Collectors.toSet());
             case FOCUSED:
                 //cas d'une analyse ciblée, on récupère les règles en fonction des types de documents et des ruleSet
                 if ((typeDocument == null || typeDocument.size() == 0) && (ruleSet == null || ruleSet.size() == 0))

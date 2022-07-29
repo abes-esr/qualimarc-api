@@ -5,7 +5,6 @@ import fr.abes.qualimarc.core.model.entity.rules.Rule;
 import fr.abes.qualimarc.core.utils.Priority;
 import lombok.*;
 
-import java.util.List;
 import java.util.Set;
 
 @Getter
