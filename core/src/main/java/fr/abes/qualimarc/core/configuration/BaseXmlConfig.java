@@ -32,8 +32,6 @@ public class BaseXmlConfig extends AbstractConfig{
     protected String platform;
     @Value("${spring.jpa.basexml.generate-ddl}")
     protected boolean generateDdl;
-    @Value("${spring.jpa.basexml.defer-datasource-initialization}")
-    protected boolean importData;
     @Value("${spring.sql.basexml.init.mode}")
     protected String initMode;
 

@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.core.model.entity.qualimarc.reference;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import lombok.*;
 
@@ -20,6 +21,7 @@ public class RuleSet {
     private String libelle;
 
     @ManyToMany(mappedBy = "ruleSet", targetEntity = Rule.class)
+    @JsonIgnore
     Set<Rule> rules;
 
     public RuleSet(Integer id, String libelle) {

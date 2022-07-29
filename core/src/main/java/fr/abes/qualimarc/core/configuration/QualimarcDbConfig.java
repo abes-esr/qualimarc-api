@@ -39,8 +39,6 @@ public class QualimarcDbConfig extends AbstractConfig {
     protected String platform;
     @Value("${spring.jpa.qualimarc.generate-ddl}")
     protected boolean generateDdl;
-    @Value("${spring.jpa.qualimarc.defer-datasource-initialization}")
-    protected boolean importData;
     @Value("${spring.sql.qualimarc.init.mode}")
     protected String initMode;
 

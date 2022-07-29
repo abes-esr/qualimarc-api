@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.core.model.entity.qualimarc.reference;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import lombok.*;
 
@@ -20,6 +21,7 @@ public class FamilleDocument {
     private String libelle;
 
     @ManyToMany(mappedBy = "famillesDocuments", targetEntity = Rule.class)
+    @JsonIgnore
     private Set<Rule> rules;
 
     public FamilleDocument(String id, String libelle) {
