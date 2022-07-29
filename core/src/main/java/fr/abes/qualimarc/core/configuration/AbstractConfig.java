@@ -6,7 +6,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import java.util.HashMap;
 
 public abstract class AbstractConfig {
-    protected void configHibernate(LocalContainerEntityManagerFactoryBean em, String platform, boolean showsql, String dialect, String ddlAuto, boolean generateDdl, boolean importData, String initMode) {
+    protected void configHibernate(LocalContainerEntityManagerFactoryBean em, String platform, boolean showsql, String dialect, String ddlAuto, boolean generateDdl, String initMode) {
         HibernateJpaVendorAdapter vendorAdapter
                 = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(generateDdl);
@@ -19,7 +19,6 @@ public abstract class AbstractConfig {
         properties.put("hibernate.dialect", dialect);
         properties.put("logging.level.org.hibernate", "DEBUG");
         properties.put("hibernate.type", "trace");
-        properties.put("spring.jpa.defer-datasource-initialization", importData);
         properties.put("spring.sql.init.mode", initMode);
         em.setJpaPropertyMap(properties);
     }

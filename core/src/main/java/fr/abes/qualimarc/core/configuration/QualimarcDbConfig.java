@@ -59,7 +59,7 @@ public class QualimarcDbConfig extends AbstractConfig {
         em.setDataSource(qualimarcDataSource());
         em.setPackagesToScan(
                 new String[]{"fr.abes.qualimarc.core.model.entity.qualimarc.*"});
-        configHibernate(em, platform, showsql, dialect, ddlAuto, generateDdl, importData, initMode);
+        configHibernate(em, platform, showsql, dialect, ddlAuto, generateDdl, initMode);
         return em;
     }
 

@@ -50,7 +50,7 @@ public class BaseXmlConfig extends AbstractConfig{
         em.setDataSource(baseXmlDataSource());
         em.setPackagesToScan(
                 new String[]{"fr.abes.qualimarc.core.model.entity.basexml"});
-        configHibernate(em, platform, showsql, dialect, ddlAuto, generateDdl, importData, initMode);
+        configHibernate(em, platform, showsql, dialect, ddlAuto, generateDdl, initMode);
         return em;
     }
 }
