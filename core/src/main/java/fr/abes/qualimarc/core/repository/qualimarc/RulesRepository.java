@@ -1,10 +1,11 @@
 package fr.abes.qualimarc.core.repository.qualimarc;
 
 import fr.abes.qualimarc.core.configuration.QualimarcConfiguration;
-import fr.abes.qualimarc.core.model.entity.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.utils.Priority;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
@@ -14,7 +15,7 @@ import java.util.Set;
 public interface RulesRepository extends JpaRepository<Rule, Integer> {
     Set<Rule> findByPriority(Priority priority);
 
-    Set<Rule> findByTypeDocument(String typeDocument);
+    Set<Rule> findByFamillesDocuments(FamilleDocument familleDocument);
 
-    Set<Rule> findByRuleSet(Integer ruleSet);
+    Set<Rule> findByRuleSet(RuleSet ruleSet);
 }

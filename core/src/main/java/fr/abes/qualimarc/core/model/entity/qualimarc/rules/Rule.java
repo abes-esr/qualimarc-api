@@ -1,6 +1,8 @@
-package fr.abes.qualimarc.core.model.entity.rules;
+package fr.abes.qualimarc.core.model.entity.qualimarc.rules;
 
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.utils.Priority;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,23 +17,40 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "RULE")
 public abstract class Rule {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rule_Sequence")
-    @SequenceGenerator(name = "rule_Sequence", sequenceName = "RULE_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RULE_ID")
     private Integer id;
+
     @Column(name = "MESSAGE")
     private String message;
+
     @Column(name = "ZONE")
     private String zone;
+
     @Column(name = "PRIORITY")
+    @Enumerated(EnumType.STRING)
     private Priority priority;
 
     //liste des types de document concernés par la règle
-    private Set<String> famillesDocuments;
+    @ManyToMany
+    @JoinTable(
+            name = "RULE_FAMILLEDOCUMENTS",
+            joinColumns = @JoinColumn(name = "RULE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "FAMILLEDOCUMENT_ID")
+    )
+    private Set<FamilleDocument> famillesDocuments;
+
     //liste des jeux de règles préconçus auxquels appartient la règle
-    private Set<Integer> ruleSet;
+    @ManyToMany
+    @JoinTable(
+            name = "RULE_RULESET",
+            joinColumns = @JoinColumn(name = "RULE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "RULESET_ID")
+    )
+    private Set<RuleSet> ruleSet;
 
 
     public Rule(Integer id, String message, String zone, Priority priority) {
@@ -43,7 +62,7 @@ public abstract class Rule {
         this.ruleSet = new HashSet<>();
     }
 
-    public Rule(Integer id, String message, String zone, Priority priority, Set<String> famillesDocuments) {
+    public Rule(Integer id, String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments) {
         this.id = id;
         this.message = message;
         this.zone = zone;
@@ -52,11 +71,11 @@ public abstract class Rule {
         this.ruleSet = new HashSet<>();
     }
 
-    public void addRuleSet(Integer ruleSet) {
+    public void addRuleSet(RuleSet ruleSet) {
         this.ruleSet.add(ruleSet);
     }
 
-    public void addTypeDocument(String typeDocument) {
+    public void addTypeDocument(FamilleDocument typeDocument) {
         this.famillesDocuments.add(typeDocument);
     }
 

@@ -1,9 +1,8 @@
 package fr.abes.qualimarc.web.controller;
 
-import fr.abes.qualimarc.core.model.reference.FamilleDocument;
-import fr.abes.qualimarc.core.model.reference.RuleSet;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.service.ReferenceService;
-import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

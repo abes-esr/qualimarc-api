@@ -1,17 +1,24 @@
-package fr.abes.qualimarc.core.model.entity.rules.structure;
+package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure;
 
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
-import fr.abes.qualimarc.core.model.entity.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.utils.Priority;
 import lombok.*;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity
+@Table(name = "RULE_PRESENCEZONE")
 public class PresenceZone extends Rule {
 
+    @Column(name = "IS_PRESENT")
     private boolean isPresent;
 
 
@@ -20,7 +27,7 @@ public class PresenceZone extends Rule {
         this.isPresent = isPresent;
     }
 
-    public PresenceZone(Integer id, String message, String zone, Priority priority, Set<String> typeDocuments, boolean isPresent) {
+    public PresenceZone(Integer id, String message, String zone, Priority priority, Set<FamilleDocument> typeDocuments, boolean isPresent) {
         super(id, message, zone, priority, typeDocuments);
         this.isPresent = isPresent;
     }

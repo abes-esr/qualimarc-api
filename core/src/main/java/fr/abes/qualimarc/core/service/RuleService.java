@@ -3,7 +3,9 @@ package fr.abes.qualimarc.core.service;
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
-import fr.abes.qualimarc.core.model.entity.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.RulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
@@ -52,11 +54,11 @@ public class RuleService {
     }
 
     public boolean isRuleAppliedToNotice(NoticeXml notice, Rule rule) {
-        if (rule.getTypeDocuments().size() == 0 || rule.getTypeDocuments().stream().anyMatch(type -> notice.getFamilleDocument().equals(type)))
+        if (rule.getFamillesDocuments().size() == 0 || rule.getFamillesDocuments().stream().anyMatch(type -> notice.getFamilleDocument().equals(type)))
             return true;
-        if (notice.isTheseSoutenance() && rule.getTypeDocuments().stream().anyMatch(type -> type.equals("TS")))
+        if (notice.isTheseSoutenance() && rule.getFamillesDocuments().stream().anyMatch(type -> type.equals("TS")))
             return true;
-        if (notice.isTheseRepro() && rule.getTypeDocuments().stream().anyMatch(type -> type.equals("TR")))
+        if (notice.isTheseRepro() && rule.getFamillesDocuments().stream().anyMatch(type -> type.equals("TR")))
             return true;
         return false;
     }
@@ -70,7 +72,7 @@ public class RuleService {
      * @param ruleSet set of rules to look for in rules
      * @return list of rules according to given parameters
      */
-    public Set<Rule> getResultRulesList(TypeAnalyse typeAnalyse, Set<String> typeDocument, Set<Integer> ruleSet) {
+    public Set<Rule> getResultRulesList(TypeAnalyse typeAnalyse, Set<FamilleDocument> typeDocument, Set<RuleSet> ruleSet) {
         //cas analyse rapide ou experte
         switch (typeAnalyse) {
             case QUICK:
@@ -83,7 +85,7 @@ public class RuleService {
                     throw new IllegalRulesSetException("Impossible de lancer l'analysée ciblée sans paramètres supplémentaires");
                 Set<Rule> result = new HashSet<>();
                 if (typeDocument != null)
-                    typeDocument.forEach(t -> result.addAll(rulesRepository.findByTypeDocument(t)));
+                    typeDocument.forEach(t -> result.addAll(rulesRepository.findByFamillesDocuments(t)));
                 if (ruleSet != null)
                     ruleSet.forEach(r -> result.addAll(rulesRepository.findByRuleSet(r)));
                 return result;
