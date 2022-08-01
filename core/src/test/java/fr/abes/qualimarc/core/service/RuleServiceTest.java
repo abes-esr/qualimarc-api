@@ -61,11 +61,11 @@ class RuleServiceTest {
     NoticeXml notice3;
     NoticeXml theseMono;
 
-    List<Rule> listeRegles;
+    Set<Rule> listeRegles;
 
     @BeforeEach
     void initNotices() throws IOException {
-        listeRegles = new ArrayList<>();
+        listeRegles = new HashSet<>();
 
         JacksonXmlModule module = new JacksonXmlModule();
         module.setDefaultUseWrapper(false);

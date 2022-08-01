@@ -29,7 +29,7 @@ public class RuleService {
     @Autowired
     private RulesRepository rulesRepository;
 
-    public List<ResultRules> checkRulesOnNotices(List<String> ppns, List<Rule> rulesList) {
+    public List<ResultRules> checkRulesOnNotices(List<String> ppns, Set<Rule> rulesList) {
         List<ResultRules> resultRules = new ArrayList<>();
         for (String ppn : ppns) {
             ResultRules result = new ResultRules(ppn);
@@ -68,11 +68,11 @@ public class RuleService {
      * Method that returns rules associated with the analyse type chosen
      *
      * @param typeAnalyse : priority to look for in rules
-     * @param typeDocument : list of document type to look for in rules
+     * @param familleDocuments : list of document type to look for in rules
      * @param ruleSet set of rules to look for in rules
      * @return list of rules according to given parameters
      */
-    public Set<Rule> getResultRulesList(TypeAnalyse typeAnalyse, Set<FamilleDocument> typeDocument, Set<RuleSet> ruleSet) {
+    public Set<Rule> getResultRulesList(TypeAnalyse typeAnalyse, Set<FamilleDocument> familleDocuments, Set<RuleSet> ruleSet) {
         //cas analyse rapide ou experte
         switch (typeAnalyse) {
             case QUICK:
@@ -81,11 +81,11 @@ public class RuleService {
                 return rulesRepository.findAll().stream().collect(Collectors.toSet());
             case FOCUSED:
                 //cas d'une analyse ciblée, on récupère les règles en fonction des types de documents et des ruleSet
-                if ((typeDocument == null || typeDocument.size() == 0) && (ruleSet == null || ruleSet.size() == 0))
+                if ((familleDocuments == null || familleDocuments.size() == 0) && (ruleSet == null || ruleSet.size() == 0))
                     throw new IllegalRulesSetException("Impossible de lancer l'analysée ciblée sans paramètres supplémentaires");
                 Set<Rule> result = new HashSet<>();
-                if (typeDocument != null)
-                    typeDocument.forEach(t -> result.addAll(rulesRepository.findByFamillesDocuments(t)));
+                if (familleDocuments != null)
+                    familleDocuments.forEach(t -> result.addAll(rulesRepository.findByFamillesDocuments(t)));
                 if (ruleSet != null)
                     ruleSet.forEach(r -> result.addAll(rulesRepository.findByRuleSet(r)));
                 return result;
