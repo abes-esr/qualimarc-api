@@ -3,7 +3,7 @@ package fr.abes.qualimarc.core.service;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
-import fr.abes.qualimarc.core.model.entity.notice.NoticesBibio;
+import fr.abes.qualimarc.core.model.entity.basexml.NoticesBibio;
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.repository.basexml.NoticesBibioRepository;
 import org.springframework.beans.factory.annotation.Autowired;

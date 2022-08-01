@@ -25,10 +25,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-starter-logging</artifactId>
-                    </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -40,14 +40,17 @@
 
         <!-- BDD -->
         <dependency>
-            <groupId>oracle.ojdbc</groupId>
-            <artifactId>ojdbc</artifactId>
-            <version>12.1.0.1.0</version>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>21.3.0.0</version>
         </dependency>
         <dependency>
-            <groupId>oracle.ojdbc</groupId>
-            <artifactId>xdb6</artifactId>
-            <version>12.1.0.1.0</version>
+            <groupId>com.oracle.database.xml</groupId>
+            <artifactId>xdb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
         </dependency>
         <!-- parser xml -->
         <dependency>
