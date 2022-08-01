@@ -84,13 +84,13 @@ class RuleServiceTest {
         theseMono = xmlMapper.readValue(xml, NoticeXml.class);
 
         Set<FamilleDocument> familleDoc1 = new HashSet<>();
-        familleDoc1.add(new FamilleDocument("B", "Audiovisuel"));
+        familleDoc1.add(new FamilleDocument("A", "Monographie"));
 
         listeRegles.add(new PresenceZone(1, "La zone 010 doit être présente", "010", Priority.P1, familleDoc1, true));
         listeRegles.add(new PresenceZone(2, "La zone 011 doit être absente", "011", Priority.P1, false));
         Set<FamilleDocument> typesDoc2 = new HashSet<>();
-        typesDoc2.add(new FamilleDocument("B", "Audiovisuel"));
         typesDoc2.add(new FamilleDocument("A", "Monographie"));
+        typesDoc2.add(new FamilleDocument("BD", "Ressource Continue"));
         listeRegles.add(new PresenceZone(3, "La zone 012 doit être présente", "012", Priority.P1, typesDoc2, true));
     }
 
@@ -166,7 +166,7 @@ class RuleServiceTest {
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
 
         Set<FamilleDocument> typesDoc1 = new HashSet<>();
-        typesDoc1.add(new FamilleDocument("B", "Audiovisuel"));
+        typesDoc1.add(new FamilleDocument("TS", "Thèse de soutenance"));
 
         Rule rule = new PresenceZone(1, "La zone 010 doit être présente", "010", Priority.P1, typesDoc1, true);
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, rule));
@@ -220,11 +220,8 @@ class RuleServiceTest {
         Mockito.when(rulesRepository.findAll()).thenReturn(rules);
 
         Set<Rule> result = service.getResultRulesList(TypeAnalyse.COMPLETE, null, null);
-        Assertions.assertEquals(2, result.size());
-
-        result.stream().sorted();
-
-        Assertions.assertIterableEquals(result, rules);
+        //les listes contenant plusieurs objets, assertIterableIquals peut renvoyer false s'ils ne sont pas dans le même ordre, on compare donc les listes éléments par éléments
+        Assertions.assertTrue(result.size() == rules.size() && result.containsAll(rules) && rules.containsAll(result));
     }
 
     /**
@@ -260,6 +257,7 @@ class RuleServiceTest {
         ruleSets.add(ruleSet);
 
         Set<Rule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, null, ruleSets);
+        //les listes ne contenant qu'un élément on utilise assertIterableEquals pour vérifier qu'elles sont identiques
         Assertions.assertIterableEquals(result, rules);
     }
 

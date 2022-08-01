@@ -32,6 +32,16 @@ public class PresenceZone extends Rule {
         this.isPresent = isPresent;
     }
 
+    public PresenceZone(String message, String zone, Priority priority, boolean isPresent) {
+        super(message, zone, priority);
+        this.isPresent = isPresent;
+    }
+
+    public PresenceZone(String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments, boolean isPresent) {
+        super(message, zone, priority, famillesDocuments);
+        this.isPresent = isPresent;
+    }
+
     @Override
     public boolean isValid(NoticeXml notice) {
         if(this.isPresent) {

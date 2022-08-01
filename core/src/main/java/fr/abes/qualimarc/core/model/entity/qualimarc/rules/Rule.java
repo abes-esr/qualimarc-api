@@ -71,6 +71,19 @@ public abstract class Rule {
         this.ruleSet = new HashSet<>();
     }
 
+    public Rule(String message, String zone, Priority priority) {
+        this.message = message;
+        this.zone = zone;
+        this.priority = priority;
+    }
+
+    public Rule(String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments) {
+        this.message = message;
+        this.zone = zone;
+        this.priority = priority;
+        this.famillesDocuments = famillesDocuments;
+    }
+
     public void addRuleSet(RuleSet ruleSet) {
         this.ruleSet.add(ruleSet);
     }

@@ -54,11 +54,11 @@ public class RuleService {
     }
 
     public boolean isRuleAppliedToNotice(NoticeXml notice, Rule rule) {
-        if (rule.getFamillesDocuments().size() == 0 || rule.getFamillesDocuments().stream().anyMatch(type -> notice.getFamilleDocument().equals(type)))
+        if (rule.getFamillesDocuments().size() == 0 || rule.getFamillesDocuments().stream().anyMatch(type -> notice.getFamilleDocument().equals(type.getId())))
             return true;
-        if (notice.isTheseSoutenance() && rule.getFamillesDocuments().stream().anyMatch(type -> type.equals("TS")))
+        if (notice.isTheseSoutenance() && rule.getFamillesDocuments().stream().anyMatch(type -> type.getId().equals("TS")))
             return true;
-        if (notice.isTheseRepro() && rule.getFamillesDocuments().stream().anyMatch(type -> type.equals("TR")))
+        if (notice.isTheseRepro() && rule.getFamillesDocuments().stream().anyMatch(type -> type.getId().equals("TR")))
             return true;
         return false;
     }
