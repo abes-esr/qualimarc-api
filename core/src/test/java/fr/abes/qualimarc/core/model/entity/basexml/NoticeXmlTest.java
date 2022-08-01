@@ -1,5 +1,8 @@
-package fr.abes.qualimarc.core.model.entity.notice;
+package fr.abes.qualimarc.core.model.entity.basexml;
 
+import fr.abes.qualimarc.core.model.entity.notice.Datafield;
+import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.notice.SubField;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

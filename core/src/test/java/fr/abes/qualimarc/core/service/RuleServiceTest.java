@@ -2,21 +2,21 @@ package fr.abes.qualimarc.core.service;
 
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
-import fr.abes.qualimarc.core.model.entity.rules.Rule;
-import fr.abes.qualimarc.core.model.entity.rules.structure.PresenceZone;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
-import fr.abes.qualimarc.core.exception.IllegalPpnException;
-import fr.abes.qualimarc.core.repository.rules.RulesRepository;
+import fr.abes.qualimarc.core.repository.qualimarc.RulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import org.apache.commons.io.IOUtils;
-import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +28,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @SpringBootTest(classes = {RuleService.class})
 class RuleServiceTest {
@@ -80,14 +83,14 @@ class RuleServiceTest {
         xml = IOUtils.toString(new FileInputStream(xmlTheseMono.getFile()), StandardCharsets.UTF_8);
         theseMono = xmlMapper.readValue(xml, NoticeXml.class);
 
-        Set<String> typesDoc1 = new HashSet<>();
-        typesDoc1.add("A");
+        Set<FamilleDocument> familleDoc1 = new HashSet<>();
+        familleDoc1.add(new FamilleDocument("A", "Monographie"));
 
-        listeRegles.add(new PresenceZone(1, "La zone 010 doit être présente", "010", Priority.P1, typesDoc1, true));
+        listeRegles.add(new PresenceZone(1, "La zone 010 doit être présente", "010", Priority.P1, familleDoc1, true));
         listeRegles.add(new PresenceZone(2, "La zone 011 doit être absente", "011", Priority.P1, false));
-        Set<String> typesDoc2 = new HashSet<>();
-        typesDoc2.add("A");
-        typesDoc2.add("BD");
+        Set<FamilleDocument> typesDoc2 = new HashSet<>();
+        typesDoc2.add(new FamilleDocument("A", "Monographie"));
+        typesDoc2.add(new FamilleDocument("BD", "Ressource Continue"));
         listeRegles.add(new PresenceZone(3, "La zone 012 doit être présente", "012", Priority.P1, typesDoc2, true));
     }
 
@@ -162,8 +165,8 @@ class RuleServiceTest {
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
 
-        Set<String> typesDoc1 = new HashSet<>();
-        typesDoc1.add("TS");
+        Set<FamilleDocument> typesDoc1 = new HashSet<>();
+        typesDoc1.add(new FamilleDocument("TS", "Thèse de soutenance"));
 
         Rule rule = new PresenceZone(1, "La zone 010 doit être présente", "010", Priority.P1, typesDoc1, true);
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, rule));
@@ -210,18 +213,15 @@ class RuleServiceTest {
      */
     @Test
     void checkRulesOnNoticesComplete() {
-        Set<Rule> rules = new HashSet<>();
+        List<Rule> rules = new ArrayList<>();
         rules.add(new PresenceZone(1, "Zone 010 obligatoire", "010", Priority.P1, true));
         rules.add(new PresenceZone(2, "Zone 200 obligatoire", "200", Priority.P2, true));
 
         Mockito.when(rulesRepository.findAll()).thenReturn(rules);
 
         Set<Rule> result = service.getResultRulesList(TypeAnalyse.COMPLETE, null, null);
-        Assertions.assertEquals(2, result.size());
-
-        result.stream().sorted();
-
-        Assertions.assertIterableEquals(result, rules);
+        //les listes contenant plusieurs objets, assertIterableIquals peut renvoyer false s'ils ne sont pas dans le même ordre, on compare donc les listes éléments par éléments
+        Assertions.assertTrue(result.size() == rules.size() && result.containsAll(rules) && rules.containsAll(result));
     }
 
     /**
@@ -229,12 +229,12 @@ class RuleServiceTest {
      */
     @Test
     void checkRulesOnNoticesFocusedTypeDoc() {
-        Set<String> typesDoc = new HashSet<>();
-        typesDoc.add("B");
+        Set<FamilleDocument> typesDoc = new HashSet<>();
+        typesDoc.add(new FamilleDocument("B", "Audiovisuel"));
         Set<Rule> rules = new HashSet<>();
         rules.add(new PresenceZone(1, "Zone 010 obligatoire", "010", Priority.P1, typesDoc, true));
 
-        Mockito.when(rulesRepository.findByTypeDocument(Mockito.anyString())).thenReturn(rules);
+        Mockito.when(rulesRepository.findByFamillesDocuments(Mockito.any())).thenReturn(rules);
 
         Set<Rule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, typesDoc, null);
         Assertions.assertIterableEquals(result, rules);
@@ -245,17 +245,19 @@ class RuleServiceTest {
      */
     @Test
     void checkRulesOnNoticesFocusedRuleSet() {
+        RuleSet ruleSet = new RuleSet(1, "Zones 210/214 (publication, production, diffusion)");
         Set<Rule> rules = new HashSet<>();
         Rule rule = new PresenceZone(1, "Zone 010 obligatoire", "010", Priority.P1, null, true);
-        rule.addRuleSet(1);
+        rule.addRuleSet(ruleSet);
         rules.add(rule);
 
-        Mockito.when(rulesRepository.findByRuleSet(1)).thenReturn(rules);
+        Mockito.when(rulesRepository.findByRuleSet(ruleSet)).thenReturn(rules);
 
-        Set<Integer> ruleSet = new HashSet<>();
-        ruleSet.add(1);
+        Set<RuleSet> ruleSets = new HashSet<>();
+        ruleSets.add(ruleSet);
 
-        Set<Rule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, null, ruleSet);
+        Set<Rule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, null, ruleSets);
+        //les listes ne contenant qu'un élément on utilise assertIterableEquals pour vérifier qu'elles sont identiques
         Assertions.assertIterableEquals(result, rules);
     }
 
@@ -264,8 +266,10 @@ class RuleServiceTest {
      */
     @Test
     void checkRulesOnNoticesFocusedTypeDocRuleSet() {
-        Set<String> typesDoc = new HashSet<>();
-        typesDoc.add("B");
+        RuleSet ruleSet = new RuleSet(1, "Zones 210/214 (publication, production, diffusion)");
+
+        Set<FamilleDocument> typesDoc = new HashSet<>();
+        typesDoc.add(new FamilleDocument("B", "Audiovisuel"));
 
         Rule rule1 = new PresenceZone(1, "Zone 010 obligatoire", "010", Priority.P1, null, true);
         Rule rule2 = (new PresenceZone(2, "Zone 200 obligatoire", "200", Priority.P1, typesDoc, true));
@@ -274,22 +278,22 @@ class RuleServiceTest {
         Set<Rule> rulesIn = new HashSet<>();
         rulesIn.add(rule1);
         rulesIn.add(rule2);
-        Set<Rule> rulesSet = new HashSet<>();
-        rule1.addRuleSet(1);
-        rulesSet.add(rule1);
+        Set<Rule> rules = new HashSet<>();
+        rule1.addRuleSet(ruleSet);
+        rules.add(rule1);
 
-        Mockito.when(rulesRepository.findByRuleSet(1)).thenReturn(rulesSet);
+        Mockito.when(rulesRepository.findByRuleSet(ruleSet)).thenReturn(rules);
 
 
         Set<Rule> rulesType = new HashSet<>();
         rulesType.add(rule2);
 
-        Mockito.when(rulesRepository.findByTypeDocument(Mockito.anyString())).thenReturn(rulesType);
+        Mockito.when(rulesRepository.findByFamillesDocuments(Mockito.any())).thenReturn(rulesType);
 
-        Set<Integer> ruleSet = new HashSet<>();
-        ruleSet.add(1);
+        Set<RuleSet> ruleSets = new HashSet<>();
+        ruleSets.add(ruleSet);
 
-        Set<Rule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, typesDoc, ruleSet);
+        Set<Rule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, typesDoc, ruleSets);
 
         Assertions.assertIterableEquals(result, rulesIn);
     }

@@ -1,4 +1,4 @@
-package fr.abes.qualimarc.core.model.entity.rules.structure;
+package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure;
 
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
