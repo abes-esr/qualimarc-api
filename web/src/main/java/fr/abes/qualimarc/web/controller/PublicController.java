@@ -31,7 +31,7 @@ public class PublicController {
 
     @PostMapping("/check/")
     public List<ResultRules> checkPpn(@RequestBody ControllingPpnWithRuleSetsRequestDto requestBody) {
-        return ruleService.getResultRulesList(requestBody.getPpnList(), requestBody.getRulesSetList());
+        return ruleService.checkRulesOnNotices(requestBody.getPpnList(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), requestBody.getFamilleDocumentSet(), requestBody.getRuleSet()));
     }
 }
 

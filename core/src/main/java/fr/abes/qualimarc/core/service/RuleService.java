@@ -29,7 +29,7 @@ public class RuleService {
     @Autowired
     private RulesRepository rulesRepository;
 
-    public List<ResultRules> checkRulesOnNotices(List<String> ppns, List<Rule> rulesList) {
+    public List<ResultRules> checkRulesOnNotices(List<String> ppns, Set<Rule> rulesList) {
         List<ResultRules> resultRules = new ArrayList<>();
         for (String ppn : ppns) {
             ResultRules result = new ResultRules(ppn);
