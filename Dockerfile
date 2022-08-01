@@ -12,7 +12,7 @@ ENV LC_ALL fr_FR.UTF-8
 
 
 # On lance la compilation Java
-# On débute par une mise en cache des dépendances Java
+# On débute par une mise en cache docker des dépendances Java
 # cf https://www.baeldung.com/ops/docker-cache-maven-dependencies
 COPY ./pom.xml /build/pom.xml
 COPY ./core/pom.xml /build/core/pom.xml
