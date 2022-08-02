@@ -12,6 +12,8 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,10 +23,12 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Entity
 @Table(name = "RULE_PRESENCESOUSZONE")
-public class PresenceSousZone extends Rule {
+public class PresenceSousZone extends Rule implements Serializable {
     @Column(name = "SOUS_ZONE")
+    @NotNull
     private String sousZone;
     @Column(name = "IS_PRESENT")
+    @NotNull
     private boolean isPresent;
 
     public PresenceSousZone(Integer id, String message, String zone, String sousZone, Priority priority, boolean isPresent) {

@@ -32,6 +32,12 @@
             </exclusions>
         </dependency>
 
+        <!-- permet de gérer les contraintes d'intégrité de la BDD et les champs not null -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
