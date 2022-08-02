@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,13 +26,16 @@ public abstract class Rule {
     private Integer id;
 
     @Column(name = "MESSAGE")
+    @NotNull
     private String message;
 
     @Column(name = "ZONE")
+    @NotNull
     private String zone;
 
     @Column(name = "PRIORITY")
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Priority priority;
 
     //liste des types de document concernés par la règle
