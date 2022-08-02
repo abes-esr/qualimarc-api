@@ -1,23 +1,24 @@
 package fr.abes.qualimarc.web.controller;
 
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
-import fr.abes.qualimarc.web.dto.ControllingPpnWithRuleSetsRequestDto;
-import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
-import fr.abes.qualimarc.web.dto.ControllingPpnWithRuleSetsResponseDto;
+import fr.abes.qualimarc.core.utils.TypeAnalyse;
+import fr.abes.qualimarc.web.dto.ControllingPpnWithRuleSetsRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
 
 @RestController
 @RequestMapping("/api/v1")
 @CrossOrigin(origins = "*")
-public class PublicController {
+public class PublicController extends AbstractController {
     @Autowired
     private NoticeBibioService service;
 
@@ -29,9 +30,9 @@ public class PublicController {
         return service.getByPpn(ppn);
     }
 
-    @PostMapping("/check/")
-    public List<ResultRules> checkPpn(@RequestBody ControllingPpnWithRuleSetsRequestDto requestBody) {
-        return ruleService.checkRulesOnNotices(requestBody.getPpnList(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), requestBody.getFamilleDocumentSet(), requestBody.getRuleSet()));
+    @PostMapping(value = "/check", consumes= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> checkPpn(@Valid @RequestBody ControllingPpnWithRuleSetsRequestDto requestBody) {
+        return buildResponseEntity(ruleService.checkRulesOnNotices(requestBody.getPpnList(), ruleService.getResultRulesList(Enum.valueOf(TypeAnalyse.class, requestBody.getTypeAnalyse()), requestBody.getFamillesDocuments(), requestBody.getRules())));
     }
 }
 
