@@ -90,6 +90,7 @@
     </datafield>
     <datafield tag="300" ind1=" " ind2=" ">
         <subfield code="a">En appendice, choix de documents</subfield>
+        <subfield code="b">Test</subfield>
     </datafield>
     <datafield tag="606" ind1=" " ind2=" ">
         <subfield code="3">02787088X</subfield>

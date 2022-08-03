@@ -23,7 +23,7 @@ docker build -t abesesr/qualimarc:develop-api .
 
 Cette commande aura pour effet de générer une image docker sur votre poste en local avec le tag ``develop-api``. Vous pouvez alors déployer qualimarc en local avec docker en vous utilisant sur le [dépot ``qualimarc-docker``](https://github.com/abes-esr/qualimarc-docker) et en prenant soins de régler la variable ``QUALIMARC_API_VERSION`` sur la valeur ``develop-api`` (c'est sa [valeur par défaut](https://github.com/abes-esr/qualimarc-docker/blob/e849157904619778d461c584a5bb770edb1fa667/.env-dist#L20)) dans le fichier ``.env`` de votre déploiement [``qualimarc-docker``](https://github.com/abes-esr/qualimarc-docker).
 
-Vous pouvez utiliser la même procédure pour générer en local l'image docker de ``qualimarc-front``, la seule chose qui changera sera le nom du tag docker qui sera ``develop-front`` et qui faudra positionner dans la variable ``QUALIMARC_FRONT_VERSION`` de votre fichier ``.env``.
+Vous pouvez utiliser la même procédure pour générer en local l'image docker de ``qualimarc-front``, la seule chose qui changera sera le nom du tag docker qui sera ``develop-front`` et qu'il faudra positionner dans la variable ``QUALIMARC_FRONT_VERSION`` de votre fichier ``.env``.
 
 
 Cette commande suppose que vous disposez d'un environnement Docker en local : cf la [FAQ dans la poldev](https://github.com/abes-esr/abes-politique-developpement/blob/main/10-FAQ.md#configuration-dun-environnement-docker-sous-windows-10).
