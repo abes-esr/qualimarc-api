@@ -6,6 +6,7 @@ import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.RulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
@@ -29,28 +30,38 @@ public class RuleService {
     @Autowired
     private RulesRepository rulesRepository;
 
-    public List<ResultRules> checkRulesOnNotices(List<String> ppns, Set<Rule> rulesList) {
-        List<ResultRules> resultRules = new ArrayList<>();
+    public ResultAnalyse checkRulesOnNotices(List<String> ppns, Set<Rule> rulesList) {
+        ResultAnalyse resultAnalyse = new ResultAnalyse();
         for (String ppn : ppns) {
+            boolean isOk = true;
             ResultRules result = new ResultRules(ppn);
             try {
                 NoticeXml notice = serviceBibio.getByPpn(ppn);
+                resultAnalyse.addPpnAnalyse(ppn);
                 for (Rule rule : rulesList) {
                     if (isRuleAppliedToNotice(notice, rule)) {
                         if (!rule.isValid(notice)) {
                             result.addMessage(rule.getMessage());
+                            isOk = false;
                         }
                     }
                 }
+                if (isOk) {
+                    resultAnalyse.addPpnOk(ppn);
+                } else {
+                    resultAnalyse.addPpnErrone(ppn);
+                }
             } catch (SQLException | IOException ex) {
                 result.addMessage("Erreur d'accès à la base de données sur PPN : " + ppn);
+                resultAnalyse.addPpnInconnu(ppn);
             } catch (IllegalPpnException ex) {
+                resultAnalyse.addPpnInconnu(ppn);
                 result.addMessage(ex.getMessage());
             } finally {
-                resultRules.add(result);
+                resultAnalyse.addResultRule(result);
             }
         }
-        return resultRules;
+        return resultAnalyse;
     }
 
     public boolean isRuleAppliedToNotice(NoticeXml notice, Rule rule) {

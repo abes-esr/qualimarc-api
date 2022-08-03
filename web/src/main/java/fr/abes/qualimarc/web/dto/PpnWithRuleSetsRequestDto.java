@@ -13,7 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ControllingPpnWithRuleSetsRequestDto {
+public class PpnWithRuleSetsRequestDto {
 
     private List<String> ppnList;
 
@@ -23,7 +23,7 @@ public class ControllingPpnWithRuleSetsRequestDto {
 
     private Set<RuleSet> ruleSet;
 
-    public ControllingPpnWithRuleSetsRequestDto(List<String> ppnList, TypeAnalyse typeAnalyse, Set<FamilleDocument> familleDocumentSet, Set<RuleSet> ruleSet) {
+    public PpnWithRuleSetsRequestDto(List<String> ppnList, TypeAnalyse typeAnalyse, Set<FamilleDocument> familleDocumentSet, Set<RuleSet> ruleSet) {
         this.ppnList = ppnList;
         this.typeAnalyse = typeAnalyse;
         this.familleDocumentSet = familleDocumentSet;

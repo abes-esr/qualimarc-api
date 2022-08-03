@@ -9,6 +9,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
+import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.RulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
@@ -105,7 +106,14 @@ class RuleServiceTest {
         Mockito.when(noticeBibioService.getByPpn("222222222")).thenReturn(notice2);
         Mockito.when(noticeBibioService.getByPpn("333333333")).thenReturn(notice3);
 
-        List<ResultRules> resultat = service.checkRulesOnNotices(ppns, listeRegles);
+        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeRegles);
+
+        Assertions.assertEquals(3, resultAnalyse.getPpnAnalyses().size());
+        Assertions.assertEquals(2, resultAnalyse.getPpnErrones().size());
+        Assertions.assertEquals(1, resultAnalyse.getPpnOk().size());
+        Assertions.assertEquals(0, resultAnalyse.getPpnInconnus().size());
+
+        List<ResultRules> resultat = resultAnalyse.getResultRules();
 
         Assertions.assertEquals(3, resultat.size());
 
@@ -115,9 +123,9 @@ class RuleServiceTest {
 
         ResultRules result2 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("222222222")).findFirst().get();
         Assertions.assertEquals(3, result2.getMessages().size());
-        Assertions.assertEquals("La zone 010 doit être présente", result2.getMessages().get(0));
-        Assertions.assertEquals("La zone 011 doit être absente", result2.getMessages().get(1));
-        Assertions.assertEquals("La zone 012 doit être présente", result2.getMessages().get(2));
+        Assertions.assertTrue(result2.getMessages().stream().anyMatch(m -> m.equals("La zone 010 doit être présente")));
+        Assertions.assertTrue(result2.getMessages().stream().anyMatch(m -> m.equals("La zone 011 doit être absente")));
+        Assertions.assertTrue(result2.getMessages().stream().anyMatch(m -> m.equals("La zone 012 doit être présente")));
 
         ResultRules result3 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("333333333")).findFirst().get();
         Assertions.assertEquals(0, result3.getMessages().size());
@@ -131,7 +139,11 @@ class RuleServiceTest {
 
         Mockito.when(noticeBibioService.getByPpn("111111111")).thenThrow(new IllegalPpnException("le PPN 111111111 n'existe pas"));
 
-        List<ResultRules> resultat = service.checkRulesOnNotices(ppns, listeRegles);
+        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeRegles);
+
+        Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
+
+        List<ResultRules> resultat = resultAnalyse.getResultRules();
         Assertions.assertEquals(1, resultat.size());
         Assertions.assertEquals("111111111", resultat.get(0).getPpn());
         Assertions.assertEquals(1, resultat.get(0).getMessages().size());
@@ -145,7 +157,10 @@ class RuleServiceTest {
 
         Mockito.when(noticeBibioService.getByPpn("111111111")).thenThrow(new SQLException("Erreur d'accès à la base de données sur PPN : 111111111"));
 
-        List<ResultRules> resultat = service.checkRulesOnNotices(ppns, listeRegles);
+        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeRegles);
+        Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
+
+        List<ResultRules> resultat = resultAnalyse.getResultRules();
         Assertions.assertEquals(1, resultat.size());
         Assertions.assertEquals("111111111", resultat.get(0).getPpn());
         Assertions.assertEquals(1, resultat.get(0).getMessages().size());
