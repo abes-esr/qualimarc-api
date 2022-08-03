@@ -1,13 +1,13 @@
 package fr.abes.qualimarc.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
-import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
+import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
+import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -60,14 +60,14 @@ public class ResultAnalyseResponseDtoTest {
     @Test
     void checkPpn() throws Exception {
         //  Création de la liste de contrôle pour le Mockito
-        ResultRules resultRules = new ResultRules("143519379");
-        resultRules.addMessage("La zone 010 doit être présente");
-        List<ResultRules> resultRulesList = new ArrayList<>();
-        resultRulesList.add(resultRules);
-        ResultAnalyse resultAnalyse = new ResultAnalyse();
-        resultAnalyse.setResultRules(resultRulesList);
+        ResultRulesResponseDto resultRulesResponseDto = new ResultRulesResponseDto();
+        resultRulesResponseDto.setPpn("143519379");
+        List<ResultRulesResponseDto> resultRulesResponseDtoList = new ArrayList<>();
+        resultRulesResponseDtoList.add(resultRulesResponseDto);
+        ResultAnalyseResponseDto resultAnalyseResponseDto = new ResultAnalyseResponseDto();
+        resultAnalyseResponseDto.setResultRules(resultRulesResponseDtoList);
         //  Création du Mockito
-        Mockito.when(ruleService.checkRulesOnNotices(anyList(), anySet())).thenReturn(resultAnalyse);
+        Mockito.when(utilsMapper.map(any(),any())).thenReturn(resultAnalyseResponseDto);
 
         //  Création de l'objet ControllingPpnWithRuleSetsRequestDto à passer dans la requête
         List<String> ppnList = new ArrayList<>();
