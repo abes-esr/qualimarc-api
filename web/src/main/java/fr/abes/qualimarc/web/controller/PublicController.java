@@ -1,13 +1,13 @@
 package fr.abes.qualimarc.web.controller;
 
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.utils.UtilsMapper;
+import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
-import fr.abes.qualimarc.core.utils.TypeAnalyse;
-import fr.abes.qualimarc.web.dto.ControllingPpnWithRuleSetsRequestDto;
+import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -17,20 +17,23 @@ import java.sql.SQLException;
 @RestController
 @RequestMapping("/api/v1")
 @CrossOrigin(origins = "*")
-public class PublicController extends AbstractController {
+public class PublicController {
     @Autowired
     private NoticeBibioService service;
 
     @Autowired
     private RuleService ruleService;
 
+    @Autowired
+    private UtilsMapper mapper;
+
     @GetMapping("/{ppn}")
     public NoticeXml getPpn(@PathVariable String ppn) throws IOException, SQLException {
         return service.getByPpn(ppn);
     }
 
-    @PostMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE, consumes= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> checkPpn(@Valid @RequestBody ControllingPpnWithRuleSetsRequestDto requestBody) throws IOException {
-        return buildResponseEntity(ruleService.checkRulesOnNotices(requestBody.getPpnList(), ruleService.getResultRulesList(Enum.valueOf(TypeAnalyse.class, requestBody.getTypeAnalyse()), requestBody.getFamillesDocuments(), requestBody.getRules())));
+    @PostMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResultAnalyseResponseDto checkPpn(@Valid @RequestBody PpnWithRuleSetsRequestDto requestBody) {
+        return mapper.map(ruleService.checkRulesOnNotices(requestBody.getPpnList(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), requestBody.getFamilleDocumentSet(), requestBody.getRuleSet())), ResultAnalyseResponseDto.class);
     }
 }

@@ -75,7 +75,7 @@
             <version>2.9.9</version>
         </dependency>
 
-        <!-- === Contrôle des entités === -->
+        <!-- Contrôle des entités -->
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
