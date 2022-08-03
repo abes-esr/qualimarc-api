@@ -21,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -80,8 +81,8 @@ public class ResultAnalyseResponseDtoTest {
 
         //  Appel et contrôle de la méthode
         this.mockMvc.perform(post("/api/v1/check")
-                        .accept(MediaType.APPLICATION_JSON_VALUE)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8)
                         .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultRules[0].ppn").value("143519379"));
