@@ -7,8 +7,10 @@ import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -30,8 +32,8 @@ public class PublicController {
         return service.getByPpn(ppn);
     }
 
-    @PostMapping("/check/")
-    public ResultAnalyseResponseDto checkPpn(@RequestBody PpnWithRuleSetsRequestDto requestBody) {
+    @PostMapping(value = "/check/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResultAnalyseResponseDto checkPpn(@Valid @RequestBody PpnWithRuleSetsRequestDto requestBody) {
         return mapper.map(ruleService.checkRulesOnNotices(requestBody.getPpnList(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), requestBody.getFamilleDocumentSet(), requestBody.getRuleSet())), ResultAnalyseResponseDto.class);
     }
 }
