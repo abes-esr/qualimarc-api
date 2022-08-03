@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.ParseException;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -30,10 +29,8 @@ public class PublicController extends AbstractController {
         return service.getByPpn(ppn);
     }
 
-    @PostMapping(value = "/check", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> checkPpn(@Valid @RequestBody ControllingPpnWithRuleSetsRequestDto requestBody) {
+    @PostMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE, consumes= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> checkPpn(@Valid @RequestBody ControllingPpnWithRuleSetsRequestDto requestBody) throws IOException {
         return buildResponseEntity(ruleService.checkRulesOnNotices(requestBody.getPpnList(), ruleService.getResultRulesList(Enum.valueOf(TypeAnalyse.class, requestBody.getTypeAnalyse()), requestBody.getFamillesDocuments(), requestBody.getRules())));
     }
 }
-
-
