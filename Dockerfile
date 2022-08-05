@@ -1,6 +1,6 @@
 ###
 # Image pour la compilation
-FROM maven:3-jdk-11 as build-image
+FROM maven:3-eclipse-temurin-11 as build-image
 WORKDIR /build/
 # Installation et configuration de la locale FR
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y install locales
@@ -33,7 +33,7 @@ RUN mvn --batch-mode \
 #FROM tomcat:9-jdk11 as api-image
 #COPY --from=build-image /build/web/target/*.war /usr/local/tomcat/webapps/ROOT.war
 #CMD [ "catalina.sh", "run" ]
-FROM openjdk:11 as api-image
+FROM eclipse-temurin:11-jdk as api-image
 WORKDIR /app/
 COPY --from=build-image /build/web/target/*.jar /app/qualimarc.jar
 ENTRYPOINT ["java","-jar","/app/qualimarc.jar"]
