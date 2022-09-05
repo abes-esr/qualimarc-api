@@ -39,7 +39,7 @@ public abstract class Rule {
     private Priority priority;
 
     //liste des types de document concernés par la règle
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "RULE_FAMILLEDOCUMENTS",
             joinColumns = @JoinColumn(name = "RULE_ID"),
