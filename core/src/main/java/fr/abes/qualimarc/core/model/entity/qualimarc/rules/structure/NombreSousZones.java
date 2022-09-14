@@ -14,6 +14,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -67,15 +69,14 @@ public class NombreSousZones extends Rule implements Serializable {
     @Override
     public boolean isValid(NoticeXml notice) {
         List<Datafield> zonesSource = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
+        List<Long> nbSousZonesSourcePerZone = new ArrayList<>();
+        zonesSource.stream().mapToLong(z -> z.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZone)).count()).forEach(nbSousZonesSourcePerZone::add);
+
         List<Datafield> zonesCible = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZoneCible())).collect(Collectors.toList());
-        for (Datafield zone : zonesSource) {
-            Long nbSousZoneSource = zone.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZone)).count();
-            for (Datafield zoneCible : zonesCible) {
-                if (zoneCible.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZoneCible)).count() == nbSousZoneSource) {
-                    return true;
-                }
-            }
-        }
+        List<Long> nbSousZonesCibrePerZone = new ArrayList<>();
+        zonesCible.stream().mapToLong(z -> z.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZoneCible)).count()).forEach(nbSousZonesCibrePerZone::add);
+        if (nbSousZonesSourcePerZone.stream().reduce(0L, Long::sum) != nbSousZonesCibrePerZone.stream().reduce(0L, Long::sum))
+            return true;
         return false;
     }
 }

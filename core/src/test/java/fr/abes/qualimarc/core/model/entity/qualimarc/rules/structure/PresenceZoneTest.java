@@ -32,15 +32,15 @@ class PresenceZoneTest {
         NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
 
         PresenceZone rule = new PresenceZone(1, "La zone 010 doit être présente", "010", Priority.P1, true);
-        Assertions.assertEquals(true, rule.isValid(notice));
+        Assertions.assertTrue(rule.isValid(notice));
 
         PresenceZone rule2 = new PresenceZone(2, "La zone 011 doit être absente", "011", Priority.P1, false);
-        Assertions.assertEquals(true, rule2.isValid(notice));
+        Assertions.assertTrue(rule2.isValid(notice));
 
         PresenceZone rule3 = new PresenceZone(3, "La zone 011 doit être présente", "011", Priority.P1, true);
-        Assertions.assertEquals(false, rule3.isValid(notice));
+        Assertions.assertFalse(rule3.isValid(notice));
 
         PresenceZone rule4 = new PresenceZone(4, "La zone 010 doit être absente", "010", Priority.P1, false);
-        Assertions.assertEquals(false, rule4.isValid(notice));
+        Assertions.assertFalse(rule4.isValid(notice));
     }
 }

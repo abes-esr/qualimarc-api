@@ -47,9 +47,11 @@ public class PresenceZone extends Rule implements Serializable {
 
     @Override
     public boolean isValid(NoticeXml notice) {
+        //cas ou on veut que la zone soit présente dans la notice pour lever le message
         if(this.isPresent) {
             return notice.getDatafields().stream().anyMatch(dataField -> dataField.getTag().equals(this.getZone()));
         }
+        //cas ou on veut que la zone soit absente de la notice pour lever le message
         return notice.getDatafields().stream().noneMatch(dataField -> dataField.getTag().equals(this.getZone()));
     }
 

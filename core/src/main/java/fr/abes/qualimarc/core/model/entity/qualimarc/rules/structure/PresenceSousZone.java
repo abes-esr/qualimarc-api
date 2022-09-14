@@ -59,7 +59,7 @@ public class PresenceSousZone extends Rule implements Serializable {
     public boolean isValid(NoticeXml notice) {
 
         List<Datafield> datafields = notice.getDatafields().stream().filter(dataField -> dataField.getTag().equals(this.getZone())).collect(Collectors.toList());
-
+        //cas ou la sous zone doit être présente dans la zone pour lever le message
         if(this.isPresent) {
             for (Datafield datafield : datafields) {
                 if (datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(this.getSousZone()))) {
@@ -67,11 +67,14 @@ public class PresenceSousZone extends Rule implements Serializable {
                 }
             }
         } else {
+            //cas ou la sous zone doit être absente pour lever le message
+            boolean absent = true;
             for (Datafield datafield : datafields) {
-                if (datafield.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(this.getSousZone()))) {
-                    return true;
+                if (!datafield.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(this.getSousZone()))) {
+                    absent = false;
                 }
             }
+            return absent;
         }
         return false;
     }
