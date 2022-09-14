@@ -40,7 +40,8 @@ public class RuleService {
                 resultAnalyse.addPpnAnalyse(ppn);
                 for (Rule rule : rulesList) {
                     if (isRuleAppliedToNotice(notice, rule)) {
-                        if (!rule.isValid(notice)) {
+                        //si la règle est valide, alors on renvoie le message
+                        if (rule.isValid(notice)) {
                             result.addMessage(rule.getMessage());
                             isOk = false;
                         }
