@@ -13,6 +13,10 @@ import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Pour créer un objet règle, il est nécessaire d'implémenter la méthode abstraite isValid
+ * Conceptuellement, une règle est valide lorsque les conditions qu'elle décrit sont réunies dans la notice, et si c'est le cas, on retourne le message
+ */
 @Getter
 @Setter
 @NoArgsConstructor
