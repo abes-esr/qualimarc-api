@@ -73,9 +73,9 @@ public class NombreSousZones extends Rule implements Serializable {
         zonesSource.stream().mapToLong(z -> z.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZone)).count()).forEach(nbSousZonesSourcePerZone::add);
 
         List<Datafield> zonesCible = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZoneCible())).collect(Collectors.toList());
-        List<Long> nbSousZonesCibrePerZone = new ArrayList<>();
-        zonesCible.stream().mapToLong(z -> z.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZoneCible)).count()).forEach(nbSousZonesCibrePerZone::add);
-        if (nbSousZonesSourcePerZone.stream().reduce(0L, Long::sum) != nbSousZonesCibrePerZone.stream().reduce(0L, Long::sum))
+        List<Long> nbSousZonesCiblePerZone = new ArrayList<>();
+        zonesCible.stream().mapToLong(z -> z.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZoneCible)).count()).forEach(nbSousZonesCiblePerZone::add);
+        if (nbSousZonesSourcePerZone.stream().reduce(0L, Long::sum) != nbSousZonesCiblePerZone.stream().reduce(0L, Long::sum))
             return true;
         return false;
     }
