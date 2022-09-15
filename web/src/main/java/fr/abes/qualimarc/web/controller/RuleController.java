@@ -1,14 +1,12 @@
 package fr.abes.qualimarc.web.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
-import fr.abes.qualimarc.core.utils.UtilsMapper;
-import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
+import fr.abes.qualimarc.core.utils.UtilsMapper;
+import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
-import fr.abes.qualimarc.web.dto.indexrules.RulesWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.ListRulesWebDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -44,7 +41,7 @@ public class RuleController {
     }
 
     @PostMapping(value = "/indexRules", consumes = {"text/yaml", "text/yml"})
-    public void indexRules(@Valid @RequestBody List<RulesWebDto> rules) {
+    public void indexRules(@Valid @RequestBody ListRulesWebDto rules) {
         log.info("rules : " + rules);
     }
 }

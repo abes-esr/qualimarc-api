@@ -22,28 +22,34 @@ public abstract class RulesWebDto {
     @NotNull(message = "Le champ id est obligatoire")
     @NotBlank(message = "Le champ id est obligatoire")
     protected Integer id;
-//    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-//    @JsonSubTypes({
-//            @JsonSubTypes.Type(value = PresenceZoneWebDto.class, name = "presencezone")
-//    })
-//    @NotNull(message = "Le champ type est obligatoire")
-//    @NotBlank(message = "Le champ type est obligatoire")
-//    protected String type;
+
     @JsonProperty(value = "id-excel")
     protected Integer idExcel;
+
     @JsonProperty(value = "message")
     @NotNull(message = "Le champ message est obligatoire")
     @NotBlank(message = "Le champ message est obligatoire")
     protected String message;
+
     @JsonProperty(value = "zone")
     @NotNull(message = "Le champ zone est obligatoire")
     @NotBlank(message = "Le champ zone est obligatoire")
     protected String zone;
-    @JsonProperty(value = "priority")
+
+    @JsonProperty(value = "priorite")
     @NotNull(message = "Le champ priorite est obligatoire")
     @NotBlank(message = "Le champ priorite est obligatoire")
     protected Priority priority;
+
     @JsonProperty(value = "type-doc")
     protected List<String> typesDoc;
 
+    public RulesWebDto(Integer id, Integer idExcel, String message, String zone, Priority priority, List<String> typesDoc) {
+        this.id = id;
+        this.idExcel = idExcel;
+        this.message = message;
+        this.zone = zone;
+        this.priority = priority;
+        this.typesDoc = typesDoc;
+    }
 }
