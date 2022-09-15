@@ -67,7 +67,8 @@ public class RuleControllerTest {
     void init() {
         MockitoAnnotations.openMocks(this);
         this.mockMvc = MockMvcBuilders.standaloneSetup(this.ruleController)
-                .setMessageConverters(this.yamlHttpConverter, this.jsonHttpConverter).build();
+                .setMessageConverters(this.yamlHttpConverter, this.jsonHttpConverter).
+                        build();
     }
 
     @Test
@@ -99,28 +100,6 @@ public class RuleControllerTest {
                         .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultRules[0].ppn").value("143519379"));
-    }
-
-    @Test
-    void testIndexRulesContentType() throws Exception {
-        String yaml =
-                "rules:\n" +
-                        "    - id:          2\n" +
-                        "      id-excel:    2\n" +
-                        "      type:        presencezone\n" +
-                        "      message:     message test 2\n" +
-                        "      zone:        330\n" +
-                        "      priorite:    P2\n" +
-                        "      presence:    false\n";
-
-        String expectedMimeType = "text/yml";
-
-        String actualMimetype = this.mockMvc.perform(post("/api/v1/indexRules")
-                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
-                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
-                .andReturn().getResponse().getContentType();
-
-        Assertions.assertEquals(expectedMimeType, actualMimetype);
     }
 
     @Test
