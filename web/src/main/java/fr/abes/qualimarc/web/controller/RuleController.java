@@ -6,6 +6,8 @@ import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
+import fr.abes.qualimarc.web.dto.indexrules.RulesWebDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
 @CrossOrigin(origins = "*")
-public class PublicController {
+@Slf4j
+public class RuleController {
     @Autowired
     private NoticeBibioService service;
 
@@ -35,5 +39,10 @@ public class PublicController {
     @PostMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResultAnalyseResponseDto checkPpn(@Valid @RequestBody PpnWithRuleSetsRequestDto requestBody) {
         return mapper.map(ruleService.checkRulesOnNotices(requestBody.getPpnList(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), requestBody.getFamilleDocumentSet(), requestBody.getRuleSet())), ResultAnalyseResponseDto.class);
+    }
+
+    @PostMapping(value = "/indexRules", consumes = "application/x-yaml")
+    public void indexRules(@Valid @RequestBody List<RulesWebDto> rules) {
+        log.info("rules : " + rules);
     }
 }

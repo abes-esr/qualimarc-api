@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -73,6 +72,10 @@ public class RuleService {
         if (notice.isTheseRepro() && rule.getFamillesDocuments().stream().anyMatch(type -> type.getId().equals("TR")))
             return true;
         return false;
+    }
+
+    public void save(Rule rule) {
+        rulesRepository.save(rule);
     }
 
 

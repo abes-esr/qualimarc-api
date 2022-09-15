@@ -29,14 +29,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = {PublicController.class, ObjectMapper.class})
+@SpringBootTest(classes = {RuleController.class, ObjectMapper.class})
 @EnableWebMvc   //  Active le Model-View-Controller, nécessaire pour éviter le code d'erreur 415 lors du lancement du test checkPpn
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
-public class PublicControllerTest {
+public class RuleControllerTest {
 
     @InjectMocks
-    private PublicController publicController;
+    private RuleController ruleController;
 
     @Autowired
     protected MockMvc mockMvc;
@@ -86,5 +86,34 @@ public class PublicControllerTest {
                         .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultRules[0].ppn").value("143519379"));
+    }
+
+    @Test
+    void testIndexRules() throws Exception {
+        String yaml = "---\n" +
+                "rules:\n" +
+                "    - id:          1\n" +
+                "      id-excel:    1\n" +
+                "      type:        presencezone\n" +
+                "      message:     message test\n" +
+                "      zone:        200\n" +
+                "      priorite:    P1\n" +
+                "      presence:    true\n" +
+                "      type-doc:\n" +
+                "          A\n" +
+                "          B\n" +
+                "          K\n" +
+                "    - id:          2\n" +
+                "      id-excel:    2\n" +
+                "      type:        presencezone\n" +
+                "      message:     message test 2\n" +
+                "      zone:        330\n" +
+                "      priorite:    P2\n" +
+                "      presence:    false";
+        this.mockMvc.perform(post("/api/v1/indexRules")
+                .accept("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
+                .contentType("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml))
+                .andExpect(status().isOk());
     }
 }
