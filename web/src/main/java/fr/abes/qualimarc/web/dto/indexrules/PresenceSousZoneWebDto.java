@@ -11,14 +11,18 @@ import java.util.List;
 
 @Getter
 @Setter
-@JsonTypeName("presencezone")
+@JsonTypeName("presencesouszone")
 @NoArgsConstructor
-public class PresenceZoneWebDto extends RulesWebDto {
+public class PresenceSousZoneWebDto extends RulesWebDto {
+    @JsonProperty(value = "souszone")
+    private String sousZone;
+
     @JsonProperty(value = "presence")
     private boolean isPresent;
 
-    public PresenceZoneWebDto(Integer id, Integer idExcel, String message, String zone, Priority priority, List<String> typesDoc, boolean isPresent) {
+    public PresenceSousZoneWebDto(Integer id, Integer idExcel, String message, String zone, Priority priority, List<String> typesDoc, String sousZone, boolean isPresent) {
         super(id, idExcel, message, zone, priority, typesDoc);
+        this.sousZone = sousZone;
         this.isPresent = isPresent;
     }
 }

@@ -11,5 +11,5 @@ import java.util.List;
 public class ListRulesWebDto {
     @JsonProperty(value = "rules")
     @NotNull(message = "le champ rules est obligatoire")
-    private List<RulesWebDto> listRulesWebDto; 
+    private List<RulesWebDto> listRulesWebDto;
 }
