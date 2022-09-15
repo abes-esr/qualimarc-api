@@ -1,9 +1,12 @@
 package fr.abes.qualimarc.web.mapper;
 
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
+import fr.abes.qualimarc.web.dto.indexrules.PresenceZoneWebDto;
 import lombok.SneakyThrows;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
@@ -11,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class WebDtoMapper {
@@ -19,6 +24,33 @@ public class WebDtoMapper {
 
     public WebDtoMapper(UtilsMapper mapper) {
         this.mapper = mapper;
+    }
+
+    @Bean
+    public void converterPresenceZone() {
+        Converter<PresenceZoneWebDto, PresenceZone> myConverter = new Converter<PresenceZoneWebDto, PresenceZone>() {
+            @SneakyThrows
+            public PresenceZone convert(MappingContext<PresenceZoneWebDto, PresenceZone> context) {
+                PresenceZoneWebDto source = context.getSource();
+
+                PresenceZone presenceZone = new PresenceZone();
+                presenceZone.setId(source.getId());
+                presenceZone.setMessage(source.getMessage());
+                presenceZone.setZone(source.getZone());
+                presenceZone.setPriority(source.getPriority());
+                Set<FamilleDocument> familleDocumentSet = new HashSet<>();
+                for (String typeDocument: source.getTypesDoc()
+                     ) {
+                    FamilleDocument familleDocument = new FamilleDocument();
+                    familleDocument.setId(typeDocument);
+                    familleDocumentSet.add(familleDocument);
+                }
+                presenceZone.setFamillesDocuments(familleDocumentSet);
+
+                return presenceZone;
+            }
+        };
+        mapper.addConverter(myConverter);
     }
 
     @Bean
