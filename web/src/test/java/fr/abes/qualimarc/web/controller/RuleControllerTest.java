@@ -3,11 +3,15 @@ package fr.abes.qualimarc.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
+import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
+import fr.abes.qualimarc.web.dto.indexrules.PresenceZoneWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.RulesWebDto;
+import fr.abes.qualimarc.web.mapper.YamlConverter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScans;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableWebMvc   //  Active le Model-View-Controller, nécessaire pour éviter le code d'erreur 415 lors du lancement du test checkPpn
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
+@ComponentScan({"fr.abes.qualimarc.web.mapper.YamlConverter","fr.abes.qualimarc.web.configuration.WebConfig"})
 public class RuleControllerTest {
 
     @InjectMocks
@@ -90,30 +97,12 @@ public class RuleControllerTest {
 
     @Test
     void testIndexRules() throws Exception {
-        String yaml = "---\n" +
-                "rules:\n" +
-                "    - id:          1\n" +
-                "      id-excel:    1\n" +
-                "      type:        presencezone\n" +
-                "      message:     message test\n" +
-                "      zone:        200\n" +
-                "      priorite:    P1\n" +
-                "      presence:    true\n" +
-                "      type-doc:\n" +
-                "          A\n" +
-                "          B\n" +
-                "          K\n" +
-                "    - id:          2\n" +
-                "      id-excel:    2\n" +
-                "      type:        presencezone\n" +
-                "      message:     message test 2\n" +
-                "      zone:        330\n" +
-                "      priorite:    P2\n" +
-                "      presence:    false";
+        List<RulesWebDto> rules = new ArrayList<>();
+        rules.add(new PresenceZoneWebDto(1, 1, "message test",  "200", Priority.P1, null, true));
+
         this.mockMvc.perform(post("/api/v1/indexRules")
-                .accept("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
-                .contentType("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
-                .content(yaml))
+                .contentType(MediaType.valueOf("text/yml")).characterEncoding(StandardCharsets.UTF_8)
+                .content(objectMapper.writeValueAsString(rules)).characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isOk());
     }
 }

@@ -1,5 +1,7 @@
 package fr.abes.qualimarc.web.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
@@ -41,7 +43,7 @@ public class RuleController {
         return mapper.map(ruleService.checkRulesOnNotices(requestBody.getPpnList(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), requestBody.getFamilleDocumentSet(), requestBody.getRuleSet())), ResultAnalyseResponseDto.class);
     }
 
-    @PostMapping(value = "/indexRules", consumes = "application/x-yaml")
+    @PostMapping(value = "/indexRules", consumes = {"text/yaml", "text/yml"})
     public void indexRules(@Valid @RequestBody List<RulesWebDto> rules) {
         log.info("rules : " + rules);
     }
