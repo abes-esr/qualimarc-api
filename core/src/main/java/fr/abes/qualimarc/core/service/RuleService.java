@@ -108,4 +108,8 @@ public class RuleService {
                 throw new IllegalRulesSetException("Jeu de règle inconnu");
         }
     }
+
+    public void saveAll(List<Rule> rules) {
+        this.rulesRepository.saveAll(rules);
+    }
 }

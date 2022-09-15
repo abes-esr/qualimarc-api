@@ -51,17 +51,23 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         String error = "Requête YAML mal formée";
-
-        if (ex.getCause() instanceof MismatchedInputException && !(ex.getCause() instanceof InvalidTypeIdException)) {
-            String targetType = ((MismatchedInputException) ex.getCause()).getTargetType().getSimpleName();
-
-            List<JsonMappingException.Reference> errors = ((MismatchedInputException) ex.getCause()).getPath();
-            String property = errors.get(errors.size() - 1).getFieldName();
-
+        if (ex.getCause() instanceof InvalidTypeIdException) {
+           //TODO : voir comment récupérer dynamiquement les différents sous de webdto types possibles
             log.error(ex.getLocalizedMessage());
-            return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, new MismatchedYamlTypeException("L'attribut " + property + " doit être de type '" + targetType + "'")));
-        }
+            return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, new MismatchedYamlTypeException("L'attribut type ne peut prendre que les valeurs ")));
 
+        }
+        else {
+            if (ex.getCause() instanceof MismatchedInputException) {
+                String targetType = ((MismatchedInputException) ex.getCause()).getTargetType().getSimpleName();
+
+                List<JsonMappingException.Reference> errors = ((MismatchedInputException) ex.getCause()).getPath();
+                String property = errors.get(errors.size() - 1).getFieldName();
+
+                log.error(ex.getLocalizedMessage());
+                return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, new MismatchedYamlTypeException("L'attribut " + property + " doit être de type '" + targetType + "'")));
+            }
+        }
         log.error(ex.getLocalizedMessage());
         return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, ex));
     }
