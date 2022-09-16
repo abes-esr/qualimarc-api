@@ -19,6 +19,10 @@ public class PresenceZoneWebDto extends RulesWebDto {
     @NotNull(message = "le champ presence est obligatoire")
     private boolean isPresent;
 
+    public boolean isPresent() {
+        return isPresent;
+    }
+
     public PresenceZoneWebDto(Integer id, Integer idExcel, String message, String zone, Priority priority, List<String> typesDoc, boolean isPresent) {
         super(id, idExcel, message, zone, priority, typesDoc);
         this.isPresent = isPresent;

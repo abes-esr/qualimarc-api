@@ -32,6 +32,9 @@ public class WebDtoMapper {
         this.mapper = mapper;
     }
 
+    /**
+     * Convertion d'un modèle PresenceZoneWebDto en modèle PresenceZone
+     */
     @Bean
     public void converterPresenceZone() {
         Converter<PresenceZoneWebDto, PresenceZone> myConverter = new Converter<PresenceZoneWebDto, PresenceZone>() {
@@ -49,6 +52,7 @@ public class WebDtoMapper {
                     familleDocumentSet.add(new FamilleDocument(typeDocument));
                 }
                 presenceZone.setFamillesDocuments(familleDocumentSet);
+
                 presenceZone.setPresent(source.isPresent());
 
                 return presenceZone;
@@ -57,6 +61,9 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
+    /**
+     * Convertion d'un modèle PresenceSousZoneWebDto en modèle PresenceSousZone
+     */
     @Bean
     public void converterPresenceSousZone() {
         Converter<PresenceSousZoneWebDto, PresenceSousZone> myConverter = new Converter<PresenceSousZoneWebDto, PresenceSousZone>() {
@@ -74,6 +81,7 @@ public class WebDtoMapper {
                     familleDocumentSet.add(new FamilleDocument(typeDocument));
                 }
                 presenceSousZone.setFamillesDocuments(familleDocumentSet);
+
                 presenceSousZone.setSousZone(source.getSousZone());
                 presenceSousZone.setPresent(source.isPresent());
 
@@ -83,6 +91,9 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
+    /**
+     * Convertion d'un modèle NombreZoneWebDto en modèle NombreZone
+     */
     @Bean
     public void converterNombreZone() {
         Converter<NombreZoneWebDto, NombreZone> myConverter = new Converter<NombreZoneWebDto, NombreZone>() {
@@ -96,11 +107,8 @@ public class WebDtoMapper {
                 nombreZone.setZone(source.getZone());
                 nombreZone.setPriority(source.getPriority());
                 Set<FamilleDocument> familleDocumentSet = new HashSet<>();
-                for (String typeDocument: source.getTypesDoc()
-                ) {
-                    FamilleDocument familleDocument = new FamilleDocument();
-                    familleDocument.setId(typeDocument);
-                    familleDocumentSet.add(familleDocument);
+                for (String typeDocument: source.getTypesDoc()) {
+                    familleDocumentSet.add(new FamilleDocument(typeDocument));
                 }
                 nombreZone.setFamillesDocuments(familleDocumentSet);
 
@@ -113,6 +121,9 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
+    /**
+     * Convertion d'un modèle NombreSousZoneWebDto en modèle NombreSousZone
+     */
     @Bean
     public void converterNombreSousZone() {
         Converter<NombreSousZoneWebDto, NombreSousZone> myConverter = new Converter<NombreSousZoneWebDto, NombreSousZone>() {
@@ -126,11 +137,8 @@ public class WebDtoMapper {
                 NombreSousZone.setZone(source.getZone());
                 NombreSousZone.setPriority(source.getPriority());
                 Set<FamilleDocument> familleDocumentSet = new HashSet<>();
-                for (String typeDocument: source.getTypesDoc()
-                ) {
-                    FamilleDocument familleDocument = new FamilleDocument();
-                    familleDocument.setId(typeDocument);
-                    familleDocumentSet.add(familleDocument);
+                for (String typeDocument: source.getTypesDoc()) {
+                    familleDocumentSet.add(new FamilleDocument(typeDocument));
                 }
                 NombreSousZone.setFamillesDocuments(familleDocumentSet);
 
@@ -144,6 +152,9 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
+    /**
+     * Convertion d'un modèle ResultAnalyse en modèle ResultAnalyseResponseDto
+     */
     @Bean
     public void converterEditeurCreeWebDto() {
         Converter<ResultAnalyse, ResultAnalyseResponseDto> myConverter = new Converter<ResultAnalyse, ResultAnalyseResponseDto>() {

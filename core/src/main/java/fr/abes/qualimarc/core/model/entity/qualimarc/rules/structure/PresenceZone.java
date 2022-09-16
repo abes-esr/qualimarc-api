@@ -24,6 +24,7 @@ public class PresenceZone extends Rule implements Serializable {
     @NotNull
     private boolean isPresent;
 
+    public boolean isPresent() {return isPresent;}
 
     public PresenceZone(Integer id, String message, String zone, Priority priority, boolean isPresent) {
         super(id, message, zone, priority);
