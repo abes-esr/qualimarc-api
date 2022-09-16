@@ -87,12 +87,12 @@ class RuleServiceTest {
         Set<FamilleDocument> familleDoc1 = new HashSet<>();
         familleDoc1.add(new FamilleDocument("A", "Monographie"));
 
-        listeRegles.add(new PresenceZone(1, "La zone 010 doit être présente", "010", Priority.P1, familleDoc1, true));
-        listeRegles.add(new PresenceZone(2, "La zone 011 doit être absente", "011", Priority.P1, false));
+        listeRegles.add(new PresenceZone(1, "La zone 010 est présente", "010", Priority.P1, familleDoc1, true));
+        listeRegles.add(new PresenceZone(2, "La zone 011 est absente", "011", Priority.P1, false));
         Set<FamilleDocument> typesDoc2 = new HashSet<>();
         typesDoc2.add(new FamilleDocument("A", "Monographie"));
         typesDoc2.add(new FamilleDocument("BD", "Ressource Continue"));
-        listeRegles.add(new PresenceZone(3, "La zone 012 doit être présente", "012", Priority.P1, typesDoc2, true));
+        listeRegles.add(new PresenceZone(3, "La zone 012 est présente", "012", Priority.P1, typesDoc2, true));
     }
 
     @Test
@@ -119,16 +119,14 @@ class RuleServiceTest {
 
         ResultRules result1 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("111111111")).findFirst().get();
         Assertions.assertEquals(1, result1.getMessages().size());
-        Assertions.assertEquals("La zone 012 doit être présente", result1.getMessages().get(0));
+        Assertions.assertEquals("La zone 011 est absente", result1.getMessages().get(0));
 
         ResultRules result2 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("222222222")).findFirst().get();
-        Assertions.assertEquals(3, result2.getMessages().size());
-        Assertions.assertTrue(result2.getMessages().stream().anyMatch(m -> m.equals("La zone 010 doit être présente")));
-        Assertions.assertTrue(result2.getMessages().stream().anyMatch(m -> m.equals("La zone 011 doit être absente")));
-        Assertions.assertTrue(result2.getMessages().stream().anyMatch(m -> m.equals("La zone 012 doit être présente")));
+        Assertions.assertEquals(0, result2.getMessages().size());
 
         ResultRules result3 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("333333333")).findFirst().get();
-        Assertions.assertEquals(0, result3.getMessages().size());
+        Assertions.assertEquals(1, result3.getMessages().size());
+        Assertions.assertEquals("La zone 011 est absente", result3.getMessages().get(0));
 
     }
 
@@ -183,7 +181,7 @@ class RuleServiceTest {
         Set<FamilleDocument> typesDoc1 = new HashSet<>();
         typesDoc1.add(new FamilleDocument("TS", "Thèse de soutenance"));
 
-        Rule rule = new PresenceZone(1, "La zone 010 doit être présente", "010", Priority.P1, typesDoc1, true);
+        Rule rule = new PresenceZone(1, "La zone 010 est présente", "010", Priority.P1, typesDoc1, true);
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, rule));
 
     }

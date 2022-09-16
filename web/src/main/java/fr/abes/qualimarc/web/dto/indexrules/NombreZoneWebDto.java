@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -17,14 +18,16 @@ import java.util.List;
 public class NombreZoneWebDto extends RulesWebDto {
 
     @JsonProperty(value = "operateur")
+    @NotNull(message = "l'opérateur est obligatoire")
     private Operateur operateur;
 
     @JsonProperty(value = "occurences")
-    private Integer occurences;
+    @NotNull(message = "le nombre d'occurrence est obligatoire")
+    private Integer occurrences;
 
-    public NombreZoneWebDto(Integer id, Integer idExcel, String message, String zone, Priority priority, List<String> typesDoc, Operateur operateur, Integer occurences) {
+    public NombreZoneWebDto(Integer id, Integer idExcel, String message, String zone, Priority priority, List<String> typesDoc, Operateur operateur, Integer occurrences) {
         super(id, idExcel, message, zone, priority, typesDoc);
         this.operateur = operateur;
-        this.occurences = occurences;
+        this.occurrences = occurrences;
     }
 }

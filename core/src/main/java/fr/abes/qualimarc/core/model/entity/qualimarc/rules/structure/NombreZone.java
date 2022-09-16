@@ -40,18 +40,6 @@ public class NombreZone extends Rule implements Serializable {
         this.occurrences = occurrences;
     }
 
-    public NombreZone(String message, String zone, Priority priority, Operateur operateur, Integer occurrences) {
-        super(message, zone, priority);
-        this.operateur = operateur;
-        this.occurrences = occurrences;
-    }
-
-    public NombreZone(String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments, Operateur operateur, Integer occurrences) {
-        super(message, zone, priority, famillesDocuments);
-        this.operateur = operateur;
-        this.occurrences = occurrences;
-    }
-
     @Override
     public boolean isValid(NoticeXml notice) {
         switch (this.operateur) {

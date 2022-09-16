@@ -16,6 +16,7 @@ import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -84,9 +85,9 @@ public class RuleService {
     /**
      * Method that returns rules associated with the analyse type chosen
      *
-     * @param typeAnalyse : priority to look for in rules
+     * @param typeAnalyse      : priority to look for in rules
      * @param familleDocuments : list of document type to look for in rules
-     * @param ruleSet set of rules to look for in rules
+     * @param ruleSet          set of rules to look for in rules
      * @return list of rules according to given parameters
      */
     public Set<Rule> getResultRulesList(TypeAnalyse typeAnalyse, Set<FamilleDocument> familleDocuments, Set<RuleSet> ruleSet) {
@@ -111,12 +112,15 @@ public class RuleService {
         }
     }
 
-    public void saveAll(List<Rule> rules) throws IllegalArgumentException{
-        try {
-            this.rulesRepository.saveAll(rules);
-        } catch (JpaObjectRetrievalFailureException ex) {
-            //exception levée dans le cas ou un type de document n'est pas connu
-            throw new IllegalArgumentException("Type de document inconnu : " + ex.getCause().getMessage() , ex);
+    @Transactional
+    public void saveAll(List<Rule> rules) throws IllegalArgumentException {
+        for (Rule rule : rules) {
+            try {
+                this.rulesRepository.save(rule);
+            } catch (JpaObjectRetrievalFailureException ex) {
+                //exception levée dans le cas ou un type de document n'est pas connu
+                throw new IllegalArgumentException("Type de document " + ex.getCause().getMessage() + " inconnu sur règle : " + rule.getId(), ex);
+            }
         }
     }
 }

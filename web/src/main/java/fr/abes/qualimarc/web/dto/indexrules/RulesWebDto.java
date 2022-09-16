@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -45,7 +46,7 @@ public abstract class RulesWebDto {
     protected Priority priority;
 
     @JsonProperty(value = "type-doc")
-    protected List<String> typesDoc;
+    protected List<String> typesDoc = new ArrayList<>();
 
     public RulesWebDto(Integer id, Integer idExcel, String message, String zone, Priority priority, List<String> typesDoc) {
         this.id = id;

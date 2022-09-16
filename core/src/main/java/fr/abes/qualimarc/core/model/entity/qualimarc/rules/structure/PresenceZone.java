@@ -35,16 +35,6 @@ public class PresenceZone extends Rule implements Serializable {
         this.isPresent = isPresent;
     }
 
-    public PresenceZone(String message, String zone, Priority priority, boolean isPresent) {
-        super(message, zone, priority);
-        this.isPresent = isPresent;
-    }
-
-    public PresenceZone(String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments, boolean isPresent) {
-        super(message, zone, priority, famillesDocuments);
-        this.isPresent = isPresent;
-    }
-
     @Override
     public boolean isValid(NoticeXml notice) {
         //cas ou on veut que la zone soit présente dans la notice pour lever le message

@@ -70,11 +70,8 @@ public class WebDtoMapper {
                 presenceSousZone.setZone(source.getZone());
                 presenceSousZone.setPriority(source.getPriority());
                 Set<FamilleDocument> familleDocumentSet = new HashSet<>();
-                for (String typeDocument: source.getTypesDoc()
-                ) {
-                    FamilleDocument familleDocument = new FamilleDocument();
-                    familleDocument.setId(typeDocument);
-                    familleDocumentSet.add(familleDocument);
+                for (String typeDocument: source.getTypesDoc()) {
+                    familleDocumentSet.add(new FamilleDocument(typeDocument));
                 }
                 presenceSousZone.setFamillesDocuments(familleDocumentSet);
                 presenceSousZone.setSousZone(source.getSousZone());
@@ -108,7 +105,7 @@ public class WebDtoMapper {
                 nombreZone.setFamillesDocuments(familleDocumentSet);
 
                 nombreZone.setOperateur(source.getOperateur());
-                nombreZone.setOccurrences(source.getOccurences());
+                nombreZone.setOccurrences(source.getOccurrences());
 
                 return nombreZone;
             }

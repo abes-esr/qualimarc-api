@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -15,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PresenceZoneWebDto extends RulesWebDto {
     @JsonProperty(value = "presence")
+    @NotNull(message = "le champ presence est obligatoire")
     private boolean isPresent;
 
     public PresenceZoneWebDto(Integer id, Integer idExcel, String message, String zone, Priority priority, List<String> typesDoc, boolean isPresent) {

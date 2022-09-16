@@ -40,30 +40,30 @@ public class NombreZoneTest {
     @Test
     @DisplayName("Test nombre de zones opérateur EGAL")
     void testIsValidEgal() {
-        NombreZone rule1 = new NombreZone("La notice doit contenir 3 zones 181 mais n'en contient que 2", "181", Priority.P1, Operateur.EGAL, 3);
+        NombreZone rule1 = new NombreZone(1, "La notice doit contenir 3 zones 181 mais n'en contient que 2", "181", Priority.P1, Operateur.EGAL, 3);
         Assertions.assertFalse(rule1.isValid(notice));
 
-        NombreZone rule2 = new NombreZone("La notice doit contenir 2 zones 181 et en contient 2", "181", Priority.P1, Operateur.EGAL, 2);
+        NombreZone rule2 = new NombreZone(1, "La notice doit contenir 2 zones 181 et en contient 2", "181", Priority.P1, Operateur.EGAL, 2);
         Assertions.assertTrue(rule2.isValid(notice));
     }
 
     @Test
     @DisplayName("Test nombre de zones opérateur SUPERIEUR")
     void testIsValidSuperieur() {
-        NombreZone rule1 = new NombreZone("La notice doit contenir plus de 2 zones 181 et en contient 2", "181", Priority.P1, Operateur.SUPERIEUR, 2);
+        NombreZone rule1 = new NombreZone(1, "La notice doit contenir plus de 2 zones 181 et en contient 2", "181", Priority.P1, Operateur.SUPERIEUR, 2);
         Assertions.assertFalse(rule1.isValid(notice));
 
-        NombreZone rule2 = new NombreZone("La notice doit contenir plus de 1 zones 181 et en contient 2", "181", Priority.P1, Operateur.SUPERIEUR, 1);
+        NombreZone rule2 = new NombreZone(1, "La notice doit contenir plus de 1 zones 181 et en contient 2", "181", Priority.P1, Operateur.SUPERIEUR, 1);
         Assertions.assertTrue(rule2.isValid(notice));
     }
 
     @Test
     @DisplayName("Test nombre de zones opérateur INFERIEUR")
     void testIsValidInferieur() {
-        NombreZone rule1 = new NombreZone("La notice doit contenir moins de 2 zones 181 et en contient 2", "181", Priority.P1, Operateur.INFERIEUR, 2);
+        NombreZone rule1 = new NombreZone(1, "La notice doit contenir moins de 2 zones 181 et en contient 2", "181", Priority.P1, Operateur.INFERIEUR, 2);
         Assertions.assertFalse(rule1.isValid(notice));
 
-        NombreZone rule2 = new NombreZone("La notice doit contenir moins de 3 zones 181 et en contient 2", "181", Priority.P1, Operateur.INFERIEUR, 3);
+        NombreZone rule2 = new NombreZone(1, "La notice doit contenir moins de 3 zones 181 et en contient 2", "181", Priority.P1, Operateur.INFERIEUR, 3);
         Assertions.assertTrue(rule2.isValid(notice));
     }
 }

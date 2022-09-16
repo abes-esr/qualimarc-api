@@ -19,12 +19,15 @@ import java.util.List;
 public class NombreSousZoneWebDto extends RulesWebDto {
 
     @JsonProperty(value = "souszone")
+    @NotNull(message = "Le champ souszone est obligatoire")
     private String sousZone;
 
     @JsonProperty(value = "zonecible")
+    @NotNull(message = "Le champ zonecible est obligatoire")
     private String zoneCible;
 
     @JsonProperty(value = "souszonecible")
+    @NotNull(message = "Le champ souszonecible est obligatoire")
     private String sousZoneCible;
 
     public NombreSousZoneWebDto(Integer id, Integer idExcel, String message, String zone, Priority priority, List<String> typesDoc, String sousZone, String zoneCible, String sousZoneCible) {

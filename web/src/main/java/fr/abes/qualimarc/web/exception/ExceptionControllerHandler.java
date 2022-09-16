@@ -42,11 +42,11 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
     /**
      * Erreur de lecture / décodage des paramètres d'une requête HTTP
      *
-     * @param ex
-     * @param headers
-     * @param status
-     * @param request
-     * @return
+     * @param ex : l'exception catchée
+     * @param headers headers de la requête http
+     * @param status status de renvoie
+     * @param request requête http
+     * @return l'objet du message d'erreur
      */
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -77,8 +77,8 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
     /**
      * Erreur dans la validité des paramètres de la requête
      *
-     * @param ex
-     * @return
+     * @param ex : l'exception catchée
+     * @return l'objet du message d'erreur
      */
     @ExceptionHandler(IllegalArgumentException.class)
     protected ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
@@ -90,11 +90,11 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
     /**
      * Vérifier les méthodes correspondent avec les URI dans le controller
      *
-     * @param ex
-     * @param headers
-     * @param status
-     * @param request
-     * @return
+     * @param ex : l'exception catchée
+     * @param headers headers de la requête http
+     * @param status status de renvoie
+     * @param request requête http
+     * @return l'objet du message d'erreur
      */
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -106,11 +106,11 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
     /**
      * Vérifier la validité (@Valid) des paramètres de la requête
      *
-     * @param ex
-     * @param headers
-     * @param status
-     * @param request
-     * @return
+     * @param ex : l'exception catchée
+     * @param headers headers de la requête http
+     * @param status status de renvoie
+     * @param request requête http
+     * @return l'objet du message d'erreur
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -128,11 +128,11 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
     /**
      * Page 404
      *
-     * @param ex
-     * @param headers
-     * @param status
-     * @param request
-     * @return
+     * @param ex : l'exception catchée
+     * @param headers headers de la requête http
+     * @param status status de renvoie
+     * @param request requête http
+     * @return l'objet du message d'erreur
      */
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -144,11 +144,11 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
     /**
      * Erreur de paramètre
      *
-     * @param ex
-     * @param headers
-     * @param status
-     * @param request
-     * @return
+     * @param ex : l'exception catchée
+     * @param headers headers de la requête http
+     * @param status status de renvoie
+     * @param request requête http
+     * @return l'objet du message d'erreur
      */
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -157,13 +157,19 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, ex));
     }
 
+    /**
+     * Erreur de validation de contrainte sur un champ
+     *
+     * @param ex : l'exception catchée
+     * @return l'objet du message d'erreur
+     */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity handle(ConstraintViolationException ex) {
         Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
         String errorMessage;
         if (!violations.isEmpty()) {
             StringBuilder builder = new StringBuilder();
-            violations.forEach(violation -> builder.append(" " + violation.getMessage()));
+            violations.forEach(violation -> builder.append(violation.getPropertyPath() + " " + violation.getMessage()));
             errorMessage = builder.toString();
         } else {
             errorMessage = "Une contrainte de validation n'est pas respectée";

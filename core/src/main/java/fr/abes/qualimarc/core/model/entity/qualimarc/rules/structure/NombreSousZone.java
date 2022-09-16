@@ -52,19 +52,6 @@ public class NombreSousZone extends Rule implements Serializable {
         this.sousZoneCible = sousZoneCible;
     }
 
-    public NombreSousZone(String message, String zone, Priority priority, String sousZone, String zoneCible, String sousZoneCible) {
-        super(message, zone, priority);
-        this.sousZone = sousZone;
-        this.zoneCible = zoneCible;
-        this.sousZoneCible = sousZoneCible;
-    }
-
-    public NombreSousZone(String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments, String sousZone, String zoneCible, String sousZoneCible) {
-        super(message, zone, priority, famillesDocuments);
-        this.sousZone = sousZone;
-        this.zoneCible = zoneCible;
-        this.sousZoneCible = sousZoneCible;
-    }
 
     @Override
     public boolean isValid(NoticeXml notice) {
