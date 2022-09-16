@@ -15,7 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = PresenceZoneWebDto.class, name = "presencezone")
+        @JsonSubTypes.Type(value = PresenceZoneWebDto.class, name = "presencezone"),
+        @JsonSubTypes.Type(value = PresenceSousZoneWebDto.class, name = "presencesouszone"),
+        @JsonSubTypes.Type(value = NombreZoneWebDto.class, name = "nombrezone"),
+        @JsonSubTypes.Type(value = NombreSousZoneWebDto.class, name = "nombresouszone")
 })
 public abstract class RulesWebDto {
     @JsonProperty(value = "id")

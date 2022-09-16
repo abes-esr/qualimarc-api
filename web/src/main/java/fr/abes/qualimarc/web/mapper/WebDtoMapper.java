@@ -1,7 +1,7 @@
 package fr.abes.qualimarc.web.mapper;
 
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZones;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
@@ -45,11 +45,8 @@ public class WebDtoMapper {
                 presenceZone.setZone(source.getZone());
                 presenceZone.setPriority(source.getPriority());
                 Set<FamilleDocument> familleDocumentSet = new HashSet<>();
-                for (String typeDocument: source.getTypesDoc()
-                     ) {
-                    FamilleDocument familleDocument = new FamilleDocument();
-                    familleDocument.setId(typeDocument);
-                    familleDocumentSet.add(familleDocument);
+                for (String typeDocument: source.getTypesDoc()) {
+                    familleDocumentSet.add(new FamilleDocument(typeDocument));
                 }
                 presenceZone.setFamillesDocuments(familleDocumentSet);
                 presenceZone.setPresent(source.isPresent());
@@ -121,16 +118,16 @@ public class WebDtoMapper {
 
     @Bean
     public void converterNombreSousZone() {
-        Converter<NombreSousZoneWebDto, NombreSousZones> myConverter = new Converter<NombreSousZoneWebDto, NombreSousZones>() {
+        Converter<NombreSousZoneWebDto, NombreSousZone> myConverter = new Converter<NombreSousZoneWebDto, NombreSousZone>() {
             @SneakyThrows
-            public NombreSousZones convert(MappingContext<NombreSousZoneWebDto, NombreSousZones> context) {
+            public NombreSousZone convert(MappingContext<NombreSousZoneWebDto, NombreSousZone> context) {
                 NombreSousZoneWebDto source = context.getSource();
 
-                NombreSousZones NombreSousZones = new NombreSousZones();
-                NombreSousZones.setId(source.getId());
-                NombreSousZones.setMessage(source.getMessage());
-                NombreSousZones.setZone(source.getZone());
-                NombreSousZones.setPriority(source.getPriority());
+                NombreSousZone NombreSousZone = new NombreSousZone();
+                NombreSousZone.setId(source.getId());
+                NombreSousZone.setMessage(source.getMessage());
+                NombreSousZone.setZone(source.getZone());
+                NombreSousZone.setPriority(source.getPriority());
                 Set<FamilleDocument> familleDocumentSet = new HashSet<>();
                 for (String typeDocument: source.getTypesDoc()
                 ) {
@@ -138,13 +135,13 @@ public class WebDtoMapper {
                     familleDocument.setId(typeDocument);
                     familleDocumentSet.add(familleDocument);
                 }
-                NombreSousZones.setFamillesDocuments(familleDocumentSet);
+                NombreSousZone.setFamillesDocuments(familleDocumentSet);
 
-                NombreSousZones.setSousZone(source.getSousZone());
-                NombreSousZones.setZoneCible(source.getZoneCible());
-                NombreSousZones.setSousZoneCible(source.getSousZoneCible());
+                NombreSousZone.setSousZone(source.getSousZone());
+                NombreSousZone.setZoneCible(source.getZoneCible());
+                NombreSousZone.setSousZoneCible(source.getSousZoneCible());
 
-                return NombreSousZones;
+                return NombreSousZone;
             }
         };
         mapper.addConverter(myConverter);

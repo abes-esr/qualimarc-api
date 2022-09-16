@@ -12,8 +12,10 @@ import fr.abes.qualimarc.core.repository.qualimarc.RulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -109,7 +111,12 @@ public class RuleService {
         }
     }
 
-    public void saveAll(List<Rule> rules) {
-        this.rulesRepository.saveAll(rules);
+    public void saveAll(List<Rule> rules) throws IllegalArgumentException{
+        try {
+            this.rulesRepository.saveAll(rules);
+        } catch (JpaObjectRetrievalFailureException ex) {
+            //exception levée dans le cas ou un type de document n'est pas connu
+            throw new IllegalArgumentException("Type de document inconnu : " + ex.getCause().getMessage() , ex);
+        }
     }
 }

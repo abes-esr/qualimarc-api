@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -52,10 +53,8 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
 
         String error = "Requête YAML mal formée";
         if (ex.getCause() instanceof InvalidTypeIdException) {
-           //TODO : voir comment récupérer dynamiquement les différents sous de webdto types possibles
             log.error(ex.getLocalizedMessage());
-            return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, new MismatchedYamlTypeException("L'attribut type ne peut prendre que les valeurs ")));
-
+            return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, new MismatchedYamlTypeException("L'attribut type ne peut prendre que les valeurs " + StringUtils.substringBetween(ex.getLocalizedMessage(), "[", "]"))));
         }
         else {
             if (ex.getCause() instanceof MismatchedInputException) {
@@ -65,10 +64,26 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
                 String property = errors.get(errors.size() - 1).getFieldName();
 
                 log.error(ex.getLocalizedMessage());
+                if (property.equals("priorite")) {
+                    return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, new MismatchedYamlTypeException("L'attribut " + property + " ne peut prendre que les valeurs " + StringUtils.substringBetween(ex.getLocalizedMessage(), "[", "]"))));
+                }
                 return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, new MismatchedYamlTypeException("L'attribut " + property + " doit être de type '" + targetType + "'")));
             }
         }
         log.error(ex.getLocalizedMessage());
+        return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, ex));
+    }
+
+    /**
+     * Erreur dans la validité des paramètres de la requête
+     *
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
+        String error = "Contenu de la requête YAML invalide";
+        log.debug(ex.getLocalizedMessage());
         return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, ex));
     }
 

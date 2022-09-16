@@ -2,18 +2,20 @@ package fr.abes.qualimarc.web.controller;
 
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreZone;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
-import fr.abes.qualimarc.web.dto.indexrules.ListRulesWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.PresenceZoneWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.RulesWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -59,9 +61,14 @@ public class RuleController {
         Iterator<RulesWebDto> rulesIt = rulesWebDtos.iterator();
         while (rulesIt.hasNext()) {
             RulesWebDto rule = rulesIt.next();
-            if (rule instanceof PresenceZoneWebDto) {
+            if (rule instanceof PresenceZoneWebDto)
                 rulesEntity.add(mapper.map(rule, PresenceZone.class));
-            }
+            if (rule instanceof PresenceSousZoneWebDto)
+                rulesEntity.add(mapper.map(rule, PresenceSousZone.class));
+            if (rule instanceof NombreZoneWebDto)
+                rulesEntity.add(mapper.map(rule, NombreZone.class));
+            if (rule instanceof NombreSousZoneWebDto)
+                rulesEntity.add(mapper.map(rule, NombreSousZone.class));
         }
         return rulesEntity;
     }

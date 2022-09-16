@@ -21,10 +21,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "RULE_NOMBRESOUSZONES")
+@Table(name = "RULE_NOMBRESOUSZONE")
 @Getter @Setter
 @NoArgsConstructor
-public class NombreSousZones extends Rule implements Serializable {
+public class NombreSousZone extends Rule implements Serializable {
     //les sous zones doivent être renseignées sans le $
     @Column(name = "SOUS_ZONE")
     @NotNull
@@ -38,28 +38,28 @@ public class NombreSousZones extends Rule implements Serializable {
     @NotNull
     private String sousZoneCible;
 
-    public NombreSousZones(Integer id, String message, String zone, Priority priority, String sousZone, String zoneCible, String sousZoneCible) {
+    public NombreSousZone(Integer id, String message, String zone, Priority priority, String sousZone, String zoneCible, String sousZoneCible) {
         super(id, message, zone, priority);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
     }
 
-    public NombreSousZones(Integer id, String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments, String sousZone, String zoneCible, String sousZoneCible) {
+    public NombreSousZone(Integer id, String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments, String sousZone, String zoneCible, String sousZoneCible) {
         super(id, message, zone, priority, famillesDocuments);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
     }
 
-    public NombreSousZones(String message, String zone, Priority priority, String sousZone, String zoneCible, String sousZoneCible) {
+    public NombreSousZone(String message, String zone, Priority priority, String sousZone, String zoneCible, String sousZoneCible) {
         super(message, zone, priority);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
     }
 
-    public NombreSousZones(String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments, String sousZone, String zoneCible, String sousZoneCible) {
+    public NombreSousZone(String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments, String sousZone, String zoneCible, String sousZoneCible) {
         super(message, zone, priority, famillesDocuments);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
