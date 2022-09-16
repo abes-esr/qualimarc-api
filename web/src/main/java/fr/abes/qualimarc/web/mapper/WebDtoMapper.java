@@ -156,7 +156,7 @@ public class WebDtoMapper {
      * Convertion d'un modèle ResultAnalyse en modèle ResultAnalyseResponseDto
      */
     @Bean
-    public void converterEditeurCreeWebDto() {
+    public void converterResultAnalyse() {
         Converter<ResultAnalyse, ResultAnalyseResponseDto> myConverter = new Converter<ResultAnalyse, ResultAnalyseResponseDto>() {
             @SneakyThrows
             public ResultAnalyseResponseDto convert(MappingContext<ResultAnalyse, ResultAnalyseResponseDto> context) {
