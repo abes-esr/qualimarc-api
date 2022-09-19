@@ -14,8 +14,10 @@ import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -52,7 +54,12 @@ public class RuleController {
     @PostMapping(value = "/indexRules", consumes = {"text/yaml", "text/yml"})
     public void indexRules(@Valid @RequestBody ListRulesWebDto rules) {
         List<Rule> rulesEntity = handleRulesWebDto(rules);
-        ruleService.saveAll(rulesEntity);
+        try {
+            ruleService.saveAll(rulesEntity);
+        } catch (DataIntegrityViolationException ex) {
+            //exception levée dans le cas ou un id est déjà pris
+            throw new IllegalArgumentException(ex.getCause().getCause());
+        }
     }
 
     private List<Rule> handleRulesWebDto(ListRulesWebDto rules) {

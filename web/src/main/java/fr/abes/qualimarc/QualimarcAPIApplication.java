@@ -5,14 +5,20 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
-import fr.abes.qualimarc.core.repository.qualimarc.RuleSetRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.RulesRepository;
+import fr.abes.qualimarc.web.security.JwtTokenProvider;
 import fr.abes.qualimarc.core.utils.Priority;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +27,9 @@ import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class QualimarcAPIApplication implements CommandLineRunner {
+    @Value("${jwt.anonymousUser")
+    private String user;
+
     @Autowired
     private FamilleDocumentRepository familleDocumentRepository;
 
@@ -29,6 +38,9 @@ public class QualimarcAPIApplication implements CommandLineRunner {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private JwtTokenProvider tokenProvider;
 
     public static void main(String[] args) {
         SpringApplication.run(QualimarcAPIApplication.class, args);
@@ -53,5 +65,15 @@ public class QualimarcAPIApplication implements CommandLineRunner {
 
             rulesRepository.saveAll(rules);
         }
+        initSpringSecurity();
+    }
+
+    private void initSpringSecurity() {
+        List<GrantedAuthority> roles = new ArrayList<>();
+        roles.add(new SimpleGrantedAuthority("ANONYMOUS"));
+        String token = tokenProvider.generateToken();
+        Authentication auth = new AnonymousAuthenticationToken(token, user, roles);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        System.out.println(token);
     }
 }
