@@ -21,7 +21,7 @@ public class NombreZoneWebDto extends RulesWebDto {
     @NotNull(message = "l'opérateur est obligatoire")
     private Operateur operateur;
 
-    @JsonProperty(value = "occurences")
+    @JsonProperty(value = "occurrences")
     @NotNull(message = "le nombre d'occurrence est obligatoire")
     private Integer occurrences;
 
