@@ -24,6 +24,7 @@ public class PresenceZone extends Rule implements Serializable {
     @NotNull
     private boolean isPresent;
 
+    public boolean isPresent() {return isPresent;}
 
     public PresenceZone(Integer id, String message, String zone, Priority priority, boolean isPresent) {
         super(id, message, zone, priority);
@@ -32,16 +33,6 @@ public class PresenceZone extends Rule implements Serializable {
 
     public PresenceZone(Integer id, String message, String zone, Priority priority, Set<FamilleDocument> typeDocuments, boolean isPresent) {
         super(id, message, zone, priority, typeDocuments);
-        this.isPresent = isPresent;
-    }
-
-    public PresenceZone(String message, String zone, Priority priority, boolean isPresent) {
-        super(message, zone, priority);
-        this.isPresent = isPresent;
-    }
-
-    public PresenceZone(String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments, boolean isPresent) {
-        super(message, zone, priority, famillesDocuments);
         this.isPresent = isPresent;
     }
 

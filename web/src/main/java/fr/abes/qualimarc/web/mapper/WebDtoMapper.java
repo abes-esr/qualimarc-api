@@ -1,9 +1,18 @@
 package fr.abes.qualimarc.web.mapper;
 
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreZone;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
+import fr.abes.qualimarc.web.dto.indexrules.NombreSousZoneWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.NombreZoneWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.PresenceSousZoneWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.PresenceZoneWebDto;
 import lombok.SneakyThrows;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
@@ -11,6 +20,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class WebDtoMapper {
@@ -21,8 +32,131 @@ public class WebDtoMapper {
         this.mapper = mapper;
     }
 
+    /**
+     * Convertion d'un modèle PresenceZoneWebDto en modèle PresenceZone
+     */
     @Bean
-    public void converterEditeurCreeWebDto() {
+    public void converterPresenceZone() {
+        Converter<PresenceZoneWebDto, PresenceZone> myConverter = new Converter<PresenceZoneWebDto, PresenceZone>() {
+            @SneakyThrows
+            public PresenceZone convert(MappingContext<PresenceZoneWebDto, PresenceZone> context) {
+                PresenceZoneWebDto source = context.getSource();
+
+                PresenceZone presenceZone = new PresenceZone();
+                presenceZone.setId(source.getId());
+                presenceZone.setMessage(source.getMessage());
+                presenceZone.setZone(source.getZone());
+                presenceZone.setPriority(source.getPriority());
+                Set<FamilleDocument> familleDocumentSet = new HashSet<>();
+                for (String typeDocument: source.getTypesDoc()) {
+                    familleDocumentSet.add(new FamilleDocument(typeDocument));
+                }
+                presenceZone.setFamillesDocuments(familleDocumentSet);
+
+                presenceZone.setPresent(source.isPresent());
+
+                return presenceZone;
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un modèle PresenceSousZoneWebDto en modèle PresenceSousZone
+     */
+    @Bean
+    public void converterPresenceSousZone() {
+        Converter<PresenceSousZoneWebDto, PresenceSousZone> myConverter = new Converter<PresenceSousZoneWebDto, PresenceSousZone>() {
+            @SneakyThrows
+            public PresenceSousZone convert(MappingContext<PresenceSousZoneWebDto, PresenceSousZone> context) {
+                PresenceSousZoneWebDto source = context.getSource();
+
+                PresenceSousZone presenceSousZone = new PresenceSousZone();
+                presenceSousZone.setId(source.getId());
+                presenceSousZone.setMessage(source.getMessage());
+                presenceSousZone.setZone(source.getZone());
+                presenceSousZone.setPriority(source.getPriority());
+                Set<FamilleDocument> familleDocumentSet = new HashSet<>();
+                for (String typeDocument: source.getTypesDoc()) {
+                    familleDocumentSet.add(new FamilleDocument(typeDocument));
+                }
+                presenceSousZone.setFamillesDocuments(familleDocumentSet);
+
+                presenceSousZone.setSousZone(source.getSousZone());
+                presenceSousZone.setPresent(source.isPresent());
+
+                return presenceSousZone;
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un modèle NombreZoneWebDto en modèle NombreZone
+     */
+    @Bean
+    public void converterNombreZone() {
+        Converter<NombreZoneWebDto, NombreZone> myConverter = new Converter<NombreZoneWebDto, NombreZone>() {
+            @SneakyThrows
+            public NombreZone convert(MappingContext<NombreZoneWebDto, NombreZone> context) {
+                NombreZoneWebDto source = context.getSource();
+
+                NombreZone nombreZone = new NombreZone();
+                nombreZone.setId(source.getId());
+                nombreZone.setMessage(source.getMessage());
+                nombreZone.setZone(source.getZone());
+                nombreZone.setPriority(source.getPriority());
+                Set<FamilleDocument> familleDocumentSet = new HashSet<>();
+                for (String typeDocument: source.getTypesDoc()) {
+                    familleDocumentSet.add(new FamilleDocument(typeDocument));
+                }
+                nombreZone.setFamillesDocuments(familleDocumentSet);
+
+                nombreZone.setOperateur(source.getOperateur());
+                nombreZone.setOccurrences(source.getOccurrences());
+
+                return nombreZone;
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un modèle NombreSousZoneWebDto en modèle NombreSousZone
+     */
+    @Bean
+    public void converterNombreSousZone() {
+        Converter<NombreSousZoneWebDto, NombreSousZone> myConverter = new Converter<NombreSousZoneWebDto, NombreSousZone>() {
+            @SneakyThrows
+            public NombreSousZone convert(MappingContext<NombreSousZoneWebDto, NombreSousZone> context) {
+                NombreSousZoneWebDto source = context.getSource();
+
+                NombreSousZone NombreSousZone = new NombreSousZone();
+                NombreSousZone.setId(source.getId());
+                NombreSousZone.setMessage(source.getMessage());
+                NombreSousZone.setZone(source.getZone());
+                NombreSousZone.setPriority(source.getPriority());
+                Set<FamilleDocument> familleDocumentSet = new HashSet<>();
+                for (String typeDocument: source.getTypesDoc()) {
+                    familleDocumentSet.add(new FamilleDocument(typeDocument));
+                }
+                NombreSousZone.setFamillesDocuments(familleDocumentSet);
+
+                NombreSousZone.setSousZone(source.getSousZone());
+                NombreSousZone.setZoneCible(source.getZoneCible());
+                NombreSousZone.setSousZoneCible(source.getSousZoneCible());
+
+                return NombreSousZone;
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un modèle ResultAnalyse en modèle ResultAnalyseResponseDto
+     */
+    @Bean
+    public void converterResultAnalyse() {
         Converter<ResultAnalyse, ResultAnalyseResponseDto> myConverter = new Converter<ResultAnalyse, ResultAnalyseResponseDto>() {
             @SneakyThrows
             public ResultAnalyseResponseDto convert(MappingContext<ResultAnalyse, ResultAnalyseResponseDto> context) {

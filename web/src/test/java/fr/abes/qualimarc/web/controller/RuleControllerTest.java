@@ -5,41 +5,62 @@ import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
+import fr.abes.qualimarc.web.configuration.WebConfig;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
+import fr.abes.qualimarc.web.security.JwtAuthenticationFilter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.web.FilterChainProxy;
+import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = {PublicController.class, ObjectMapper.class})
-@EnableWebMvc   //  Active le Model-View-Controller, nécessaire pour éviter le code d'erreur 415 lors du lancement du test checkPpn
+@SpringBootTest(classes = {RuleController.class, ObjectMapper.class}) //  Active le Model-View-Controller, nécessaire pour éviter le code d'erreur 415 lors du lancement du test checkPpn
 @ExtendWith(SpringExtension.class)
-@AutoConfigureMockMvc
-public class PublicControllerTest {
+@ContextConfiguration(classes = {WebConfig.class})
+public class RuleControllerTest {
+    @Autowired
+    private WebApplicationContext context;
 
     @InjectMocks
-    private PublicController publicController;
+    private RuleController ruleController;
 
     @Autowired
-    protected MockMvc mockMvc;
+    private MappingJackson2HttpMessageConverter yamlHttpConverter;
+
+    @Autowired
+    private MappingJackson2HttpMessageConverter jsonHttpConverter;
+
+    private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -53,8 +74,13 @@ public class PublicControllerTest {
     @MockBean
     private UtilsMapper utilsMapper;
 
-    @Test
-    void getPpn() {
+    @BeforeEach
+    void init() {
+        MockitoAnnotations.openMocks(this);
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(context.getBean(RuleController.class))
+                .setMessageConverters(this.yamlHttpConverter, this.jsonHttpConverter)
+                .build();
     }
 
     @Test
@@ -86,5 +112,23 @@ public class PublicControllerTest {
                         .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultRules[0].ppn").value("143519379"));
+    }
+
+    @Test
+    void testIndexRules() throws Exception {
+        String yaml =
+                "rules:\n" +
+                "    - id:          2\n" +
+                "      id-excel:    2\n" +
+                "      type:        presencezone\n" +
+                "      message:     message test 2\n" +
+                "      zone:        330\n" +
+                "      priorite:    P2\n" +
+                "      presence:    false\n";
+
+        this.mockMvc.perform(post("/api/v1/indexRules")
+                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk());
     }
 }
