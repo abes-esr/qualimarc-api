@@ -11,12 +11,16 @@ import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.RulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -75,13 +79,17 @@ public class RuleService {
         return false;
     }
 
+    public void save(Rule rule) {
+        rulesRepository.save(rule);
+    }
+
 
     /**
      * Method that returns rules associated with the analyse type chosen
      *
-     * @param typeAnalyse : priority to look for in rules
+     * @param typeAnalyse      : priority to look for in rules
      * @param familleDocuments : list of document type to look for in rules
-     * @param ruleSet set of rules to look for in rules
+     * @param ruleSet          set of rules to look for in rules
      * @return list of rules according to given parameters
      */
     public Set<Rule> getResultRulesList(TypeAnalyse typeAnalyse, Set<FamilleDocument> familleDocuments, Set<RuleSet> ruleSet) {
@@ -103,6 +111,18 @@ public class RuleService {
                 return result;
             default:
                 throw new IllegalRulesSetException("Jeu de règle inconnu");
+        }
+    }
+
+    @Transactional
+    public void saveAll(List<Rule> rules) throws IllegalArgumentException {
+        for (Rule rule : rules) {
+            try {
+                this.rulesRepository.save(rule);
+            } catch (JpaObjectRetrievalFailureException ex) {
+                //exception levée dans le cas ou un type de document n'est pas connu
+                throw new IllegalArgumentException("Type de document " + ex.getCause().getMessage() + " inconnu sur règle : " + rule.getId(), ex);
+            }
         }
     }
 }

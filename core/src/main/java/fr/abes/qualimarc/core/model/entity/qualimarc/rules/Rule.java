@@ -25,7 +25,6 @@ import java.util.Set;
 @Table(name = "RULE")
 public abstract class Rule {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RULE_ID")
     private Integer id;
 
@@ -77,19 +76,6 @@ public abstract class Rule {
         this.priority = priority;
         this.famillesDocuments = famillesDocuments;
         this.ruleSet = new HashSet<>();
-    }
-
-    public Rule(String message, String zone, Priority priority) {
-        this.message = message;
-        this.zone = zone;
-        this.priority = priority;
-    }
-
-    public Rule(String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments) {
-        this.message = message;
-        this.zone = zone;
-        this.priority = priority;
-        this.famillesDocuments = famillesDocuments;
     }
 
     public void addRuleSet(RuleSet ruleSet) {

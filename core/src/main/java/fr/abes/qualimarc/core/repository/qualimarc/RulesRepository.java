@@ -5,6 +5,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.utils.Priority;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,4 +19,5 @@ public interface RulesRepository extends JpaRepository<Rule, Integer> {
     Set<Rule> findByFamillesDocuments(FamilleDocument familleDocument);
 
     Set<Rule> findByRuleSet(RuleSet ruleSet);
+
 }

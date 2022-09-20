@@ -28,4 +28,8 @@ public class FamilleDocument {
         this.id = id;
         this.libelle = libelle;
     }
+
+    public FamilleDocument(String id) {
+        this.id = id;
+    }
 }
