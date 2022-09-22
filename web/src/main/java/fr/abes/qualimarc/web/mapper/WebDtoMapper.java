@@ -151,7 +151,7 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
-    public void setChamp(Integer id, String message, String zone, String priority, List<String> typeDoc, Rule rule) {
+    private void setChamp(Integer id, String message, String zone, String priority, List<String> typeDoc, Rule rule) {
         rule.setId(id);
         rule.setMessage(message);
         rule.setZone(zone);
