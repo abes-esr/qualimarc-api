@@ -1,7 +1,6 @@
 package fr.abes.qualimarc.web.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
@@ -9,7 +8,6 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZon
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.utils.Operateur;
-import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.*;
@@ -22,10 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @ExtendWith({SpringExtension.class})
 @SpringBootTest(classes = {UtilsMapper.class, ObjectMapper.class, WebDtoMapper.class})
@@ -97,7 +91,7 @@ public class WebDtoMapperTest {
         //  Préparation d'un objet PresenceZoneWebDto
         ArrayList<String> typeDoc = new ArrayList<>();
         typeDoc.add("A");
-        PresenceZoneWebDto presenceZoneWebDto = new PresenceZoneWebDto(1, 1, "message 1", "100", Priority.P1, typeDoc, true);
+        PresenceZoneWebDto presenceZoneWebDto = new PresenceZoneWebDto(1, 1, "message 1", "100", "P1", typeDoc, true);
 
         //  Appel du mapper
         PresenceZone responseDto = mapper.map(presenceZoneWebDto, PresenceZone.class);
@@ -106,8 +100,8 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(presenceZoneWebDto.getId(), responseDto.getId());
         Assertions.assertEquals(presenceZoneWebDto.getMessage(), responseDto.getMessage());
         Assertions.assertEquals(presenceZoneWebDto.getZone(), responseDto.getZone());
-        Assertions.assertEquals(presenceZoneWebDto.getPriority(), responseDto.getPriority());
-        Assertions.assertEquals(presenceZoneWebDto.getTypesDoc().get(0), responseDto.getFamillesDocuments().stream().collect(Collectors.toList()).get(0).getId());
+        Assertions.assertEquals(presenceZoneWebDto.getPriority(), responseDto.getPriority().toString());
+        Assertions.assertEquals(presenceZoneWebDto.getTypesDoc().get(0), new ArrayList<>(responseDto.getFamillesDocuments()).get(0).getId());
         Assertions.assertEquals(presenceZoneWebDto.isPresent(), responseDto.isPresent());
     }
 
@@ -120,7 +114,7 @@ public class WebDtoMapperTest {
         //  Préparation d'un objet PresenceSousZoneWebDto
         ArrayList<String> typeDoc = new ArrayList<>();
         typeDoc.add("A");
-        PresenceSousZoneWebDto presenceSousZoneWebDto = new PresenceSousZoneWebDto(1, 1, "message 1", "100", Priority.P1, typeDoc, "a", true);
+        PresenceSousZoneWebDto presenceSousZoneWebDto = new PresenceSousZoneWebDto(1, 1, "message 1", "100", "P1", typeDoc, "a", true);
 
         //  Appel du mapper
         PresenceSousZone responseDto = mapper.map(presenceSousZoneWebDto, PresenceSousZone.class);
@@ -129,8 +123,8 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(presenceSousZoneWebDto.getId(), responseDto.getId());
         Assertions.assertEquals(presenceSousZoneWebDto.getMessage(), responseDto.getMessage());
         Assertions.assertEquals(presenceSousZoneWebDto.getZone(), responseDto.getZone());
-        Assertions.assertEquals(presenceSousZoneWebDto.getPriority(), responseDto.getPriority());
-        Assertions.assertEquals(presenceSousZoneWebDto.getTypesDoc().get(0), responseDto.getFamillesDocuments().stream().collect(Collectors.toList()).get(0).getId());
+        Assertions.assertEquals(presenceSousZoneWebDto.getPriority(), responseDto.getPriority().toString());
+        Assertions.assertEquals(presenceSousZoneWebDto.getTypesDoc().get(0), new ArrayList<>(responseDto.getFamillesDocuments()).get(0).getId());
         Assertions.assertEquals(presenceSousZoneWebDto.getSousZone(), responseDto.getSousZone());
         Assertions.assertEquals(presenceSousZoneWebDto.isPresent(), responseDto.isPresent());
     }
@@ -144,7 +138,7 @@ public class WebDtoMapperTest {
         //  Préparation d'un objet NombreZoneWebDto
         ArrayList<String> typeDoc = new ArrayList<>();
         typeDoc.add("A");
-        NombreZoneWebDto nombreZoneWebDto = new NombreZoneWebDto(1, 1, "message 1", "100", Priority.P1, typeDoc, Operateur.EGAL, 1);
+        NombreZoneWebDto nombreZoneWebDto = new NombreZoneWebDto(1, 1, "message 1", "100", "P1", typeDoc, Operateur.EGAL, 1);
 
         //  Appel du mapper
         NombreZone responseDto = mapper.map(nombreZoneWebDto, NombreZone.class);
@@ -153,8 +147,8 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(nombreZoneWebDto.getId(), responseDto.getId());
         Assertions.assertEquals(nombreZoneWebDto.getMessage(), responseDto.getMessage());
         Assertions.assertEquals(nombreZoneWebDto.getZone(), responseDto.getZone());
-        Assertions.assertEquals(nombreZoneWebDto.getPriority(), responseDto.getPriority());
-        Assertions.assertEquals(nombreZoneWebDto.getTypesDoc().get(0), responseDto.getFamillesDocuments().stream().collect(Collectors.toList()).get(0).getId());
+        Assertions.assertEquals(nombreZoneWebDto.getPriority(), responseDto.getPriority().toString());
+        Assertions.assertEquals(nombreZoneWebDto.getTypesDoc().get(0), new ArrayList<>(responseDto.getFamillesDocuments()).get(0).getId());
         Assertions.assertEquals(nombreZoneWebDto.getOperateur(), responseDto.getOperateur());
         Assertions.assertEquals(nombreZoneWebDto.getOccurrences(), responseDto.getOccurrences());
     }
@@ -168,7 +162,7 @@ public class WebDtoMapperTest {
         //  Préparation d'un objet NombreSousZoneWebDto
         ArrayList<String> typeDoc = new ArrayList<>();
         typeDoc.add("A");
-        NombreSousZoneWebDto nombreSousZoneWebDto = new NombreSousZoneWebDto(1, 1, "message 1", "100", Priority.P1, typeDoc, "a", "100", "a");
+        NombreSousZoneWebDto nombreSousZoneWebDto = new NombreSousZoneWebDto(1, 1, "message 1", "100", "P1", typeDoc, "a", "100", "a");
 
         //  Appel du mapper
         NombreSousZone responseDto = mapper.map(nombreSousZoneWebDto, NombreSousZone.class);
@@ -177,8 +171,8 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(1, responseDto.getId());
         Assertions.assertEquals(nombreSousZoneWebDto.getMessage(), responseDto.getMessage());
         Assertions.assertEquals(nombreSousZoneWebDto.getZone(), responseDto.getZone());
-        Assertions.assertEquals(nombreSousZoneWebDto.getPriority(), responseDto.getPriority());
-        Assertions.assertEquals(nombreSousZoneWebDto.getTypesDoc().get(0), responseDto.getFamillesDocuments().stream().collect(Collectors.toList()).get(0).getId());
+        Assertions.assertEquals(nombreSousZoneWebDto.getPriority(), responseDto.getPriority().toString());
+        Assertions.assertEquals(nombreSousZoneWebDto.getTypesDoc().get(0), new ArrayList<>(responseDto.getFamillesDocuments()).get(0).getId());
         Assertions.assertEquals(nombreSousZoneWebDto.getSousZone(), responseDto.getSousZone());
         Assertions.assertEquals(nombreSousZoneWebDto.getZoneCible(), responseDto.getZoneCible());
         Assertions.assertEquals(nombreSousZoneWebDto.getSousZoneCible(), responseDto.getSousZoneCible());
