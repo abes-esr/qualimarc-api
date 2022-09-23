@@ -2,6 +2,7 @@ package fr.abes.qualimarc.core.service;
 
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
+import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
@@ -11,13 +12,10 @@ import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.RulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
-import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -32,6 +30,9 @@ public class RuleService {
     private NoticeBibioService serviceBibio;
 
     @Autowired
+    private ReferenceService referenceService;
+
+    @Autowired
     private RulesRepository rulesRepository;
 
     public ResultAnalyse checkRulesOnNotices(List<String> ppns, Set<Rule> rulesList) {
@@ -44,6 +45,7 @@ public class RuleService {
                 resultAnalyse.addPpnAnalyse(ppn);
                 for (Rule rule : rulesList) {
                     if (isRuleAppliedToNotice(notice, rule)) {
+                        result.setFamilleDocument(referenceService.getFamilleDocument(notice.getFamilleDocument()));
                         //si la règle est valide, alors on renvoie le message
                         if (rule.isValid(notice)) {
                             result.addMessage(rule.getMessage());
@@ -55,6 +57,7 @@ public class RuleService {
                     resultAnalyse.addPpnOk(ppn);
                 } else {
                     resultAnalyse.addPpnErrone(ppn);
+                    resultAnalyse.addResultRule(result);
                 }
             } catch (SQLException | IOException ex) {
                 result.addMessage("Erreur d'accès à la base de données sur PPN : " + ppn);
@@ -62,8 +65,6 @@ public class RuleService {
             } catch (IllegalPpnException ex) {
                 resultAnalyse.addPpnInconnu(ppn);
                 result.addMessage(ex.getMessage());
-            } finally {
-                resultAnalyse.addResultRule(result);
             }
         }
         return resultAnalyse;
@@ -98,7 +99,7 @@ public class RuleService {
             case QUICK:
                 return rulesRepository.findByPriority(Priority.P1);
             case COMPLETE:
-                return rulesRepository.findAll().stream().collect(Collectors.toSet());
+                return new HashSet<>(rulesRepository.findAll());
             case FOCUSED:
                 //cas d'une analyse ciblée, on récupère les règles en fonction des types de documents et des ruleSet
                 if ((familleDocuments == null || familleDocuments.size() == 0) && (ruleSet == null || ruleSet.size() == 0))

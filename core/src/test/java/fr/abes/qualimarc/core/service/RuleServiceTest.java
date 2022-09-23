@@ -45,6 +45,9 @@ class RuleServiceTest {
     @MockBean
     RulesRepository rulesRepository;
 
+    @MockBean
+    ReferenceService referenceService;
+
     @Value("classpath:checkRules1.xml")
     Resource xmlFileNotice1;
 
@@ -105,6 +108,9 @@ class RuleServiceTest {
         Mockito.when(noticeBibioService.getByPpn("111111111")).thenReturn(notice1);
         Mockito.when(noticeBibioService.getByPpn("222222222")).thenReturn(notice2);
         Mockito.when(noticeBibioService.getByPpn("333333333")).thenReturn(notice3);
+        Mockito.when(referenceService.getFamilleDocument("A")).thenReturn(new FamilleDocument("A", "Monographie"));
+        Mockito.when(referenceService.getFamilleDocument("O")).thenReturn(new FamilleDocument("O", "Doc Elec"));
+        Mockito.when(referenceService.getFamilleDocument("BD")).thenReturn(new FamilleDocument("BD", "Ressource Continue"));
 
         ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeRegles);
 
@@ -115,16 +121,15 @@ class RuleServiceTest {
 
         List<ResultRules> resultat = resultAnalyse.getResultRules();
 
-        Assertions.assertEquals(3, resultat.size());
+        Assertions.assertEquals(2, resultat.size());
 
         ResultRules result1 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("111111111")).findFirst().get();
+        Assertions.assertEquals("BD", result1.getFamilleDocument().getId());
         Assertions.assertEquals(1, result1.getMessages().size());
         Assertions.assertEquals("La zone 011 est absente", result1.getMessages().get(0));
 
-        ResultRules result2 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("222222222")).findFirst().get();
-        Assertions.assertEquals(0, result2.getMessages().size());
-
         ResultRules result3 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("333333333")).findFirst().get();
+        Assertions.assertEquals("O", result3.getFamilleDocument().getId());
         Assertions.assertEquals(1, result3.getMessages().size());
         Assertions.assertEquals("La zone 011 est absente", result3.getMessages().get(0));
 
@@ -142,10 +147,7 @@ class RuleServiceTest {
         Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
 
         List<ResultRules> resultat = resultAnalyse.getResultRules();
-        Assertions.assertEquals(1, resultat.size());
-        Assertions.assertEquals("111111111", resultat.get(0).getPpn());
-        Assertions.assertEquals(1, resultat.get(0).getMessages().size());
-        Assertions.assertEquals("le PPN 111111111 n'existe pas", resultat.get(0).getMessages().get(0));
+        Assertions.assertEquals(0, resultat.size());
     }
 
     @Test
@@ -159,10 +161,7 @@ class RuleServiceTest {
         Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
 
         List<ResultRules> resultat = resultAnalyse.getResultRules();
-        Assertions.assertEquals(1, resultat.size());
-        Assertions.assertEquals("111111111", resultat.get(0).getPpn());
-        Assertions.assertEquals(1, resultat.get(0).getMessages().size());
-        Assertions.assertEquals("Erreur d'accès à la base de données sur PPN : 111111111", resultat.get(0).getMessages().get(0));
+        Assertions.assertEquals(0, resultat.size());
     }
 
     @Test

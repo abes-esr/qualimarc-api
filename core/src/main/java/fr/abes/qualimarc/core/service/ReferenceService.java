@@ -1,5 +1,7 @@
 package fr.abes.qualimarc.core.service;
 
+import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
+import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReferenceService {
@@ -27,5 +30,13 @@ public class ReferenceService {
 
     public List<RuleSet> getTypesAnalyses() {
         return ruleSetRepository.findAll();
+    }
+
+    public FamilleDocument getFamilleDocument(String typeDocument) {
+        Optional<FamilleDocument> familleDocument = familleDocumentRepository.findById(typeDocument);
+        if (familleDocument.isPresent()) {
+            return familleDocument.get();
+        }
+        throw new IllegalTypeDocumentException("La famille de document n'a pas pu être trouvée.");
     }
 }
