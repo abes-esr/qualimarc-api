@@ -7,14 +7,12 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
+import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
-import fr.abes.qualimarc.web.dto.indexrules.NombreSousZoneWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.NombreZoneWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.PresenceSousZoneWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.PresenceZoneWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.*;
 import lombok.SneakyThrows;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
@@ -133,6 +131,12 @@ public class WebDtoMapper {
                 ResultAnalyse source = context.getSource();
 
                 ResultAnalyseResponseDto responseDto = new ResultAnalyseResponseDto();
+
+                source.getResultRules().forEach(resultRules -> {
+                    ResultRulesResponseDto resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());
+                    responseDto.addResultRule(resultRulesResponseDto);
+                });
+
                 responseDto.setPpnAnalyses(new ArrayList<>(source.getPpnAnalyses()));
                 responseDto.setPpnErrones(new ArrayList<>(source.getPpnErrones()));
                 responseDto.setPpnOk(new ArrayList<>(source.getPpnOk()));
@@ -142,8 +146,6 @@ public class WebDtoMapper {
                 responseDto.setNbPpnErrones(source.getPpnErrones().size());
                 responseDto.setNbPpnOk(source.getPpnOk().size());
                 responseDto.setNbPpnInconnus(source.getPpnInconnus().size());
-
-                source.getResultRules().forEach(r -> responseDto.addResultRule(new ResultRulesResponseDto(r.getPpn(), r.getMessages())));
 
                 return responseDto;
             }

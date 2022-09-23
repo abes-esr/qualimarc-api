@@ -1,6 +1,7 @@
 package fr.abes.qualimarc.web.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
@@ -51,15 +52,18 @@ public class WebDtoMapperTest {
         resultAnalyse.addPpnInconnu("333333333");
 
         ResultRules result1 = new ResultRules("111111111");
+        result1.setFamilleDocument(new FamilleDocument("A", "Monographie"));
         result1.addMessage("Message 1");
         result1.addMessage("Message 2");
 
         ResultRules result2 = new ResultRules("888888888");
+        result2.setFamilleDocument(new FamilleDocument("BD", "Ressource Continue"));
         result2.addMessage("Message 3");
         result2.addMessage("Message 4");
         result2.addMessage("Message 5");
 
         ResultRules result3 = new ResultRules("777777777");
+        result3.setFamilleDocument(new FamilleDocument("O", "Doc Elec"));
         result3.addMessage("Message 6");
 
         resultAnalyse.addResultRule(result1);
@@ -179,14 +183,15 @@ public class WebDtoMapperTest {
     }
 
     /**
-     * Test du mapper converterEditeurCreeWebDtoTest
+     * Test du mapper converterResultAnalyseTest
      */
     @Test
-    @DisplayName("Test Mapper converterEditeurCreeWebDtoTest")
-    void converterEditeurCreeWebDtoTest() {
+    @DisplayName("Test Mapper converterResultAnalyseTest")
+    void converterResultAnalyseTest() {
         //  Préparation d'un objet ResultAnalyse
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         ResultRules resultRules = new ResultRules("123456789");
+        resultRules.setFamilleDocument(new FamilleDocument("A", "Monographie"));
         resultAnalyse.addResultRule(resultRules);
         resultAnalyse.addPpnAnalyse("4");
         resultAnalyse.addPpnErrone("1");
@@ -198,6 +203,7 @@ public class WebDtoMapperTest {
 
         //  Contrôle de la bonne conformité des résultats
         Assertions.assertEquals(resultAnalyse.getResultRules().get(0).getPpn(), responseDto.getResultRules().get(0).getPpn());
+        Assertions.assertEquals(resultAnalyse.getResultRules().get(0).getFamilleDocument().getLibelle(), responseDto.getResultRules().get(0).getTypeDocument());
         Assertions.assertEquals(resultAnalyse.getPpnAnalyses().size(), responseDto.getNbPpnAnalyses());
         Assertions.assertEquals(resultAnalyse.getPpnErrones().size(), responseDto.getNbPpnErrones());
         Assertions.assertEquals(resultAnalyse.getPpnOk().size(), responseDto.getNbPpnOk());
