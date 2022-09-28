@@ -12,6 +12,7 @@ import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
+import fr.abes.qualimarc.web.dto.RuleResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.*;
 import lombok.SneakyThrows;
 import org.modelmapper.Converter;
@@ -134,6 +135,9 @@ public class WebDtoMapper {
 
                 source.getResultRules().forEach(resultRules -> {
                     ResultRulesResponseDto resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());
+                    resultRules.getDetailErreurs().forEach(detailErreur -> {
+                        resultRulesResponseDto.addDetailErreur(new RuleResponseDto(detailErreur.getId(),detailErreur.getZoneUnm1(),detailErreur.getZoneUnm2(),detailErreur.getPriority().toString(),detailErreur.getMessage()));
+                    });
                     resultRulesResponseDto.setAuteur(resultRules.getAuteur());
                     resultRulesResponseDto.setTitre(resultRules.getTitre());
                     if(resultRules.getIsbn() != null)

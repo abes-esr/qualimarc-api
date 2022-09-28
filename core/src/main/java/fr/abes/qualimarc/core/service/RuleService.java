@@ -10,7 +10,9 @@ import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
+import fr.abes.qualimarc.core.model.resultats.ResultRule;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.RulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
@@ -59,9 +61,11 @@ public class RuleService {
             } catch (SQLException | IOException ex) {
                 result.addMessage("Erreur d'accès à la base de données sur PPN : " + ppn);
                 resultAnalyse.addPpnInconnu(ppn);
+                resultAnalyse.addResultRule(result);
             } catch (IllegalPpnException ex) {
                 resultAnalyse.addPpnInconnu(ppn);
                 result.addMessage(ex.getMessage());
+                resultAnalyse.addResultRule(result);
             }
         }
         return resultAnalyse;
@@ -83,7 +87,12 @@ public class RuleService {
 
         //si la règle est valide, alors on renvoie le message
         if (rule.isValid(notice)) {
-            result.addMessage(rule.getMessage());
+            ResultRule resultRule = new ResultRule(rule.getId(),rule.getZone(),rule.getPriority(),rule.getMessage());
+            //si la règle travaille sur deux zones
+            if(rule instanceof NombreSousZone)
+                resultRule.setZoneUnm2(((NombreSousZone) rule).getZoneCible());
+
+            result.addDetailErreur(resultRule);
             return false;
         }
         return true;

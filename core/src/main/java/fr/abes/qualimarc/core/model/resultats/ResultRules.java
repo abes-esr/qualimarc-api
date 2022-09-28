@@ -18,13 +18,19 @@ public class ResultRules {
     private String auteur;
     private String isbn;
     private List<String> messages;
+    private List<ResultRule> detailErreurs;
 
     public ResultRules(String ppn) {
         this.ppn = ppn;
         this.messages = new ArrayList<>();
+        this.detailErreurs = new ArrayList<>();
     }
 
     public void addMessage(String message) {
         this.messages.add(message);
+    }
+
+    public void addDetailErreur(ResultRule resultRule){
+        this.detailErreurs.add(resultRule);
     }
 }

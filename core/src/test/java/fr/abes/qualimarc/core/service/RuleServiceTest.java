@@ -126,13 +126,21 @@ class RuleServiceTest {
 
         ResultRules result1 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("111111111")).findFirst().get();
         Assertions.assertEquals("BD", result1.getFamilleDocument().getId());
-        Assertions.assertEquals(1, result1.getMessages().size());
-        Assertions.assertEquals("La zone 011 est absente", result1.getMessages().get(0));
+        Assertions.assertEquals(0, result1.getMessages().size());
+        Assertions.assertEquals(1, result1.getDetailErreurs().size());
+        Assertions.assertEquals("La zone 011 est absente", result1.getDetailErreurs().get(0).getMessage());
+        Assertions.assertEquals("011",result1.getDetailErreurs().get(0).getZoneUnm1());
+        Assertions.assertNull(result1.getDetailErreurs().get(0).getZoneUnm2());
+        Assertions.assertEquals(Priority.P1,result1.getDetailErreurs().get(0).getPriority());
 
         ResultRules result3 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("333333333")).findFirst().get();
         Assertions.assertEquals("O", result3.getFamilleDocument().getId());
-        Assertions.assertEquals(1, result3.getMessages().size());
-        Assertions.assertEquals("La zone 011 est absente", result3.getMessages().get(0));
+        Assertions.assertEquals(0, result3.getMessages().size());
+        Assertions.assertEquals(1, result3.getDetailErreurs().size());
+        Assertions.assertEquals("La zone 011 est absente", result3.getDetailErreurs().get(0).getMessage());
+        Assertions.assertEquals("011",result3.getDetailErreurs().get(0).getZoneUnm1());
+        Assertions.assertNull(result3.getDetailErreurs().get(0).getZoneUnm2());
+        Assertions.assertEquals(Priority.P1,result3.getDetailErreurs().get(0).getPriority());
 
         Assertions.assertEquals("Titre non renseigné", result1.getTitre());
         Assertions.assertEquals("Auteur non renseigné", result1.getAuteur());
@@ -156,7 +164,8 @@ class RuleServiceTest {
         Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
 
         List<ResultRules> resultat = resultAnalyse.getResultRules();
-        Assertions.assertEquals(0, resultat.size());
+        Assertions.assertEquals(1, resultat.size());
+        Assertions.assertEquals("le PPN 111111111 n'existe pas", resultAnalyse.getResultRules().get(0).getMessages().get(0));
     }
 
     @Test
@@ -170,7 +179,10 @@ class RuleServiceTest {
         Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
 
         List<ResultRules> resultat = resultAnalyse.getResultRules();
-        Assertions.assertEquals(0, resultat.size());
+        Assertions.assertEquals(1, resultat.size());
+
+        Assertions.assertEquals("Erreur d'accès à la base de données sur PPN : 111111111", resultAnalyse.getResultRules().get(0).getMessages().get(0));
+
     }
 
     @Test

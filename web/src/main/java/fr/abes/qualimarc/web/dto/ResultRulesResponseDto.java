@@ -28,18 +28,22 @@ public class ResultRulesResponseDto {
     @JsonProperty("messages")
     private List<String> messages;
 
+    @JsonProperty("detailerreurs")
+    private List<RuleResponseDto> detailerreurs;
+
     public ResultRulesResponseDto() {
         this.messages = new ArrayList<>();
+        this.detailerreurs = new ArrayList<>();
     }
-
-//    public ResultRulesResponseDto(String ppn, List<String> messages) {
-//        this.ppn = ppn;
-//        this.messages = messages;
-//    }
 
     public ResultRulesResponseDto(String ppn,String typeDocument, List<String> messages) {
         this.ppn = ppn;
         this.typeDocument = typeDocument;
         this.messages = messages;
+        this.detailerreurs = new ArrayList<>();
+    }
+
+    public void addDetailErreur(RuleResponseDto ruleResponseDto){
+        this.detailerreurs.add(ruleResponseDto);
     }
 }

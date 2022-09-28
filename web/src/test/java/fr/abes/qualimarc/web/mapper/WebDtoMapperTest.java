@@ -7,8 +7,10 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
+import fr.abes.qualimarc.core.model.resultats.ResultRule;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.utils.Operateur;
+import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.*;
@@ -195,6 +197,10 @@ public class WebDtoMapperTest {
         resultRules.setAuteur("Auteur test");
         resultRules.setIsbn("Isbn test");
         resultRules.setFamilleDocument(new FamilleDocument("A", "Monographie"));
+        resultRules.addDetailErreur(new ResultRule(1,"010", Priority.P1,"Message TEST"));
+        ResultRule resultRule2 = new ResultRule(2,"302", Priority.P2,"Message TEST2");
+        resultRule2.setZoneUnm2("200");
+        resultRules.addDetailErreur(resultRule2);
         resultAnalyse.addResultRule(resultRules);
         resultAnalyse.addPpnAnalyse("4");
         resultAnalyse.addPpnErrone("1");
@@ -211,8 +217,21 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(resultAnalyse.getPpnErrones().size(), responseDto.getNbPpnErrones());
         Assertions.assertEquals(resultAnalyse.getPpnOk().size(), responseDto.getNbPpnOk());
         Assertions.assertEquals(resultAnalyse.getPpnInconnus().size(), responseDto.getNbPpnInconnus());
+
         Assertions.assertEquals(resultRules.getTitre(), responseDto.getResultRules().get(0).getTitre());
         Assertions.assertEquals(resultRules.getAuteur(), responseDto.getResultRules().get(0).getAuteur());
         Assertions.assertEquals(resultRules.getIsbn(), responseDto.getResultRules().get(0).getIsbn());
+
+        Assertions.assertEquals(2,responseDto.getResultRules().get(0).getDetailerreurs().size());
+        Assertions.assertEquals("Message TEST",responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 1).findFirst().get().getMessage());
+        Assertions.assertEquals("Message TEST2",responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst().get().getMessage());
+        Assertions.assertEquals(Priority.P1.toString(),responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 1).findFirst().get().getPriority());
+        Assertions.assertEquals(Priority.P2.toString(),responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst().get().getPriority());
+        Assertions.assertEquals("010",responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 1).findFirst().get().getZoneUnm1());
+        Assertions.assertEquals("302",responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst().get().getZoneUnm1());
+        Assertions.assertNull(responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 1).findFirst().get().getZoneUnm2());
+        Assertions.assertEquals("200",responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst().get().getZoneUnm2());
+
+
     }
 }
