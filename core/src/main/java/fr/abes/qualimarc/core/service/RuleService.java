@@ -37,7 +37,7 @@ public class RuleService {
     @Autowired
     private RulesRepository rulesRepository;
 
-    public ResultAnalyse checkRulesOnNotices(List<String> ppns, Set<Rule> rulesList) {
+    public ResultAnalyse checkRulesOnNotices(List<String> ppns, Set<Rule> rulesList){
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         for (String ppn : ppns) {
             boolean isOk = true;
@@ -79,11 +79,7 @@ public class RuleService {
         }catch ( ZoneNotFoundException e){
             result.setAuteur(e.getMessage());
         }
-        try {
-            result.setIsbn(notice.getIsbn());
-        }catch ( ZoneNotFoundException e){
-            result.setIsbn(e.getMessage());
-        }
+        result.setIsbn(notice.getIsbn());
 
         //si la règle est valide, alors on renvoie le message
         if (rule.isValid(notice)) {

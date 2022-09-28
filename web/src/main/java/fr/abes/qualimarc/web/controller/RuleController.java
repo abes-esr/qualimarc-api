@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.web.controller;
 
+import fr.abes.qualimarc.core.exception.noticexml.ZoneNotFoundException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;

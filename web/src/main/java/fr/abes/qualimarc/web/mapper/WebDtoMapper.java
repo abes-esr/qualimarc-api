@@ -136,7 +136,8 @@ public class WebDtoMapper {
                     ResultRulesResponseDto resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());
                     resultRulesResponseDto.setAuteur(resultRules.getAuteur());
                     resultRulesResponseDto.setTitre(resultRules.getTitre());
-                    resultRulesResponseDto.setIsbn(resultRules.getIsbn());
+                    if(resultRules.getIsbn() != null)
+                        resultRulesResponseDto.setIsbn(resultRules.getIsbn());
                     responseDto.addResultRule(resultRulesResponseDto);
                 });
 

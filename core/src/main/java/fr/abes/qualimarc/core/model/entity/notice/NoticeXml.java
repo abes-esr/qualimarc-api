@@ -45,7 +45,7 @@ public class NoticeXml {
                 return sousZone_a.get().getValue();
             }
         }
-        throw new TitreNotFoundException("titre absent dans la notice");
+        throw new TitreNotFoundException("Titre non renseigné");
     }
 
     public String getAuteur() throws ZoneNotFoundException {
@@ -56,10 +56,10 @@ public class NoticeXml {
                 return sousZone_f.get().getValue();
             }
         }
-        throw new AuteurNotFoundException("auteur absent dans la notice");
+        throw new AuteurNotFoundException("Auteur non renseigné");
     }
 
-    public String getIsbn() throws ZoneNotFoundException {
+    public String getIsbn(){
         Optional<Datafield> zone010 = this.datafields.stream().filter(datafield -> datafield.getTag().equals("010")).findFirst();
         if(zone010.isPresent()){
             Optional<SubField> sousZone_a_A = zone010.get().getSubFields().stream().filter(subField -> subField.getCode().equals("a") || subField.getCode().equals("A")).findFirst();
@@ -67,7 +67,7 @@ public class NoticeXml {
                 return sousZone_a_A.get().getValue();
             }
         }
-        throw new IsbnNotFoundException("isbn absent dans la notice");
+        return null;
     }
 
 

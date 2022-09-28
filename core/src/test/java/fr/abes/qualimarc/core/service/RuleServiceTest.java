@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
+import fr.abes.qualimarc.core.exception.noticexml.ZoneNotFoundException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
@@ -99,7 +100,7 @@ class RuleServiceTest {
     }
 
     @Test
-    void checkRulesOnNoticesAllOk() throws IOException, SQLException {
+    void checkRulesOnNoticesAllOk() throws IOException, SQLException{
         List<String> ppns = new ArrayList<>();
         ppns.add("111111111");
         ppns.add("222222222");
@@ -133,13 +134,13 @@ class RuleServiceTest {
         Assertions.assertEquals(1, result3.getMessages().size());
         Assertions.assertEquals("La zone 011 est absente", result3.getMessages().get(0));
 
-        Assertions.assertEquals("titre absent dans la notice", result1.getTitre());
-        Assertions.assertEquals("auteur absent dans la notice", result1.getAuteur());
+        Assertions.assertEquals("Titre non renseigné", result1.getTitre());
+        Assertions.assertEquals("Auteur non renseigné", result1.getAuteur());
         Assertions.assertEquals("978-2-7597-0105-6", result1.getIsbn());
 
         Assertions.assertEquals("Titre test", result3.getTitre());
         Assertions.assertEquals("Auteur test", result3.getAuteur());
-        Assertions.assertEquals("isbn absent dans la notice", result3.getIsbn());
+        Assertions.assertNull(result3.getIsbn());
 
     }
 

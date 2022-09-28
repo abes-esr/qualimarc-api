@@ -147,7 +147,7 @@ class NoticeXmlTest {
 
 
     @Test
-    void getIsbn() throws ZoneNotFoundException {
+    void getIsbn() {
         NoticeXml notice = new NoticeXml();
         notice.setLeader("");
         List<Datafield> datafields = new ArrayList<>();
