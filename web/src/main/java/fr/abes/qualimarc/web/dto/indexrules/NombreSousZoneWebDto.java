@@ -2,14 +2,13 @@ package fr.abes.qualimarc.web.dto.indexrules;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fr.abes.qualimarc.core.utils.Operateur;
-import fr.abes.qualimarc.core.utils.Priority;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @Getter
@@ -19,18 +18,21 @@ import java.util.List;
 public class NombreSousZoneWebDto extends RulesWebDto {
 
     @JsonProperty(value = "souszone")
+    @Pattern(regexp = "(\\b([a-zA-Z]{0,1})\\b)(\\b([0-9]{0,1})\\b)", message = "Le champ souszone ne peut contenir qu'une lettre (en minuscule ou majuscule), ou un chiffre.")
     @NotNull(message = "Le champ souszone est obligatoire")
     private String sousZone;
 
     @JsonProperty(value = "zonecible")
+    @Pattern(regexp = "\\b([A-Z]{0,1}[0-9]{3})\\b", message = "Le champ zone peut contenir : soit trois chiffres, soit une lettre majuscule suivie de trois chiffres.")
     @NotNull(message = "Le champ zonecible est obligatoire")
     private String zoneCible;
 
     @JsonProperty(value = "souszonecible")
+    @Pattern(regexp = "(\\b([a-zA-Z]{0,1})\\b)(\\b([0-9]{0,1})\\b)", message = "Le champ souszone peut contenir qu'une lettre (en minuscule ou majuscule), ou un chiffre.")
     @NotNull(message = "Le champ souszonecible est obligatoire")
     private String sousZoneCible;
 
-    public NombreSousZoneWebDto(Integer id, Integer idExcel, String message, String zone, Priority priority, List<String> typesDoc, String sousZone, String zoneCible, String sousZoneCible) {
+    public NombreSousZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZone, String zoneCible, String sousZoneCible) {
         super(id, idExcel, message, zone, priority, typesDoc);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;

@@ -12,6 +12,10 @@ import java.util.List;
 public class ResultRulesResponseDto {
     @JsonProperty("ppn")
     private String ppn;
+
+    @JsonProperty("typeDocument")
+    private String typeDocument;
+
     @JsonProperty("messages")
     private List<String> messages;
 
@@ -19,8 +23,14 @@ public class ResultRulesResponseDto {
         this.messages = new ArrayList<>();
     }
 
-    public ResultRulesResponseDto(String ppn, List<String> messages) {
+//    public ResultRulesResponseDto(String ppn, List<String> messages) {
+//        this.ppn = ppn;
+//        this.messages = messages;
+//    }
+
+    public ResultRulesResponseDto(String ppn,String typeDocument, List<String> messages) {
         this.ppn = ppn;
+        this.typeDocument = typeDocument;
         this.messages = messages;
     }
 }
