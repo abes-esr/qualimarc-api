@@ -191,6 +191,9 @@ public class WebDtoMapperTest {
         //  Préparation d'un objet ResultAnalyse
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         ResultRules resultRules = new ResultRules("123456789");
+        resultRules.setTitre("Titre test");
+        resultRules.setAuteur("Auteur test");
+        resultRules.setIsbn("Isbn test");
         resultRules.setFamilleDocument(new FamilleDocument("A", "Monographie"));
         resultAnalyse.addResultRule(resultRules);
         resultAnalyse.addPpnAnalyse("4");
@@ -208,5 +211,8 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(resultAnalyse.getPpnErrones().size(), responseDto.getNbPpnErrones());
         Assertions.assertEquals(resultAnalyse.getPpnOk().size(), responseDto.getNbPpnOk());
         Assertions.assertEquals(resultAnalyse.getPpnInconnus().size(), responseDto.getNbPpnInconnus());
+        Assertions.assertEquals(resultRules.getTitre(), responseDto.getResultRules().get(0).getTitre());
+        Assertions.assertEquals(resultRules.getAuteur(), responseDto.getResultRules().get(0).getAuteur());
+        Assertions.assertEquals(resultRules.getIsbn(), responseDto.getResultRules().get(0).getIsbn());
     }
 }
