@@ -134,6 +134,9 @@ public class WebDtoMapper {
 
                 source.getResultRules().forEach(resultRules -> {
                     ResultRulesResponseDto resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());
+                    resultRulesResponseDto.setAuteur(resultRules.getAuteur());
+                    resultRulesResponseDto.setTitre(resultRules.getTitre());
+                    resultRulesResponseDto.setIsbn(resultRules.getIsbn());
                     responseDto.addResultRule(resultRulesResponseDto);
                 });
 

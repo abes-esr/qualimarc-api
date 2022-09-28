@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.core.model.resultats;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,9 @@ public class ResultRules {
     private String ppn;
 
     private FamilleDocument familleDocument;
+    private String titre;
+    private String auteur;
+    private String isbn;
     private List<String> messages;
 
     public ResultRules(String ppn) {

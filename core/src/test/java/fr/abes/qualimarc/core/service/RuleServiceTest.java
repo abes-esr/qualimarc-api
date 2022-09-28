@@ -133,6 +133,14 @@ class RuleServiceTest {
         Assertions.assertEquals(1, result3.getMessages().size());
         Assertions.assertEquals("La zone 011 est absente", result3.getMessages().get(0));
 
+        Assertions.assertEquals("titre absent dans la notice", result1.getTitre());
+        Assertions.assertEquals("auteur absent dans la notice", result1.getAuteur());
+        Assertions.assertEquals("978-2-7597-0105-6", result1.getIsbn());
+
+        Assertions.assertEquals("Titre test", result3.getTitre());
+        Assertions.assertEquals("Auteur test", result3.getAuteur());
+        Assertions.assertEquals("isbn absent dans la notice", result3.getIsbn());
+
     }
 
     @Test

@@ -16,6 +16,15 @@ public class ResultRulesResponseDto {
     @JsonProperty("typeDocument")
     private String typeDocument;
 
+    @JsonProperty("titre")
+    private String titre;
+
+    @JsonProperty("auteur")
+    private String auteur;
+
+    @JsonProperty("isbn")
+    private String isbn;
+
     @JsonProperty("messages")
     private List<String> messages;
 
