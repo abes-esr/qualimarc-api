@@ -134,15 +134,20 @@ public class WebDtoMapper {
                 ResultAnalyseResponseDto responseDto = new ResultAnalyseResponseDto();
 
                 source.getResultRules().forEach(resultRules -> {
-                    ResultRulesResponseDto resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());
-                    resultRules.getDetailErreurs().forEach(detailErreur -> {
-                        resultRulesResponseDto.addDetailErreur(new RuleResponseDto(detailErreur.getId(),detailErreur.getZoneUnm1(),detailErreur.getZoneUnm2(),detailErreur.getPriority().toString(),detailErreur.getMessage()));
-                    });
-                    resultRulesResponseDto.setAuteur(resultRules.getAuteur());
-                    resultRulesResponseDto.setTitre(resultRules.getTitre());
-                    if(resultRules.getIsbn() != null)
-                        resultRulesResponseDto.setIsbn(resultRules.getIsbn());
-                    responseDto.addResultRule(resultRulesResponseDto);
+                    ResultRulesResponseDto resultRulesResponseDto;
+                    if (resultRules.getFamilleDocument() != null) {
+                        resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());
+                    } else {
+                        resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getMessages());
+                    }
+                        resultRules.getDetailErreurs().forEach(detailErreur -> {
+                            resultRulesResponseDto.addDetailErreur(new RuleResponseDto(detailErreur.getId(),detailErreur.getZoneUnm1(),detailErreur.getZoneUnm2(),detailErreur.getPriority().toString(),detailErreur.getMessage()));
+                        });
+                        resultRulesResponseDto.setAuteur(resultRules.getAuteur());
+                        resultRulesResponseDto.setTitre(resultRules.getTitre());
+                        if(resultRules.getIsbn() != null)
+                            resultRulesResponseDto.setIsbn(resultRules.getIsbn());
+                        responseDto.addResultRule(resultRulesResponseDto);
                 });
 
                 responseDto.setPpnAnalyses(new ArrayList<>(source.getPpnAnalyses()));

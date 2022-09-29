@@ -43,6 +43,11 @@ public class ResultRulesResponseDto {
         this.detailerreurs = new ArrayList<>();
     }
 
+    public ResultRulesResponseDto(String ppn, List<String> messages) {
+        this.ppn = ppn;
+        this.messages = messages;
+    }
+
     public void addDetailErreur(RuleResponseDto ruleResponseDto){
         this.detailerreurs.add(ruleResponseDto);
     }
