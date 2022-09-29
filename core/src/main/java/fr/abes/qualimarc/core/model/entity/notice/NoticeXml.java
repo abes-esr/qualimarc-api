@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,7 +71,16 @@ public class NoticeXml {
         return null;
     }
 
-
+    public String getOcn() {
+        Optional<Datafield> zone034 = this.datafields.stream().filter(datafield -> datafield.getTag().equals("034")).findFirst();
+        if(zone034.isPresent()){
+            Optional<SubField> sousZonea = zone034.get().getSubFields().stream().filter(subField -> subField.getCode().equals("a") && subField.getValue().startsWith("(OCoLC)")).findFirst();
+            if(sousZonea.isPresent()){
+                return sousZonea.get().getValue().substring(7);
+            }
+        }
+        return null;
+    }
     /**
      * Retourne le type de document de la notice en se basant sur les caractères en position 6 et 7 du leader
      *

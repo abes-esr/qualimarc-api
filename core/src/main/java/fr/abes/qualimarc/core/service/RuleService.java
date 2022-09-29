@@ -84,6 +84,7 @@ public class RuleService {
             result.setAuteur(e.getMessage());
         }
         result.setIsbn(notice.getIsbn());
+        result.setOcn(notice.getOcn());
 
         //si la règle est valide, alors on renvoie le message
         if (rule.isValid(notice)) {

@@ -197,7 +197,44 @@ class NoticeXmlTest {
         datafields.add(datafield);
         notice.setDatafields(datafields);
 
-        Assertions.assertThrows(ZoneNotFoundException.class, notice::getIsbn);
-        Assertions.assertThrows(IsbnNotFoundException.class, notice::getIsbn);
+        Assertions.assertNull(notice.getIsbn());
     }
+
+    @Test
+    void getOcn() {
+        NoticeXml notice = new NoticeXml();
+        notice.setLeader("");
+        List<Datafield> datafields = new ArrayList<>();
+        Datafield datafield = new Datafield();
+        datafield.setTag("034");
+        List<SubField> subFields = new ArrayList<>();
+        SubField subField = new SubField();
+        subField.setCode("a");
+        subField.setValue("(OCoLC)123456789");
+        subFields.add(subField);
+        datafield.setSubFields(subFields);
+        datafields.add(datafield);
+        notice.setDatafields(datafields);
+
+        Assertions.assertEquals("123456789", notice.getOcn());
+    }
+
+    @Test
+    void getOcnWithoutOcn() {
+        NoticeXml notice = new NoticeXml();
+        notice.setLeader("");
+        List<Datafield> datafields = new ArrayList<>();
+        Datafield datafield = new Datafield();
+        datafield.setTag("035");
+        List<SubField> subFields = new ArrayList<>();
+        SubField subField = new SubField();
+        subField.setCode("b");
+        subField.setValue("je ne suis pas un ocn");
+        subFields.add(subField);
+        datafield.setSubFields(subFields);
+        datafields.add(datafield);
+        notice.setDatafields(datafields);
+        Assertions.assertNull(notice.getOcn());
+    }
+    
 }
