@@ -30,10 +30,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @SpringBootTest(classes = {RuleService.class})
 class RuleServiceTest {
@@ -145,6 +142,7 @@ class RuleServiceTest {
         Assertions.assertEquals("Titre non renseigné", result1.getTitre());
         Assertions.assertEquals("Auteur non renseigné", result1.getAuteur());
         Assertions.assertEquals("978-2-7597-0105-6", result1.getIsbn());
+        Assertions.assertEquals("123456789", result1.getOcn());
 
         Assertions.assertEquals("Titre test", result3.getTitre());
         Assertions.assertEquals("Auteur test", result3.getAuteur());
@@ -328,6 +326,6 @@ class RuleServiceTest {
 
         Set<Rule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, typesDoc, ruleSets);
 
-        Assertions.assertIterableEquals(result, rulesIn);
+        Assertions.assertIterableEquals(Arrays.asList(result.toArray()), Arrays.asList(rulesIn.toArray()));
     }
 }

@@ -6,4 +6,7 @@
         <subfield code="b">br</subfield>
         <subfield code="d">19,90 EUR</subfield>
     </datafield>
+    <datafield tag="034" ind1=" " ind2=" ">
+        <subfield code="a">(OCoLC)123456789</subfield>
+    </datafield>
 </record>

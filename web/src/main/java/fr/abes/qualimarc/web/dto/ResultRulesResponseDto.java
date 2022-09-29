@@ -25,6 +25,9 @@ public class ResultRulesResponseDto {
     @JsonProperty("isbn")
     private String isbn;
 
+    @JsonProperty("ocn")
+    private String ocn;
+
     @JsonProperty("messages")
     private List<String> messages;
 

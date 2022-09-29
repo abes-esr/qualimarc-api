@@ -147,6 +147,9 @@ public class WebDtoMapper {
                         resultRulesResponseDto.setTitre(resultRules.getTitre());
                         if(resultRules.getIsbn() != null)
                             resultRulesResponseDto.setIsbn(resultRules.getIsbn());
+                        if (resultRules.getOcn() != null) {
+                            resultRulesResponseDto.setOcn(resultRules.getOcn());
+                        }
                         responseDto.addResultRule(resultRulesResponseDto);
                 });
 
