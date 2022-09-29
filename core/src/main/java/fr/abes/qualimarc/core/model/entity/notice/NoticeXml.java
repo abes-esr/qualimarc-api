@@ -3,6 +3,10 @@ package fr.abes.qualimarc.core.model.entity.notice;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
+import fr.abes.qualimarc.core.exception.noticexml.AuteurNotFoundException;
+import fr.abes.qualimarc.core.exception.noticexml.IsbnNotFoundException;
+import fr.abes.qualimarc.core.exception.noticexml.TitreNotFoundException;
+import fr.abes.qualimarc.core.exception.noticexml.ZoneNotFoundException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,6 +36,40 @@ public class NoticeXml {
     public String toString() {
         return "Notice {" + "leader=" + leader + "}";
     }
+
+    public String getTitre() throws ZoneNotFoundException {
+        Optional<Datafield> zone200 = this.datafields.stream().filter(datafield -> datafield.getTag().equals("200")).findFirst();
+        if(zone200.isPresent()){
+            Optional<SubField> sousZone_a = zone200.get().getSubFields().stream().filter(subField -> subField.getCode().equals("a")).findFirst();
+            if(sousZone_a.isPresent()){
+                return sousZone_a.get().getValue();
+            }
+        }
+        throw new TitreNotFoundException("Titre non renseigné");
+    }
+
+    public String getAuteur() throws ZoneNotFoundException {
+        Optional<Datafield> zone200 = this.datafields.stream().filter(datafield -> datafield.getTag().equals("200")).findFirst();
+        if(zone200.isPresent()){
+            Optional<SubField> sousZone_f = zone200.get().getSubFields().stream().filter(subField -> subField.getCode().equals("f")).findFirst();
+            if(sousZone_f.isPresent()){
+                return sousZone_f.get().getValue();
+            }
+        }
+        throw new AuteurNotFoundException("Auteur non renseigné");
+    }
+
+    public String getIsbn(){
+        Optional<Datafield> zone010 = this.datafields.stream().filter(datafield -> datafield.getTag().equals("010")).findFirst();
+        if(zone010.isPresent()){
+            Optional<SubField> sousZone_a_A = zone010.get().getSubFields().stream().filter(subField -> subField.getCode().equals("a") || subField.getCode().equals("A")).findFirst();
+            if(sousZone_a_A.isPresent()){
+                return sousZone_a_A.get().getValue();
+            }
+        }
+        return null;
+    }
+
 
     /**
      * Retourne le type de document de la notice en se basant sur les caractères en position 6 et 7 du leader
