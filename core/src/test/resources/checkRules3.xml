@@ -4,4 +4,8 @@
     <datafield tag="012" ind1=" " ind2=" ">
         <subfield code="a">978-2-7597-0105-6</subfield>
     </datafield>
+    <datafield tag="200" ind1=" " ind2=" ">
+        <subfield code="a">Titre test</subfield>
+        <subfield code="f">Auteur test</subfield>
+    </datafield>
 </record>

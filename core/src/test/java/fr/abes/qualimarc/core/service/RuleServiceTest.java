@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
+import fr.abes.qualimarc.core.exception.noticexml.ZoneNotFoundException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
@@ -29,10 +30,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @SpringBootTest(classes = {RuleService.class})
 class RuleServiceTest {
@@ -57,12 +55,16 @@ class RuleServiceTest {
     @Value("classpath:checkRules3.xml")
     Resource xmlFileNotice3;
 
+    @Value("classpath:checkRulesDeletedPpn.xml")
+    Resource xmlFileNoticeDeleted;
+
     @Value("classpath:theseMono.xml")
     Resource xmlTheseMono;
 
     NoticeXml notice1;
     NoticeXml notice2;
     NoticeXml notice3;
+    NoticeXml noticeDeleted;
     NoticeXml theseMono;
 
     Set<Rule> listeRegles;
@@ -84,6 +86,9 @@ class RuleServiceTest {
         xml = IOUtils.toString(new FileInputStream(xmlFileNotice3.getFile()), StandardCharsets.UTF_8);
         notice3 = xmlMapper.readValue(xml, NoticeXml.class);
 
+        xml = IOUtils.toString(new FileInputStream(xmlFileNoticeDeleted.getFile()), StandardCharsets.UTF_8);
+        noticeDeleted = xmlMapper.readValue(xml, NoticeXml.class);
+
         xml = IOUtils.toString(new FileInputStream(xmlTheseMono.getFile()), StandardCharsets.UTF_8);
         theseMono = xmlMapper.readValue(xml, NoticeXml.class);
 
@@ -99,7 +104,7 @@ class RuleServiceTest {
     }
 
     @Test
-    void checkRulesOnNoticesAllOk() throws IOException, SQLException {
+    void checkRulesOnNoticesAllOk() throws IOException, SQLException{
         List<String> ppns = new ArrayList<>();
         ppns.add("111111111");
         ppns.add("222222222");
@@ -125,13 +130,30 @@ class RuleServiceTest {
 
         ResultRules result1 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("111111111")).findFirst().get();
         Assertions.assertEquals("BD", result1.getFamilleDocument().getId());
-        Assertions.assertEquals(1, result1.getMessages().size());
-        Assertions.assertEquals("La zone 011 est absente", result1.getMessages().get(0));
+        Assertions.assertEquals(0, result1.getMessages().size());
+        Assertions.assertEquals(1, result1.getDetailErreurs().size());
+        Assertions.assertEquals("La zone 011 est absente", result1.getDetailErreurs().get(0).getMessage());
+        Assertions.assertEquals("011",result1.getDetailErreurs().get(0).getZoneUnm1());
+        Assertions.assertNull(result1.getDetailErreurs().get(0).getZoneUnm2());
+        Assertions.assertEquals(Priority.P1,result1.getDetailErreurs().get(0).getPriority());
 
         ResultRules result3 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("333333333")).findFirst().get();
         Assertions.assertEquals("O", result3.getFamilleDocument().getId());
-        Assertions.assertEquals(1, result3.getMessages().size());
-        Assertions.assertEquals("La zone 011 est absente", result3.getMessages().get(0));
+        Assertions.assertEquals(0, result3.getMessages().size());
+        Assertions.assertEquals(1, result3.getDetailErreurs().size());
+        Assertions.assertEquals("La zone 011 est absente", result3.getDetailErreurs().get(0).getMessage());
+        Assertions.assertEquals("011",result3.getDetailErreurs().get(0).getZoneUnm1());
+        Assertions.assertNull(result3.getDetailErreurs().get(0).getZoneUnm2());
+        Assertions.assertEquals(Priority.P1,result3.getDetailErreurs().get(0).getPriority());
+
+        Assertions.assertEquals("Titre non renseigné", result1.getTitre());
+        Assertions.assertEquals("Auteur non renseigné", result1.getAuteur());
+        Assertions.assertEquals("978-2-7597-0105-6", result1.getIsbn());
+        Assertions.assertEquals("123456789", result1.getOcn());
+
+        Assertions.assertEquals("Titre test", result3.getTitre());
+        Assertions.assertEquals("Auteur test", result3.getAuteur());
+        Assertions.assertNull(result3.getIsbn());
 
     }
 
@@ -147,7 +169,20 @@ class RuleServiceTest {
         Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
 
         List<ResultRules> resultat = resultAnalyse.getResultRules();
-        Assertions.assertEquals(0, resultat.size());
+        Assertions.assertEquals(1, resultat.size());
+        Assertions.assertEquals("le PPN 111111111 n'existe pas", resultAnalyse.getResultRules().get(0).getMessages().get(0));
+    }
+
+    @Test
+    void checkRulesOnNoticesDeletedPpn() throws IOException, SQLException {
+        List<String> ppns = new ArrayList<>();
+        ppns.add("111111111");
+
+        Mockito.when(noticeBibioService.getByPpn("111111111")).thenReturn(noticeDeleted);
+
+        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeRegles);
+
+        Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
     }
 
     @Test
@@ -161,7 +196,10 @@ class RuleServiceTest {
         Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
 
         List<ResultRules> resultat = resultAnalyse.getResultRules();
-        Assertions.assertEquals(0, resultat.size());
+        Assertions.assertEquals(1, resultat.size());
+
+        Assertions.assertEquals("Erreur d'accès à la base de données sur PPN : 111111111", resultAnalyse.getResultRules().get(0).getMessages().get(0));
+
     }
 
     @Test
@@ -307,6 +345,6 @@ class RuleServiceTest {
 
         Set<Rule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, typesDoc, ruleSets);
 
-        Assertions.assertIterableEquals(result, rulesIn);
+        Assertions.assertIterableEquals(Arrays.asList(result.toArray()), Arrays.asList(rulesIn.toArray()));
     }
 }

@@ -2,12 +2,17 @@ package fr.abes.qualimarc.core.service;
 
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
-import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
+import fr.abes.qualimarc.core.exception.noticexml.AuteurNotFoundException;
+import fr.abes.qualimarc.core.exception.noticexml.IsbnNotFoundException;
+import fr.abes.qualimarc.core.exception.noticexml.TitreNotFoundException;
+import fr.abes.qualimarc.core.exception.noticexml.ZoneNotFoundException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
+import fr.abes.qualimarc.core.model.resultats.ResultRule;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.RulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
@@ -22,7 +27,6 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class RuleService {
@@ -35,39 +39,68 @@ public class RuleService {
     @Autowired
     private RulesRepository rulesRepository;
 
-    public ResultAnalyse checkRulesOnNotices(List<String> ppns, Set<Rule> rulesList) {
+    public ResultAnalyse checkRulesOnNotices(List<String> ppns, Set<Rule> rulesList){
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         for (String ppn : ppns) {
             boolean isOk = true;
             ResultRules result = new ResultRules(ppn);
             try {
                 NoticeXml notice = serviceBibio.getByPpn(ppn);
-                resultAnalyse.addPpnAnalyse(ppn);
-                for (Rule rule : rulesList) {
-                    if (isRuleAppliedToNotice(notice, rule)) {
-                        result.setFamilleDocument(referenceService.getFamilleDocument(notice.getFamilleDocument()));
-                        //si la règle est valide, alors on renvoie le message
-                        if (rule.isValid(notice)) {
-                            result.addMessage(rule.getMessage());
-                            isOk = false;
+                if (notice.isDeleted()) {
+                    resultAnalyse.addPpnInconnu(ppn);
+                } else {
+                    resultAnalyse.addPpnAnalyse(ppn);
+                    for (Rule rule : rulesList) {
+                        if (isRuleAppliedToNotice(notice, rule)) {
+                            isOk &= constructResultRuleOnNotice(result, notice, rule);
                         }
                     }
-                }
-                if (isOk) {
-                    resultAnalyse.addPpnOk(ppn);
-                } else {
-                    resultAnalyse.addPpnErrone(ppn);
-                    resultAnalyse.addResultRule(result);
+                    if (isOk) {
+                        resultAnalyse.addPpnOk(ppn);
+                    } else {
+                        resultAnalyse.addPpnErrone(ppn);
+                        resultAnalyse.addResultRule(result);
+                    }
                 }
             } catch (SQLException | IOException ex) {
                 result.addMessage("Erreur d'accès à la base de données sur PPN : " + ppn);
                 resultAnalyse.addPpnInconnu(ppn);
+                resultAnalyse.addResultRule(result);
             } catch (IllegalPpnException ex) {
                 resultAnalyse.addPpnInconnu(ppn);
                 result.addMessage(ex.getMessage());
+                resultAnalyse.addResultRule(result);
             }
         }
         return resultAnalyse;
+    }
+
+    private boolean constructResultRuleOnNotice(ResultRules result, NoticeXml notice, Rule rule) {
+        result.setFamilleDocument(referenceService.getFamilleDocument(notice.getFamilleDocument()));
+        try {
+            result.setTitre(notice.getTitre());
+        } catch ( ZoneNotFoundException e) {
+            result.setTitre(e.getMessage());
+        }
+        try {
+            result.setAuteur(notice.getAuteur());
+        }catch ( ZoneNotFoundException e){
+            result.setAuteur(e.getMessage());
+        }
+        result.setIsbn(notice.getIsbn());
+        result.setOcn(notice.getOcn());
+
+        //si la règle est valide, alors on renvoie le message
+        if (rule.isValid(notice)) {
+            ResultRule resultRule = new ResultRule(rule.getId(),rule.getZone(),rule.getPriority(),rule.getMessage());
+            //si la règle travaille sur deux zones
+            if(rule instanceof NombreSousZone)
+                resultRule.setZoneUnm2(((NombreSousZone) rule).getZoneCible());
+
+            result.addDetailErreur(resultRule);
+            return false;
+        }
+        return true;
     }
 
     public boolean isRuleAppliedToNotice(NoticeXml notice, Rule rule) {

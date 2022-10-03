@@ -12,6 +12,7 @@ import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
+import fr.abes.qualimarc.web.dto.RuleResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.*;
 import lombok.SneakyThrows;
 import org.modelmapper.Converter;
@@ -133,8 +134,23 @@ public class WebDtoMapper {
                 ResultAnalyseResponseDto responseDto = new ResultAnalyseResponseDto();
 
                 source.getResultRules().forEach(resultRules -> {
-                    ResultRulesResponseDto resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());
-                    responseDto.addResultRule(resultRulesResponseDto);
+                    ResultRulesResponseDto resultRulesResponseDto;
+                    if (resultRules.getFamilleDocument() != null) {
+                        resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());
+                    } else {
+                        resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getMessages());
+                    }
+                        resultRules.getDetailErreurs().forEach(detailErreur -> {
+                            resultRulesResponseDto.addDetailErreur(new RuleResponseDto(detailErreur.getId(),detailErreur.getZoneUnm1(),detailErreur.getZoneUnm2(),detailErreur.getPriority().toString(),detailErreur.getMessage()));
+                        });
+                        resultRulesResponseDto.setAuteur(resultRules.getAuteur());
+                        resultRulesResponseDto.setTitre(resultRules.getTitre());
+                        if(resultRules.getIsbn() != null)
+                            resultRulesResponseDto.setIsbn(resultRules.getIsbn());
+                        if (resultRules.getOcn() != null) {
+                            resultRulesResponseDto.setOcn(resultRules.getOcn());
+                        }
+                        responseDto.addResultRule(resultRulesResponseDto);
                 });
 
                 responseDto.setPpnAnalyses(new ArrayList<>(source.getPpnAnalyses()));
