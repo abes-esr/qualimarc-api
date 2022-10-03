@@ -91,6 +91,7 @@ public class NoticeXml {
     }
 
     public String getDateModification() throws ParseException {
+        //TODO : vérifier les conditions de présences des zones 004 et 005 en fonction de la présence d'une modification dans la notice
         DateFormat dateFormatIn = new SimpleDateFormat("yyyyMMdd");
         DateFormat dateFormatOut = new SimpleDateFormat("dd/MM/yyyy");
         Optional<Controlfield> zone005 = this.controlfields.stream().filter(zone -> zone.getTag().equals("005")).findFirst();
