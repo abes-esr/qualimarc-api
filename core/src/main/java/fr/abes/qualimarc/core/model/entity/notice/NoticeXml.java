@@ -81,6 +81,10 @@ public class NoticeXml {
         }
         return null;
     }
+
+    public boolean isDeleted() {
+        return leader.substring(5,6).equals("d");
+    }
     /**
      * Retourne le type de document de la notice en se basant sur les caractères en position 6 et 7 du leader
      *

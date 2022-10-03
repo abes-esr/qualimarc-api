@@ -236,5 +236,11 @@ class NoticeXmlTest {
         notice.setDatafields(datafields);
         Assertions.assertNull(notice.getOcn());
     }
-    
+
+    @Test
+    void isNoticeDeleted() {
+        NoticeXml notice = new NoticeXml();
+        notice.setLeader("     dam0 22        450 ");
+        Assertions.assertTrue(notice.isDeleted());
+    }
 }
