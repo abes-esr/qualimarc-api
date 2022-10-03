@@ -55,12 +55,16 @@ class RuleServiceTest {
     @Value("classpath:checkRules3.xml")
     Resource xmlFileNotice3;
 
+    @Value("classpath:checkRulesDeletedPpn.xml")
+    Resource xmlFileNoticeDeleted;
+
     @Value("classpath:theseMono.xml")
     Resource xmlTheseMono;
 
     NoticeXml notice1;
     NoticeXml notice2;
     NoticeXml notice3;
+    NoticeXml noticeDeleted;
     NoticeXml theseMono;
 
     Set<Rule> listeRegles;
@@ -81,6 +85,9 @@ class RuleServiceTest {
 
         xml = IOUtils.toString(new FileInputStream(xmlFileNotice3.getFile()), StandardCharsets.UTF_8);
         notice3 = xmlMapper.readValue(xml, NoticeXml.class);
+
+        xml = IOUtils.toString(new FileInputStream(xmlFileNoticeDeleted.getFile()), StandardCharsets.UTF_8);
+        noticeDeleted = xmlMapper.readValue(xml, NoticeXml.class);
 
         xml = IOUtils.toString(new FileInputStream(xmlTheseMono.getFile()), StandardCharsets.UTF_8);
         theseMono = xmlMapper.readValue(xml, NoticeXml.class);
@@ -164,6 +171,18 @@ class RuleServiceTest {
         List<ResultRules> resultat = resultAnalyse.getResultRules();
         Assertions.assertEquals(1, resultat.size());
         Assertions.assertEquals("le PPN 111111111 n'existe pas", resultAnalyse.getResultRules().get(0).getMessages().get(0));
+    }
+
+    @Test
+    void checkRulesOnNoticesDeletedPpn() throws IOException, SQLException {
+        List<String> ppns = new ArrayList<>();
+        ppns.add("111111111");
+
+        Mockito.when(noticeBibioService.getByPpn("111111111")).thenReturn(noticeDeleted);
+
+        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeRegles);
+
+        Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
     }
 
     @Test

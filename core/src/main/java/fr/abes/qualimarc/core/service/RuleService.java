@@ -46,17 +46,21 @@ public class RuleService {
             ResultRules result = new ResultRules(ppn);
             try {
                 NoticeXml notice = serviceBibio.getByPpn(ppn);
-                resultAnalyse.addPpnAnalyse(ppn);
-                for (Rule rule : rulesList) {
-                    if (isRuleAppliedToNotice(notice, rule)) {
-                        isOk &= constructResultRuleOnNotice(result, notice, rule);
-                    }
-                }
-                if (isOk) {
-                    resultAnalyse.addPpnOk(ppn);
+                if (notice.isDeleted()) {
+                    resultAnalyse.addPpnInconnu(ppn);
                 } else {
-                    resultAnalyse.addPpnErrone(ppn);
-                    resultAnalyse.addResultRule(result);
+                    resultAnalyse.addPpnAnalyse(ppn);
+                    for (Rule rule : rulesList) {
+                        if (isRuleAppliedToNotice(notice, rule)) {
+                            isOk &= constructResultRuleOnNotice(result, notice, rule);
+                        }
+                    }
+                    if (isOk) {
+                        resultAnalyse.addPpnOk(ppn);
+                    } else {
+                        resultAnalyse.addPpnErrone(ppn);
+                        resultAnalyse.addResultRule(result);
+                    }
                 }
             } catch (SQLException | IOException ex) {
                 result.addMessage("Erreur d'accès à la base de données sur PPN : " + ppn);
