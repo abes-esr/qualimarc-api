@@ -4,12 +4,15 @@ import fr.abes.qualimarc.core.exception.noticexml.AuteurNotFoundException;
 import fr.abes.qualimarc.core.exception.noticexml.IsbnNotFoundException;
 import fr.abes.qualimarc.core.exception.noticexml.TitreNotFoundException;
 import fr.abes.qualimarc.core.exception.noticexml.ZoneNotFoundException;
+import fr.abes.qualimarc.core.model.entity.notice.Controlfield;
 import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.notice.SubField;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -242,5 +245,54 @@ class NoticeXmlTest {
         NoticeXml notice = new NoticeXml();
         notice.setLeader("     dam0 22        450 ");
         Assertions.assertTrue(notice.isDeleted());
+    }
+
+    @Test
+    void getRcr() {
+        NoticeXml notice = new NoticeXml();
+        Controlfield controlfield = new Controlfield();
+        controlfield.setTag("007");
+        controlfield.setValue("341725201");
+        notice.setControlfields(Lists.newArrayList(controlfield));
+
+        Assertions.assertEquals("341725201", notice.getRcr());
+    }
+
+    @Test
+    void getDateModificationWith005() throws ParseException {
+        NoticeXml notice = new NoticeXml();
+        Controlfield controlfield = new Controlfield();
+        controlfield.setTag("005");
+        controlfield.setValue("20220407143046.000");
+        notice.setControlfields(Lists.newArrayList(controlfield));
+
+        Assertions.assertEquals("07/04/2022", notice.getDateModification());
+    }
+
+    @Test
+    void getDateModificationWith004And005() throws ParseException {
+        NoticeXml notice = new NoticeXml();
+        Controlfield controlfield004 = new Controlfield();
+        controlfield004.setTag("004");
+        controlfield004.setValue("19901122");
+
+        Controlfield controlfield005 = new Controlfield();
+        controlfield005.setTag("005");
+        controlfield005.setValue("20220407143046.000");
+        notice.setControlfields(Lists.newArrayList(controlfield004, controlfield005));
+
+        Assertions.assertEquals("07/04/2022", notice.getDateModification());
+    }
+
+    @Test
+    void getDateModificationWith004AndWithout005() throws ParseException {
+        NoticeXml notice = new NoticeXml();
+        Controlfield controlfield004 = new Controlfield();
+        controlfield004.setTag("004");
+        controlfield004.setValue("19901122");
+
+        notice.setControlfields(Lists.newArrayList(controlfield004));
+
+        Assertions.assertEquals("22/11/1990", notice.getDateModification());
     }
 }

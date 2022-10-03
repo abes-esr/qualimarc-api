@@ -146,13 +146,18 @@ class RuleServiceTest {
         Assertions.assertNull(result3.getDetailErreurs().get(0).getZoneUnm2());
         Assertions.assertEquals(Priority.P1,result3.getDetailErreurs().get(0).getPriority());
 
+
         Assertions.assertEquals("Titre non renseigné", result1.getTitre());
         Assertions.assertEquals("Auteur non renseigné", result1.getAuteur());
         Assertions.assertEquals("978-2-7597-0105-6", result1.getIsbn());
         Assertions.assertEquals("123456789", result1.getOcn());
+        Assertions.assertEquals("30/09/2022", result1.getDateModification());
+        Assertions.assertEquals("341725201", result1.getRcr());
 
         Assertions.assertEquals("Titre test", result3.getTitre());
         Assertions.assertEquals("Auteur test", result3.getAuteur());
+        Assertions.assertEquals("07/04/2022", result3.getDateModification());
+        Assertions.assertEquals("751052103", result3.getRcr());
         Assertions.assertNull(result3.getIsbn());
 
     }

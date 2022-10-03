@@ -17,6 +17,7 @@ import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.RulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
@@ -75,6 +76,7 @@ public class RuleService {
         return resultAnalyse;
     }
 
+    @SneakyThrows
     private boolean constructResultRuleOnNotice(ResultRules result, NoticeXml notice, Rule rule) {
         result.setFamilleDocument(referenceService.getFamilleDocument(notice.getFamilleDocument()));
         try {
@@ -89,7 +91,8 @@ public class RuleService {
         }
         result.setIsbn(notice.getIsbn());
         result.setOcn(notice.getOcn());
-
+        result.setDateModification(notice.getDateModification());
+        result.setRcr(notice.getRcr());
         //si la règle est valide, alors on renvoie le message
         if (rule.isValid(notice)) {
             ResultRule resultRule = new ResultRule(rule.getId(),rule.getZone(),rule.getPriority(),rule.getMessage());

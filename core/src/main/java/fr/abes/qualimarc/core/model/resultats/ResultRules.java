@@ -12,6 +12,8 @@ import java.util.List;
 public class ResultRules {
     private String ppn;
 
+    private String dateModification;
+    private String rcr;
     private FamilleDocument familleDocument;
     private String titre;
     private String auteur;

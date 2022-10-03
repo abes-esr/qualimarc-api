@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.swing.text.html.Option;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,6 +88,26 @@ public class NoticeXml {
 
     public boolean isDeleted() {
         return leader.substring(5,6).equals("d");
+    }
+
+    public String getDateModification() throws ParseException {
+        DateFormat dateFormatIn = new SimpleDateFormat("yyyyMMdd");
+        DateFormat dateFormatOut = new SimpleDateFormat("dd/MM/yyyy");
+        Optional<Controlfield> zone005 = this.controlfields.stream().filter(zone -> zone.getTag().equals("005")).findFirst();
+        if (zone005.isPresent()) {
+            String dateModif = zone005.get().getValue().substring(0, 8);
+            return dateFormatOut.format(dateFormatIn.parse(dateModif));
+        } else {
+            Optional<Controlfield> zone004 = this.controlfields.stream().filter(zone -> zone.getTag().equals("004")).findFirst();
+            if (zone004.isPresent()) {
+                return dateFormatOut.format(dateFormatIn.parse(zone004.get().getValue()));
+            }
+        }
+        return null;
+    }
+
+    public String getRcr() {
+        return this.controlfields.stream().filter(zone -> zone.getTag().equals("007")).findFirst().get().getValue();
     }
     /**
      * Retourne le type de document de la notice en se basant sur les caractères en position 6 et 7 du leader
