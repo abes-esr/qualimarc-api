@@ -1,6 +1,8 @@
 <record>
     <leader>     cam0 22        450 </leader>
     <controlfield tag="001">222222222</controlfield>
+    <controlfield tag="004">20221003</controlfield>
+    <controlfield tag="007">751052635</controlfield>
     <datafield tag="011" ind1=" " ind2=" ">
         <subfield code="a">978-2-7597-0105-6</subfield>
     </datafield>

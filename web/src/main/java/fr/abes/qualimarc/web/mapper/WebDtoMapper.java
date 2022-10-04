@@ -145,6 +145,8 @@ public class WebDtoMapper {
                         });
                         resultRulesResponseDto.setAuteur(resultRules.getAuteur());
                         resultRulesResponseDto.setTitre(resultRules.getTitre());
+                        resultRulesResponseDto.setDateModification(resultRules.getDateModification());
+                        resultRulesResponseDto.setRcr(resultRules.getRcr());
                         if(resultRules.getIsbn() != null)
                             resultRulesResponseDto.setIsbn(resultRules.getIsbn());
                         if (resultRules.getOcn() != null) {

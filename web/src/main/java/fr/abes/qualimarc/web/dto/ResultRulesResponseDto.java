@@ -13,6 +13,12 @@ public class ResultRulesResponseDto {
     @JsonProperty("ppn")
     private String ppn;
 
+    @JsonProperty("dateModification")
+    private String dateModification;
+
+    @JsonProperty("rcr")
+    private String rcr;
+
     @JsonProperty("typeDocument")
     private String typeDocument;
 

@@ -1,6 +1,9 @@
 <record>
     <leader>     cld0 22        450 </leader>
     <controlfield tag="001">333333333</controlfield>
+    <controlfield tag="004">20220130</controlfield>
+    <controlfield tag="005">20220407143046.000</controlfield>
+    <controlfield tag="007">751052103</controlfield>
     <datafield tag="012" ind1=" " ind2=" ">
         <subfield code="a">978-2-7597-0105-6</subfield>
     </datafield>
