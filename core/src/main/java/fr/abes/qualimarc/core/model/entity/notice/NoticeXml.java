@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.swing.text.html.Option;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +42,11 @@ public class NoticeXml {
         return "Notice {" + "leader=" + leader + "}";
     }
 
+    /**
+     * Récupère le titre en 200$a
+     * @return
+     * @throws ZoneNotFoundException
+     */
     public String getTitre() throws ZoneNotFoundException {
         Optional<Datafield> zone200 = this.datafields.stream().filter(datafield -> datafield.getTag().equals("200")).findFirst();
         if(zone200.isPresent()){
@@ -49,6 +58,11 @@ public class NoticeXml {
         throw new TitreNotFoundException("Titre non renseigné");
     }
 
+    /**
+     * Récupère l'auteur en 200 $f
+     * @return
+     * @throws ZoneNotFoundException
+     */
     public String getAuteur() throws ZoneNotFoundException {
         Optional<Datafield> zone200 = this.datafields.stream().filter(datafield -> datafield.getTag().equals("200")).findFirst();
         if(zone200.isPresent()){
@@ -60,10 +74,14 @@ public class NoticeXml {
         throw new AuteurNotFoundException("Auteur non renseigné");
     }
 
+    /**
+     * Récupère l'ISBN en 010 $a
+     * @return
+     */
     public String getIsbn(){
         Optional<Datafield> zone010 = this.datafields.stream().filter(datafield -> datafield.getTag().equals("010")).findFirst();
         if(zone010.isPresent()){
-            Optional<SubField> sousZone_a_A = zone010.get().getSubFields().stream().filter(subField -> subField.getCode().equals("a") || subField.getCode().equals("A")).findFirst();
+            Optional<SubField> sousZone_a_A = zone010.get().getSubFields().stream().filter(subField -> subField.getCode().equals("a")).findFirst();
             if(sousZone_a_A.isPresent()){
                 return sousZone_a_A.get().getValue();
             }
@@ -71,6 +89,10 @@ public class NoticeXml {
         return null;
     }
 
+    /**
+     * Récupère l'OCN en 034 $a
+     * @return
+     */
     public String getOcn() {
         Optional<Datafield> zone034 = this.datafields.stream().filter(datafield -> datafield.getTag().equals("034")).findFirst();
         if(zone034.isPresent()){
@@ -82,9 +104,41 @@ public class NoticeXml {
         return null;
     }
 
+    /**
+     * Indique si la notice est en état supprimée
+     * @return
+     */
     public boolean isDeleted() {
         return leader.substring(5,6).equals("d");
     }
+
+    /**
+     * Récupère la date de modification de la notice : si la notice n'a pas été créée la date de création est quand même en 005
+     * @return la date au format dd/MM/yyyy
+     * @throws ParseException
+     */
+    public String getDateModification() throws ParseException {
+        DateFormat dateFormatIn = new SimpleDateFormat("yyyyMMdd");
+        DateFormat dateFormatOut = new SimpleDateFormat("dd/MM/yyyy");
+        Optional<Controlfield> zone005 = this.controlfields.stream().filter(zone -> zone.getTag().equals("005")).findFirst();
+        if (zone005.isPresent()) {
+            String dateModif = zone005.get().getValue().substring(0, 8);
+            return dateFormatOut.format(dateFormatIn.parse(dateModif));
+        }
+        return null;
+    }
+
+    /**
+     * Récupère le RCR du dernier utilisateur ayant modifié la notice (ou créé si la notice n'a jamais été modifiée)
+     * @return
+     */
+    public String getRcr() {
+        Optional<Controlfield> zone007 =  this.controlfields.stream().filter(zone -> zone.getTag().equals("007")).findFirst();
+        if (zone007.isPresent())
+            return zone007.get().getValue();
+        return null;
+    }
+
     /**
      * Retourne le type de document de la notice en se basant sur les caractères en position 6 et 7 du leader
      *

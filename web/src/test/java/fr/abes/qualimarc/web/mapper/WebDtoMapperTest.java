@@ -197,6 +197,8 @@ public class WebDtoMapperTest {
         resultRules.setAuteur("Auteur test");
         resultRules.setIsbn("Isbn test");
         resultRules.setOcn("Ocn test");
+        resultRules.setDateModification("31/12/2021");
+        resultRules.setRcr("341725201");
         resultRules.setFamilleDocument(new FamilleDocument("A", "Monographie"));
         resultRules.addDetailErreur(new ResultRule(1,"010", Priority.P1,"Message TEST"));
         ResultRule resultRule2 = new ResultRule(2,"302", Priority.P2,"Message TEST2");
@@ -223,6 +225,8 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(resultRules.getAuteur(), responseDto.getResultRules().get(0).getAuteur());
         Assertions.assertEquals(resultRules.getIsbn(), responseDto.getResultRules().get(0).getIsbn());
         Assertions.assertEquals(resultRules.getOcn(), responseDto.getResultRules().get(0).getOcn());
+        Assertions.assertEquals(resultRules.getRcr(), responseDto.getResultRules().get(0).getRcr());
+        Assertions.assertEquals(resultRules.getDateModification(), responseDto.getResultRules().get(0).getDateModification());
 
         Assertions.assertEquals(2,responseDto.getResultRules().get(0).getDetailerreurs().size());
         Assertions.assertEquals("Message TEST",responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 1).findFirst().get().getMessage());
