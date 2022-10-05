@@ -2,10 +2,7 @@ package fr.abes.qualimarc.web.mapper;
 
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreZone;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.utils.Priority;
@@ -116,6 +113,29 @@ public class WebDtoMapper {
                 nombreSousZone.setSousZoneCible(source.getSousZoneCible());
 
                 return nombreSousZone;
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un modèle PositionSousZoneWebDto en modèle PositionSousZone
+     */
+    @Bean
+    public void converterPositionSousZone() {
+        Converter<PositionSousZoneWebDto, PositionSousZone> myConverter = new Converter<PositionSousZoneWebDto, PositionSousZone>() {
+            @SneakyThrows
+            public PositionSousZone convert(MappingContext<PositionSousZoneWebDto, PositionSousZone> context) {
+                PositionSousZoneWebDto source = context.getSource();
+
+                PositionSousZone positionSousZone = new PositionSousZone();
+                setChamp(source.getId(), source.getMessage(), source.getZone(), source.getPriority(), source.getTypesDoc(), positionSousZone);
+
+                positionSousZone.setSousZone(source.getSousZone());
+                positionSousZone.setSousZone(source.getSousZone());
+                positionSousZone.setPosition(source.getPosition());
+
+                return positionSousZone;
             }
         };
         mapper.addConverter(myConverter);

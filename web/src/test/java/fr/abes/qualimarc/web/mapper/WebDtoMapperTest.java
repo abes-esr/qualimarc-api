@@ -2,10 +2,7 @@ package fr.abes.qualimarc.web.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreZone;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRule;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
@@ -182,6 +179,30 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(nombreSousZoneWebDto.getSousZone(), responseDto.getSousZone());
         Assertions.assertEquals(nombreSousZoneWebDto.getZoneCible(), responseDto.getZoneCible());
         Assertions.assertEquals(nombreSousZoneWebDto.getSousZoneCible(), responseDto.getSousZoneCible());
+    }
+
+    /**
+     * Test du mapper converterPositionSousZoneTest
+     */
+    @Test
+    @DisplayName("Test Mapper converterPositionSousZoneTest")
+    void converterPositionSousZoneTest() {
+        //  Préparation d'un objet PositionSousZoneWebDto
+        ArrayList<String> typeDoc = new ArrayList<>();
+        typeDoc.add("A");
+        PositionSousZoneWebDto positionSousZoneWebDto = new PositionSousZoneWebDto(1, 1, "message 1", "100", "P1", typeDoc, "a", 1);
+
+        //  Appel du mapper
+        PositionSousZone responseDto = mapper.map(positionSousZoneWebDto, PositionSousZone.class);
+
+        //  Contrôle de la bonne conformité des résultats
+        Assertions.assertEquals(1, responseDto.getId());
+        Assertions.assertEquals(positionSousZoneWebDto.getMessage(), responseDto.getMessage());
+        Assertions.assertEquals(positionSousZoneWebDto.getZone(), responseDto.getZone());
+        Assertions.assertEquals(positionSousZoneWebDto.getPriority(), responseDto.getPriority().toString());
+        Assertions.assertEquals(positionSousZoneWebDto.getTypesDoc().get(0), new ArrayList<>(responseDto.getFamillesDocuments()).get(0).getId());
+        Assertions.assertEquals(positionSousZoneWebDto.getSousZone(), responseDto.getSousZone());
+        Assertions.assertEquals(positionSousZoneWebDto.getPosition(), responseDto.getPosition());
     }
 
     /**
