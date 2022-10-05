@@ -1,12 +1,8 @@
 package fr.abes.qualimarc.web.controller;
 
-import fr.abes.qualimarc.core.exception.noticexml.ZoneNotFoundException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreZone;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
@@ -17,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -77,6 +71,8 @@ public class RuleController {
                 rulesEntity.add(mapper.map(rule, NombreZone.class));
             if (rule instanceof NombreSousZoneWebDto)
                 rulesEntity.add(mapper.map(rule, NombreSousZone.class));
+            if (rule instanceof PositionSousZoneWebDto)
+                rulesEntity.add(mapper.map(rule, PositionSousZone.class));
         }
         return rulesEntity;
     }
