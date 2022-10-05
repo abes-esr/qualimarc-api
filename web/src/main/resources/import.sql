@@ -15,6 +15,6 @@ insert into FAMILLEDOCUMENT(FAMILLEDOCUMENT_ID, LIBELLE) values ('TR', 'Thèse r
 
 insert into RULESSET(RULESET_ID, LIBELLE) values (1, 'Zones 210/214 (publication, production, diffusion)');
 insert into RULESSET(RULESET_ID, LIBELLE) values (2, 'Implémentations UNM 2022');
-insert into RULESSET(RULESET_ID, LIBELLE) values (3, 'Translitération (présence $6, $7)');
+insert into RULESSET(RULESET_ID, LIBELLE) values (3, 'Translittération (présence $6, $7)');
 insert into RULESSET(RULESET_ID, LIBELLE) values (4, 'Zones de données codées (1XX)');
 insert into RULESSET(RULESET_ID, LIBELLE) values (5, 'Zones d indexation-matière (6XX)');
