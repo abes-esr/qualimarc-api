@@ -3,6 +3,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.utils.Priority;
 import lombok.*;
 
@@ -18,7 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "RULE_PRESENCEZONE")
-public class PresenceZone extends Rule implements Serializable {
+public class PresenceZone extends SimpleRule implements Serializable {
 
     @Column(name = "IS_PRESENT")
     @NotNull
@@ -26,15 +27,11 @@ public class PresenceZone extends Rule implements Serializable {
 
     public boolean isPresent() {return isPresent;}
 
-    public PresenceZone(Integer id, String message, String zone, Priority priority, boolean isPresent) {
-        super(id, message, zone, priority);
+    public PresenceZone(Integer id, String zone, boolean isPresent) {
+        super(id, zone);
         this.isPresent = isPresent;
     }
 
-    public PresenceZone(Integer id, String message, String zone, Priority priority, Set<FamilleDocument> typeDocuments, boolean isPresent) {
-        super(id, message, zone, priority, typeDocuments);
-        this.isPresent = isPresent;
-    }
 
     @Override
     public boolean isValid(NoticeXml notice) {
@@ -46,4 +43,8 @@ public class PresenceZone extends Rule implements Serializable {
         return notice.getDatafields().stream().noneMatch(dataField -> dataField.getTag().equals(this.getZone()));
     }
 
+    @Override
+    public String getZones() {
+        return this.getZone();
+    }
 }

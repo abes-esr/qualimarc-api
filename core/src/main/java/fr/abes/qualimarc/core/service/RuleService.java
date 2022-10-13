@@ -2,15 +2,11 @@ package fr.abes.qualimarc.core.service;
 
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
-import fr.abes.qualimarc.core.exception.noticexml.AuteurNotFoundException;
-import fr.abes.qualimarc.core.exception.noticexml.IsbnNotFoundException;
-import fr.abes.qualimarc.core.exception.noticexml.TitreNotFoundException;
 import fr.abes.qualimarc.core.exception.noticexml.ZoneNotFoundException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRule;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
@@ -95,11 +91,9 @@ public class RuleService {
         result.setRcr(notice.getRcr());
         //si la règle est valide, alors on renvoie le message
         if (rule.isValid(notice)) {
-            ResultRule resultRule = new ResultRule(rule.getId(),rule.getZone(),rule.getPriority(),rule.getMessage());
-            //si la règle travaille sur deux zones
-            if(rule instanceof NombreSousZone)
-                resultRule.setZoneUnm2(((NombreSousZone) rule).getZoneCible());
-
+            ResultRule resultRule = new ResultRule(rule.getId(), rule.getPriority(),rule.getMessage());
+            //on ajoute toutes les zones concernées par la règle au jeu de résultat
+            rule.getZonesFromChildren().forEach(resultRule::addZone);
             result.addDetailErreur(resultRule);
             return false;
         }

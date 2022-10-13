@@ -3,6 +3,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.utils.Operateur;
 import fr.abes.qualimarc.core.utils.Priority;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import java.util.Set;
 @Getter @Setter
 @NoArgsConstructor
 @Table(name = "RULE_NOMBREZONES")
-public class NombreZone extends Rule implements Serializable {
+public class NombreZone extends SimpleRule implements Serializable {
     @Column(name = "OPERATEUR")
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -28,17 +29,12 @@ public class NombreZone extends Rule implements Serializable {
     @NotNull
     private Integer occurrences;
 
-    public NombreZone(Integer id, String message, String zone, Priority priority, Operateur operateur, Integer occurrences) {
-        super(id, message, zone, priority);
+    public NombreZone(Integer id, String zone, Operateur operateur, Integer occurrences) {
+        super(id, zone);
         this.operateur = operateur;
         this.occurrences = occurrences;
     }
 
-    public NombreZone(Integer id, String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments, Operateur operateur, Integer occurrences) {
-        super(id, message, zone, priority, famillesDocuments);
-        this.operateur = operateur;
-        this.occurrences = occurrences;
-    }
 
     @Override
     public boolean isValid(NoticeXml notice) {
@@ -52,5 +48,10 @@ public class NombreZone extends Rule implements Serializable {
             default:
                 return false;
         }
+    }
+
+    @Override
+    public String getZones() {
+        return this.getZone();
     }
 }

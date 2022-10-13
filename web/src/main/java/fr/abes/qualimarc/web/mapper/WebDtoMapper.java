@@ -1,7 +1,9 @@
 package fr.abes.qualimarc.web.mapper;
 
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
@@ -42,7 +44,8 @@ public class WebDtoMapper {
                 PresenceZoneWebDto source = context.getSource();
 
                 PresenceZone presenceZone = new PresenceZone();
-                setChamp(source.getId(), source.getMessage(), source.getZone(), source.getPriority(), source.getTypesDoc(), presenceZone);
+                //TODO : revoir mapper
+                //setChamp(source.getId(), source.getMessage(), source.getZone(), source.getPriority(), source.getTypesDoc(), presenceZone);
 
                 presenceZone.setPresent(source.isPresent());
                 return presenceZone;
@@ -62,7 +65,8 @@ public class WebDtoMapper {
                 PresenceSousZoneWebDto source = context.getSource();
 
                 PresenceSousZone presenceSousZone = new PresenceSousZone();
-                setChamp(source.getId(), source.getMessage(), source.getZone(), source.getPriority(), source.getTypesDoc(), presenceSousZone);
+                //TODO : revoir mapper
+                //setChamp(source.getId(), source.getMessage(), source.getZone(), source.getPriority(), source.getTypesDoc(), presenceSousZone);
 
                 presenceSousZone.setSousZone(source.getSousZone());
                 presenceSousZone.setPresent(source.isPresent());
@@ -84,7 +88,8 @@ public class WebDtoMapper {
                 NombreZoneWebDto source = context.getSource();
 
                 NombreZone nombreZone = new NombreZone();
-                setChamp(source.getId(), source.getMessage(), source.getZone(), source.getPriority(), source.getTypesDoc(), nombreZone);
+                //TODO : revoir mapper
+                //setChamp(source.getId(), source.getMessage(), source.getZone(), source.getPriority(), source.getTypesDoc(), nombreZone);
 
                 nombreZone.setOperateur(source.getOperateur());
                 nombreZone.setOccurrences(source.getOccurrences());
@@ -106,7 +111,8 @@ public class WebDtoMapper {
                 NombreSousZoneWebDto source = context.getSource();
 
                 NombreSousZone nombreSousZone = new NombreSousZone();
-                setChamp(source.getId(), source.getMessage(), source.getZone(), source.getPriority(), source.getTypesDoc(), nombreSousZone);
+                //TODO : revoir mapper
+                //setChamp(source.getId(), source.getMessage(), source.getPriority(), source.getTypesDoc(), nombreSousZone);
 
                 nombreSousZone.setSousZone(source.getSousZone());
                 nombreSousZone.setZoneCible(source.getZoneCible());
@@ -129,7 +135,8 @@ public class WebDtoMapper {
                 PositionSousZoneWebDto source = context.getSource();
 
                 PositionSousZone positionSousZone = new PositionSousZone();
-                setChamp(source.getId(), source.getMessage(), source.getZone(), source.getPriority(), source.getTypesDoc(), positionSousZone);
+                //TODO : revoir mapper
+                //setChamp(source.getId(), source.getMessage(), source.getPriority(), source.getTypesDoc(), positionSousZone);
 
                 positionSousZone.setSousZone(source.getSousZone());
                 positionSousZone.setSousZone(source.getSousZone());
@@ -161,7 +168,9 @@ public class WebDtoMapper {
                         resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getMessages());
                     }
                         resultRules.getDetailErreurs().forEach(detailErreur -> {
-                            resultRulesResponseDto.addDetailErreur(new RuleResponseDto(detailErreur.getId(),detailErreur.getZoneUnm1(),detailErreur.getZoneUnm2(),detailErreur.getPriority().toString(),detailErreur.getMessage()));
+                            RuleResponseDto responseDto1 = new RuleResponseDto(detailErreur.getId(),detailErreur.getPriority().toString(),detailErreur.getMessage());
+                            detailErreur.getZonesUnm().forEach(responseDto1::addZone);
+                            resultRulesResponseDto.addDetailErreur(responseDto1);
                         });
                         resultRulesResponseDto.setAuteur(resultRules.getAuteur());
                         resultRulesResponseDto.setTitre(resultRules.getTitre());
@@ -191,10 +200,9 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
-    private void setChamp(Integer id, String message, String zone, String priority, List<String> typeDoc, Rule rule) {
+    private void setChamp(Integer id, String message, String priority, List<String> typeDoc, ComplexRule rule) {
         rule.setId(id);
         rule.setMessage(message);
-        rule.setZone(zone);
         if(priority.equals("P1")) {
             rule.setPriority(Priority.P1);
         } else if (priority.equals("P2")) {

@@ -4,6 +4,7 @@ import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.utils.Priority;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Entity
 @Table(name = "RULE_PRESENCESOUSZONE")
-public class PresenceSousZone extends Rule implements Serializable {
+public class PresenceSousZone extends SimpleRule implements Serializable {
     @Column(name = "SOUS_ZONE")
     @NotNull
     private String sousZone;
@@ -31,17 +32,12 @@ public class PresenceSousZone extends Rule implements Serializable {
     @NotNull
     private boolean isPresent;
 
-    public PresenceSousZone(Integer id, String message, String zone, String sousZone, Priority priority, boolean isPresent) {
-        super(id, message, zone, priority);
+    public PresenceSousZone(Integer id, String zone, String sousZone, boolean isPresent) {
+        super(id, zone);
         this.sousZone = sousZone;
         this.isPresent = isPresent;
     }
 
-    public PresenceSousZone(Integer id, String message, String zone, Priority priority, Set<FamilleDocument> familleDocuments, String sousZone, boolean isPresent) {
-        super(id, message, zone, priority, familleDocuments);
-        this.sousZone = sousZone;
-        this.isPresent = isPresent;
-    }
 
     @Override
     public boolean isValid(NoticeXml notice) {
@@ -65,5 +61,10 @@ public class PresenceSousZone extends Rule implements Serializable {
             return absent;
         }
         return false;
+    }
+
+    @Override
+    public String getZones() {
+        return this.getZones() + "$" + this.getSousZone();
     }
 }

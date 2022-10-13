@@ -4,6 +4,7 @@ import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.utils.Priority;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,20 +24,14 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Entity
 @Table(name = "RULE_POSITIONSOUSZONE")
-public class PositionSousZone extends Rule implements Serializable {
+public class PositionSousZone extends SimpleRule implements Serializable {
     @Column(name = "SOUS_ZONE")
     private String sousZone;
     @Column(name = "POSITION")
     private Integer position;
 
-    public PositionSousZone(Integer id, String message, String zone, String sousZone, Priority priority, Integer position) {
-        super(id, message, zone, priority);
-        this.sousZone = sousZone;
-        this.position = position;
-    }
-
-    public PositionSousZone(Integer id, String message, String zone, Priority priority, Set<FamilleDocument> familleDocuments, String sousZone, Integer position) {
-        super(id, message, zone, priority, familleDocuments);
+    public PositionSousZone(Integer id, String zone, String sousZone, Integer position) {
+        super(id, zone);
         this.sousZone = sousZone;
         this.position = position;
     }
@@ -53,5 +48,10 @@ public class PositionSousZone extends Rule implements Serializable {
             }
         }
         return false;
+    }
+
+    @Override
+    public String getZones() {
+        return this.getZone() + "$" + this.getSousZone();
     }
 }

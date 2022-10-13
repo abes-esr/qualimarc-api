@@ -4,6 +4,7 @@ import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.utils.Priority;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 @Table(name = "RULE_NOMBRESOUSZONE")
 @Getter @Setter
 @NoArgsConstructor
-public class NombreSousZone extends Rule implements Serializable {
+public class NombreSousZone extends SimpleRule implements Serializable {
     //les sous zones doivent être renseignées sans le $
     @Column(name = "SOUS_ZONE")
     @NotNull
@@ -38,20 +39,12 @@ public class NombreSousZone extends Rule implements Serializable {
     @NotNull
     private String sousZoneCible;
 
-    public NombreSousZone(Integer id, String message, String zone, Priority priority, String sousZone, String zoneCible, String sousZoneCible) {
-        super(id, message, zone, priority);
+    public NombreSousZone(Integer id, String zone, String sousZone, String zoneCible, String sousZoneCible) {
+        super(id, zone);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
     }
-
-    public NombreSousZone(Integer id, String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments, String sousZone, String zoneCible, String sousZoneCible) {
-        super(id, message, zone, priority, famillesDocuments);
-        this.sousZone = sousZone;
-        this.zoneCible = zoneCible;
-        this.sousZoneCible = sousZoneCible;
-    }
-
 
     @Override
     public boolean isValid(NoticeXml notice) {
@@ -62,8 +55,11 @@ public class NombreSousZone extends Rule implements Serializable {
         List<Datafield> zonesCible = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZoneCible())).collect(Collectors.toList());
         List<Long> nbSousZonesCiblePerZone = new ArrayList<>();
         zonesCible.stream().mapToLong(z -> z.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZoneCible)).count()).forEach(nbSousZonesCiblePerZone::add);
-        if (nbSousZonesSourcePerZone.stream().reduce(0L, Long::sum) != nbSousZonesCiblePerZone.stream().reduce(0L, Long::sum))
-            return true;
-        return false;
+        return nbSousZonesSourcePerZone.stream().reduce(0L, Long::sum) != nbSousZonesCiblePerZone.stream().reduce(0L, Long::sum);
+    }
+
+    @Override
+    public String getZones() {
+        return this.getZones() + "$" + this.getSousZone() + " / " + this.getZoneCible() + "$" + this.getSousZoneCible();
     }
 }

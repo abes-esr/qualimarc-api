@@ -11,6 +11,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,8 +22,8 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "RULE")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Rule {
     @Id
     @Column(name = "RULE_ID")
@@ -31,10 +32,6 @@ public abstract class Rule {
     @Column(name = "MESSAGE")
     @NotNull
     private String message;
-
-    @Column(name = "ZONE")
-    @NotNull
-    private String zone;
 
     @Column(name = "PRIORITY")
     @Enumerated(EnumType.STRING)
@@ -60,19 +57,17 @@ public abstract class Rule {
     private Set<RuleSet> ruleSet;
 
 
-    public Rule(Integer id, String message, String zone, Priority priority) {
+    public Rule(Integer id, String message, Priority priority) {
         this.id = id;
         this.message = message;
-        this.zone = zone;
         this.priority = priority;
         this.famillesDocuments = new HashSet<>();
         this.ruleSet = new HashSet<>();
     }
 
-    public Rule(Integer id, String message, String zone, Priority priority, Set<FamilleDocument> famillesDocuments) {
+    public Rule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments) {
         this.id = id;
         this.message = message;
-        this.zone = zone;
         this.priority = priority;
         this.famillesDocuments = famillesDocuments;
         this.ruleSet = new HashSet<>();
@@ -88,5 +83,8 @@ public abstract class Rule {
 
 
     public abstract boolean isValid(NoticeXml notice);
+
+    public abstract List<String> getZonesFromChildren();
+
 
 }

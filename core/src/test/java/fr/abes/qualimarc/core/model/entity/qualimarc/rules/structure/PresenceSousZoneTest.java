@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.configuration.BaseXMLConfiguration;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.utils.Priority;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
@@ -33,19 +34,19 @@ class PresenceSousZoneTest {
         NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
 
         //la zone n'existe pas dans la notice, donc la sous zone n'est pas présente donc le test est faux
-        PresenceSousZone rule0 = new PresenceSousZone(1, "la zone n'existe pas", "190", "a", Priority.P1, true);
+        SimpleRule rule0 = new PresenceSousZone(1, "190", "a", true);
         Assertions.assertFalse(rule0.isValid(notice));
 
-        PresenceSousZone rule1 = new PresenceSousZone(1, "la sous-zone $j doit être présente et elle est présente", "010", "a", Priority.P1,  true);
+        SimpleRule rule1 = new PresenceSousZone(1, "010", "a", true);
         Assertions.assertTrue(rule1.isValid(notice));
 
-        PresenceSousZone rule2 = new PresenceSousZone(2, "la sous-zone $a doit être présente mais elle n'est pas présente", "010", "j", Priority.P1, true);
+        SimpleRule rule2 = new PresenceSousZone(2, "010", "j", true);
         Assertions.assertFalse(rule2.isValid(notice));
 
-        PresenceSousZone rule3 = new PresenceSousZone(3, "la sous-zone $b ne doit pas être présente mais elle est présente", "020", "a", Priority.P1, false);
+        SimpleRule rule3 = new PresenceSousZone(3, "020", "a", false);
         Assertions.assertFalse(rule3.isValid(notice));
 
-        PresenceSousZone rule4 = new PresenceSousZone(4, "la sous-zone $c ne doit pas être présente et elle n'est pas présente", "020", "j", Priority.P1, false);
+        SimpleRule rule4 = new PresenceSousZone(4, "020", "j", false);
         Assertions.assertTrue(rule4.isValid(notice));
     }
 }
