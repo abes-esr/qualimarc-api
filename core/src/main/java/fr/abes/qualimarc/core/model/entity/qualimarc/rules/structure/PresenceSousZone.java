@@ -65,6 +65,6 @@ public class PresenceSousZone extends SimpleRule implements Serializable {
 
     @Override
     public String getZones() {
-        return this.getZones() + "$" + this.getSousZone();
+        return this.getZone() + "$" + this.getSousZone();
     }
 }

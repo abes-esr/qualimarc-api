@@ -21,7 +21,7 @@ public class LinkedRule {
     @Column(name = "ID_LINKED_RULE")
     private Integer id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @NotNull
     @JoinColumn(name = "RULE_ID")
     private SimpleRule rule;
@@ -31,11 +31,15 @@ public class LinkedRule {
     @Column(name = "OPERATOR")
     private BooleanOperateur operateur;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ID_COMPLEX_RULE")
-    @JsonIgnore
-    @NotNull
     private ComplexRule complexRule;
+
+    public LinkedRule(Integer id, SimpleRule rule, BooleanOperateur operateur) {
+        this.id = id;
+        this.rule = rule;
+        this.operateur = operateur;
+    }
 
     public LinkedRule(SimpleRule rule, BooleanOperateur operateur) {
         this.rule = rule;

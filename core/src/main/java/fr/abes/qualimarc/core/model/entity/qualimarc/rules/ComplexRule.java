@@ -31,6 +31,12 @@ public class ComplexRule extends Rule implements Serializable {
         this.otherRules = otherRules;
     }
 
+    public ComplexRule(Integer id, String message, Priority priority, SimpleRule firstRule, List<LinkedRule> otherRules) {
+        super(id, message, priority);
+        this.firstRule = firstRule;
+        this.otherRules = otherRules;
+    }
+
     public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, SimpleRule firstRule) {
         super(id, message, priority, famillesDocuments);
         this.firstRule = firstRule;

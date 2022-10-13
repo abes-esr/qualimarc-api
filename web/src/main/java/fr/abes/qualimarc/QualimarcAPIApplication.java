@@ -1,12 +1,16 @@
 package fr.abes.qualimarc;
 
+import com.google.common.collect.Lists;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.RulesRepository;
+import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.web.security.JwtTokenProvider;
 import fr.abes.qualimarc.core.utils.Priority;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +59,11 @@ public class QualimarcAPIApplication implements CommandLineRunner {
             Rule rule1 = new ComplexRule(1, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, familles.stream().filter(f -> !f.getId().equals("BD")).collect(Collectors.toSet()), new PresenceZone(1, "011", false));
             Rule rule2 = new ComplexRule(2, "Zone 013  : lorsque la ressource de type Enregistrement sonore (G*) est identifiée par un ISMN, sa transcription est obligatoire.", Priority.P2, familles.stream().filter(f -> f.getId().equals("G")).collect(Collectors.toSet()), new PresenceZone(2, "013", false));
             Rule rule3 = new ComplexRule(3, "Zone 101 : l'enregistrement d'un code de langue est obligatoire.", Priority.P2, new PresenceZone(3, "101", false));
-            Rule rule4 = new ComplexRule(4, "Document électronique : si la ressource possède un DOI et qu'il est présent sur la ressource, le saisir en 107$a", Priority.P2, familles.stream().filter(f -> f.getId().equals("O")).collect(Collectors.toSet()), new PresenceSousZone(4, "101", "a", false));
+            LinkedRule rule5 = new LinkedRule(1, new NombreSousZone(5, "034", "a", "200", "a"), BooleanOperateur.OU);
+            List<LinkedRule> listLinkedRule = new LinkedList<>();
+            listLinkedRule.add(rule5);
+            Rule rule4 = new ComplexRule(4, "Document électronique : si la ressource possède un DOI et qu'il est présent sur la ressource, le saisir en 107$a", Priority.P2, new PresenceSousZone(4, "101", "a", true), listLinkedRule);
+
             //Rule rule5 = new PresenceSousZone(5, "Zone 101 : puisque la ressource n'est pas de type audiovisuel ni multimédia, la sous-zone $j n'a pas lieu d'être", "101", Priority.P2, familles.stream().filter(f -> !f.getId().equals("B")).collect(Collectors.toSet()), "$j", false);
 
             List<Rule> rules = new ArrayList<>();
