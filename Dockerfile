@@ -9,7 +9,10 @@ RUN sed -i '/fr_FR.UTF-8/s/^# //g' /etc/locale.gen && \
 ENV LANG fr_FR.UTF-8
 ENV LANGUAGE fr_FR:fr
 ENV LC_ALL fr_FR.UTF-8
+ENV TZ=Europe/Paris
 
+RUN apk add --no-cache tzdata
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # On lance la compilation Java
 # On débute par une mise en cache docker des dépendances Java
