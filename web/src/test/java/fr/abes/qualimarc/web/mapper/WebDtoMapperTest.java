@@ -1,7 +1,9 @@
 package fr.abes.qualimarc.web.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRule;
@@ -10,7 +12,9 @@ import fr.abes.qualimarc.core.utils.Operateur;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
-import fr.abes.qualimarc.web.dto.indexrules.*;
+import fr.abes.qualimarc.web.dto.indexrules.structure.*;
+import io.jsonwebtoken.lang.Assert;
+import org.assertj.core.internal.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @ExtendWith({SpringExtension.class})
 @SpringBootTest(classes = {UtilsMapper.class, ObjectMapper.class, WebDtoMapper.class})
@@ -97,12 +102,18 @@ public class WebDtoMapperTest {
         PresenceZoneWebDto presenceZoneWebDto = new PresenceZoneWebDto(1, 1, "message 1", "100", "P1", typeDoc, true);
 
         //  Appel du mapper
-        PresenceZone responseDto = mapper.map(presenceZoneWebDto, PresenceZone.class);
+        ComplexRule responseDto = mapper.map(presenceZoneWebDto, ComplexRule.class);
 
         //  Contrôle de la bonne conformité des résultats
+        PresenceZone presenceZone = (PresenceZone) responseDto.getFirstRule();
         Assertions.assertEquals(presenceZoneWebDto.getId(), responseDto.getId());
-        Assertions.assertEquals(presenceZoneWebDto.getZone(), responseDto.getZone());
-        Assertions.assertEquals(presenceZoneWebDto.isPresent(), responseDto.isPresent());
+        Assertions.assertEquals(presenceZoneWebDto.getMessage(), responseDto.getMessage());
+        Assertions.assertEquals(presenceZoneWebDto.getPriority(), responseDto.getPriority().toString());
+        Assertions.assertEquals(presenceZoneWebDto.getTypesDoc().size(), responseDto.getFamillesDocuments().size());
+        Assertions.assertEquals(presenceZoneWebDto.getTypesDoc().get(0), responseDto.getFamillesDocuments().stream().findFirst().get().getId());
+        Assertions.assertEquals(presenceZoneWebDto.getId(), presenceZone.getId());
+        Assertions.assertEquals(presenceZoneWebDto.getZone(), presenceZone.getZone());
+        Assertions.assertEquals(presenceZoneWebDto.isPresent(), presenceZone.isPresent());
     }
 
     /**
@@ -117,13 +128,19 @@ public class WebDtoMapperTest {
         PresenceSousZoneWebDto presenceSousZoneWebDto = new PresenceSousZoneWebDto(1, 1, "message 1", "100", "P1", typeDoc, "a", true);
 
         //  Appel du mapper
-        PresenceSousZone responseDto = mapper.map(presenceSousZoneWebDto, PresenceSousZone.class);
+        ComplexRule responseDto = mapper.map(presenceSousZoneWebDto, ComplexRule.class);
 
         //  Contrôle de la bonne conformité des résultats
+        PresenceSousZone presenceZone = (PresenceSousZone) responseDto.getFirstRule();
         Assertions.assertEquals(presenceSousZoneWebDto.getId(), responseDto.getId());
-        Assertions.assertEquals(presenceSousZoneWebDto.getZone(), responseDto.getZone());
-        Assertions.assertEquals(presenceSousZoneWebDto.getSousZone(), responseDto.getSousZone());
-        Assertions.assertEquals(presenceSousZoneWebDto.isPresent(), responseDto.isPresent());
+        Assertions.assertEquals(presenceSousZoneWebDto.getMessage(), responseDto.getMessage());
+        Assertions.assertEquals(presenceSousZoneWebDto.getPriority(), responseDto.getPriority().toString());
+        Assertions.assertEquals(presenceSousZoneWebDto.getTypesDoc().size(), responseDto.getFamillesDocuments().size());
+        Assertions.assertEquals(presenceSousZoneWebDto.getTypesDoc().get(0), responseDto.getFamillesDocuments().stream().findFirst().get().getId());
+        Assertions.assertEquals(presenceSousZoneWebDto.getSousZone(), presenceZone.getSousZone());
+        Assertions.assertEquals(presenceSousZoneWebDto.getId(), presenceZone.getId());
+        Assertions.assertEquals(presenceSousZoneWebDto.getZone(), presenceZone.getZone());
+        Assertions.assertEquals(presenceSousZoneWebDto.isPresent(), presenceZone.isPresent());
     }
 
     /**
@@ -138,13 +155,19 @@ public class WebDtoMapperTest {
         NombreZoneWebDto nombreZoneWebDto = new NombreZoneWebDto(1, 1, "message 1", "100", "P1", typeDoc, Operateur.EGAL, 1);
 
         //  Appel du mapper
-        NombreZone responseDto = mapper.map(nombreZoneWebDto, NombreZone.class);
+        ComplexRule responseDto = mapper.map(nombreZoneWebDto, ComplexRule.class);
 
         //  Contrôle de la bonne conformité des résultats
+        NombreZone presenceZone = (NombreZone) responseDto.getFirstRule();
         Assertions.assertEquals(nombreZoneWebDto.getId(), responseDto.getId());
-        Assertions.assertEquals(nombreZoneWebDto.getZone(), responseDto.getZone());
-        Assertions.assertEquals(nombreZoneWebDto.getOperateur(), responseDto.getOperateur());
-        Assertions.assertEquals(nombreZoneWebDto.getOccurrences(), responseDto.getOccurrences());
+        Assertions.assertEquals(nombreZoneWebDto.getMessage(), responseDto.getMessage());
+        Assertions.assertEquals(nombreZoneWebDto.getPriority(), responseDto.getPriority().toString());
+        Assertions.assertEquals(nombreZoneWebDto.getTypesDoc().size(), responseDto.getFamillesDocuments().size());
+        Assertions.assertEquals(nombreZoneWebDto.getTypesDoc().get(0), responseDto.getFamillesDocuments().stream().findFirst().get().getId());
+        Assertions.assertEquals(nombreZoneWebDto.getOperateur(), presenceZone.getOperateur());
+        Assertions.assertEquals(nombreZoneWebDto.getOccurrences(), presenceZone.getOccurrences());
+        Assertions.assertEquals(nombreZoneWebDto.getId(), presenceZone.getId());
+        Assertions.assertEquals(nombreZoneWebDto.getZone(), presenceZone.getZone());
     }
 
     /**
@@ -159,14 +182,20 @@ public class WebDtoMapperTest {
         NombreSousZoneWebDto nombreSousZoneWebDto = new NombreSousZoneWebDto(1, 1, "message 1", "100", "P1", typeDoc, "a", "100", "a");
 
         //  Appel du mapper
-        NombreSousZone responseDto = mapper.map(nombreSousZoneWebDto, NombreSousZone.class);
+        ComplexRule responseDto = mapper.map(nombreSousZoneWebDto, ComplexRule.class);
 
         //  Contrôle de la bonne conformité des résultats
-        Assertions.assertEquals(1, responseDto.getId());
-        Assertions.assertEquals(nombreSousZoneWebDto.getZone(), responseDto.getZone());
-        Assertions.assertEquals(nombreSousZoneWebDto.getSousZone(), responseDto.getSousZone());
-        Assertions.assertEquals(nombreSousZoneWebDto.getZoneCible(), responseDto.getZoneCible());
-        Assertions.assertEquals(nombreSousZoneWebDto.getSousZoneCible(), responseDto.getSousZoneCible());
+        NombreSousZone presenceZone = (NombreSousZone) responseDto.getFirstRule();
+        Assertions.assertEquals(nombreSousZoneWebDto.getId(), responseDto.getId());
+        Assertions.assertEquals(nombreSousZoneWebDto.getMessage(), responseDto.getMessage());
+        Assertions.assertEquals(nombreSousZoneWebDto.getPriority(), responseDto.getPriority().toString());
+        Assertions.assertEquals(nombreSousZoneWebDto.getTypesDoc().size(), responseDto.getFamillesDocuments().size());
+        Assertions.assertEquals(nombreSousZoneWebDto.getTypesDoc().get(0), responseDto.getFamillesDocuments().stream().findFirst().get().getId());
+        Assertions.assertEquals(nombreSousZoneWebDto.getSousZone(), presenceZone.getSousZone());
+        Assertions.assertEquals(nombreSousZoneWebDto.getZoneCible(), presenceZone.getZoneCible());
+        Assertions.assertEquals(nombreSousZoneWebDto.getSousZoneCible(), presenceZone.getSousZoneCible());
+        Assertions.assertEquals(nombreSousZoneWebDto.getId(), presenceZone.getId());
+        Assertions.assertEquals(nombreSousZoneWebDto.getZone(), presenceZone.getZone());
     }
 
     /**
@@ -181,13 +210,19 @@ public class WebDtoMapperTest {
         PositionSousZoneWebDto positionSousZoneWebDto = new PositionSousZoneWebDto(1, 1, "message 1", "100", "P1", typeDoc, "a", 1);
 
         //  Appel du mapper
-        PositionSousZone responseDto = mapper.map(positionSousZoneWebDto, PositionSousZone.class);
+        ComplexRule responseDto = mapper.map(positionSousZoneWebDto, ComplexRule.class);
 
         //  Contrôle de la bonne conformité des résultats
-        Assertions.assertEquals(1, responseDto.getId());
-        Assertions.assertEquals(positionSousZoneWebDto.getZone(), responseDto.getZone());
-        Assertions.assertEquals(positionSousZoneWebDto.getSousZone(), responseDto.getSousZone());
-        Assertions.assertEquals(positionSousZoneWebDto.getPosition(), responseDto.getPosition());
+        PositionSousZone presenceZone = (PositionSousZone) responseDto.getFirstRule();
+        Assertions.assertEquals(positionSousZoneWebDto.getId(), responseDto.getId());
+        Assertions.assertEquals(positionSousZoneWebDto.getMessage(), responseDto.getMessage());
+        Assertions.assertEquals(positionSousZoneWebDto.getPriority(), responseDto.getPriority().toString());
+        Assertions.assertEquals(positionSousZoneWebDto.getTypesDoc().size(), responseDto.getFamillesDocuments().size());
+        Assertions.assertEquals(positionSousZoneWebDto.getTypesDoc().get(0), responseDto.getFamillesDocuments().stream().findFirst().get().getId());
+        Assertions.assertEquals(positionSousZoneWebDto.getSousZone(), presenceZone.getSousZone());
+        Assertions.assertEquals(positionSousZoneWebDto.getPosition(), presenceZone.getPosition());
+        Assertions.assertEquals(positionSousZoneWebDto.getId(), presenceZone.getId());
+        Assertions.assertEquals(positionSousZoneWebDto.getZone(), presenceZone.getZone());
     }
 
     /**

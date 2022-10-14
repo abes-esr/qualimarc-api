@@ -2,17 +2,14 @@ package fr.abes.qualimarc.web.mapper;
 
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
-import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
 import fr.abes.qualimarc.web.dto.RuleResponseDto;
-import fr.abes.qualimarc.web.dto.indexrules.*;
+import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.SneakyThrows;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
@@ -38,17 +35,10 @@ public class WebDtoMapper {
      */
     @Bean
     public void converterPresenceZone() {
-        Converter<PresenceZoneWebDto, PresenceZone> myConverter = new Converter<PresenceZoneWebDto, PresenceZone>() {
-            @SneakyThrows
-            public PresenceZone convert(MappingContext<PresenceZoneWebDto, PresenceZone> context) {
+        Converter<PresenceZoneWebDto, ComplexRule> myConverter = new Converter<PresenceZoneWebDto, ComplexRule>() {
+            public ComplexRule convert(MappingContext<PresenceZoneWebDto, ComplexRule> context) {
                 PresenceZoneWebDto source = context.getSource();
-
-                PresenceZone presenceZone = new PresenceZone();
-                //TODO : revoir mapper
-                //setChamp(source.getId(), source.getMessage(), source.getZone(), source.getPriority(), source.getTypesDoc(), presenceZone);
-
-                presenceZone.setPresent(source.isPresent());
-                return presenceZone;
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new PresenceZone(source.getId(), source.getZone(), source.isPresent()));
             }
         };
         mapper.addConverter(myConverter);
@@ -59,19 +49,10 @@ public class WebDtoMapper {
      */
     @Bean
     public void converterPresenceSousZone() {
-        Converter<PresenceSousZoneWebDto, PresenceSousZone> myConverter = new Converter<PresenceSousZoneWebDto, PresenceSousZone>() {
-            @SneakyThrows
-            public PresenceSousZone convert(MappingContext<PresenceSousZoneWebDto, PresenceSousZone> context) {
+        Converter<PresenceSousZoneWebDto, ComplexRule> myConverter = new Converter<PresenceSousZoneWebDto, ComplexRule>() {
+            public ComplexRule convert(MappingContext<PresenceSousZoneWebDto, ComplexRule> context) {
                 PresenceSousZoneWebDto source = context.getSource();
-
-                PresenceSousZone presenceSousZone = new PresenceSousZone();
-                //TODO : revoir mapper
-                //setChamp(source.getId(), source.getMessage(), source.getZone(), source.getPriority(), source.getTypesDoc(), presenceSousZone);
-
-                presenceSousZone.setSousZone(source.getSousZone());
-                presenceSousZone.setPresent(source.isPresent());
-
-                return presenceSousZone;
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new PresenceSousZone(source.getId(), source.getZone(), source.getSousZone(), source.isPresent()));
             }
         };
         mapper.addConverter(myConverter);
@@ -82,19 +63,11 @@ public class WebDtoMapper {
      */
     @Bean
     public void converterNombreZone() {
-        Converter<NombreZoneWebDto, NombreZone> myConverter = new Converter<NombreZoneWebDto, NombreZone>() {
+        Converter<NombreZoneWebDto, ComplexRule> myConverter = new Converter<NombreZoneWebDto, ComplexRule>() {
             @SneakyThrows
-            public NombreZone convert(MappingContext<NombreZoneWebDto, NombreZone> context) {
+            public ComplexRule convert(MappingContext<NombreZoneWebDto, ComplexRule> context) {
                 NombreZoneWebDto source = context.getSource();
-
-                NombreZone nombreZone = new NombreZone();
-                //TODO : revoir mapper
-                //setChamp(source.getId(), source.getMessage(), source.getZone(), source.getPriority(), source.getTypesDoc(), nombreZone);
-
-                nombreZone.setOperateur(source.getOperateur());
-                nombreZone.setOccurrences(source.getOccurrences());
-
-                return nombreZone;
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new NombreZone(source.getId(), source.getZone(), source.getOperateur(), source.getOccurrences()));
             }
         };
         mapper.addConverter(myConverter);
@@ -105,20 +78,11 @@ public class WebDtoMapper {
      */
     @Bean
     public void converterNombreSousZone() {
-        Converter<NombreSousZoneWebDto, NombreSousZone> myConverter = new Converter<NombreSousZoneWebDto, NombreSousZone>() {
+        Converter<NombreSousZoneWebDto, ComplexRule> myConverter = new Converter<NombreSousZoneWebDto, ComplexRule>() {
             @SneakyThrows
-            public NombreSousZone convert(MappingContext<NombreSousZoneWebDto, NombreSousZone> context) {
+            public ComplexRule convert(MappingContext<NombreSousZoneWebDto, ComplexRule> context) {
                 NombreSousZoneWebDto source = context.getSource();
-
-                NombreSousZone nombreSousZone = new NombreSousZone();
-                //TODO : revoir mapper
-                //setChamp(source.getId(), source.getMessage(), source.getPriority(), source.getTypesDoc(), nombreSousZone);
-
-                nombreSousZone.setSousZone(source.getSousZone());
-                nombreSousZone.setZoneCible(source.getZoneCible());
-                nombreSousZone.setSousZoneCible(source.getSousZoneCible());
-
-                return nombreSousZone;
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new NombreSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getZoneCible(), source.getSousZoneCible()));
             }
         };
         mapper.addConverter(myConverter);
@@ -129,20 +93,11 @@ public class WebDtoMapper {
      */
     @Bean
     public void converterPositionSousZone() {
-        Converter<PositionSousZoneWebDto, PositionSousZone> myConverter = new Converter<PositionSousZoneWebDto, PositionSousZone>() {
+        Converter<PositionSousZoneWebDto, ComplexRule> myConverter = new Converter<PositionSousZoneWebDto, ComplexRule>() {
             @SneakyThrows
-            public PositionSousZone convert(MappingContext<PositionSousZoneWebDto, PositionSousZone> context) {
+            public ComplexRule convert(MappingContext<PositionSousZoneWebDto, ComplexRule> context) {
                 PositionSousZoneWebDto source = context.getSource();
-
-                PositionSousZone positionSousZone = new PositionSousZone();
-                //TODO : revoir mapper
-                //setChamp(source.getId(), source.getMessage(), source.getPriority(), source.getTypesDoc(), positionSousZone);
-
-                positionSousZone.setSousZone(source.getSousZone());
-                positionSousZone.setSousZone(source.getSousZone());
-                positionSousZone.setPosition(source.getPosition());
-
-                return positionSousZone;
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new PositionSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getPosition()));
             }
         };
         mapper.addConverter(myConverter);
@@ -200,18 +155,20 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
-    private void setChamp(Integer id, String message, String priority, List<String> typeDoc, ComplexRule rule) {
-        rule.setId(id);
-        rule.setMessage(message);
+    private Priority getPriority(String priority) {
         if(priority.equals("P1")) {
-            rule.setPriority(Priority.P1);
+            return Priority.P1;
         } else if (priority.equals("P2")) {
-            rule.setPriority(Priority.P2);
+            return Priority.P2;
         }
+        return Priority.P1;
+    }
+
+    private Set<FamilleDocument> getFamilleDocument(List<String> familleDoc) {
         Set<FamilleDocument> familleDocumentSet = new HashSet<>();
-        for (String typeDocument: typeDoc) {
+        for (String typeDocument: familleDoc) {
             familleDocumentSet.add(new FamilleDocument(typeDocument));
         }
-        rule.setFamillesDocuments(familleDocumentSet);
+        return familleDocumentSet;
     }
 }

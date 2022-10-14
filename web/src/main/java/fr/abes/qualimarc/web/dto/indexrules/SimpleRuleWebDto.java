@@ -3,10 +3,13 @@ package fr.abes.qualimarc.web.dto.indexrules;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +23,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = NombreSousZoneWebDto.class, name = "nombresouszone"),
         @JsonSubTypes.Type(value = PositionSousZoneWebDto.class, name="positionsouszone")
 })
-public abstract class RulesWebDto {
+public abstract class SimpleRuleWebDto extends RuleWebDto {
     @JsonProperty(value = "id")
     @NotNull(message = "Le champ id est obligatoire")
     protected Integer id;
@@ -48,7 +51,7 @@ public abstract class RulesWebDto {
     @JsonProperty(value = "type-doc")
     protected List<@Pattern(regexp = "\\b([A-Z]{0,2}){0,}\\b", message = "Le champ message ne peut contenir qu'une ou deux lettre(s) majuscule(s).") String> typesDoc = new ArrayList<>();
 
-    public RulesWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc) {
+    public SimpleRuleWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc) {
         this.id = id;
         this.idExcel = idExcel;
         this.message = message;

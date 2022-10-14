@@ -1,6 +1,7 @@
 package fr.abes.qualimarc.web.controller;
 
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
@@ -9,6 +10,7 @@ import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.*;
+import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -58,22 +61,18 @@ public class RuleController {
     }
 
     private List<Rule> handleRulesWebDto(ListRulesWebDto rules) {
-        List<RulesWebDto> rulesWebDtos = rules.getListRulesWebDto();
+        List<SimpleRuleWebDto> rulesWebDtos = new ArrayList<>();
+        for (RuleWebDto rule : rules.getRules()) {
+            if(rule instanceof SimpleRuleWebDto) {
+                rulesWebDtos.add((SimpleRuleWebDto) rule);
+            }
+        }
         List<Rule> rulesEntity = new ArrayList<>();
-        Iterator<RulesWebDto> rulesIt = rulesWebDtos.iterator();
-       /* while (rulesIt.hasNext()) {
-            RulesWebDto rule = rulesIt.next();
-            if (rule instanceof PresenceZoneWebDto)
-                rulesEntity.add(mapper.map(rule, PresenceZone.class));
-            if (rule instanceof PresenceSousZoneWebDto)
-                rulesEntity.add(mapper.map(rule, PresenceSousZone.class));
-            if (rule instanceof NombreZoneWebDto)
-                rulesEntity.add(mapper.map(rule, NombreZone.class));
-            if (rule instanceof NombreSousZoneWebDto)
-                rulesEntity.add(mapper.map(rule, NombreSousZone.class));
-            if (rule instanceof PositionSousZoneWebDto)
-                rulesEntity.add(mapper.map(rule, PositionSousZone.class));
-        }*/
+        Iterator<SimpleRuleWebDto> rulesIt = rulesWebDtos.iterator();
+        while (rulesIt.hasNext()) {
+            SimpleRuleWebDto rule = rulesIt.next();
+            rulesEntity.add(mapper.map(rule, ComplexRule.class));
+        }
         return rulesEntity;
     }
 }

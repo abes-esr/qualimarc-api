@@ -1,7 +1,8 @@
-package fr.abes.qualimarc.web.dto.indexrules;
+package fr.abes.qualimarc.web.dto.indexrules.structure;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import java.util.List;
 @Setter
 @JsonTypeName("positionsouszone")
 @NoArgsConstructor
-public class PositionSousZoneWebDto extends RulesWebDto {
+public class PositionSousZoneWebDto extends SimpleRuleWebDto {
     @JsonProperty(value = "souszone")
     @Pattern(regexp = "(\\b([a-zA-Z]{0,1})\\b)(\\b([0-9]{0,1})\\b)", message = "Le champ souszone ne peut contenir qu'une lettre (en minuscule ou majuscule), ou un chiffre.")
     @NotNull(message = "Le champ souszone est obligatoire")

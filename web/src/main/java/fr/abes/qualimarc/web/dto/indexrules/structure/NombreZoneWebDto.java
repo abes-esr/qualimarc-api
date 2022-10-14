@@ -1,8 +1,9 @@
-package fr.abes.qualimarc.web.dto.indexrules;
+package fr.abes.qualimarc.web.dto.indexrules.structure;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fr.abes.qualimarc.core.utils.Operateur;
+import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import java.util.List;
 @Setter
 @JsonTypeName("nombrezone")
 @NoArgsConstructor
-public class NombreZoneWebDto extends RulesWebDto {
+public class NombreZoneWebDto extends SimpleRuleWebDto {
 
     @JsonProperty(value = "operateur")
     @NotNull(message = "l'opérateur est obligatoire")
