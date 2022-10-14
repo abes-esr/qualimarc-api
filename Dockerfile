@@ -9,10 +9,7 @@ RUN sed -i '/fr_FR.UTF-8/s/^# //g' /etc/locale.gen && \
 ENV LANG fr_FR.UTF-8
 ENV LANGUAGE fr_FR:fr
 ENV LC_ALL fr_FR.UTF-8
-ENV TZ=Europe/Paris
 
-RUN apk add --no-cache tzdata
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # On lance la compilation Java
 # On débute par une mise en cache docker des dépendances Java
@@ -39,4 +36,7 @@ RUN mvn --batch-mode \
 FROM eclipse-temurin:11-jre as api-image
 WORKDIR /app/
 COPY --from=build-image /build/web/target/*.jar /app/qualimarc.jar
+ENV TZ=Europe/Paris
+RUN apk add --no-cache tzdata
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENTRYPOINT ["java","-jar","/app/qualimarc.jar"]
