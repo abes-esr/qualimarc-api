@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.web.dto.indexrules.structure;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -15,7 +16,6 @@ import java.util.List;
 @Getter
 @Setter
 @JsonTypeName("nombresouszone")
-@NoArgsConstructor
 public class NombreSousZoneWebDto extends SimpleRuleWebDto {
 
     @JsonProperty(value = "souszone")
@@ -33,10 +33,15 @@ public class NombreSousZoneWebDto extends SimpleRuleWebDto {
     @NotNull(message = "Le champ souszonecible est obligatoire")
     private String sousZoneCible;
 
+    @JsonCreator
     public NombreSousZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZone, String zoneCible, String sousZoneCible) {
         super(id, idExcel, message, zone, priority, typesDoc);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
+    }
+
+    public NombreSousZoneWebDto() {
+        super();
     }
 }

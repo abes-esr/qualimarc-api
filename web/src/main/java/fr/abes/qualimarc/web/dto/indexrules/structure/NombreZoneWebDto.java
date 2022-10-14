@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.web.dto.indexrules.structure;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fr.abes.qualimarc.core.utils.Operateur;
@@ -14,7 +15,6 @@ import java.util.List;
 @Getter
 @Setter
 @JsonTypeName("nombrezone")
-@NoArgsConstructor
 public class NombreZoneWebDto extends SimpleRuleWebDto {
 
     @JsonProperty(value = "operateur")
@@ -25,9 +25,14 @@ public class NombreZoneWebDto extends SimpleRuleWebDto {
     @NotNull(message = "le nombre d'occurrence est obligatoire")
     private Integer occurrences;
 
+    @JsonCreator
     public NombreZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, Operateur operateur, Integer occurrences) {
         super(id, idExcel, message, zone, priority, typesDoc);
         this.operateur = operateur;
         this.occurrences = occurrences;
+    }
+
+    public NombreZoneWebDto() {
+        super();
     }
 }

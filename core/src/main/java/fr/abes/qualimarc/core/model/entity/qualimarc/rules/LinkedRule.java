@@ -1,6 +1,5 @@
 package fr.abes.qualimarc.core.model.entity.qualimarc.rules;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

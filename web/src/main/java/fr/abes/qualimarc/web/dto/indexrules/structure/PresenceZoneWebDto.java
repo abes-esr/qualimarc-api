@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.web.dto.indexrules.structure;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
@@ -13,9 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @JsonTypeName("presencezone")
-@NoArgsConstructor
 public class PresenceZoneWebDto extends SimpleRuleWebDto {
-    @JsonProperty(value = "presence")
     @NotNull(message = "le champ presence est obligatoire")
     private boolean isPresent;
 
@@ -23,8 +22,19 @@ public class PresenceZoneWebDto extends SimpleRuleWebDto {
         return isPresent;
     }
 
-    public PresenceZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, boolean isPresent) {
+    @JsonCreator
+    public PresenceZoneWebDto(@JsonProperty("id") Integer id,
+                              @JsonProperty("id-excel") Integer idExcel,
+                              @JsonProperty("message") String message,
+                              @JsonProperty("zone") String zone,
+                              @JsonProperty("priorite") String priority,
+                              @JsonProperty("type-doc") List<String> typesDoc,
+                              @JsonProperty("presence") boolean isPresent) {
         super(id, idExcel, message, zone, priority, typesDoc);
         this.isPresent = isPresent;
+    }
+
+    public PresenceZoneWebDto() {
+        super();
     }
 }
