@@ -12,6 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Règle complexe composée à minima d'une règle simple et de n règles liées
+ */
 @Getter @Setter
 @Entity
 public class ComplexRule extends Rule implements Serializable {

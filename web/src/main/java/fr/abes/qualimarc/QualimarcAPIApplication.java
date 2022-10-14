@@ -62,8 +62,12 @@ public class QualimarcAPIApplication implements CommandLineRunner {
 
             ComplexRule rule4 = new ComplexRule(4, "Document électronique : si la ressource possède un DOI et qu'il est présent sur la ressource, le saisir en 107$a", Priority.P2, new PresenceSousZone(4, "101", "a", true));
             LinkedRule rule5 = new LinkedRule(1, new NombreSousZone(5, "034", "a", "200", "a"), BooleanOperateur.OU, rule4);
+            LinkedRule rule6 = new LinkedRule(2, new PresenceZone(6, "200", true), BooleanOperateur.ET, rule4);
+            LinkedRule rule7 = new LinkedRule(3, new PresenceZone(7, "100", true), BooleanOperateur.ET, rule4);
 
             rule4.addOtherRule(rule5);
+            rule4.addOtherRule(rule6);
+            rule4.addOtherRule(rule7);
 
             List<Rule> rules = new ArrayList<>();
             rules.add(rule1);

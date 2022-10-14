@@ -10,7 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
- * Règle liée composée d'une règle simple et d'un opérateur
+ * Règle liée composée d'une règle simple et d'un opérateur pour pouvoir la conditionner avec la règle précédente d'une liste
  */
 @Getter @Setter
 @Entity
