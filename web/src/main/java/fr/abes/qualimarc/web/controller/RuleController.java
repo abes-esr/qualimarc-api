@@ -61,7 +61,7 @@ public class RuleController {
         List<RulesWebDto> rulesWebDtos = rules.getListRulesWebDto();
         List<Rule> rulesEntity = new ArrayList<>();
         Iterator<RulesWebDto> rulesIt = rulesWebDtos.iterator();
-        while (rulesIt.hasNext()) {
+       /* while (rulesIt.hasNext()) {
             RulesWebDto rule = rulesIt.next();
             if (rule instanceof PresenceZoneWebDto)
                 rulesEntity.add(mapper.map(rule, PresenceZone.class));
@@ -73,7 +73,7 @@ public class RuleController {
                 rulesEntity.add(mapper.map(rule, NombreSousZone.class));
             if (rule instanceof PositionSousZoneWebDto)
                 rulesEntity.add(mapper.map(rule, PositionSousZone.class));
-        }
+        }*/
         return rulesEntity;
     }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.configuration.BaseXMLConfiguration;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.utils.Operateur;
 import fr.abes.qualimarc.core.utils.Priority;
 import org.apache.commons.io.IOUtils;
@@ -40,30 +41,30 @@ public class NombreZoneTest {
     @Test
     @DisplayName("Test nombre de zones opérateur EGAL")
     void testIsValidEgal() {
-        NombreZone rule1 = new NombreZone(1, "La notice doit contenir 3 zones 181 mais n'en contient que 2", "181", Priority.P1, Operateur.EGAL, 3);
+        SimpleRule rule1 = new NombreZone(1, "181", Operateur.EGAL, 3);
         Assertions.assertFalse(rule1.isValid(notice));
 
-        NombreZone rule2 = new NombreZone(1, "La notice doit contenir 2 zones 181 et en contient 2", "181", Priority.P1, Operateur.EGAL, 2);
+        SimpleRule rule2 = new NombreZone(1, "181", Operateur.EGAL, 2);
         Assertions.assertTrue(rule2.isValid(notice));
     }
 
     @Test
     @DisplayName("Test nombre de zones opérateur SUPERIEUR")
     void testIsValidSuperieur() {
-        NombreZone rule1 = new NombreZone(1, "La notice doit contenir plus de 2 zones 181 et en contient 2", "181", Priority.P1, Operateur.SUPERIEUR, 2);
+        SimpleRule rule1 = new NombreZone(1,  "181", Operateur.SUPERIEUR, 2);
         Assertions.assertFalse(rule1.isValid(notice));
 
-        NombreZone rule2 = new NombreZone(1, "La notice doit contenir plus de 1 zones 181 et en contient 2", "181", Priority.P1, Operateur.SUPERIEUR, 1);
+        SimpleRule rule2 = new NombreZone(1, "181", Operateur.SUPERIEUR, 1);
         Assertions.assertTrue(rule2.isValid(notice));
     }
 
     @Test
     @DisplayName("Test nombre de zones opérateur INFERIEUR")
     void testIsValidInferieur() {
-        NombreZone rule1 = new NombreZone(1, "La notice doit contenir moins de 2 zones 181 et en contient 2", "181", Priority.P1, Operateur.INFERIEUR, 2);
+        SimpleRule rule1 = new NombreZone(1, "181", Operateur.INFERIEUR, 2);
         Assertions.assertFalse(rule1.isValid(notice));
 
-        NombreZone rule2 = new NombreZone(1, "La notice doit contenir moins de 3 zones 181 et en contient 2", "181", Priority.P1, Operateur.INFERIEUR, 3);
+        SimpleRule rule2 = new NombreZone(1, "181", Operateur.INFERIEUR, 3);
         Assertions.assertTrue(rule2.isValid(notice));
     }
 }

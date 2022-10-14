@@ -113,7 +113,7 @@ public class NoticeXml {
     }
 
     /**
-     * Récupère la date de modification de la notice : si la notice n'a pas été créée la date de création est quand même en 005
+     * Récupère la date de modification de la notice : si la notice n'a pas été modifiée la date de création est quand même en 005
      * @return la date au format dd/MM/yyyy
      * @throws ParseException
      */

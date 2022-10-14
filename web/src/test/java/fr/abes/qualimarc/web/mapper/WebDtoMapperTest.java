@@ -101,10 +101,7 @@ public class WebDtoMapperTest {
 
         //  Contrôle de la bonne conformité des résultats
         Assertions.assertEquals(presenceZoneWebDto.getId(), responseDto.getId());
-        Assertions.assertEquals(presenceZoneWebDto.getMessage(), responseDto.getMessage());
         Assertions.assertEquals(presenceZoneWebDto.getZone(), responseDto.getZone());
-        Assertions.assertEquals(presenceZoneWebDto.getPriority(), responseDto.getPriority().toString());
-        Assertions.assertEquals(presenceZoneWebDto.getTypesDoc().get(0), new ArrayList<>(responseDto.getFamillesDocuments()).get(0).getId());
         Assertions.assertEquals(presenceZoneWebDto.isPresent(), responseDto.isPresent());
     }
 
@@ -124,10 +121,7 @@ public class WebDtoMapperTest {
 
         //  Contrôle de la bonne conformité des résultats
         Assertions.assertEquals(presenceSousZoneWebDto.getId(), responseDto.getId());
-        Assertions.assertEquals(presenceSousZoneWebDto.getMessage(), responseDto.getMessage());
         Assertions.assertEquals(presenceSousZoneWebDto.getZone(), responseDto.getZone());
-        Assertions.assertEquals(presenceSousZoneWebDto.getPriority(), responseDto.getPriority().toString());
-        Assertions.assertEquals(presenceSousZoneWebDto.getTypesDoc().get(0), new ArrayList<>(responseDto.getFamillesDocuments()).get(0).getId());
         Assertions.assertEquals(presenceSousZoneWebDto.getSousZone(), responseDto.getSousZone());
         Assertions.assertEquals(presenceSousZoneWebDto.isPresent(), responseDto.isPresent());
     }
@@ -148,10 +142,7 @@ public class WebDtoMapperTest {
 
         //  Contrôle de la bonne conformité des résultats
         Assertions.assertEquals(nombreZoneWebDto.getId(), responseDto.getId());
-        Assertions.assertEquals(nombreZoneWebDto.getMessage(), responseDto.getMessage());
         Assertions.assertEquals(nombreZoneWebDto.getZone(), responseDto.getZone());
-        Assertions.assertEquals(nombreZoneWebDto.getPriority(), responseDto.getPriority().toString());
-        Assertions.assertEquals(nombreZoneWebDto.getTypesDoc().get(0), new ArrayList<>(responseDto.getFamillesDocuments()).get(0).getId());
         Assertions.assertEquals(nombreZoneWebDto.getOperateur(), responseDto.getOperateur());
         Assertions.assertEquals(nombreZoneWebDto.getOccurrences(), responseDto.getOccurrences());
     }
@@ -172,10 +163,7 @@ public class WebDtoMapperTest {
 
         //  Contrôle de la bonne conformité des résultats
         Assertions.assertEquals(1, responseDto.getId());
-        Assertions.assertEquals(nombreSousZoneWebDto.getMessage(), responseDto.getMessage());
         Assertions.assertEquals(nombreSousZoneWebDto.getZone(), responseDto.getZone());
-        Assertions.assertEquals(nombreSousZoneWebDto.getPriority(), responseDto.getPriority().toString());
-        Assertions.assertEquals(nombreSousZoneWebDto.getTypesDoc().get(0), new ArrayList<>(responseDto.getFamillesDocuments()).get(0).getId());
         Assertions.assertEquals(nombreSousZoneWebDto.getSousZone(), responseDto.getSousZone());
         Assertions.assertEquals(nombreSousZoneWebDto.getZoneCible(), responseDto.getZoneCible());
         Assertions.assertEquals(nombreSousZoneWebDto.getSousZoneCible(), responseDto.getSousZoneCible());
@@ -197,10 +185,7 @@ public class WebDtoMapperTest {
 
         //  Contrôle de la bonne conformité des résultats
         Assertions.assertEquals(1, responseDto.getId());
-        Assertions.assertEquals(positionSousZoneWebDto.getMessage(), responseDto.getMessage());
         Assertions.assertEquals(positionSousZoneWebDto.getZone(), responseDto.getZone());
-        Assertions.assertEquals(positionSousZoneWebDto.getPriority(), responseDto.getPriority().toString());
-        Assertions.assertEquals(positionSousZoneWebDto.getTypesDoc().get(0), new ArrayList<>(responseDto.getFamillesDocuments()).get(0).getId());
         Assertions.assertEquals(positionSousZoneWebDto.getSousZone(), responseDto.getSousZone());
         Assertions.assertEquals(positionSousZoneWebDto.getPosition(), responseDto.getPosition());
     }
@@ -221,9 +206,9 @@ public class WebDtoMapperTest {
         resultRules.setDateModification("31/12/2021");
         resultRules.setRcr("341725201");
         resultRules.setFamilleDocument(new FamilleDocument("A", "Monographie"));
-        resultRules.addDetailErreur(new ResultRule(1,"010", Priority.P1,"Message TEST"));
-        ResultRule resultRule2 = new ResultRule(2,"302", Priority.P2,"Message TEST2");
-        resultRule2.setZoneUnm2("200");
+        resultRules.addDetailErreur(new ResultRule(1, Priority.P1,"Message TEST"));
+        ResultRule resultRule2 = new ResultRule(2, Priority.P2,"Message TEST2");
+        resultRule2.addZone("200");
         resultRules.addDetailErreur(resultRule2);
         resultAnalyse.addResultRule(resultRules);
         resultAnalyse.addPpnAnalyse("4");
@@ -254,11 +239,6 @@ public class WebDtoMapperTest {
         Assertions.assertEquals("Message TEST2",responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst().get().getMessage());
         Assertions.assertEquals(Priority.P1.toString(),responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 1).findFirst().get().getPriority());
         Assertions.assertEquals(Priority.P2.toString(),responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst().get().getPriority());
-        Assertions.assertEquals("010",responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 1).findFirst().get().getZoneUnm1());
-        Assertions.assertEquals("302",responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst().get().getZoneUnm1());
-        Assertions.assertNull(responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 1).findFirst().get().getZoneUnm2());
-        Assertions.assertEquals("200",responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst().get().getZoneUnm2());
-
 
     }
 }
