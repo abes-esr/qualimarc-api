@@ -8,6 +8,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.utils.Priority;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,5 +49,12 @@ class PresenceSousZoneTest {
 
         SimpleRule rule4 = new PresenceSousZone(4, "020", "j", false);
         Assertions.assertTrue(rule4.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("test getZones")
+    void getZones() {
+        PresenceSousZone rule = new PresenceSousZone(1, "020", "a", true);
+        Assertions.assertEquals("020$a", rule.getZones());
     }
 }

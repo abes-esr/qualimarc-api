@@ -7,6 +7,7 @@ import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.utils.Priority;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,5 +44,12 @@ public class PositionSousZoneTest {
 
         PositionSousZone rule4 = new PositionSousZone(1, "713", "a", 2);
         Assertions.assertFalse(rule4.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("test getZones")
+    void getZones() {
+        PositionSousZone rule = new PositionSousZone(1, "200", "a", 2);
+        Assertions.assertEquals("200$a", rule.getZones());
     }
 }

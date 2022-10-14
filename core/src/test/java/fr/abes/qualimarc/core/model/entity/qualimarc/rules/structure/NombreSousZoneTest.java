@@ -38,11 +38,17 @@ class NombreSousZoneTest {
     }
 
     @Test
-    void testIsValidMemeNombre() {
+    void isValidMemeNombre() {
         SimpleRule rule1 = new NombreSousZone(1, "606", "3", "712", "3");
         Assertions.assertTrue(rule1.isValid(notice));
         SimpleRule rule2 = new NombreSousZone(1, "606", "a", "676", "a");
         Assertions.assertFalse(rule2.isValid(notice));
+    }
+
+    @Test
+    void getZones() {
+        NombreSousZone rule = new NombreSousZone(1, "600", "a", "702", "b");
+        Assertions.assertEquals("600$a / 702$b", rule.getZones());
     }
 
     @Test

@@ -59,19 +59,17 @@ public class QualimarcAPIApplication implements CommandLineRunner {
             Rule rule1 = new ComplexRule(1, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, familles.stream().filter(f -> !f.getId().equals("BD")).collect(Collectors.toSet()), new PresenceZone(1, "011", false));
             Rule rule2 = new ComplexRule(2, "Zone 013  : lorsque la ressource de type Enregistrement sonore (G*) est identifiée par un ISMN, sa transcription est obligatoire.", Priority.P2, familles.stream().filter(f -> f.getId().equals("G")).collect(Collectors.toSet()), new PresenceZone(2, "013", false));
             Rule rule3 = new ComplexRule(3, "Zone 101 : l'enregistrement d'un code de langue est obligatoire.", Priority.P2, new PresenceZone(3, "101", false));
-            LinkedRule rule5 = new LinkedRule(1, new NombreSousZone(5, "034", "a", "200", "a"), BooleanOperateur.OU);
-            List<LinkedRule> listLinkedRule = new LinkedList<>();
-            listLinkedRule.add(rule5);
-            Rule rule4 = new ComplexRule(4, "Document électronique : si la ressource possède un DOI et qu'il est présent sur la ressource, le saisir en 107$a", Priority.P2, new PresenceSousZone(4, "101", "a", true), listLinkedRule);
 
-            //Rule rule5 = new PresenceSousZone(5, "Zone 101 : puisque la ressource n'est pas de type audiovisuel ni multimédia, la sous-zone $j n'a pas lieu d'être", "101", Priority.P2, familles.stream().filter(f -> !f.getId().equals("B")).collect(Collectors.toSet()), "$j", false);
+            ComplexRule rule4 = new ComplexRule(4, "Document électronique : si la ressource possède un DOI et qu'il est présent sur la ressource, le saisir en 107$a", Priority.P2, new PresenceSousZone(4, "101", "a", true));
+            LinkedRule rule5 = new LinkedRule(1, new NombreSousZone(5, "034", "a", "200", "a"), BooleanOperateur.OU, rule4);
+
+            rule4.addOtherRule(rule5);
 
             List<Rule> rules = new ArrayList<>();
             rules.add(rule1);
             rules.add(rule2);
             rules.add(rule3);
             rules.add(rule4);
-            //rules.add(rule5);
 
 
             rulesRepository.saveAll(rules);

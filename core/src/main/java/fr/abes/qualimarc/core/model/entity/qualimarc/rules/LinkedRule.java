@@ -35,10 +35,11 @@ public class LinkedRule {
     @JoinColumn(name = "ID_COMPLEX_RULE")
     private ComplexRule complexRule;
 
-    public LinkedRule(Integer id, SimpleRule rule, BooleanOperateur operateur) {
+    public LinkedRule(Integer id, SimpleRule rule, BooleanOperateur operateur, ComplexRule complexRule) {
         this.id = id;
         this.rule = rule;
         this.operateur = operateur;
+        this.complexRule = complexRule;
     }
 
     public LinkedRule(SimpleRule rule, BooleanOperateur operateur) {
