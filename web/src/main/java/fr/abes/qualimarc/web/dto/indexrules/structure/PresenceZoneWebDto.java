@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
@@ -23,13 +22,7 @@ public class PresenceZoneWebDto extends SimpleRuleWebDto {
     }
 
     @JsonCreator
-    public PresenceZoneWebDto(@JsonProperty("id") Integer id,
-                              @JsonProperty("id-excel") Integer idExcel,
-                              @JsonProperty("message") String message,
-                              @JsonProperty("zone") String zone,
-                              @JsonProperty("priorite") String priority,
-                              @JsonProperty("type-doc") List<String> typesDoc,
-                              @JsonProperty("presence") boolean isPresent) {
+    public PresenceZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, boolean isPresent) {
         super(id, idExcel, message, zone, priority, typesDoc);
         this.isPresent = isPresent;
     }

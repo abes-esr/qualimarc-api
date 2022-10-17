@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @JsonRootName(value="rules")
 public class ListRulesWebDto {
-    private List<ComplexRuleWebDto> rules;
+    private List<SimpleRuleWebDto> rules;
 
     public ListRulesWebDto() {
         this.rules = new ArrayList<>();

@@ -1,35 +1,36 @@
 package fr.abes.qualimarc.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
+import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.configuration.WebConfig;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
-import fr.abes.qualimarc.web.security.JwtAuthenticationFilter;
+import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.ListComplexRulesWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.structure.PresenceZoneWebDto;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.web.FilterChainProxy;
-import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -39,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -130,5 +130,127 @@ public class RuleControllerTest {
                 .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
                 .content(yaml).characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void testIndexCompleRule() throws Exception {
+        String yaml =
+                "rules:\n" +
+                "- simpleRule:\n" +
+                "      id: 1\n" +
+                "      id-excel: 1\n" +
+                "      type: presencezone\n" +
+                "      message: message test 1\n" +
+                "      zone: '200'\n" +
+                "      priorite: P2\n" +
+                "      presence: false\n" +
+                "  operateur: ET\n" +
+                "- simpleRule:\n" +
+                "      id: 2\n" +
+                "      id-excel: 2\n" +
+                "      type: presencezone\n" +
+                "      message: message test 2\n" +
+                "      zone: '330'\n" +
+                "      priorite: P2\n" +
+                "      presence: false\n" +
+                "  operateur: ET";
+
+        this.mockMvc.perform(post("/api/v1/indexComplexRules")
+                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("test l'indexation de règles complexes avec un opérateur manquant")
+    void testIndexCompleRuleWithoutOperateur() throws Exception {
+        String yaml =
+                "rules:\n" +
+                "- simpleRule:\n" +
+                "      id: 1\n" +
+                "      id-excel: 1\n" +
+                "      type: presencezone\n" +
+                "      message: message test 1\n" +
+                "      zone: '200'\n" +
+                "      priorite: P2\n" +
+                "      presence: false\n" +
+                "  operateur: ET\n" +
+                "- simpleRule:\n" +
+                "      id: 2\n" +
+                "      id-excel: 2\n" +
+                "      type: presencezone\n" +
+                "      message: message test 2\n" +
+                "      zone: '330'\n" +
+                "      priorite: P2\n" +
+                "      presence: false\n" +
+                "- simpleRule:\n" +
+                "      id: 3\n" +
+                "      id-excel: 3\n" +
+                "      type: presencezone\n" +
+                "      message: message test 3\n" +
+                "      zone: '400'\n" +
+                "      priorite: P2\n" +
+                "      presence: false\n" +
+                "  operateur: OU\n"
+                ;
+
+        this.mockMvc.perform(post("/api/v1/indexComplexRules")
+                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("test l'indexation de règles complexes avec premier opérateur manquant")
+    void testIndexCompleRuleWithoutFirstOperateur() throws Exception {
+        String yaml =
+                "rules:\n" +
+                "- simpleRule:\n" +
+                "      id: 1\n" +
+                "      id-excel: 1\n" +
+                "      type: presencezone\n" +
+                "      message: message test 1\n" +
+                "      zone: '200'\n" +
+                "      priorite: P2\n" +
+                "      presence: false\n" +
+                "- simpleRule:\n" +
+                "      id: 2\n" +
+                "      id-excel: 2\n" +
+                "      type: presencezone\n" +
+                "      message: message test 2\n" +
+                "      zone: '330'\n" +
+                "      priorite: P2\n" +
+                "      presence: false\n" +
+                "  operateur: OU\n"
+                ;
+
+        this.mockMvc.perform(post("/api/v1/indexComplexRules")
+                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("La première règle doit contenir un opérateur"));
+    }
+
+    @Test
+    @DisplayName("test handleComplexRulesWebDto")
+    void testHandleComplexRuleWebDto() {
+        ListComplexRulesWebDto rules = new ListComplexRulesWebDto();
+        ComplexRuleWebDto complex = new ComplexRuleWebDto();
+        SimpleRuleWebDto simple = new PresenceZoneWebDto(1, 1, "test", "200", "P1", null, true);
+
+        SimpleRuleWebDto link1 = new PresenceZoneWebDto(2, 2, "test 2", "300", "P1", null, false);
+
+        complex.addOtherRule(link1);
+
+        List<Rule> rulesEntity = ruleController.handleComplexRulesWebDto(rules);
+        Assertions.assertEquals(1, rulesEntity.size());
+        ComplexRule complexRule = (ComplexRule) rulesEntity.get(0);
+        Assertions.assertEquals(1, complexRule.getFirstRule().getId());
+        Assertions.assertEquals("200", complexRule.getFirstRule().getZone());
+        Assertions.assertEquals("test", complexRule.getMessage());
+        Assertions.assertEquals(1, complexRule.getOtherRules().size());
+
+
     }
 }

@@ -2,7 +2,9 @@ package fr.abes.qualimarc.web.controller;
 
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -46,7 +49,7 @@ public class RuleController {
         return mapper.map(ruleService.checkRulesOnNotices(requestBody.getPpnList(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), requestBody.getFamilleDocumentSet(), requestBody.getRuleSet())), ResultAnalyseResponseDto.class);
     }
 
-    @PostMapping(value = "/indexRules", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/indexRules", consumes = {"text/yaml", "text/yml"})
     public void indexRules(@Valid @RequestBody ListRulesWebDto rules) {
         List<Rule> rulesEntity = handleRulesWebDto(rules);
         try {
@@ -58,15 +61,28 @@ public class RuleController {
     }
 
     private List<Rule> handleRulesWebDto(ListRulesWebDto rules) {
-        List<LinkedRuleWebDto> rulesWebDtos = new ArrayList<>();
-        for (ComplexRuleWebDto complexRule : rules.getRules()) {
-            complexRule.getLinkedRules();
-        }
         List<Rule> rulesEntity = new ArrayList<>();
-        Iterator<LinkedRuleWebDto> rulesIt = rulesWebDtos.iterator();
-        while (rulesIt.hasNext()) {
-            LinkedRuleWebDto rule = rulesIt.next();
-            rulesEntity.add(mapper.map(rule.getSimpleRule(), ComplexRule.class));
+        for (SimpleRuleWebDto rule : rules.getRules()) {
+            rulesEntity.add(mapper.map(rule, ComplexRule.class));
+        }
+        return rulesEntity;
+    }
+
+    @PostMapping(value = "/indexComplexRules", consumes = {"text/yaml", "text/yml"})
+    public void indexComplexRules(@Valid @RequestBody ListComplexRulesWebDto rules) {
+        List<Rule> rulesEntity = handleComplexRulesWebDto(rules);
+        try {
+            ruleService.saveAll(rulesEntity);
+        } catch (DataIntegrityViolationException ex) {
+            throw new IllegalArgumentException(ex.getCause().getCause());
+        }
+    }
+
+    public List<Rule> handleComplexRulesWebDto(ListComplexRulesWebDto rules) {
+        List<Rule> rulesEntity = new LinkedList<>();
+        for (ComplexRuleWebDto complexRuleWebDto : rules.getComplexRules()) {
+            ComplexRule complexRule = mapper.map(complexRuleWebDto, ComplexRule.class);
+            rulesEntity.add(complexRule);
         }
         return rulesEntity;
     }

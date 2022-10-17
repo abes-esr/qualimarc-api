@@ -1,7 +1,6 @@
 package fr.abes.qualimarc.web.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
@@ -13,18 +12,16 @@ import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
-import io.jsonwebtoken.lang.Assert;
-import org.assertj.core.internal.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.modelmapper.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 @ExtendWith({SpringExtension.class})
 @SpringBootTest(classes = {UtilsMapper.class, ObjectMapper.class, WebDtoMapper.class})
@@ -114,6 +111,15 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(presenceZoneWebDto.getId(), presenceZone.getId());
         Assertions.assertEquals(presenceZoneWebDto.getZone(), presenceZone.getZone());
         Assertions.assertEquals(presenceZoneWebDto.isPresent(), presenceZone.isPresent());
+
+        //  Test avec priorité nulle
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceZoneWebDto(1, 1, "message 1", "100", null, typeDoc, true), ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+
+        //  Test avec message null
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceZoneWebDto(1, 1, null, "100", "P1", typeDoc, true), ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+
     }
 
     /**
@@ -141,6 +147,14 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(presenceSousZoneWebDto.getId(), presenceZone.getId());
         Assertions.assertEquals(presenceSousZoneWebDto.getZone(), presenceZone.getZone());
         Assertions.assertEquals(presenceSousZoneWebDto.isPresent(), presenceZone.isPresent());
+
+        //  Test avec priorité nulle
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceSousZoneWebDto(1, 1, "message 1", "100", null, typeDoc, "a", true), ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+        //  Test avec message null
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceSousZoneWebDto(1, 1, null, "100", "P1", typeDoc, "a", true), ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+
     }
 
     /**
@@ -168,6 +182,14 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(nombreZoneWebDto.getOccurrences(), presenceZone.getOccurrences());
         Assertions.assertEquals(nombreZoneWebDto.getId(), presenceZone.getId());
         Assertions.assertEquals(nombreZoneWebDto.getZone(), presenceZone.getZone());
+
+        //  Test avec priorité nulle
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new NombreZoneWebDto(1, 1, "message 1", "100", null, typeDoc, Operateur.SUPERIEUR, 1), ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+        //  Test avec message null
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new NombreZoneWebDto(1, 1, null, "100", "P1", typeDoc, Operateur.SUPERIEUR, 1), ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+
     }
 
     /**
@@ -196,6 +218,15 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(nombreSousZoneWebDto.getSousZoneCible(), presenceZone.getSousZoneCible());
         Assertions.assertEquals(nombreSousZoneWebDto.getId(), presenceZone.getId());
         Assertions.assertEquals(nombreSousZoneWebDto.getZone(), presenceZone.getZone());
+
+        //  Test avec priorité nulle
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new NombreSousZoneWebDto(1, 1, "message 1", "100", null, typeDoc, "a", "200", "b"), ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+
+        //  Test avec message null
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new NombreSousZoneWebDto(1, 1, null, "100", "P1", typeDoc, "a", "200", "b"), ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+
     }
 
     /**
@@ -223,6 +254,15 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(positionSousZoneWebDto.getPosition(), presenceZone.getPosition());
         Assertions.assertEquals(positionSousZoneWebDto.getId(), presenceZone.getId());
         Assertions.assertEquals(positionSousZoneWebDto.getZone(), presenceZone.getZone());
+
+        //  Test avec priorité nulle
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, "message 1", "100", null, typeDoc, "a", 2), ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+
+        //  Test avec message null
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, null, "100", "P1", typeDoc, "a", 2), ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+
     }
 
     /**

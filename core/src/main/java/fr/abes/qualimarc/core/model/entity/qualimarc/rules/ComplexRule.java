@@ -51,6 +51,10 @@ public class ComplexRule extends Rule implements Serializable {
         this.otherRules = new LinkedList<>();
     }
 
+    public ComplexRule(SimpleRule rule) {
+        this.firstRule = rule;
+    }
+
     public void addOtherRule(LinkedRule linkedRule) {
         this.otherRules.add(linkedRule);
     }
