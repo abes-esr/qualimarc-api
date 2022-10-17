@@ -45,7 +45,7 @@ public abstract class SimpleRuleWebDto {
     @NotBlank(message = "Le champ zone est obligatoire")
     protected String zone;
 
-    @JsonProperty("operateur")
+    @JsonProperty("operateur-booleen")
     @Pattern(regexp = "(ET|OU)", message = "Le champ operateur ne peut contenir qu'une des deux valeurs : ET / OU")
     private String booleanOperator;
 

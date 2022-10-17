@@ -41,9 +41,11 @@ public class LinkedRule {
         this.complexRule = complexRule;
     }
 
-    public LinkedRule(SimpleRule rule, BooleanOperateur operateur) {
+    public LinkedRule(SimpleRule rule, BooleanOperateur operateur, ComplexRule complexRule) {
+        this.id = rule.getId();
         this.rule = rule;
         this.operateur = operateur;
+        this.complexRule = complexRule;
     }
 
 }

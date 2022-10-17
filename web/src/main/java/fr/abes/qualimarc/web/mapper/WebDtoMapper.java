@@ -223,7 +223,7 @@ public class WebDtoMapper {
                         if (otherRegle.getBooleanOperator() == null) {
                             throw new IllegalArgumentException("Les règles autres que la première d'une règle complexe doivent avoir un opérateur");
                         }
-                        target.addOtherRule(new LinkedRule(mapper.map(otherRegle, SimpleRule.class), getOperateur(otherRegle.getBooleanOperator())));
+                        target.addOtherRule(new LinkedRule(mapper.map(otherRegle, SimpleRule.class), getOperateur(otherRegle.getBooleanOperator()), target));
                     }
 
                 } else {
