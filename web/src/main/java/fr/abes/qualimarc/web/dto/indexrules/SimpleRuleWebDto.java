@@ -20,6 +20,8 @@ import java.util.List;
         @JsonSubTypes.Type(value = PositionSousZoneWebDto.class, name="positionsouszone")
 })
 public abstract class SimpleRuleWebDto {
+
+
     @JsonProperty("id")
     @NotNull(message = "Le champ id est obligatoire")
     protected Integer id;

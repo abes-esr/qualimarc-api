@@ -25,7 +25,6 @@ public class PositionSousZoneWebDto extends SimpleRuleWebDto {
     @NotNull(message = "la position est obligatoire")
     private Integer position;
 
-    @JsonCreator
     public PositionSousZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZone, Integer position) {
         super(id, idExcel, message, zone, priority, typesDoc);
         this.sousZone = sousZone;
@@ -34,5 +33,11 @@ public class PositionSousZoneWebDto extends SimpleRuleWebDto {
 
     public PositionSousZoneWebDto() {
         super();
+    }
+
+    public PositionSousZoneWebDto(Integer id, String zone, String booleanOperator, String sousZone, Integer position) {
+        super(id, zone, booleanOperator);
+        this.sousZone = sousZone;
+        this.position = position;
     }
 }

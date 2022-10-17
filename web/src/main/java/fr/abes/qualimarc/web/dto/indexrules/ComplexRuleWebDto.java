@@ -11,10 +11,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Data
-@JsonRootName("complexRule")
 public class ComplexRuleWebDto {
     @JsonProperty("id")
     @NotNull(message = "Le champ id est obligatoire")
@@ -41,7 +42,11 @@ public class ComplexRuleWebDto {
     @NotEmpty(message = "Une règle complexe doit contenir au moins une règle")
     private List<SimpleRuleWebDto> regles;
 
-    public void addOtherRule(SimpleRuleWebDto rule) {
+    public void addRegle(SimpleRuleWebDto rule) {
         this.regles.add(rule);
+    }
+
+    public ComplexRuleWebDto() {
+        this.regles = new LinkedList<SimpleRuleWebDto>();
     }
 }

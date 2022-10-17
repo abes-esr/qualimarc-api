@@ -11,6 +11,8 @@ import fr.abes.qualimarc.core.utils.Operateur;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
+import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @ExtendWith({SpringExtension.class})
 @SpringBootTest(classes = {UtilsMapper.class, ObjectMapper.class, WebDtoMapper.class})
@@ -263,6 +266,47 @@ public class WebDtoMapperTest {
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, null, "100", "P1", typeDoc, "a", 2), ComplexRule.class));
         Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
+    }
+
+    @Test
+    @DisplayName("Test Mapper converterComplexRule")
+    void converterComplexRuleTest() {
+        ComplexRuleWebDto complexRuleWebDto = new ComplexRuleWebDto();
+        complexRuleWebDto.setId(1);
+        complexRuleWebDto.setMessage("message test");
+        complexRuleWebDto.setPriority("P1");
+        complexRuleWebDto.addRegle(new PresenceZoneWebDto(1,"200","ET",true));
+
+        ComplexRuleWebDto finalComplexRuleWebDto = complexRuleWebDto;
+        MappingException exception = Assertions.assertThrows(MappingException.class, ()->mapper.map(finalComplexRuleWebDto, ComplexRule.class));
+        Assertions.assertEquals("La première règle d'une règle complexe ne doit pas contenir d'opérateur", exception.getCause().getMessage());
+
+
+        complexRuleWebDto = new ComplexRuleWebDto();
+        complexRuleWebDto.setId(1);
+        complexRuleWebDto.setIdExcel(1);
+        complexRuleWebDto.setMessage("message test");
+        complexRuleWebDto.setPriority("P1");
+        List<String> listTypeDoc = new ArrayList<>();
+        listTypeDoc.add("BD");
+        listTypeDoc.add("A");
+        listTypeDoc.add("B");
+        complexRuleWebDto.setTypesDoc(listTypeDoc);
+        complexRuleWebDto.addRegle(new PresenceZoneWebDto(1,"200",null,true));
+        complexRuleWebDto.addRegle(new PresenceZoneWebDto(2,"210","ET",false));
+
+        ComplexRule complexRule = mapper.map(complexRuleWebDto, ComplexRule.class);
+
+        Assertions.assertEquals(complexRuleWebDto.getId(),complexRule.getId());
+        Assertions.assertEquals(complexRuleWebDto.getMessage(),complexRule.getMessage());
+        Assertions.assertEquals(complexRuleWebDto.getPriority(),complexRule.getPriority().toString());
+        Assertions.assertEquals(complexRuleWebDto.getTypesDoc().size(),complexRule.getFamillesDocuments().size());
+        Assertions.assertEquals(complexRuleWebDto.getRegles().size(),complexRule.getOtherRules().size() + 1);
+
+        complexRuleWebDto.addRegle(new PresenceZoneWebDto(3,"300",null,true));
+        ComplexRuleWebDto finalComplexRuleWebDto1 = complexRuleWebDto;
+        exception = Assertions.assertThrows(MappingException.class, ()->mapper.map(finalComplexRuleWebDto1, ComplexRule.class));
+        Assertions.assertEquals("Les règles autres que la première d'une règle complexe doivent avoir un opérateur", exception.getCause().getMessage());
     }
 
     /**

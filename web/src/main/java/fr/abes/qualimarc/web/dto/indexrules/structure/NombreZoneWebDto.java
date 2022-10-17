@@ -25,7 +25,6 @@ public class NombreZoneWebDto extends SimpleRuleWebDto {
     @NotNull(message = "le nombre d'occurrence est obligatoire")
     private Integer occurrences;
 
-    @JsonCreator
     public NombreZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, Operateur operateur, Integer occurrences) {
         super(id, idExcel, message, zone, priority, typesDoc);
         this.operateur = operateur;
@@ -34,5 +33,11 @@ public class NombreZoneWebDto extends SimpleRuleWebDto {
 
     public NombreZoneWebDto() {
         super();
+    }
+
+    public NombreZoneWebDto(Integer id, String zone, String booleanOperator, Operateur operateur, Integer occurrences) {
+        super(id, zone, booleanOperator);
+        this.operateur = operateur;
+        this.occurrences = occurrences;
     }
 }

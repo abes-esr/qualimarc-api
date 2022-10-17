@@ -15,13 +15,14 @@ import java.util.List;
 @JsonTypeName("presencezone")
 public class PresenceZoneWebDto extends SimpleRuleWebDto {
     @NotNull(message = "le champ presence est obligatoire")
+    @JsonProperty("presence")
     private boolean isPresent;
 
     public boolean isPresent() {
         return isPresent;
     }
 
-    @JsonCreator
+
     public PresenceZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, boolean isPresent) {
         super(id, idExcel, message, zone, priority, typesDoc);
         this.isPresent = isPresent;
@@ -29,5 +30,11 @@ public class PresenceZoneWebDto extends SimpleRuleWebDto {
 
     public PresenceZoneWebDto() {
         super();
+    }
+
+
+    public PresenceZoneWebDto(Integer id, String zone, String operateur, boolean isPresent){
+        super(id,zone,operateur);
+        this.isPresent = isPresent;
     }
 }

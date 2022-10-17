@@ -29,7 +29,6 @@ public class PresenceSousZoneWebDto extends SimpleRuleWebDto {
 
     public boolean isPresent() {return this.isPresent;}
 
-    @JsonCreator
     public PresenceSousZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZone, boolean isPresent) {
         super(id, idExcel, message, zone, priority, typesDoc);
         this.sousZone = sousZone;
@@ -38,5 +37,11 @@ public class PresenceSousZoneWebDto extends SimpleRuleWebDto {
 
     public PresenceSousZoneWebDto() {
         super();
+    }
+
+    public PresenceSousZoneWebDto(Integer id, String zone, String booleanOperator, String sousZone, boolean isPresent) {
+        super(id, zone, booleanOperator);
+        this.sousZone = sousZone;
+        this.isPresent = isPresent;
     }
 }

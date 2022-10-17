@@ -33,7 +33,6 @@ public class NombreSousZoneWebDto extends SimpleRuleWebDto {
     @NotNull(message = "Le champ souszonecible est obligatoire")
     private String sousZoneCible;
 
-    @JsonCreator
     public NombreSousZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZone, String zoneCible, String sousZoneCible) {
         super(id, idExcel, message, zone, priority, typesDoc);
         this.sousZone = sousZone;
@@ -43,5 +42,12 @@ public class NombreSousZoneWebDto extends SimpleRuleWebDto {
 
     public NombreSousZoneWebDto() {
         super();
+    }
+
+    public NombreSousZoneWebDto(Integer id, String zone, String booleanOperator, String sousZone, String zoneCible, String sousZoneCible) {
+        super(id, zone, booleanOperator);
+        this.sousZone = sousZone;
+        this.zoneCible = zoneCible;
+        this.sousZoneCible = sousZoneCible;
     }
 }

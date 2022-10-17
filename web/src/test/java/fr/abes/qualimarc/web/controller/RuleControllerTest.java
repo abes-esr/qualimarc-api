@@ -5,7 +5,6 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
-import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.configuration.WebConfig;
@@ -135,25 +134,26 @@ public class RuleControllerTest {
     @Test
     void testIndexCompleRule() throws Exception {
         String yaml =
+                "---\n" +
                 "rules:\n" +
-                "- simpleRule:\n" +
-                "      id: 1\n" +
-                "      id-excel: 1\n" +
-                "      type: presencezone\n" +
-                "      message: message test 1\n" +
-                "      zone: '200'\n" +
-                "      priorite: P2\n" +
-                "      presence: false\n" +
-                "  operateur: ET\n" +
-                "- simpleRule:\n" +
-                "      id: 2\n" +
-                "      id-excel: 2\n" +
-                "      type: presencezone\n" +
-                "      message: message test 2\n" +
-                "      zone: '330'\n" +
-                "      priorite: P2\n" +
-                "      presence: false\n" +
-                "  operateur: ET";
+                "   - id: 2\n" +
+                "     id-excel: 2\n" +
+                "     message: test\n" +
+                "     priorite: P2\n" +
+                "     type-doc:\n" +
+                "       - A\n" +
+                "       - O\n" +
+                "     regles:\n" +
+                "       - id: 2\n" +
+                "         type: presencezone\n" +
+                "         zone: '330'\n" +
+                "         presence: false\n" +
+                "       - id: 3\n" +
+                "         type: presencezone\n" +
+                "         zone: '330'\n" +
+                "         presence: true\n" +
+                "         operateur: ET\n";
+
 
         this.mockMvc.perform(post("/api/v1/indexComplexRules")
                 .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
@@ -165,92 +165,57 @@ public class RuleControllerTest {
     @DisplayName("test l'indexation de règles complexes avec un opérateur manquant")
     void testIndexCompleRuleWithoutOperateur() throws Exception {
         String yaml =
+                "---\n" +
                 "rules:\n" +
-                "- simpleRule:\n" +
-                "      id: 1\n" +
-                "      id-excel: 1\n" +
-                "      type: presencezone\n" +
-                "      message: message test 1\n" +
-                "      zone: '200'\n" +
-                "      priorite: P2\n" +
-                "      presence: false\n" +
-                "  operateur: ET\n" +
-                "- simpleRule:\n" +
-                "      id: 2\n" +
-                "      id-excel: 2\n" +
-                "      type: presencezone\n" +
-                "      message: message test 2\n" +
-                "      zone: '330'\n" +
-                "      priorite: P2\n" +
-                "      presence: false\n" +
-                "- simpleRule:\n" +
-                "      id: 3\n" +
-                "      id-excel: 3\n" +
-                "      type: presencezone\n" +
-                "      message: message test 3\n" +
-                "      zone: '400'\n" +
-                "      priorite: P2\n" +
-                "      presence: false\n" +
-                "  operateur: OU\n"
-                ;
-
-        this.mockMvc.perform(post("/api/v1/indexComplexRules")
-                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
-                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("test l'indexation de règles complexes avec premier opérateur manquant")
-    void testIndexCompleRuleWithoutFirstOperateur() throws Exception {
-        String yaml =
-                "rules:\n" +
-                "- simpleRule:\n" +
-                "      id: 1\n" +
-                "      id-excel: 1\n" +
-                "      type: presencezone\n" +
-                "      message: message test 1\n" +
-                "      zone: '200'\n" +
-                "      priorite: P2\n" +
-                "      presence: false\n" +
-                "- simpleRule:\n" +
-                "      id: 2\n" +
-                "      id-excel: 2\n" +
-                "      type: presencezone\n" +
-                "      message: message test 2\n" +
-                "      zone: '330'\n" +
-                "      priorite: P2\n" +
-                "      presence: false\n" +
-                "  operateur: OU\n"
-                ;
+                "   - id: 2\n" +
+                "     id-excel: 2\n" +
+                "     message: test\n" +
+                "     priorite: P2\n" +
+                "     type-doc:\n" +
+                "       - A\n" +
+                "       - O\n" +
+                "     regles:\n" +
+                "       - id: 2\n" +
+                "         type: presencezone\n" +
+                "         zone: '330'\n" +
+                "         presence: false\n" +
+                "       - id: 3\n" +
+                "         type: presencezone\n" +
+                "         zone: '330'\n" +
+                "         presence: true\n";
 
         this.mockMvc.perform(post("/api/v1/indexComplexRules")
                 .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
                 .content(yaml).characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.message").value("La première règle doit contenir un opérateur"));
+                .andExpect(jsonPath("$.debugMessage").value("La première règle doit contenir un opérateur"));
     }
 
     @Test
     @DisplayName("test handleComplexRulesWebDto")
-    void testHandleComplexRuleWebDto() {
-        ListComplexRulesWebDto rules = new ListComplexRulesWebDto();
-        ComplexRuleWebDto complex = new ComplexRuleWebDto();
-        SimpleRuleWebDto simple = new PresenceZoneWebDto(1, 1, "test", "200", "P1", null, true);
+    void testHandleComplexRuleWebDto() throws Exception {
+        String yaml =
+                "---\n" +
+                "rules:\n" +
+                "   - complexRule:\n" +
+                "     id: 2\n" +
+                "     id-excel: 2\n" +
+                "     message: test\n" +
+                "     priority: P2\n" +
+                "     type-doc:\n" +
+                "       - A\n" +
+                "       - O\n" +
+                "     regles:\n" +
+                "       - id: 2\n" +
+                "         type: presencezone\n" +
+                "         zone: '330'\n" +
+                "         presence: false\n";
+        Mockito.doNothing().when(ruleService).saveAll(Mockito.any());
 
-        SimpleRuleWebDto link1 = new PresenceZoneWebDto(2, 2, "test 2", "300", "P1", null, false);
-
-        complex.addOtherRule(link1);
-
-        List<Rule> rulesEntity = ruleController.handleComplexRulesWebDto(rules);
-        Assertions.assertEquals(1, rulesEntity.size());
-        ComplexRule complexRule = (ComplexRule) rulesEntity.get(0);
-        Assertions.assertEquals(1, complexRule.getFirstRule().getId());
-        Assertions.assertEquals("200", complexRule.getFirstRule().getZone());
-        Assertions.assertEquals("test", complexRule.getMessage());
-        Assertions.assertEquals(1, complexRule.getOtherRules().size());
-
-
+        this.mockMvc.perform(post("/api/v1/indexComplexRules")
+                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.debugMessage").value("Une règle complexe doit contenir au moins deux règles simples"));
     }
 }

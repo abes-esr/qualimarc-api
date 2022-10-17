@@ -203,7 +203,7 @@ public class WebDtoMapper {
     }
 
     /**
-     * Convertion d'un modèle LinkedRuleWebDto en LinkedRule
+     * Convertion d'un modèle ComplexRuleWebDto en ComplexRule
      */
     @Bean
     public void converterComplexRule() {
@@ -215,6 +215,9 @@ public class WebDtoMapper {
                 SimpleRuleWebDto firstRegle = reglesIt.next();
                 if (null == firstRegle.getBooleanOperator()) {
                     target = new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), mapper.map(firstRegle, SimpleRule.class));
+                    if(source.getTypesDoc() != null)
+                        target.setFamillesDocuments(getFamilleDocument(source.getTypesDoc()));
+
                     while (reglesIt.hasNext()) {
                         SimpleRuleWebDto otherRegle = reglesIt.next();
                         if (otherRegle.getBooleanOperator() == null) {
