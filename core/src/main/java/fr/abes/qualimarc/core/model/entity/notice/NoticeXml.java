@@ -167,7 +167,6 @@ public class NoticeXml {
             case "gm":
             case "gd":
             case "gc":
-            case "ga":
                 return "B";
             //FAMILLE CARTE
             case "em":
@@ -178,7 +177,6 @@ public class NoticeXml {
             case "lm":
             case "ld":
             case "lc":
-            case "la":
                 return "O";
             //FAMILLE ENREGISTREMENT
             case "im":
@@ -220,8 +218,12 @@ public class NoticeXml {
             case "am":
             case "ad":
             case "ac":
-            case "aa":
                 return "A";
+            //FAMILLE PARTIE COMPOSANTE
+            case "aa":
+            case "la":
+            case "ga":
+                return "PC";
             default:
                 throw new IllegalTypeDocumentException("Type de document inconnu");
         }
