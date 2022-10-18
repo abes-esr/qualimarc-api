@@ -1,6 +1,5 @@
 package fr.abes.qualimarc.core.model.entity.qualimarc.rules;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,9 +41,11 @@ public class LinkedRule {
         this.complexRule = complexRule;
     }
 
-    public LinkedRule(SimpleRule rule, BooleanOperateur operateur) {
+    public LinkedRule(SimpleRule rule, BooleanOperateur operateur, ComplexRule complexRule) {
+        this.id = rule.getId();
         this.rule = rule;
         this.operateur = operateur;
+        this.complexRule = complexRule;
     }
 
 }
