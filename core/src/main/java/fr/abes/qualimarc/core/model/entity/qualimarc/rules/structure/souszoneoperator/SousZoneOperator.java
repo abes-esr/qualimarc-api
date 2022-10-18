@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -21,9 +22,11 @@ public class SousZoneOperator implements Serializable {
     private Integer id;
 
     @Column(name="SOUS_ZONE")
+    @NotNull
     private String sousZone;
 
     @Column(name="IS_PRESENT")
+    @NotNull
     private boolean isPresent;
 
     @Column(name="OPERATEUR")
