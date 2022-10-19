@@ -7,6 +7,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRule;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
+import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.core.utils.Operateur;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
@@ -266,6 +267,51 @@ public class WebDtoMapperTest {
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, null, "100", "P1", typeDoc, "a", 2), ComplexRule.class));
         Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
+    }
+
+    @Test
+    @DisplayName("Test mapper converterPresenceSousZonesMemeZone")
+    void converterPresenceSousZonesMemeZoneTest() {
+        PresenceSousZonesMemeZoneWebDto rule1 = new PresenceSousZonesMemeZoneWebDto(1, "200", "ET");
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule1, ComplexRule.class));
+        Assertions.assertEquals("L'opérateur est interdit lors de la création d'une seule règle", exception.getCause().getMessage());
+
+        PresenceSousZonesMemeZoneWebDto rule2 = new PresenceSousZonesMemeZoneWebDto(1, 1, null, "200", null, null);
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule2, ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+
+        PresenceSousZonesMemeZoneWebDto rule3 = new PresenceSousZonesMemeZoneWebDto(1, 1, "test", "200", "P1", new ArrayList<>());
+        rule3.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("a", true, BooleanOperateur.ET));
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule3, ComplexRule.class));
+        Assertions.assertEquals("La règle 1 doit avoir au moins deux sous-zones déclarées", exception.getCause().getMessage());
+
+        rule3.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("b", false, BooleanOperateur.ET));
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule3, ComplexRule.class));
+        Assertions.assertEquals("Règle 1 : La première sous-zone ne doit pas avoir d'opérateur booléen", exception.getCause().getMessage());
+
+        PresenceSousZonesMemeZoneWebDto rule4 = new PresenceSousZonesMemeZoneWebDto(1, 1, "test", "200", "P1", new ArrayList<>());
+        rule4.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("a", true));
+        rule4.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("b", false));
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule4, ComplexRule.class));
+        Assertions.assertEquals("Règle 1 : Les sous-zones en dehors de la première doivent avoir un opérateur booléen", exception.getCause().getMessage());
+
+        PresenceSousZonesMemeZoneWebDto rule5 = new PresenceSousZonesMemeZoneWebDto(1, 1, "test", "200", "P1", new ArrayList<>());
+        rule5.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("a", true));
+        rule5.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("b", false, BooleanOperateur.ET));
+
+        ComplexRule complexRule = mapper.map(rule5, ComplexRule.class);
+
+        Assertions.assertEquals(1, complexRule.getId());
+        Assertions.assertEquals("test", complexRule.getMessage());
+        Assertions.assertEquals(Priority.P1, complexRule.getPriority());
+        PresenceSousZonesMemeZone simpleRule = (PresenceSousZonesMemeZone) complexRule.getFirstRule();
+        Assertions.assertEquals("200", simpleRule.getZone());
+        Assertions.assertEquals(2, simpleRule.getSousZoneOperators().size());
+        Assertions.assertEquals("a", simpleRule.getSousZoneOperators().get(0).getSousZone());
+        Assertions.assertEquals(true, simpleRule.getSousZoneOperators().get(0).isPresent());
+        Assertions.assertEquals("b", simpleRule.getSousZoneOperators().get(1).getSousZone());
+        Assertions.assertEquals(BooleanOperateur.ET, simpleRule.getSousZoneOperators().get(1).getOperateur());
+        Assertions.assertEquals(false, simpleRule.getSousZoneOperators().get(1).isPresent());
     }
 
     @Test

@@ -19,7 +19,7 @@ import java.util.List;
 @JsonTypeName("presencesouszonesmemezone")
 public class PresenceSousZonesMemeZoneWebDto extends SimpleRuleWebDto {
 
-    @JsonProperty("sous-zones")
+    @JsonProperty("souszones")
     @NotEmpty
     private List<SousZoneOperatorWebDto> sousZones;
 
@@ -42,11 +42,12 @@ public class PresenceSousZonesMemeZoneWebDto extends SimpleRuleWebDto {
     }
 
     @Getter
-    public class SousZoneOperatorWebDto {
+    @NoArgsConstructor
+    public static class SousZoneOperatorWebDto {
 
         @Pattern(regexp = "(\\b([a-zA-Z]{0,1})\\b)(\\b([0-9]{0,1})\\b)", message = "Le champ souszone ne peut contenir qu'une lettre (en minuscule ou majuscule), ou un chiffre.")
         @NotNull(message = "Le champ souszone est obligatoire")
-        @JsonProperty("sous-zone")
+        @JsonProperty("souszone")
         private String sousZone;
 
         @NotNull(message = "le champ presence est obligatoire")

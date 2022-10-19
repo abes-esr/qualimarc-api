@@ -118,7 +118,7 @@ public class WebDtoMapper {
                 PresenceSousZonesMemeZoneWebDto source = context.getSource();
                 checkSimpleRule(source);
                 PresenceSousZonesMemeZone target = constructPresenceSousZonesMemeZone(source);
-                return new ComplexRule(source.getId(),source.getMessage(), getPriority(source.getPriority()),getFamilleDocument(source.getTypesDoc()),target);
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), target);
             }
         };
         mapper.addConverter(myConverter);
@@ -209,7 +209,6 @@ public class WebDtoMapper {
     }
 
 
-
     /**
      * Convertion d'un modèle ComplexRuleWebDto en ComplexRule
      */
@@ -223,7 +222,7 @@ public class WebDtoMapper {
                 SimpleRuleWebDto firstRegle = reglesIt.next();
                 if (null == firstRegle.getBooleanOperator()) {
                     target = new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), mapper.map(firstRegle, SimpleRule.class));
-                    if(source.getTypesDoc() != null)
+                    if (source.getTypesDoc() != null)
                         target.setFamillesDocuments(getFamilleDocument(source.getTypesDoc()));
 
                     while (reglesIt.hasNext()) {
@@ -263,21 +262,21 @@ public class WebDtoMapper {
                     } else {
                         resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getMessages());
                     }
-                        resultRules.getDetailErreurs().forEach(detailErreur -> {
-                            RuleResponseDto responseDto1 = new RuleResponseDto(detailErreur.getId(),detailErreur.getPriority().toString(),detailErreur.getMessage());
-                            detailErreur.getZonesUnm().forEach(responseDto1::addZone);
-                            resultRulesResponseDto.addDetailErreur(responseDto1);
-                        });
-                        resultRulesResponseDto.setAuteur(resultRules.getAuteur());
-                        resultRulesResponseDto.setTitre(resultRules.getTitre());
-                        resultRulesResponseDto.setDateModification(resultRules.getDateModification());
-                        resultRulesResponseDto.setRcr(resultRules.getRcr());
-                        if(resultRules.getIsbn() != null)
-                            resultRulesResponseDto.setIsbn(resultRules.getIsbn());
-                        if (resultRules.getOcn() != null) {
-                            resultRulesResponseDto.setOcn(resultRules.getOcn());
-                        }
-                        responseDto.addResultRule(resultRulesResponseDto);
+                    resultRules.getDetailErreurs().forEach(detailErreur -> {
+                        RuleResponseDto responseDto1 = new RuleResponseDto(detailErreur.getId(), detailErreur.getPriority().toString(), detailErreur.getMessage());
+                        detailErreur.getZonesUnm().forEach(responseDto1::addZone);
+                        resultRulesResponseDto.addDetailErreur(responseDto1);
+                    });
+                    resultRulesResponseDto.setAuteur(resultRules.getAuteur());
+                    resultRulesResponseDto.setTitre(resultRules.getTitre());
+                    resultRulesResponseDto.setDateModification(resultRules.getDateModification());
+                    resultRulesResponseDto.setRcr(resultRules.getRcr());
+                    if (resultRules.getIsbn() != null)
+                        resultRulesResponseDto.setIsbn(resultRules.getIsbn());
+                    if (resultRules.getOcn() != null) {
+                        resultRulesResponseDto.setOcn(resultRules.getOcn());
+                    }
+                    responseDto.addResultRule(resultRulesResponseDto);
                 });
 
                 responseDto.setPpnAnalyses(new ArrayList<>(source.getPpnAnalyses()));
@@ -298,7 +297,7 @@ public class WebDtoMapper {
 
     private PresenceSousZonesMemeZone constructPresenceSousZonesMemeZone(PresenceSousZonesMemeZoneWebDto source) {
         PresenceSousZonesMemeZone target = new PresenceSousZonesMemeZone(source.getId(), source.getZone());
-        if(source.getSousZones().size() < 2){
+        if (source.getSousZones().size() < 2) {
             throw new IllegalArgumentException("La règle " + source.getId() + " doit avoir au moins deux sous-zones déclarées");
         } else {
             Iterator<PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto> sousZoneOperatorIt = source.getSousZones().listIterator();
@@ -310,18 +309,18 @@ public class WebDtoMapper {
                     if (null != nextSousZone.getOperator()) {
                         target.addSousZoneOperator(new SousZoneOperator(nextSousZone.getSousZone(), nextSousZone.isPresent(), nextSousZone.getOperator()));
                     } else {
-                        throw new IllegalArgumentException("Règle " + source.getId() + " : Seule la première sous-zone ne doit pas avoir d'opérateur boolèen");
+                        throw new IllegalArgumentException("Règle " + source.getId() + " : Les sous-zones en dehors de la première doivent avoir un opérateur booléen");
                     }
                 }
             } else {
-                throw new IllegalArgumentException("Règle " + source.getId() + " : La première sous-zone ne doit pas avoir d'opérateur boolèen");
+                throw new IllegalArgumentException("Règle " + source.getId() + " : La première sous-zone ne doit pas avoir d'opérateur booléen");
             }
         }
         return target;
     }
 
     private Priority getPriority(String priority) {
-        if(priority.equals("P1")) {
+        if (priority.equals("P1")) {
             return Priority.P1;
         } else if (priority.equals("P2")) {
             return Priority.P2;
@@ -341,7 +340,7 @@ public class WebDtoMapper {
 
     private Set<FamilleDocument> getFamilleDocument(List<String> familleDoc) {
         Set<FamilleDocument> familleDocumentSet = new HashSet<>();
-        for (String typeDocument: familleDoc) {
+        for (String typeDocument : familleDoc) {
             familleDocumentSet.add(new FamilleDocument(typeDocument));
         }
         return familleDocumentSet;
