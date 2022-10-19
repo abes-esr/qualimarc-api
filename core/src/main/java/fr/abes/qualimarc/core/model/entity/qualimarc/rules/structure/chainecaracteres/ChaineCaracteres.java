@@ -2,7 +2,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.chainecara
 
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceChaineCaracteres;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
-import fr.abes.qualimarc.core.utils.EnumChaineDeCaracteres;
+import fr.abes.qualimarc.core.utils.EnumChaineCaracteres;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +11,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+/**
+ * Classe qui définie une chaine de caractères, son opérateur logique (ET/OU) et sa méthode de recherche dans la zone a tester (UNIQUEMENT, CONTIENT, COMMENCE, TERMINE)
+ */
 @Entity
 @Getter
 @Setter
@@ -30,7 +33,7 @@ public class ChaineCaracteres implements Serializable {
 
     @Column(name = "ENUM_CHAINE_CARACTERES")
     @NotNull
-    private EnumChaineDeCaracteres enumChaineDeCaracteres;
+    private EnumChaineCaracteres enumChaineCaracteres;
 
     @Column(name = "CHAINE_CARACTERES")
     @NotNull
@@ -40,9 +43,9 @@ public class ChaineCaracteres implements Serializable {
     @JoinColumn(name = "ID_CHAINE_CARACTERES")
     private PresenceChaineCaracteres presenceChaineCaracteres;
 
-    public ChaineCaracteres(BooleanOperateur booleanOperateur, EnumChaineDeCaracteres enumChaineDeCaracteres, String chaineCaracteres) {
+    public ChaineCaracteres(BooleanOperateur booleanOperateur, EnumChaineCaracteres enumChaineCaracteres, String chaineCaracteres) {
         this.booleanOperateur = booleanOperateur;
-        this.enumChaineDeCaracteres = enumChaineDeCaracteres;
+        this.enumChaineCaracteres = enumChaineCaracteres;
         this.chaineCaracteres = chaineCaracteres;
     }
 }
