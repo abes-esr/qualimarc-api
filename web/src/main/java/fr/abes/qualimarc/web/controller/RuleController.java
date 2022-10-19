@@ -13,6 +13,8 @@ import fr.abes.qualimarc.web.dto.indexrules.ListComplexRulesWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.ListRulesWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
@@ -55,7 +57,7 @@ public class RuleController {
             ruleService.saveAll(rulesEntity);
         } catch (DataIntegrityViolationException ex) {
             //exception levée dans le cas ou un id est déjà pris
-            throw new IllegalArgumentException(ex.getCause().getCause());
+            throw new IllegalArgumentException("Une règle avec l'identifiant " + StringUtils.substringBetween(ex.getMessage(), "#", "]") + " existe déjà");
         }
     }
 
@@ -73,7 +75,10 @@ public class RuleController {
         try {
             ruleService.saveAll(rulesEntity);
         } catch (DataIntegrityViolationException ex) {
-            throw new IllegalArgumentException(ex.getCause().getCause());
+            if (ex.getCause() instanceof ConstraintViolationException) {
+                throw new IllegalArgumentException("Une règle simple avec l'identifiant " + StringUtils.substringBetween(ex.getCause().getCause().getMessage(), ")=(", ")") + " existe déjà");
+            }
+            throw new IllegalArgumentException("Une règle complexe avec l'identifiant " + StringUtils.substringBetween(ex.getMessage(), "#", "]") + " existe déjà");
         }
     }
 

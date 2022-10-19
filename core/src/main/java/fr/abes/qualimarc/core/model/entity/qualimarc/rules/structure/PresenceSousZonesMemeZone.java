@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,14 +20,23 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Entity
 @Table(name = "RULE_PRESENCESOUSZONEMEMEZONE")
-public class PresenceSousZoneMemeZone extends SimpleRule implements Serializable {
+public class PresenceSousZonesMemeZone extends SimpleRule implements Serializable {
 
-    @OneToMany(mappedBy = "presenceSousZoneMemeZone", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "presenceSousZonesMemeZone", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<SousZoneOperator> sousZoneOperators;
 
-    public PresenceSousZoneMemeZone(Integer id, String zone, List<SousZoneOperator> sousZoneOperators) {
+    public PresenceSousZonesMemeZone(Integer id, String zone, List<SousZoneOperator> sousZoneOperators) {
         super(id, zone);
         this.sousZoneOperators = sousZoneOperators;
+    }
+
+    public PresenceSousZonesMemeZone(Integer id, String zone) {
+        super(id, zone);
+        this.sousZoneOperators = new LinkedList<>();
+    }
+
+    public void addSousZoneOperator(SousZoneOperator sousZoneOperator){
+        this.sousZoneOperators.add(sousZoneOperator);
     }
 
     @Override
