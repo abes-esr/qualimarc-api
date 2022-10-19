@@ -5,6 +5,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.souszoneoperator.SousZoneOperator;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.core.utils.Priority;
@@ -40,12 +41,7 @@ public class WebDtoMapper {
         Converter<PresenceZoneWebDto, ComplexRule> myConverter = new Converter<PresenceZoneWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<PresenceZoneWebDto, ComplexRule> context) {
                 PresenceZoneWebDto source = context.getSource();
-                if (source.getBooleanOperator() != null) {
-                    throw new IllegalArgumentException("L'opérateur est interdit lors de la création d'une seule règle");
-                }
-                if (source.getMessage() == null || source.getPriority() == null) {
-                    throw new IllegalArgumentException("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple");
-                }
+                checkSimpleRule(source);
                 return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new PresenceZone(source.getId(), source.getZone(), source.isPresent()));
             }
         };
@@ -60,12 +56,7 @@ public class WebDtoMapper {
         Converter<PresenceSousZoneWebDto, ComplexRule> myConverter = new Converter<PresenceSousZoneWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<PresenceSousZoneWebDto, ComplexRule> context) {
                 PresenceSousZoneWebDto source = context.getSource();
-                if (source.getBooleanOperator() != null) {
-                    throw new IllegalArgumentException("L'opérateur est interdit lors de la création d'une seule règle");
-                }
-                if (source.getMessage() == null || source.getPriority() == null) {
-                    throw new IllegalArgumentException("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple");
-                }
+                checkSimpleRule(source);
                 return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new PresenceSousZone(source.getId(), source.getZone(), source.getSousZone(), source.isPresent()));
             }
         };
@@ -80,12 +71,7 @@ public class WebDtoMapper {
         Converter<NombreZoneWebDto, ComplexRule> myConverter = new Converter<NombreZoneWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<NombreZoneWebDto, ComplexRule> context) {
                 NombreZoneWebDto source = context.getSource();
-                if (source.getBooleanOperator() != null) {
-                    throw new IllegalArgumentException("L'opérateur est interdit lors de la création d'une seule règle");
-                }
-                if (source.getMessage() == null || source.getPriority() == null) {
-                    throw new IllegalArgumentException("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple");
-                }
+                checkSimpleRule(source);
                 return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new NombreZone(source.getId(), source.getZone(), source.getOperateur(), source.getOccurrences()));
             }
         };
@@ -100,12 +86,7 @@ public class WebDtoMapper {
         Converter<NombreSousZoneWebDto, ComplexRule> myConverter = new Converter<NombreSousZoneWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<NombreSousZoneWebDto, ComplexRule> context) {
                 NombreSousZoneWebDto source = context.getSource();
-                if (source.getBooleanOperator() != null) {
-                    throw new IllegalArgumentException("L'opérateur est interdit lors de la création d'une seule règle");
-                }
-                if (source.getMessage() == null || source.getPriority() == null) {
-                    throw new IllegalArgumentException("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple");
-                }
+                checkSimpleRule(source);
                 return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new NombreSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getZoneCible(), source.getSousZoneCible()));
             }
         };
@@ -120,13 +101,24 @@ public class WebDtoMapper {
         Converter<PositionSousZoneWebDto, ComplexRule> myConverter = new Converter<PositionSousZoneWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<PositionSousZoneWebDto, ComplexRule> context) {
                 PositionSousZoneWebDto source = context.getSource();
-                if (source.getBooleanOperator() != null) {
-                    throw new IllegalArgumentException("L'opérateur est interdit lors de la création d'une seule règle");
-                }
-                if (source.getMessage() == null || source.getPriority() == null) {
-                    throw new IllegalArgumentException("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple");
-                }
+                checkSimpleRule(source);
                 return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new PositionSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getPosition()));
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un modèle PresenceSousZonesMemeZoneWebDto en modèle ComplexRule
+     */
+    @Bean
+    public void converterPresenceSousZonesMemeZone() {
+        Converter<PresenceSousZonesMemeZoneWebDto, ComplexRule> myConverter = new Converter<PresenceSousZonesMemeZoneWebDto, ComplexRule>() {
+            public ComplexRule convert(MappingContext<PresenceSousZonesMemeZoneWebDto, ComplexRule> context) {
+                PresenceSousZonesMemeZoneWebDto source = context.getSource();
+                checkSimpleRule(source);
+                PresenceSousZonesMemeZone target = constructPresenceSousZonesMemeZone(source);
+                return new ComplexRule(source.getId(),source.getMessage(), getPriority(source.getPriority()),getFamilleDocument(source.getTypesDoc()),target);
             }
         };
         mapper.addConverter(myConverter);
@@ -201,6 +193,22 @@ public class WebDtoMapper {
         };
         mapper.addConverter(myConverter);
     }
+
+    /**
+     * Convertion d'un modèle PresenceSousZonesMemeZoneWebDto en modèle SimpleRule
+     */
+    @Bean
+    public void converterPresenceSousZonesMemeZoneToSimple() {
+        Converter<PresenceSousZonesMemeZoneWebDto, SimpleRule> myConverter = new Converter<PresenceSousZonesMemeZoneWebDto, SimpleRule>() {
+            public SimpleRule convert(MappingContext<PresenceSousZonesMemeZoneWebDto, SimpleRule> context) {
+                PresenceSousZonesMemeZoneWebDto source = context.getSource();
+                return constructPresenceSousZonesMemeZone(source);
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+
 
     /**
      * Convertion d'un modèle ComplexRuleWebDto en ComplexRule
@@ -288,6 +296,30 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
+    private PresenceSousZonesMemeZone constructPresenceSousZonesMemeZone(PresenceSousZonesMemeZoneWebDto source) {
+        PresenceSousZonesMemeZone target = new PresenceSousZonesMemeZone(source.getId(), source.getZone());
+        if(source.getSousZones().size() < 2){
+            throw new IllegalArgumentException("La règle " + source.getId() + " doit avoir au moins deux sous-zones déclarées");
+        } else {
+            Iterator<PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto> sousZoneOperatorIt = source.getSousZones().listIterator();
+            PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto firstSousZone = sousZoneOperatorIt.next();
+            if (null == firstSousZone.getOperator()) {
+                target.addSousZoneOperator(new SousZoneOperator(firstSousZone.getSousZone(), firstSousZone.isPresent()));
+                while (sousZoneOperatorIt.hasNext()) {
+                    PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto nextSousZone = sousZoneOperatorIt.next();
+                    if (null != nextSousZone.getOperator()) {
+                        target.addSousZoneOperator(new SousZoneOperator(nextSousZone.getSousZone(), nextSousZone.isPresent(), nextSousZone.getOperator()));
+                    } else {
+                        throw new IllegalArgumentException("Règle " + source.getId() + " : Seule la première sous-zone ne doit pas avoir d'opérateur boolèen");
+                    }
+                }
+            } else {
+                throw new IllegalArgumentException("Règle " + source.getId() + " : La première sous-zone ne doit pas avoir d'opérateur boolèen");
+            }
+        }
+        return target;
+    }
+
     private Priority getPriority(String priority) {
         if(priority.equals("P1")) {
             return Priority.P1;
@@ -313,5 +345,14 @@ public class WebDtoMapper {
             familleDocumentSet.add(new FamilleDocument(typeDocument));
         }
         return familleDocumentSet;
+    }
+
+    private void checkSimpleRule(SimpleRuleWebDto source) {
+        if (source.getBooleanOperator() != null) {
+            throw new IllegalArgumentException("L'opérateur est interdit lors de la création d'une seule règle");
+        }
+        if (source.getMessage() == null || source.getPriority() == null) {
+            throw new IllegalArgumentException("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple");
+        }
     }
 }

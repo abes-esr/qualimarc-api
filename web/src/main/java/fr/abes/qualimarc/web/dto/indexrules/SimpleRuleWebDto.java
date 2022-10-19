@@ -17,7 +17,8 @@ import java.util.List;
         @JsonSubTypes.Type(value = PresenceSousZoneWebDto.class, name = "presencesouszone"),
         @JsonSubTypes.Type(value = NombreZoneWebDto.class, name = "nombrezone"),
         @JsonSubTypes.Type(value = NombreSousZoneWebDto.class, name = "nombresouszone"),
-        @JsonSubTypes.Type(value = PositionSousZoneWebDto.class, name="positionsouszone")
+        @JsonSubTypes.Type(value = PositionSousZoneWebDto.class, name="positionsouszone"),
+        @JsonSubTypes.Type(value = PresenceSousZonesMemeZoneWebDto.class, name="presencesouszonesmemezone")
 })
 public abstract class SimpleRuleWebDto {
 

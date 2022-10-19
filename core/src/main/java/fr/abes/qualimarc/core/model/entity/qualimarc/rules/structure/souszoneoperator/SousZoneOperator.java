@@ -1,6 +1,6 @@
 package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.souszoneoperator;
 
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZoneMemeZone;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZonesMemeZone;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +34,7 @@ public class SousZoneOperator implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "ID_PRESENCE_SOUS_ZONE_MEME_ZONE")
-    private PresenceSousZoneMemeZone presenceSousZoneMemeZone;
+    private PresenceSousZonesMemeZone presenceSousZonesMemeZone;
 
     public SousZoneOperator(String sousZone, boolean isPresent, BooleanOperateur operateur) {
         this.sousZone = sousZone;
