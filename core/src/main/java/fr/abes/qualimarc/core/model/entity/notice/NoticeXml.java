@@ -113,7 +113,7 @@ public class NoticeXml {
     }
 
     /**
-     * Récupère la date de modification de la notice : si la notice n'a pas été créée la date de création est quand même en 005
+     * Récupère la date de modification de la notice : si la notice n'a pas été modifiée la date de création est quand même en 005
      * @return la date au format dd/MM/yyyy
      * @throws ParseException
      */
@@ -167,7 +167,6 @@ public class NoticeXml {
             case "gm":
             case "gd":
             case "gc":
-            case "ga":
                 return "B";
             //FAMILLE CARTE
             case "em":
@@ -178,7 +177,6 @@ public class NoticeXml {
             case "lm":
             case "ld":
             case "lc":
-            case "la":
                 return "O";
             //FAMILLE ENREGISTREMENT
             case "im":
@@ -220,8 +218,12 @@ public class NoticeXml {
             case "am":
             case "ad":
             case "ac":
-            case "aa":
                 return "A";
+            //FAMILLE PARTIE COMPOSANTE
+            case "aa":
+            case "la":
+            case "ga":
+                return "PC";
             default:
                 throw new IllegalTypeDocumentException("Type de document inconnu");
         }

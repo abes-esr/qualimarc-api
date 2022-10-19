@@ -1,6 +1,8 @@
 package fr.abes.qualimarc.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
@@ -9,27 +11,26 @@ import fr.abes.qualimarc.web.configuration.WebConfig;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
-import fr.abes.qualimarc.web.security.JwtAuthenticationFilter;
+import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.ListComplexRulesWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.structure.PresenceZoneWebDto;
+import org.hibernate.MappingException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.web.FilterChainProxy;
-import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -39,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -131,4 +131,96 @@ public class RuleControllerTest {
                 .content(yaml).characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void testIndexCompleRule() throws Exception {
+        String yaml =
+                "---\n" +
+                "rules:\n" +
+                "   - id: 2\n" +
+                "     id-excel: 2\n" +
+                "     message: test\n" +
+                "     priorite: P2\n" +
+                "     type-doc:\n" +
+                "       - A\n" +
+                "       - O\n" +
+                "     regles:\n" +
+                "       - id: 2\n" +
+                "         type: presencezone\n" +
+                "         zone: '330'\n" +
+                "         presence: false\n" +
+                "       - id: 3\n" +
+                "         type: presencezone\n" +
+                "         zone: '330'\n" +
+                "         presence: true\n" +
+                "         operateur-booleen: ET\n";
+
+
+
+
+        this.mockMvc.perform(post("/api/v1/indexComplexRules")
+                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk());
+    }
+//
+//    @Test
+//    @DisplayName("test l'indexation de règles complexes avec un opérateur manquant")
+//    void testIndexCompleRuleWithoutOperateur() throws Exception {
+//        String yaml =
+//                "---\n" +
+//                "rules:\n" +
+//                "   - id: 2\n" +
+//                "     id-excel: 2\n" +
+//                "     message: test\n" +
+//                "     priorite: P2\n" +
+//                "     type-doc:\n" +
+//                "       - A\n" +
+//                "       - O\n" +
+//                "     regles:\n" +
+//                "       - id: 2\n" +
+//                "         type: presencezone\n" +
+//                "         zone: '330'\n" +
+//                "         presence: false\n" +
+//                "       - id: 3\n" +
+//                "         type: presencezone\n" +
+//                "         zone: '330'\n" +
+//                "         presence: true\n";
+//
+//        Mockito.when(utilsMapper.map(Mockito.any(),ComplexRule.class)).thenThrow(new MappingException("Toute les regles"));
+//
+//        this.mockMvc.perform(post("/api/v1/indexComplexRules")
+//                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+//                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+//                .andExpect(status().isBadRequest())
+//                .andExpect(jsonPath("$.debugMessage").value("La première règle doit contenir un opérateur"));
+//    }
+//
+//    @Test
+//    @DisplayName("test handleComplexRulesWebDto")
+//    void testHandleComplexRuleWebDto() throws Exception {
+//        String yaml =
+//                "---\n" +
+//                "rules:\n" +
+//                "   - id: 2\n" +
+//                "     id-excel: 2\n" +
+//                "     message: test\n" +
+//                "     priorite: P2\n" +
+//                "     type-doc:\n" +
+//                "       - A\n" +
+//                "       - O\n" +
+//                "     regles:\n" +
+//                "       - id: 2\n" +
+//                "         type: presencezone\n" +
+//                "         zone: '330'\n" +
+//                "         presence: false\n";
+//
+//        Mockito.doNothing().when(ruleService).saveAll(Mockito.any());
+//
+//        this.mockMvc.perform(post("/api/v1/indexComplexRules")
+//                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+//                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+//                .andExpect(status().isBadRequest())
+//                .andExpect(jsonPath("$.debugMessage").value("Une règle complexe doit contenir au moins deux règles simples"));
+//    }
 }

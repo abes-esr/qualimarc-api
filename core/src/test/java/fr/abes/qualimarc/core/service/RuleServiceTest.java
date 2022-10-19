@@ -8,6 +8,7 @@ import fr.abes.qualimarc.core.exception.noticexml.ZoneNotFoundException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
@@ -95,12 +96,12 @@ class RuleServiceTest {
         Set<FamilleDocument> familleDoc1 = new HashSet<>();
         familleDoc1.add(new FamilleDocument("A", "Monographie"));
 
-        listeRegles.add(new PresenceZone(1, "La zone 010 est présente", "010", Priority.P1, familleDoc1, true));
-        listeRegles.add(new PresenceZone(2, "La zone 011 est absente", "011", Priority.P1, false));
+        listeRegles.add(new ComplexRule(1, "La zone 010 est présente", Priority.P1, familleDoc1, new PresenceZone(1, "010", true)));
+        listeRegles.add(new ComplexRule(2, "La zone 011 est absente", Priority.P1, new PresenceZone(2, "011", false)));
         Set<FamilleDocument> typesDoc2 = new HashSet<>();
         typesDoc2.add(new FamilleDocument("A", "Monographie"));
         typesDoc2.add(new FamilleDocument("BD", "Ressource Continue"));
-        listeRegles.add(new PresenceZone(3, "La zone 012 est présente", "012", Priority.P1, typesDoc2, true));
+        listeRegles.add(new ComplexRule(3, "La zone 012 est présente", Priority.P1, new PresenceZone(3, "012",  true)));
     }
 
     @Test
@@ -133,17 +134,19 @@ class RuleServiceTest {
         Assertions.assertEquals(0, result1.getMessages().size());
         Assertions.assertEquals(1, result1.getDetailErreurs().size());
         Assertions.assertEquals("La zone 011 est absente", result1.getDetailErreurs().get(0).getMessage());
-        Assertions.assertEquals("011",result1.getDetailErreurs().get(0).getZoneUnm1());
-        Assertions.assertNull(result1.getDetailErreurs().get(0).getZoneUnm2());
+        Assertions.assertEquals("011",result1.getDetailErreurs().get(0).getZonesUnm().get(0));
+        Assertions.assertEquals(1, result1.getDetailErreurs().get(0).getZonesUnm().size());
         Assertions.assertEquals(Priority.P1,result1.getDetailErreurs().get(0).getPriority());
 
         ResultRules result3 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("333333333")).findFirst().get();
         Assertions.assertEquals("O", result3.getFamilleDocument().getId());
         Assertions.assertEquals(0, result3.getMessages().size());
-        Assertions.assertEquals(1, result3.getDetailErreurs().size());
-        Assertions.assertEquals("La zone 011 est absente", result3.getDetailErreurs().get(0).getMessage());
-        Assertions.assertEquals("011",result3.getDetailErreurs().get(0).getZoneUnm1());
-        Assertions.assertNull(result3.getDetailErreurs().get(0).getZoneUnm2());
+        Assertions.assertEquals(2, result3.getDetailErreurs().size());
+        Assertions.assertTrue(result3.getDetailErreurs().stream().anyMatch(r -> r.getMessage().equals("La zone 012 est présente")));
+        Assertions.assertTrue(result3.getDetailErreurs().stream().anyMatch(r -> r.getZonesUnm().get(0).equals("012")));
+        Assertions.assertTrue(result3.getDetailErreurs().stream().anyMatch(r -> r.getMessage().equals("La zone 011 est absente")));
+        Assertions.assertTrue(result3.getDetailErreurs().stream().anyMatch(r -> r.getZonesUnm().get(0).equals("011")));
+        Assertions.assertEquals(1, result3.getDetailErreurs().get(0).getZonesUnm().size());
         Assertions.assertEquals(Priority.P1,result3.getDetailErreurs().get(0).getPriority());
 
 
@@ -223,7 +226,7 @@ class RuleServiceTest {
         Set<FamilleDocument> typesDoc1 = new HashSet<>();
         typesDoc1.add(new FamilleDocument("TS", "Thèse de soutenance"));
 
-        Rule rule = new PresenceZone(1, "La zone 010 est présente", "010", Priority.P1, typesDoc1, true);
+        Rule rule = new ComplexRule(1, "La zone 010 est présente",  Priority.P1, typesDoc1, new PresenceZone(1, "010", true));
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, rule));
 
     }
@@ -254,7 +257,7 @@ class RuleServiceTest {
     @Test
     void checkRulesOnNoticesQuick() {
         Set<Rule> rules = new HashSet<>();
-        rules.add(new PresenceZone(1, "Zone 010 obligatoire", "010", Priority.P1, true));
+        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010", true)));
 
         Mockito.when(rulesRepository.findByPriority(Priority.P1)).thenReturn(rules);
 
@@ -269,8 +272,8 @@ class RuleServiceTest {
     @Test
     void checkRulesOnNoticesComplete() {
         List<Rule> rules = new ArrayList<>();
-        rules.add(new PresenceZone(1, "Zone 010 obligatoire", "010", Priority.P1, true));
-        rules.add(new PresenceZone(2, "Zone 200 obligatoire", "200", Priority.P2, true));
+        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010", true)));
+        rules.add(new ComplexRule(2, "Zone 200 obligatoire", Priority.P2, new PresenceZone(2, "200", true)));
 
         Mockito.when(rulesRepository.findAll()).thenReturn(rules);
 
@@ -287,7 +290,7 @@ class RuleServiceTest {
         Set<FamilleDocument> typesDoc = new HashSet<>();
         typesDoc.add(new FamilleDocument("B", "Audiovisuel"));
         Set<Rule> rules = new HashSet<>();
-        rules.add(new PresenceZone(1, "Zone 010 obligatoire", "010", Priority.P1, typesDoc, true));
+        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, typesDoc, new PresenceZone(1, "010", true)));
 
         Mockito.when(rulesRepository.findByFamillesDocuments(Mockito.any())).thenReturn(rules);
 
@@ -302,7 +305,7 @@ class RuleServiceTest {
     void checkRulesOnNoticesFocusedRuleSet() {
         RuleSet ruleSet = new RuleSet(1, "Zones 210/214 (publication, production, diffusion)");
         Set<Rule> rules = new HashSet<>();
-        Rule rule = new PresenceZone(1, "Zone 010 obligatoire", "010", Priority.P1, null, true);
+        Rule rule = new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010", true));
         rule.addRuleSet(ruleSet);
         rules.add(rule);
 
@@ -326,8 +329,8 @@ class RuleServiceTest {
         Set<FamilleDocument> typesDoc = new HashSet<>();
         typesDoc.add(new FamilleDocument("B", "Audiovisuel"));
 
-        Rule rule1 = new PresenceZone(1, "Zone 010 obligatoire", "010", Priority.P1, null, true);
-        Rule rule2 = (new PresenceZone(2, "Zone 200 obligatoire", "200", Priority.P1, typesDoc, true));
+        Rule rule1 = new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010", true));
+        Rule rule2 = new ComplexRule(2, "Zone 200 obligatoire", Priority.P1, typesDoc, new PresenceZone(2, "200", true));
 
         //déclaration du set de rule utilisé pour vérifier le résultat de l'appel à la méthode testée
         Set<Rule> rulesIn = new HashSet<>();

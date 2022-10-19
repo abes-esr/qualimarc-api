@@ -4,25 +4,29 @@ import fr.abes.qualimarc.core.utils.Priority;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 public class ResultRule {
 
     private Integer id;
 
-    private String zoneUnm1;
-
-    @Setter
-    private String zoneUnm2;
+    private List<String> zonesUnm;
 
     private Priority priority;
 
     private String message;
 
-    public ResultRule(Integer id, String zoneUnm1, Priority priority, String message) {
+    public ResultRule(Integer id, Priority priority, String message) {
         this.id = id;
-        this.zoneUnm1 = zoneUnm1;
+        this.zonesUnm = new ArrayList<>();
         this.priority = priority;
         this.message = message;
+    }
+
+    public void addZone(String zone) {
+        this.zonesUnm.add(zone);
     }
 
 

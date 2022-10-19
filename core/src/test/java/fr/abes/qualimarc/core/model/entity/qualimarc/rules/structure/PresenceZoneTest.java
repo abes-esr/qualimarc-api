@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.configuration.BaseXMLConfiguration;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.utils.Priority;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
@@ -31,16 +32,16 @@ class PresenceZoneTest {
         XmlMapper mapper = new XmlMapper(module);
         NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
 
-        PresenceZone rule = new PresenceZone(1, "La zone 010 doit être présente", "010", Priority.P1, true);
+        SimpleRule rule = new PresenceZone(1, "010", true);
         Assertions.assertTrue(rule.isValid(notice));
 
-        PresenceZone rule2 = new PresenceZone(2, "La zone 011 doit être absente", "011", Priority.P1, false);
+        SimpleRule rule2 = new PresenceZone(2, "011", false);
         Assertions.assertTrue(rule2.isValid(notice));
 
-        PresenceZone rule3 = new PresenceZone(3, "La zone 011 doit être présente", "011", Priority.P1, true);
+        SimpleRule rule3 = new PresenceZone(3, "011", true);
         Assertions.assertFalse(rule3.isValid(notice));
 
-        PresenceZone rule4 = new PresenceZone(4, "La zone 010 doit être absente", "010", Priority.P1, false);
+        SimpleRule rule4 = new PresenceZone(4, "010", false);
         Assertions.assertFalse(rule4.isValid(notice));
     }
 }

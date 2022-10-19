@@ -1,14 +1,17 @@
 package fr.abes.qualimarc.web.controller;
 
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
-import fr.abes.qualimarc.web.dto.indexrules.*;
+import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.ListComplexRulesWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.ListRulesWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,7 +22,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -58,21 +60,31 @@ public class RuleController {
     }
 
     private List<Rule> handleRulesWebDto(ListRulesWebDto rules) {
-        List<RulesWebDto> rulesWebDtos = rules.getListRulesWebDto();
         List<Rule> rulesEntity = new ArrayList<>();
-        Iterator<RulesWebDto> rulesIt = rulesWebDtos.iterator();
-        while (rulesIt.hasNext()) {
-            RulesWebDto rule = rulesIt.next();
-            if (rule instanceof PresenceZoneWebDto)
-                rulesEntity.add(mapper.map(rule, PresenceZone.class));
-            if (rule instanceof PresenceSousZoneWebDto)
-                rulesEntity.add(mapper.map(rule, PresenceSousZone.class));
-            if (rule instanceof NombreZoneWebDto)
-                rulesEntity.add(mapper.map(rule, NombreZone.class));
-            if (rule instanceof NombreSousZoneWebDto)
-                rulesEntity.add(mapper.map(rule, NombreSousZone.class));
-            if (rule instanceof PositionSousZoneWebDto)
-                rulesEntity.add(mapper.map(rule, PositionSousZone.class));
+        for (SimpleRuleWebDto rule : rules.getRules()) {
+            rulesEntity.add(mapper.map(rule, ComplexRule.class));
+        }
+        return rulesEntity;
+    }
+
+    @PostMapping(value = "/indexComplexRules", consumes = {"text/yaml", "text/yml"})
+    public void indexComplexRules(@Valid @RequestBody ListComplexRulesWebDto rules) {
+        List<Rule> rulesEntity = handleComplexRulesWebDto(rules);
+        try {
+            ruleService.saveAll(rulesEntity);
+        } catch (DataIntegrityViolationException ex) {
+            throw new IllegalArgumentException(ex.getCause().getCause());
+        }
+    }
+
+    private List<Rule> handleComplexRulesWebDto(ListComplexRulesWebDto rules) {
+        List<Rule> rulesEntity = new ArrayList<>();
+        for (ComplexRuleWebDto complexRuleWebDto : rules.getComplexRules()) {
+            if(complexRuleWebDto.getRegles().size() > 1) {
+                rulesEntity.add(mapper.map(complexRuleWebDto, ComplexRule.class));
+            } else {
+                throw new IllegalArgumentException("Une règle complexe doit contenir au moins deux règles simples");
+            }
         }
         return rulesEntity;
     }
