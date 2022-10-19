@@ -2,6 +2,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure;
 
 import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.notice.SubField;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.utils.EnumChaineCaracteres;
@@ -48,32 +49,61 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         //récupération de toutes les zones définies dans la règle
         List<Datafield> zones = noticeXml.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).collect(Collectors.toList());
 
+        // pour chaque occurence de la zone
         for (Datafield zone : zones) {
 
-            for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
-                 ) {
-                if (zone.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(this.sousZone))) {
-                    // si la sousZone est absente, alors ne pas lever le message (return false)
-                    return false;
-                } else if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.UNIQUEMENT) && zone.getSubFields().stream().anyMatch(subField -> subField.getValue().equals(chaineCaracteres.getChaineCaracteres()))) {
-                    // si contenu de la sousZone contient STRICTEMENT la/les chaine.s de caratères définie.s, alors lever le message (return true)
-                    return true;
-                } else if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.CONTIENT) && zone.getSubFields().stream().anyMatch(subField -> subField.getValue().contains(chaineCaracteres.getChaineCaracteres()))) {
-                    // si le contenu de la souszone contient la/les chaine.s de caractères définie.s, alors lever le message (return true)
-                    return true;
-                } else if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.COMMENCE) && zone.getSubFields().stream().anyMatch(subField -> subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres()))) {
-                    // si le contenu de la sousZone commence par la/les chaine.s de caractères définie.s, alors lever le message (return true)
-                    return true;
-                } else if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.TERMINE) && zone.getSubFields().stream().anyMatch(subField -> subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres()))) {
-                    // si le contenu de la sousZone fini par la/les chaine.s de caractères définie.s, alors lever le message (return true)
-                    return true;
-                } else {
-                    // si aucune règle n'a pu être vérifiée, alors ne pas lever le message (return false)
-                    return false;
+            // teste la présence de la sous-zone
+            if (zone.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(this.sousZone))) {
+                //  pour chaque chaine de caractères
+                for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
+                ) {
+                    if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.UNIQUEMENT)) {
+                        //  si l'une des occurences de la sous-zone contient UNIQUEMENT la chaine de caractères
+                        return zone.getSubFields().stream().anyMatch(subField -> subField.getValue().equals(chaineCaracteres.getChaineCaracteres()));
+                    }
+                    if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.CONTIENT)) {
+                        //  si l'une des occurences de la sous-zone CONTIENT la chaine de caractères
+                        for (SubField subField : zone.getSubFields()
+                             ) {
+                            return subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                        }
+                    }
+                    if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.COMMENCE)) {
+                        // si l'une des occurences de la sous-zone COMMENCE par la chaine de caractères, alors return true
+                         return zone.getSubFields().stream().anyMatch(subField -> subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres()));
+                    }
+                    if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.TERMINE)) {
+                        // si le contenu de la sousZone fini par la chaine de caractères, alors return true
+                        return zone.getSubFields().stream().anyMatch(subField -> subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres()));
+                    }
                 }
-            }
+                // si la sous-zone n'est pas présente, alors ne pas lever le message (return false)
+            } else return false;
+
+//            for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
+//                 ) {
+//                if (zone.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(this.sousZone))) {
+//                    // si la sousZone est absente, alors ne pas lever le message (return false)
+//                    return false;
+//                } else if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.UNIQUEMENT) && zone.getSubFields().stream().anyMatch(subField -> subField.getValue().equals(chaineCaracteres.getChaineCaracteres()))) {
+//                    // si contenu de la sousZone contient UNIQUEMENT la/les chaine.s de caratères définie.s, alors lever le message (return true)
+//                    return true;
+//                } else if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.CONTIENT) && zone.getSubFields().stream().anyMatch(subField -> subField.getValue().contains(chaineCaracteres.getChaineCaracteres()))) {
+//                    // si le contenu de la souszone contient la/les chaine.s de caractères définie.s, alors lever le message (return true)
+//                    return true;
+//                } else if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.COMMENCE) && zone.getSubFields().stream().anyMatch(subField -> subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres()))) {
+//                    // si le contenu de la sousZone commence par la/les chaine.s de caractères définie.s, alors lever le message (return true)
+//                    return true;
+//                } else if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.TERMINE) && zone.getSubFields().stream().anyMatch(subField -> subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres()))) {
+//                    // si le contenu de la sousZone fini par la/les chaine.s de caractères définie.s, alors lever le message (return true)
+//                    return true;
+//                } else {
+//                    // si aucune règle n'a pu être vérifiée, alors ne pas lever le message (return false)
+//                    return false;
+//                }
+//            }
         }
-        // si la zone n'a été trouvée, alors ne pas lever le message (return false)
+        // si la zone n'a été trouvée, alors return false
         return false;
     }
 
@@ -83,6 +113,6 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
      */
     @Override
     public String getZones() {
-        return this.getZones() + "$" + this.getSousZone();
+        return this.getZone() + "$" + this.getSousZone();
     }
 }
