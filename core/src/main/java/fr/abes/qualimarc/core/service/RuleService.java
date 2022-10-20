@@ -6,11 +6,11 @@ import fr.abes.qualimarc.core.exception.noticexml.ZoneNotFoundException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRule;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
-import fr.abes.qualimarc.core.repository.qualimarc.RulesRepository;
+import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import lombok.SneakyThrows;
@@ -34,9 +34,10 @@ public class RuleService {
     private ReferenceService referenceService;
 
     @Autowired
-    private RulesRepository rulesRepository;
+    private ComplexRulesRepository complexRulesRepository;
 
-    public ResultAnalyse checkRulesOnNotices(List<String> ppns, Set<Rule> rulesList){
+
+    public ResultAnalyse checkRulesOnNotices(List<String> ppns, Set<ComplexRule> rulesList) {
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         for (String ppn : ppns) {
             boolean isOk = true;
@@ -47,7 +48,7 @@ public class RuleService {
                     resultAnalyse.addPpnInconnu(ppn);
                 } else {
                     resultAnalyse.addPpnAnalyse(ppn);
-                    for (Rule rule : rulesList) {
+                    for (ComplexRule rule : rulesList) {
                         if (isRuleAppliedToNotice(notice, rule)) {
                             isOk &= constructResultRuleOnNotice(result, notice, rule);
                         }
@@ -73,7 +74,7 @@ public class RuleService {
     }
 
     @SneakyThrows
-    private boolean constructResultRuleOnNotice(ResultRules result, NoticeXml notice, Rule rule) {
+    private boolean constructResultRuleOnNotice(ResultRules result, NoticeXml notice, ComplexRule rule) {
         result.setFamilleDocument(referenceService.getFamilleDocument(notice.getFamilleDocument()));
         try {
             result.setTitre(notice.getTitre());
@@ -100,7 +101,7 @@ public class RuleService {
         return true;
     }
 
-    public boolean isRuleAppliedToNotice(NoticeXml notice, Rule rule) {
+    public boolean isRuleAppliedToNotice(NoticeXml notice, ComplexRule rule) {
         if (rule.getFamillesDocuments().size() == 0 || rule.getFamillesDocuments().stream().anyMatch(type -> notice.getFamilleDocument().equals(type.getId())))
             return true;
         if (notice.isTheseSoutenance() && rule.getFamillesDocuments().stream().anyMatch(type -> type.getId().equals("TS")))
@@ -110,8 +111,8 @@ public class RuleService {
         return false;
     }
 
-    public void save(Rule rule) {
-        rulesRepository.save(rule);
+    public void save(ComplexRule rule) {
+        complexRulesRepository.save(rule);
     }
 
 
@@ -123,22 +124,22 @@ public class RuleService {
      * @param ruleSet          set of rules to look for in rules
      * @return list of rules according to given parameters
      */
-    public Set<Rule> getResultRulesList(TypeAnalyse typeAnalyse, Set<FamilleDocument> familleDocuments, Set<RuleSet> ruleSet) {
+    public Set<ComplexRule> getResultRulesList(TypeAnalyse typeAnalyse, Set<FamilleDocument> familleDocuments, Set<RuleSet> ruleSet) {
         //cas analyse rapide ou experte
         switch (typeAnalyse) {
             case QUICK:
-                return rulesRepository.findByPriority(Priority.P1);
+                return complexRulesRepository.findByPriority(Priority.P1);
             case COMPLETE:
-                return new HashSet<>(rulesRepository.findAll());
+                return new HashSet<>(complexRulesRepository.findAll());
             case FOCUSED:
                 //cas d'une analyse ciblée, on récupère les règles en fonction des types de documents et des ruleSet
                 if ((familleDocuments == null || familleDocuments.size() == 0) && (ruleSet == null || ruleSet.size() == 0))
                     throw new IllegalRulesSetException("Impossible de lancer l'analysée ciblée sans paramètres supplémentaires");
-                Set<Rule> result = new HashSet<>();
+                Set<ComplexRule> result = new HashSet<>();
                 if (familleDocuments != null)
-                    familleDocuments.forEach(t -> result.addAll(rulesRepository.findByFamillesDocuments(t)));
+                    familleDocuments.forEach(t -> result.addAll(complexRulesRepository.findByFamillesDocuments(t)));
                 if (ruleSet != null)
-                    ruleSet.forEach(r -> result.addAll(rulesRepository.findByRuleSet(r)));
+                    ruleSet.forEach(r -> result.addAll(complexRulesRepository.findByRuleSet(r)));
                 return result;
             default:
                 throw new IllegalRulesSetException("Jeu de règle inconnu");
@@ -146,10 +147,10 @@ public class RuleService {
     }
 
     @Transactional
-    public void saveAll(List<Rule> rules) throws IllegalArgumentException {
-        for (Rule rule : rules) {
+    public void saveAll(List<ComplexRule> rules) throws IllegalArgumentException {
+        for (ComplexRule rule : rules) {
             try {
-                this.rulesRepository.save(rule);
+                this.complexRulesRepository.save(rule);
             } catch (JpaObjectRetrievalFailureException ex) {
                 //exception levée dans le cas ou un type de document n'est pas connu
                 throw new IllegalArgumentException("Type de document " + ex.getCause().getMessage() + " inconnu sur règle : " + rule.getId(), ex);

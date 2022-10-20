@@ -2,22 +2,56 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules;
 
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.utils.Priority;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Règle complexe composée à minima d'une règle simple et de n règles liées
  */
 @Getter @Setter
 @Entity
-public class ComplexRule extends Rule implements Serializable {
+@Table(name = "RULE")
+public class ComplexRule implements Serializable {
+    @Id
+    @Column(name = "RULE_ID")
+    private Integer id;
+
+    @Column(name = "MESSAGE")
+    @NotNull
+    private String message;
+
+    @Column(name = "PRIORITY")
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Priority priority;
+
+    //liste des types de document concernés par la règle
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "RULE_FAMILLEDOCUMENTS",
+            joinColumns = @JoinColumn(name = "RULE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "FAMILLEDOCUMENT_ID")
+    )
+    private Set<FamilleDocument> famillesDocuments;
+
+    //liste des jeux de règles préconçus auxquels appartient la règle
+    @ManyToMany
+    @JoinTable(
+            name = "RULE_RULESET",
+            joinColumns = @JoinColumn(name = "RULE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "RULESET_ID")
+    )
+    private Set<RuleSet> ruleSet;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ID_FIRST_RULE")
     private SimpleRule firstRule;
@@ -28,31 +62,58 @@ public class ComplexRule extends Rule implements Serializable {
     protected ComplexRule(){}
 
     public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, SimpleRule firstRule, List<LinkedRule> otherRules) {
-        super(id, message, priority, famillesDocuments);
+        this.id = id;
+        this.message = message;
+        this.priority = priority;
+        this.famillesDocuments = famillesDocuments;
+        this.ruleSet = new HashSet<>();
         this.firstRule = firstRule;
         this.otherRules = otherRules;
     }
 
     public ComplexRule(Integer id, String message, Priority priority, SimpleRule firstRule, List<LinkedRule> otherRules) {
-        super(id, message, priority);
+        this.id = id;
+        this.message = message;
+        this.priority = priority;
+        this.famillesDocuments = new HashSet<>();
+        this.ruleSet = new HashSet<>();
         this.firstRule = firstRule;
         this.otherRules = otherRules;
     }
 
     public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, SimpleRule firstRule) {
-        super(id, message, priority, famillesDocuments);
+        this.id = id;
+        this.message = message;
+        this.priority = priority;
+        this.famillesDocuments = famillesDocuments;
+        this.ruleSet = new HashSet<>();
         this.firstRule = firstRule;
         this.otherRules = new LinkedList<>();
     }
 
     public ComplexRule(Integer id, String message, Priority priority, SimpleRule firstRule) {
-        super(id, message, priority);
+        this.id = id;
+        this.message = message;
+        this.priority = priority;
+        this.famillesDocuments = new HashSet<>();
+        this.ruleSet = new HashSet<>();
         this.firstRule = firstRule;
         this.otherRules = new LinkedList<>();
     }
 
     public ComplexRule(SimpleRule rule) {
         this.firstRule = rule;
+        this.otherRules = new LinkedList<>();
+        this.famillesDocuments = new HashSet<>();
+        this.ruleSet = new HashSet<>();
+    }
+
+    public void addRuleSet(RuleSet ruleSet) {
+        this.ruleSet.add(ruleSet);
+    }
+
+    public void addTypeDocument(FamilleDocument typeDocument) {
+        this.famillesDocuments.add(typeDocument);
     }
 
     public void addOtherRule(LinkedRule linkedRule) {
@@ -64,10 +125,9 @@ public class ComplexRule extends Rule implements Serializable {
      * @param notice
      * @return
      */
-    @Override
     public boolean isValid(NoticeXml notice) {
         boolean isValid = firstRule.isValid(notice);
-        for (LinkedRule linkedRule : otherRules) {
+        for (LinkedRule linkedRule : otherRules.stream().sorted(Comparator.comparing(LinkedRule::getPosition)).collect(Collectors.toList())) {
             switch (linkedRule.getOperateur()) {
                 case ET:
                     //équivalent à isValid && linkedRule.getRule().isValid(notice)
@@ -84,7 +144,6 @@ public class ComplexRule extends Rule implements Serializable {
         return isValid;
     }
 
-    @Override
     public List<String> getZonesFromChildren() {
         List liste = new LinkedList();
         liste.add(this.getFirstRule().getZones());

@@ -1,8 +1,6 @@
 package fr.abes.qualimarc.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
@@ -11,14 +9,7 @@ import fr.abes.qualimarc.web.configuration.WebConfig;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
-import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.ListComplexRulesWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.structure.PresenceZoneWebDto;
-import org.hibernate.MappingException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
