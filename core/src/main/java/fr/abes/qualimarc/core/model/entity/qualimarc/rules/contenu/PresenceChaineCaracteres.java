@@ -10,11 +10,14 @@ import fr.abes.qualimarc.core.utils.EnumChaineCaracteres;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -41,7 +44,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     private String chaineCaracteres;
 
     @OneToMany(mappedBy = "presenceChaineCaracteres", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<ChaineCaracteres> listChainesCaracteres;
+    private Set<ChaineCaracteres> listChainesCaracteres;
 
     public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumChaineCaracteres enumChaineCaracteres, String chaineCaracteres) {
         super(id, zone);
@@ -50,7 +53,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         this.chaineCaracteres = chaineCaracteres;
     }
 
-    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumChaineCaracteres enumChaineCaracteres, String chaineCaracteres, List<ChaineCaracteres> listChainesCaracteres) {
+    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumChaineCaracteres enumChaineCaracteres, String chaineCaracteres, Set<ChaineCaracteres> listChainesCaracteres) {
         super(id, zone);
         this.sousZone = sousZone;
         this.enumChaineCaracteres = enumChaineCaracteres;
