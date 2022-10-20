@@ -1,8 +1,7 @@
-package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.chainecaracteres;
+package fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres;
 
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceChaineCaracteres;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
-import fr.abes.qualimarc.core.utils.EnumChaineCaracteres;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -1,10 +1,10 @@
-package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure;
+package fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu;
 
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.configuration.BaseXMLConfiguration;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.chainecaracteres.ChaineCaracteres;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.core.utils.EnumChaineCaracteres;
 import org.apache.commons.io.IOUtils;
@@ -72,9 +72,9 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("contient STRICTEMENT une des chaines de caractères")
     void isValid3() {
-        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(BooleanOperateur.OU, "Texte imprimé");
+        ChaineCaracteres chaineCaracteres12 = new ChaineCaracteres(BooleanOperateur.OU, "Texte imprimé");
         List<ChaineCaracteres> listChainesCaracteres = new ArrayList<>();
-        listChainesCaracteres.add(chaineCaracteres2);
+        listChainesCaracteres.add(chaineCaracteres12);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumChaineCaracteres.STRICTEMENT, "Texte", listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
@@ -83,9 +83,9 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("ne contient pas STRICTEMENT une des chaines de caractères")
     void isValid4() {
-        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(BooleanOperateur.OU, "Texte imprime");
+        ChaineCaracteres chaineCaracteres12 = new ChaineCaracteres(BooleanOperateur.OU, "Texte imprime");
         List<ChaineCaracteres> listChainesCaracteres = new ArrayList<>();
-        listChainesCaracteres.add(chaineCaracteres2);
+        listChainesCaracteres.add(chaineCaracteres12);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumChaineCaracteres.STRICTEMENT, "Texte", listChainesCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
@@ -108,9 +108,9 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("COMMENCE par une des chaines de caractères")
     void isValid7() {
-        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(BooleanOperateur.OU, "Texte");
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(BooleanOperateur.OU, "Texte");
         List<ChaineCaracteres> listChainesCaracteres = new ArrayList<>();
-        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumChaineCaracteres.COMMENCE, "Convention", listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
@@ -119,9 +119,9 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("ne COMMENCE pas par une des chaines de caractères")
     void isValid8() {
-        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(BooleanOperateur.OU, "[brochure");
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(BooleanOperateur.OU, "[brochure");
         List<ChaineCaracteres> listChainesCaracteres = new ArrayList<>();
-        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumChaineCaracteres.COMMENCE, "Convention", listChainesCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
@@ -144,9 +144,9 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("TERMINE par une des chaines de caractères")
     void isValid11() {
-        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(BooleanOperateur.OU, "imprimé");
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(BooleanOperateur.OU, "imprimé");
         List<ChaineCaracteres> listChainesCaracteres = new ArrayList<>();
-        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumChaineCaracteres.TERMINE, "Convention", listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
@@ -155,9 +155,9 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("ne TERMINE pas par une des chaines de caractères")
     void isValid12() {
-        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(BooleanOperateur.OU, "[brochure");
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(BooleanOperateur.OU, "[brochure");
         List<ChaineCaracteres> listChainesCaracteres = new ArrayList<>();
-        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumChaineCaracteres.TERMINE, "Convention", listChainesCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
@@ -180,9 +180,9 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("CONTIENT une des chaines de caractères")
     void isValid15() {
-        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(BooleanOperateur.OU, "xte imp");
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(BooleanOperateur.OU, "xte imp");
         List<ChaineCaracteres> listChainesCaracteres = new ArrayList<>();
-        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumChaineCaracteres.CONTIENT, "Convention", listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
@@ -191,9 +191,9 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("CONTIENT toutes les chaines de caractères")
     void isValid16() {
-        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(BooleanOperateur.ET, "xte imp");
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(BooleanOperateur.ET, "xte imp");
         List<ChaineCaracteres> listChainesCaracteres = new ArrayList<>();
-        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumChaineCaracteres.CONTIENT, "Texte", listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
@@ -202,9 +202,9 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("ne CONTIENT pas les chaines de caractères")
     void isValid17() {
-        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(BooleanOperateur.OU, "[brochure");
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(BooleanOperateur.OU, "[brochure");
         List<ChaineCaracteres> listChainesCaracteres = new ArrayList<>();
-        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumChaineCaracteres.CONTIENT, "Convention", listChainesCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
@@ -221,9 +221,9 @@ class PresenceChaineCaracteresTest {
     @DisplayName("test getZones")
     void getZones() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres();
-        List<ChaineCaracteres> listChaineCaracteres = new ArrayList<>();
-        listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "020", "a", EnumChaineCaracteres.STRICTEMENT, "", listChaineCaracteres);
+        List<ChaineCaracteres> list1ChaineCaracteres = new ArrayList<>();
+        list1ChaineCaracteres.add(chaineCaracteres);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "020", "a", EnumChaineCaracteres.STRICTEMENT, "", list1ChaineCaracteres);
 
         Assertions.assertEquals("020$a", rule.getZones());
     }
