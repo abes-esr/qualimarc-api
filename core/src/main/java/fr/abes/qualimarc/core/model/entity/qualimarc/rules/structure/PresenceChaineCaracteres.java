@@ -67,7 +67,6 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                     boolean isOk = false;
                     // si la recherce est de type STRICTEMENT
                     if (this.enumChaineCaracteres.equals(EnumChaineCaracteres.STRICTEMENT)) {
-
                         // toutes les chaines de caractères
                         for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
                              ) {
@@ -76,12 +75,11 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                                     isOk &= (subField.getValue().equals(chaineCaracteres.getChaineCaracteres()));
                                 }
                             } else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
-                                return subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
+                                isOk |= subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
                             }
+                            return isOk;
                         }
 
-                        // return true si un élément de la liste est true
-                        return isOk;
                     } else if (this.enumChaineCaracteres.equals(EnumChaineCaracteres.COMMENCE)) {
                         
                     } else if (this.enumChaineCaracteres.equals(EnumChaineCaracteres.TERMINE)) {
