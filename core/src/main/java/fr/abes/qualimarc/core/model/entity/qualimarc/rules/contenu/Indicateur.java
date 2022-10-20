@@ -38,10 +38,8 @@ public class Indicateur extends SimpleRule implements Serializable {
         List<Datafield> zonesSource = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
         for (Datafield datafield : zonesSource){
             String indicateurCible = this.indicateur == 1 ? datafield.getInd1() : datafield.getInd2();
-            if(indicateurCible.equals(this.valeur))
-                return true;
             // # est different selon la base XML consulté (ex: # en prod = ' ' en test)
-            if("#".equals(this.valeur) && indicateurCible.equals(" "))
+            if(indicateurCible.equals(this.valeur) || ("#".equals(this.valeur) && indicateurCible.equals(" ")))
                 return true;
         }
         return false;

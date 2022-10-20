@@ -4,6 +4,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.souszoneoperator.SousZoneOperator;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
@@ -15,6 +16,7 @@ import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
 import fr.abes.qualimarc.web.dto.RuleResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.SneakyThrows;
 import org.modelmapper.Converter;
@@ -125,6 +127,21 @@ public class WebDtoMapper {
     }
 
     /**
+     * Convertion d'un modèle IndicateurWebDto en modèle ComplexRule
+     */
+    @Bean
+    public void converterIndicateur() {
+        Converter<IndicateurWebDto, ComplexRule> myConverter = new Converter<IndicateurWebDto, ComplexRule>() {
+            public ComplexRule convert(MappingContext<IndicateurWebDto, ComplexRule> context) {
+                IndicateurWebDto source = context.getSource();
+                checkSimpleRule(source);
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new Indicateur(source.getId(), source.getZone(), source.getIndicateur(), source.getValeur()));
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
      * Convertion d'un modèle PresenceZoneWebDto en modèle SimpleRule
      */
     @Bean
@@ -133,6 +150,20 @@ public class WebDtoMapper {
             public SimpleRule convert(MappingContext<PresenceZoneWebDto, SimpleRule> context) {
                 PresenceZoneWebDto source = context.getSource();
                 return new PresenceZone(source.getId(), source.getZone(), source.isPresent());
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un modèle IndicateurWebDto en modèle SimpleRule
+     */
+    @Bean
+    public void converterIndicateurToSimple() {
+        Converter<IndicateurWebDto, SimpleRule> myConverter = new Converter<IndicateurWebDto, SimpleRule>() {
+            public SimpleRule convert(MappingContext<IndicateurWebDto, SimpleRule> context) {
+                IndicateurWebDto source = context.getSource();
+                return new Indicateur(source.getId(), source.getZone(), source.getIndicateur(), source.getValeur());
             }
         };
         mapper.addConverter(myConverter);
