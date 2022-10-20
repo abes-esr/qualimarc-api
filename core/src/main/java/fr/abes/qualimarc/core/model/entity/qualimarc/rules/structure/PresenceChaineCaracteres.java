@@ -64,7 +64,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                 // si la sous-zone est celle recherchée
                 if (subField.getCode().equals(this.sousZone)) {
                     // création de la liste des résultats
-                    List<Boolean> isOk = null;
+                    boolean isOk = false;
                     // si la recherce est de type STRICTEMENT
                     if (this.enumChaineCaracteres.equals(EnumChaineCaracteres.STRICTEMENT)) {
 
@@ -73,18 +73,15 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                              ) {
                             if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
                                 if (chaineCaracteres.getChaineCaracteres().equals(subField.getValue())) {
-                                    isOk.add(subField.getValue().equals(chaineCaracteres.getChaineCaracteres()));
+                                    isOk &= (subField.getValue().equals(chaineCaracteres.getChaineCaracteres()));
                                 }
                             } else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
                                 return subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
                             }
-                            return isOk.stream().allMatch(item -> item.equals(true));
                         }
 
-                        if (isOk.stream().anyMatch(aBoolean -> aBoolean.equals(true)))
-
                         // return true si un élément de la liste est true
-                        return isOk.stream().anyMatch(aBoolean -> aBoolean.equals(true));
+                        return isOk;
                     } else if (this.enumChaineCaracteres.equals(EnumChaineCaracteres.COMMENCE)) {
                         
                     } else if (this.enumChaineCaracteres.equals(EnumChaineCaracteres.TERMINE)) {
