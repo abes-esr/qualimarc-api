@@ -19,7 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Classe qui définie une règle qui permet de tester la présence d'une sous-zone et la position ou la conformité d'une ou plusieurs chaines de caractères dans une sous-zone
+ * Classe qui définie une règle permettant de tester la présence d'une zone et sous-zone ainsi que la présence,
+ * la position ou la conformité d'une ou plusieurs chaines de caractères dans une sous-zone.
  */
 @Entity
 @Getter
@@ -60,7 +61,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
 
 
     /**
-     * Méthode qui vérifie la présence d'une ou plusieurs chaine.s de caractères dans une sous-zone d'une notice
+     * Méthode qui vérifie la présence ou la position d'une ou plusieurs chaine.s de caractères dans une sous-zone d'une notice
      * @param noticeXml notice sur laquelle va être testé la règle
      * @return boolean
      */
@@ -76,86 +77,82 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
             for (SubField subField : zone.getSubFields()
                  ) {
                 // si la sous-zone est celle recherchée
-                if (subField.getCode().equals(this.sousZone)) {
-                    // création de la liste des résultats
-                    boolean isOk = false;
-                    // si la recherce est de type STRICTEMENT
-
-                    switch (this.enumChaineCaracteres) {
+                if (subField.getCode().equals(sousZone)) {
+                    // création du boolean de résultat
+                    boolean isOk;
+                    // détermination du type de recherche
+                    switch (enumChaineCaracteres) {
+                        // Si la sous-zone contient STRICTEMENT la/les chaine.s de caractères
                         case STRICTEMENT:
-                            isOk &= (subField.getValue().equals(chaineCaracteres));
-                            for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
-                            ) {
-                                isOk |= subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
+                            isOk = subField.getValue().equals(chaineCaracteres);
+                            if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
+                                for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
+                                ) {
+                                    // si l'opérateur logique de la chaine de caractères recherchée est ET
+                                    if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
+                                        isOk &= subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
+                                    }
+                                    // si l'opérateur logique de la chaine de caractères recherchée est OU
+                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
+                                        isOk |= subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
+                                    }
+                                }
                             }
                             return isOk;
+                        // Si la sous-zone COMMENCE par la/les chaine.s de caractères
                         case COMMENCE:
-
+                            isOk = subField.getValue().startsWith(chaineCaracteres);
+                            if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
+                                for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
+                                ) {
+                                    // si l'opérateur logique de la chaine de caractères recherchée est ET
+                                    if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
+                                        isOk &= subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres());
+                                    }
+                                    // si l'opérateur logique de la chaine de caractères recherchée est OU
+                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
+                                        isOk |= subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres());
+                                    }
+                                }
+                            }
+                            return isOk;
+                        // Si la sous-zone TERMINE par la/les chaine.s de caractères
                         case TERMINE:
-
+                            isOk = subField.getValue().endsWith(chaineCaracteres);
+                            if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
+                                for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
+                                ) {
+                                    // si l'opérateur logique de la chaine de caractères recherchée est ET
+                                    if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
+                                        isOk &= subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres());
+                                    }
+                                    // si l'opérateur logique de la chaine de caractères recherchée est OU
+                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
+                                        isOk |= subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres());
+                                    }
+                                }
+                            }
+                            return isOk;
+                        // Si la sous-zone CONTIENT la/les chaine.s de caractères
                         case CONTIENT:
+                            isOk = subField.getValue().contains(chaineCaracteres);
+                            if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
+                                for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
+                                ) {
+                                    // si l'opérateur logique de la chaine de caractères recherchée est ET
+                                    if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
+                                        isOk &= subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    }
+                                    // si l'opérateur logique de la chaine de caractères recherchée est OU
+                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
+                                        isOk |= subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    }
+                                }
+                            }
+                            return isOk;
                     }
-
-//                    if (this.enumChaineCaracteres.equals(EnumChaineCaracteres.STRICTEMENT)) {
-//                        // toutes les chaines de caractères
-//                        for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
-//                             ) {
-//                            if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
-//                                return subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
-////                                isOk &= (subField.getValue().equals(chaineCaracteres.getChaineCaracteres()));
-//                            } else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
-//                                isOk |= subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
-//                            }
-//                            return isOk;
-//                        }
-//                        return true;
-//
-//                    } else if (enumChaineCaracteres.equals(EnumChaineCaracteres.COMMENCE)) {
-//
-//                    } else if (enumChaineCaracteres.equals(EnumChaineCaracteres.TERMINE)) {
-//
-//                    }
                 }
-                return false;
             }
-
-
-//            // teste la présence de la sous-zone
-//            if (zone.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(this.sousZone))) {
-//                //  pour chaque chaine de caractères
-//                List<Boolean> isOk = Collections.singletonList(false);
-//                for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
-//                ) {
-//                    if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.STRICTEMENT)) {
-//                        //  si l'une des occurences de la sous-zone contient UNIQUEMENT la chaine de caractères
-//                        return zone.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).anyMatch(subField -> subField.getValue().equals(chaineCaracteres.getChaineCaracteres()));
-//                    }
-//                    if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.CONTIENT)) {
-//                        //  si l'une des occurences de la sous-zone CONTIENT la chaine de caractères
-//                            return zone.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).anyMatch(subField -> subField.getValue().contains(chaineCaracteres.getChaineCaracteres()));
-//                    }
-//                    if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.COMMENCE)) {
-//                        // si l'une des occurences de la sous-zone COMMENCE par la chaine de caractères, alors return true
-//                        if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
-//
-//                            isOk.add(zone.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).anyMatch(subField -> subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres())));
-//
-//                        } else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
-//                            zone.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).anyMatch(subField -> subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres()));
-//                        }
-//                        return zone.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).anyMatch(subField -> subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres()));
-//                    }
-//                    if (chaineCaracteres.getEnumChaineCaracteres().equals(EnumChaineCaracteres.TERMINE)) {
-//                        // si le contenu de la sousZone fini par la chaine de caractères, alors return true
-//                        return zone.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).anyMatch(subField -> subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres()));
-//                    }
-//                }
-//                if (isOk.stream().allMatch(aBoolean -> aBoolean.equals(Boolean.TRUE))) {
-//                    return true;
-//                }
-//                // si la sous-zone n'est pas présente, alors ne pas lever le message (return false)
-//            }
-//            else return false;
         }
         // si la zone n'a été trouvée, alors return false
         return false;

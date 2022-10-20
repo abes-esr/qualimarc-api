@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * Classe qui définie une chaine de caractères, son opérateur logique (ET/OU) et sa méthode de recherche dans la zone a tester (UNIQUEMENT, CONTIENT, COMMENCE, TERMINE)
+ * Classe qui définie une chaine de caractères et son opérateur logique (ET/OU)
  */
 @Entity
 @Getter
@@ -31,10 +31,6 @@ public class ChaineCaracteres implements Serializable {
     @NotNull
     private BooleanOperateur booleanOperateur;
 
-    @Column(name = "ENUM_CHAINE_CARACTERES")
-    @NotNull
-    private EnumChaineCaracteres enumChaineCaracteres;
-
     @Column(name = "CHAINE_CARACTERES")
     @NotNull
     private String chaineCaracteres;
@@ -43,9 +39,8 @@ public class ChaineCaracteres implements Serializable {
     @JoinColumn(name = "ID_CHAINE_CARACTERES")
     private PresenceChaineCaracteres presenceChaineCaracteres;
 
-    public ChaineCaracteres(BooleanOperateur booleanOperateur, EnumChaineCaracteres enumChaineCaracteres, String chaineCaracteres) {
+    public ChaineCaracteres(BooleanOperateur booleanOperateur, String chaineCaracteres) {
         this.booleanOperateur = booleanOperateur;
-        this.enumChaineCaracteres = enumChaineCaracteres;
         this.chaineCaracteres = chaineCaracteres;
     }
 }
