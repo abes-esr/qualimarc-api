@@ -36,14 +36,28 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     @NotNull
     private EnumChaineCaracteres enumChaineCaracteres;
 
+    @Column(name = "CHAINE_CARACTERES")
+    @NotNull
+    private String chaineCaracteres;
+
     @OneToMany(mappedBy = "presenceChaineCaracteres", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ChaineCaracteres> listChainesCaracteres;
 
-    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, List<ChaineCaracteres> listChainesCaracteres) {
+    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumChaineCaracteres enumChaineCaracteres, String chaineCaracteres) {
         super(id, zone);
         this.sousZone = sousZone;
+        this.enumChaineCaracteres = enumChaineCaracteres;
+        this.chaineCaracteres = chaineCaracteres;
+    }
+
+    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumChaineCaracteres enumChaineCaracteres, String chaineCaracteres, List<ChaineCaracteres> listChainesCaracteres) {
+        super(id, zone);
+        this.sousZone = sousZone;
+        this.enumChaineCaracteres = enumChaineCaracteres;
+        this.chaineCaracteres = chaineCaracteres;
         this.listChainesCaracteres = listChainesCaracteres;
     }
+
 
     /**
      * Méthode qui vérifie la présence d'une ou plusieurs chaine.s de caractères dans une sous-zone d'une notice
@@ -66,25 +80,41 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                     // création de la liste des résultats
                     boolean isOk = false;
                     // si la recherce est de type STRICTEMENT
-                    if (this.enumChaineCaracteres.equals(EnumChaineCaracteres.STRICTEMENT)) {
-                        // toutes les chaines de caractères
-                        for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
-                             ) {
-                            if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
-                                if (chaineCaracteres.getChaineCaracteres().equals(subField.getValue())) {
-                                    isOk &= (subField.getValue().equals(chaineCaracteres.getChaineCaracteres()));
-                                }
-                            } else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
+
+                    switch (this.enumChaineCaracteres) {
+                        case STRICTEMENT:
+                            isOk &= (subField.getValue().equals(chaineCaracteres));
+                            for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
+                            ) {
                                 isOk |= subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
                             }
                             return isOk;
-                        }
+                        case COMMENCE:
 
-                    } else if (this.enumChaineCaracteres.equals(EnumChaineCaracteres.COMMENCE)) {
-                        
-                    } else if (this.enumChaineCaracteres.equals(EnumChaineCaracteres.TERMINE)) {
-                        
+                        case TERMINE:
+
+                        case CONTIENT:
                     }
+
+//                    if (this.enumChaineCaracteres.equals(EnumChaineCaracteres.STRICTEMENT)) {
+//                        // toutes les chaines de caractères
+//                        for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
+//                             ) {
+//                            if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
+//                                return subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
+////                                isOk &= (subField.getValue().equals(chaineCaracteres.getChaineCaracteres()));
+//                            } else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
+//                                isOk |= subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
+//                            }
+//                            return isOk;
+//                        }
+//                        return true;
+//
+//                    } else if (enumChaineCaracteres.equals(EnumChaineCaracteres.COMMENCE)) {
+//
+//                    } else if (enumChaineCaracteres.equals(EnumChaineCaracteres.TERMINE)) {
+//
+//                    }
                 }
                 return false;
             }

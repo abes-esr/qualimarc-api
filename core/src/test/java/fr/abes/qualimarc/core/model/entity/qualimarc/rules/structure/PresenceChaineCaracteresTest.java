@@ -42,32 +42,41 @@ class PresenceChaineCaracteresTest {
     }
 
     @Test
+    @DisplayName("Zone absente")
     void isValid() throws IOException {
-        // Teste la présence de la zone
-        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(BooleanOperateur.ET, EnumChaineCaracteres.STRICTEMENT, "");
-        List<ChaineCaracteres> listChaineCaracteres = new ArrayList<>();
-        listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(0, "999", "", listChaineCaracteres);
-
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(0, "999", "", EnumChaineCaracteres.STRICTEMENT, "");
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
+    }
 
 
-        //  Teste si une occurence de la sous-zone contient STRICTEMENT la chaine de caractères
-        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(BooleanOperateur.ET, EnumChaineCaracteres.STRICTEMENT, "Texte imprimé");
-        List<ChaineCaracteres> listChainesCaracteres1 = new ArrayList<>();
-        listChainesCaracteres1.add(chaineCaracteres1);
-        PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "200", "b", listChainesCaracteres1);
+    @Test
+    @DisplayName("Sous-zone absente")
+    void isValid0() throws IOException {
+        PresenceChaineCaracteres presenceChaineCaracteres0 = new PresenceChaineCaracteres(0, "200", "g", EnumChaineCaracteres.STRICTEMENT, "");
+        Assertions.assertFalse(presenceChaineCaracteres0.isValid(notice));
+    }
 
+
+    @Test
+    @DisplayName("STRICTEMENT les chaine de caractères")
+    void isValid1() throws IOException {
+        PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "200", "b", EnumChaineCaracteres.STRICTEMENT, "Texte imprimé");
         Assertions.assertTrue(presenceChaineCaracteres1.isValid(notice));
+    }
 
-
+    @Test
+    @DisplayName("STRICTEMENT les chaines de caractères")
+    void isValid2() throws IOException {
         //  Teste si une occurence de la sous-zone contient STRICTEMENT la chaine de caractères
-        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(BooleanOperateur.ET, EnumChaineCaracteres.STRICTEMENT, "Texte imprime");
+        ChaineCaracteres chaineCaracteres2a = new ChaineCaracteres(BooleanOperateur.OU, EnumChaineCaracteres.STRICTEMENT, "Texte");
+        ChaineCaracteres chaineCaracteres2b = new ChaineCaracteres(BooleanOperateur.OU, EnumChaineCaracteres.STRICTEMENT, "Texte imprimé");
         List<ChaineCaracteres> listChainesCaracteres2 = new ArrayList<>();
-        listChainesCaracteres2.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres2 = new PresenceChaineCaracteres(1, "200", "b", listChainesCaracteres2);
+        listChainesCaracteres2.add(chaineCaracteres2a);
+        listChainesCaracteres2.add(chaineCaracteres2b);
+        PresenceChaineCaracteres presenceChaineCaracteres2 = new PresenceChaineCaracteres(1, "200", "b", EnumChaineCaracteres.STRICTEMENT, "", listChainesCaracteres2);
 
-        Assertions.assertFalse(presenceChaineCaracteres2.isValid(notice));
+        Assertions.assertTrue(presenceChaineCaracteres2.isValid(notice));
+    }
 
 //        // Teste si une occurence de la sous-zone CONTIENT la/les chaines de caractères
 //        ChaineCaracteres chaineCaracteres3a = new ChaineCaracteres(BooleanOperateur.ET, EnumChaineCaracteres.CONTIENT, "Convention");
@@ -100,7 +109,7 @@ class PresenceChaineCaracteresTest {
 //        PresenceChaineCaracteres presenceChaineCaracteres5 = new PresenceChaineCaracteres(1, "200", "a", listChainesCaracteres5);
 //
 //        Assertions.assertTrue(presenceChaineCaracteres5.isValid(notice));
-    }
+
 
     @Test
     @DisplayName("test getZones")
@@ -108,7 +117,7 @@ class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres();
         List<ChaineCaracteres> listChaineCaracteres = new ArrayList<>();
         listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "020", "a", listChaineCaracteres);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "020", "a", EnumChaineCaracteres.STRICTEMENT, "", listChaineCaracteres);
 
         Assertions.assertEquals("020$a", rule.getZones());
     }
