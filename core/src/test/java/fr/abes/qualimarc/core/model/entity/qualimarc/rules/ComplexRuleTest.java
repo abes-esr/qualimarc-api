@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @SpringBootTest(classes = {ComplexRule.class})
-@ComponentScan(excludeFilters = @ComponentScan.Filter(BaseXMLConfiguration.class))
 public class ComplexRuleTest {
     @Value("classpath:143519379.xml")
     private Resource xmlFileNotice;

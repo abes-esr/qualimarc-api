@@ -22,7 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 @SpringBootTest(classes = PresenceSousZonesMemeZone.class)
-@ComponentScan(excludeFilters = @ComponentScan.Filter(BaseXMLConfiguration.class))
 class PresenceSousZonesMemeZoneTest {
 
     @Value("classpath:143519379.xml")
