@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @SpringBootTest(classes = {NombreZone.class})
-@ComponentScan(excludeFilters = @ComponentScan.Filter(BaseXMLConfiguration.class))
 public class NombreZoneTest {
     @Value("classpath:143519379.xml")
     private Resource xmlFileNotice1;
