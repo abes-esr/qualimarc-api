@@ -220,6 +220,7 @@ public class WebDtoMapper {
                 ComplexRule target;
                 Iterator<SimpleRuleWebDto> reglesIt = source.getRegles().listIterator();
                 SimpleRuleWebDto firstRegle = reglesIt.next();
+                int i = 0;
                 if (null == firstRegle.getBooleanOperator()) {
                     target = new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), mapper.map(firstRegle, SimpleRule.class));
                     if (source.getTypesDoc() != null)
@@ -230,7 +231,7 @@ public class WebDtoMapper {
                         if (otherRegle.getBooleanOperator() == null) {
                             throw new IllegalArgumentException("Les règles autres que la première d'une règle complexe doivent avoir un opérateur");
                         }
-                        target.addOtherRule(new LinkedRule(mapper.map(otherRegle, SimpleRule.class), getOperateur(otherRegle.getBooleanOperator()), target));
+                        target.addOtherRule(new LinkedRule(mapper.map(otherRegle, SimpleRule.class), getOperateur(otherRegle.getBooleanOperator()), target, i++));
                     }
 
                 } else {

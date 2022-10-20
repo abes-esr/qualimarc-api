@@ -1,7 +1,7 @@
 package fr.abes.qualimarc.core.model.entity.qualimarc.reference;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,9 +20,9 @@ public class FamilleDocument {
     @Column(name = "LIBELLE")
     private String libelle;
 
-    @ManyToMany(mappedBy = "famillesDocuments", targetEntity = Rule.class)
+    @ManyToMany(mappedBy = "famillesDocuments", targetEntity = ComplexRule.class)
     @JsonIgnore
-    private Set<Rule> rules;
+    private Set<ComplexRule> rules;
 
     public FamilleDocument(String id, String libelle) {
         this.id = id;

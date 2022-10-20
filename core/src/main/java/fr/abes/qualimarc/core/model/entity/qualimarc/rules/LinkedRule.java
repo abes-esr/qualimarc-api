@@ -30,15 +30,19 @@ public class LinkedRule {
     @Column(name = "OPERATOR")
     private BooleanOperateur operateur;
 
+    @Column(name = "POSITION")
+    private Integer position;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ID_COMPLEX_RULE")
     private ComplexRule complexRule;
 
-    public LinkedRule(SimpleRule rule, BooleanOperateur operateur, ComplexRule complexRule) {
+    public LinkedRule(SimpleRule rule, BooleanOperateur operateur, ComplexRule complexRule, Integer position) {
         this.id = rule.getId();
         this.rule = rule;
         this.operateur = operateur;
         this.complexRule = complexRule;
+        this.position = position;
     }
 
 }

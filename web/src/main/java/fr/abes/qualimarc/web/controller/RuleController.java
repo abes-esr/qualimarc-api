@@ -2,7 +2,6 @@ package fr.abes.qualimarc.web.controller;
 
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
@@ -52,7 +51,7 @@ public class RuleController {
 
     @PostMapping(value = "/indexRules", consumes = {"text/yaml", "text/yml"})
     public void indexRules(@Valid @RequestBody ListRulesWebDto rules) {
-        List<Rule> rulesEntity = handleRulesWebDto(rules);
+        List<ComplexRule> rulesEntity = handleRulesWebDto(rules);
         try {
             ruleService.saveAll(rulesEntity);
         } catch (DataIntegrityViolationException ex) {
@@ -61,8 +60,8 @@ public class RuleController {
         }
     }
 
-    private List<Rule> handleRulesWebDto(ListRulesWebDto rules) {
-        List<Rule> rulesEntity = new ArrayList<>();
+    private List<ComplexRule> handleRulesWebDto(ListRulesWebDto rules) {
+        List<ComplexRule> rulesEntity = new ArrayList<>();
         for (SimpleRuleWebDto rule : rules.getRules()) {
             rulesEntity.add(mapper.map(rule, ComplexRule.class));
         }
@@ -71,7 +70,7 @@ public class RuleController {
 
     @PostMapping(value = "/indexComplexRules", consumes = {"text/yaml", "text/yml"})
     public void indexComplexRules(@Valid @RequestBody ListComplexRulesWebDto rules) {
-        List<Rule> rulesEntity = handleComplexRulesWebDto(rules);
+        List<ComplexRule> rulesEntity = handleComplexRulesWebDto(rules);
         try {
             ruleService.saveAll(rulesEntity);
         } catch (DataIntegrityViolationException ex) {
@@ -82,8 +81,8 @@ public class RuleController {
         }
     }
 
-    private List<Rule> handleComplexRulesWebDto(ListComplexRulesWebDto rules) {
-        List<Rule> rulesEntity = new ArrayList<>();
+    private List<ComplexRule> handleComplexRulesWebDto(ListComplexRulesWebDto rules) {
+        List<ComplexRule> rulesEntity = new ArrayList<>();
         for (ComplexRuleWebDto complexRuleWebDto : rules.getComplexRules()) {
             if(complexRuleWebDto.getRegles().size() > 1) {
                 rulesEntity.add(mapper.map(complexRuleWebDto, ComplexRule.class));

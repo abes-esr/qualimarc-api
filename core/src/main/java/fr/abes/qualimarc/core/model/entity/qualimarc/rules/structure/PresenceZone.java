@@ -1,10 +1,7 @@
 package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure;
 
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
-import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
-import fr.abes.qualimarc.core.utils.Priority;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -12,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Set;
 
 @Getter
 @Setter
