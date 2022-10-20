@@ -70,6 +70,9 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         //récupération de toutes les zones définies dans la règle
         List<Datafield> zones = noticeXml.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).collect(Collectors.toList());
 
+        // création du boolean de résultat
+        boolean isOk = false;
+
         // pour chaque occurence de la zone
         for (Datafield zone : zones) {
 
@@ -78,8 +81,6 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                  ) {
                 // si la sous-zone est celle recherchée
                 if (subField.getCode().equals(sousZone)) {
-                    // création du boolean de résultat
-                    boolean isOk;
                     // détermination du type de recherche
                     switch (enumChaineCaracteres) {
                         // Si la sous-zone contient STRICTEMENT la/les chaine.s de caractères
@@ -98,7 +99,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                                     }
                                 }
                             }
-                            return isOk;
+                            break;
                         // Si la sous-zone COMMENCE par la/les chaine.s de caractères
                         case COMMENCE:
                             isOk = subField.getValue().startsWith(chaineCaracteres);
@@ -115,7 +116,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                                     }
                                 }
                             }
-                            return isOk;
+                            break;
                         // Si la sous-zone TERMINE par la/les chaine.s de caractères
                         case TERMINE:
                             isOk = subField.getValue().endsWith(chaineCaracteres);
@@ -132,7 +133,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                                     }
                                 }
                             }
-                            return isOk;
+                            break;
                         // Si la sous-zone CONTIENT la/les chaine.s de caractères
                         case CONTIENT:
                             isOk = subField.getValue().contains(chaineCaracteres);
@@ -149,13 +150,12 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                                     }
                                 }
                             }
-                            return isOk;
+                            break;
                     }
                 }
             }
         }
-        // si la zone n'a été trouvée, alors return false
-        return false;
+        return isOk;
     }
 
     /**

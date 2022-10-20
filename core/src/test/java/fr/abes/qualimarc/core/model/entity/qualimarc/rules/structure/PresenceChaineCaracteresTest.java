@@ -211,6 +211,13 @@ class PresenceChaineCaracteresTest {
     }
 
     @Test
+    @DisplayName("contient STRICTEMENT la chaine de caractères")
+    void isValid18() {
+        PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "300", "b", EnumChaineCaracteres.STRICTEMENT, "Test");
+        Assertions.assertTrue(presenceChaineCaracteres1.isValid(notice));
+    }
+
+    @Test
     @DisplayName("test getZones")
     void getZones() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres();
