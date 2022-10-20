@@ -47,6 +47,6 @@ public class ComplexRuleWebDto {
     }
 
     public ComplexRuleWebDto() {
-        this.regles = new LinkedList<SimpleRuleWebDto>();
+        this.regles = new LinkedList<>();
     }
 }

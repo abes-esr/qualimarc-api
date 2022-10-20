@@ -3,9 +3,8 @@ package fr.abes.qualimarc.core.repository.qualimarc;
 import fr.abes.qualimarc.core.configuration.QualimarcConfiguration;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.utils.Priority;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,11 +12,11 @@ import java.util.Set;
 
 @QualimarcConfiguration
 @Repository
-public interface RulesRepository extends JpaRepository<Rule, Integer> {
-    Set<Rule> findByPriority(Priority priority);
+public interface ComplexRulesRepository extends JpaRepository<ComplexRule, Integer> {
+    Set<ComplexRule> findByPriority(Priority priority);
 
-    Set<Rule> findByFamillesDocuments(FamilleDocument familleDocument);
+    Set<ComplexRule> findByFamillesDocuments(FamilleDocument familleDocument);
 
-    Set<Rule> findByRuleSet(RuleSet ruleSet);
+    Set<ComplexRule> findByRuleSet(RuleSet ruleSet);
 
 }

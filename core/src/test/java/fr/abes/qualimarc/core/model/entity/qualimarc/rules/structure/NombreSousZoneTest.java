@@ -4,9 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.configuration.BaseXMLConfiguration;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.Rule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
-import fr.abes.qualimarc.core.utils.Priority;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +19,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @SpringBootTest(classes = {NombreSousZone.class})
-@ComponentScan(excludeFilters = @ComponentScan.Filter(BaseXMLConfiguration.class))
 class NombreSousZoneTest {
     @Value("classpath:143519379.xml")
     private Resource xmlFileNotice1;

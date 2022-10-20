@@ -3,6 +3,7 @@ package fr.abes.qualimarc.web.exception;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.Ordered;
@@ -42,34 +43,35 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
     /**
      * Erreur de lecture / décodage des paramètres d'une requête HTTP
      *
-     * @param ex : l'exception catchée
+     * @param ex      : l'exception catchée
      * @param headers headers de la requête http
-     * @param status status de renvoie
+     * @param status  status de renvoie
      * @param request requête http
      * @return l'objet du message d'erreur
      */
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-
         String error = "Requête YAML mal formée";
         if (ex.getCause() instanceof InvalidTypeIdException) {
-            log.error(ex.getLocalizedMessage());
+            log.debug(ex.getLocalizedMessage());
             return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, new MismatchedYamlTypeException("L'attribut type ne peut prendre que les valeurs " + StringUtils.substringBetween(ex.getLocalizedMessage(), "[", "]"))));
         }
-        else {
-            if (ex.getCause() instanceof MismatchedInputException) {
-                String targetType = ((MismatchedInputException) ex.getCause()).getTargetType().getSimpleName();
-
-                List<JsonMappingException.Reference> errors = ((MismatchedInputException) ex.getCause()).getPath();
-                String property = errors.get(errors.size() - 1).getFieldName();
-
-                log.error(ex.getLocalizedMessage());
-                if (property.equals("priorite")) {
-                    return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, new MismatchedYamlTypeException("L'attribut " + property + " ne peut prendre que les valeurs " + StringUtils.substringBetween(ex.getLocalizedMessage(), "[", "]"))));
-                }
-                return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, new MismatchedYamlTypeException("L'attribut " + property + " doit être de type '" + targetType + "'")));
-            }
+        if (ex.getCause() instanceof UnrecognizedPropertyException) {
+            log.debug(ex.getLocalizedMessage());
+            return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, new MismatchedYamlTypeException("La propriété " + ((UnrecognizedPropertyException) ex.getCause()).getPropertyName() + " n'existe pas dans le modèle")));
         }
+        if (ex.getCause() instanceof MismatchedInputException) {
+            String targetType = ((MismatchedInputException) ex.getCause()).getTargetType().getSimpleName();
+
+            List<JsonMappingException.Reference> errors = ((MismatchedInputException) ex.getCause()).getPath();
+            String property = errors.get(errors.size() - 1).getFieldName();
+            log.debug(ex.getLocalizedMessage());
+            if (property.equals("priorite") || property.equals("operateur-booleen")) {
+                return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, new MismatchedYamlTypeException("L'attribut " + property + " ne peut prendre que les valeurs " + StringUtils.substringBetween(ex.getLocalizedMessage(), "[", "]"))));
+            }
+            return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, new MismatchedYamlTypeException("L'attribut " + property + " doit être de type '" + targetType + "'")));
+        }
+
         log.error(ex.getLocalizedMessage());
         return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, ex));
     }
@@ -90,9 +92,9 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
     /**
      * Vérifier les méthodes correspondent avec les URI dans le controller
      *
-     * @param ex : l'exception catchée
+     * @param ex      : l'exception catchée
      * @param headers headers de la requête http
-     * @param status status de renvoie
+     * @param status  status de renvoie
      * @param request requête http
      * @return l'objet du message d'erreur
      */
@@ -106,9 +108,9 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
     /**
      * Vérifier la validité (@Valid) des paramètres de la requête
      *
-     * @param ex : l'exception catchée
+     * @param ex      : l'exception catchée
      * @param headers headers de la requête http
-     * @param status status de renvoie
+     * @param status  status de renvoie
      * @param request requête http
      * @return l'objet du message d'erreur
      */
@@ -128,9 +130,9 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
     /**
      * Page 404
      *
-     * @param ex : l'exception catchée
+     * @param ex      : l'exception catchée
      * @param headers headers de la requête http
-     * @param status status de renvoie
+     * @param status  status de renvoie
      * @param request requête http
      * @return l'objet du message d'erreur
      */
@@ -144,9 +146,9 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
     /**
      * Erreur de paramètre
      *
-     * @param ex : l'exception catchée
+     * @param ex      : l'exception catchée
      * @param headers headers de la requête http
-     * @param status status de renvoie
+     * @param status  status de renvoie
      * @param request requête http
      * @return l'objet du message d'erreur
      */

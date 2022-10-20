@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @SpringBootTest(classes = {ComplexRule.class})
-@ComponentScan(excludeFilters = @ComponentScan.Filter(BaseXMLConfiguration.class))
 public class ComplexRuleTest {
     @Value("classpath:143519379.xml")
     private Resource xmlFileNotice;
@@ -52,14 +51,14 @@ public class ComplexRuleTest {
         NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
 
         ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "200", true));
-        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(2, "020", "a", true), BooleanOperateur.ET, null));
+        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(2, "020", "a", true), BooleanOperateur.ET, null, 1));
 
         Assertions.assertTrue(complexRule.isValid(notice));
 
-        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(3, "021", "b", true), BooleanOperateur.ET, null));
+        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(3, "021", "b", true), BooleanOperateur.ET, null, 1));
         Assertions.assertFalse(complexRule.isValid(notice));
 
-        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(4, "033", "a", true), BooleanOperateur.OU, null));
+        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(4, "033", "a", true), BooleanOperateur.OU, null, 1));
         Assertions.assertTrue(complexRule.isValid(notice));
     }
 
@@ -71,7 +70,7 @@ public class ComplexRuleTest {
         Assertions.assertEquals(1, complexRule.getZonesFromChildren().size());
         Assertions.assertEquals("200", complexRule.getZonesFromChildren().get(0));
 
-        complexRule.addOtherRule(new LinkedRule(new PresenceZone(1, "300", false), BooleanOperateur.OU, null));
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(1, "300", false), BooleanOperateur.OU, null, 1));
         Assertions.assertEquals(2, complexRule.getZonesFromChildren().size());
         Assertions.assertEquals("300", complexRule.getZonesFromChildren().get(1));
 
