@@ -3,6 +3,7 @@ package fr.abes.qualimarc.web.mapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRule;
@@ -13,7 +14,7 @@ import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -24,8 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @ExtendWith({SpringExtension.class})
 @SpringBootTest(classes = {UtilsMapper.class, ObjectMapper.class, WebDtoMapper.class})
@@ -315,6 +319,32 @@ public class WebDtoMapperTest {
     }
 
     @Test
+    @DisplayName("Test ConverterIndicateur")
+    void converterIndicateurTest() {
+        IndicateurWebDto rule1 = new IndicateurWebDto(1, "200", "ET", 1, "#");
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule1, ComplexRule.class));
+        Assertions.assertEquals("L'opérateur est interdit lors de la création d'une seule règle", exception.getCause().getMessage());
+
+        IndicateurWebDto rule2 = new IndicateurWebDto(1, 1, null, "200", null, null, 1, "#");
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule2, ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+
+        IndicateurWebDto rule3 = new IndicateurWebDto(1, 1, "test", "200", "P1", new ArrayList<>(), 3, "#");
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule3, ComplexRule.class));
+        Assertions.assertEquals("le champ indicateur peut etre soit '1', soit '2'", exception.getCause().getMessage());
+
+        IndicateurWebDto rule4 = new IndicateurWebDto(1, 1, "test", "200", "P1", new ArrayList<>(), 1, "#");
+        ComplexRule complexRule = mapper.map(rule4, ComplexRule.class);
+        Assertions.assertEquals(1, complexRule.getId());
+        Assertions.assertEquals("test", complexRule.getMessage());
+        Indicateur simpleRule = (Indicateur) complexRule.getFirstRule();
+        Assertions.assertEquals("200", simpleRule.getZone());
+        Assertions.assertEquals(1, simpleRule.getIndicateur());
+        Assertions.assertEquals("#", simpleRule.getValeur());
+    }
+
+
+    @Test
     @DisplayName("Test Mapper converterComplexRule")
     void converterComplexRuleTest() {
         ComplexRuleWebDto complexRuleWebDto = new ComplexRuleWebDto();
@@ -406,4 +436,6 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(Priority.P2.toString(),responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst().get().getPriority());
 
     }
+
+
 }
