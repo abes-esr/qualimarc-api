@@ -3,7 +3,9 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu;
 import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "RULE_INDICATEUR")
+@Getter @Setter
 @NoArgsConstructor
 public class Indicateur extends SimpleRule implements Serializable {
     @Column(name = "INDICATEUR")

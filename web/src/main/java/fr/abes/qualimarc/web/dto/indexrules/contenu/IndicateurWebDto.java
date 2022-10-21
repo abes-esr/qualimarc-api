@@ -18,12 +18,11 @@ public class IndicateurWebDto extends SimpleRuleWebDto {
     //TODO: Verifier les regexp
 
     @NotNull(message = "le champ indicateur est obligatoire")
-    @Pattern(regexp = "\\b([1|2]{1})\\b", message = "le champ indicateur peut etre soit '1', soit '2'")
     @JsonProperty("indicateur")
     private Integer indicateur;
 
     @NotNull(message = "le champ valeur est obligatoire")
-    @Pattern(regexp = "\\b([1-9]{1}|[#])\\b", message = "le champ indicateur peut etre soit '1', soit '2'")
+    @Pattern(regexp = "([0-9|#])", message = "le champ valeur peut avoir une valeur de 0 à 9 ou un '#'")
     @JsonProperty("valeur")
     private String valeur;
 

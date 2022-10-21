@@ -135,6 +135,9 @@ public class WebDtoMapper {
             public ComplexRule convert(MappingContext<IndicateurWebDto, ComplexRule> context) {
                 IndicateurWebDto source = context.getSource();
                 checkSimpleRule(source);
+                if (source.getIndicateur() != 1 && source.getIndicateur() != 2) {
+                    throw new IllegalArgumentException("le champ indicateur peut etre soit '1', soit '2'");
+                }
                 return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new Indicateur(source.getId(), source.getZone(), source.getIndicateur(), source.getValeur()));
             }
         };
