@@ -229,6 +229,18 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
+    @Bean
+    public void converterPresenceChaineCaracteresToSimple() {
+        Converter<PresenceChaineCaracteresWebDto, SimpleRule> myConverter = new Converter<PresenceChaineCaracteresWebDto, SimpleRule>() {
+            public SimpleRule convert(MappingContext<PresenceChaineCaracteresWebDto, SimpleRule> context) {
+                PresenceChaineCaracteresWebDto source = context.getSource();
+                PresenceChaineCaracteres target = constructPresenceChaineCaracteres(source);
+                return target;
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
 
     /**
      * Convertion d'un modèle ComplexRuleWebDto en ComplexRule

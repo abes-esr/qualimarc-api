@@ -71,5 +71,70 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
             this.chaineCaracteres = chaineCaracteres;
         }
     }
-
 }
+
+/*
+// SIMPLE
+La vérification STRICTEMENT peut comporter un ou plusieurs chaines de caractères mais chacune de ces chaines ne peut recevoir que l'opérateur OU
+La vérification COMMENCE peut comporter un ou plusieurs chaines de caractères mais chacune de ces chaines ne peut recevoir que l'opérateur OU
+La vérification TERMINE peut comporter un ou plusieurs chaines de caractères mais chacune de ces chaines ne peut recevoir que l'opérateur OU
+La vérification CONTIENT peut comporter un ou plusieurs chaines de caractères recevant au choix l'opérateur ET ou OU
+---
+rules:
+    - id:                       1
+      id-excel:                 1
+      type:                     presencechainecaracteres
+      message:                  "la chaine blabla.."
+      zone:                     200
+      priorite:                 P1
+      souszone:                 a
+      type-de-verification:             STRICTEMENT
+      chaine-caracteres:        "Texte"
+
+    - id:                       2
+      id-excel:                 2
+      type:                     presencechainecaracteres
+      message:                  "la chaine blabla.."
+      zone:                     200
+      priorite:                 P1
+      souszone:                 a
+      type-de-verification:             CONTIENT
+      chaine-caracteres:        "Texte"
+      autre-chaine-caracteres:
+        - operateur:            ET
+          chaine-caracteres:    "Autre texte"
+        - operateur:            OU
+          chaine-caracteres:    "Autre autre texte"
+
+// COMPLEX
+---
+rules:
+    - id:                       1
+      message:                  "la chaine blabla.."
+      priorite:                 P1
+      regles:
+        - id: 1
+          type: presencechainecaracteres
+          zone: 203
+          souszone: b
+          type-de-verification: STRICTEMENT
+          chaine-caracteres: "ballon"
+        - id: 2
+          type: presencechainecaracteres
+          zone: 203
+          souszone: b
+          type-de-verification: CONTIENT
+          chaine-caracteres: "rouge"
+          operateur-booleen: OU
+          autre-chaine-caracteres:
+            - operateur: OU
+              chaine-caracteres: "poulet"
+*/
+
+
+
+
+
+
+
+
