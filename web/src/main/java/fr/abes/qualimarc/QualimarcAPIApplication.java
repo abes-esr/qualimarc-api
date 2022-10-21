@@ -26,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @SpringBootApplication
@@ -46,6 +47,7 @@ public class QualimarcAPIApplication implements CommandLineRunner {
     private JwtTokenProvider tokenProvider;
 
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Paris"));   // It will set UTC timezone
         SpringApplication.run(QualimarcAPIApplication.class, args);
     }
 
