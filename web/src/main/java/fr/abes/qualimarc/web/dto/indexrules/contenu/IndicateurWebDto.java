@@ -15,8 +15,6 @@ import java.util.List;
 @JsonTypeName("indicateur")
 public class IndicateurWebDto extends SimpleRuleWebDto {
 
-    //TODO: Verifier les regexp
-
     @NotNull(message = "le champ indicateur est obligatoire")
     @JsonProperty("indicateur")
     private Integer indicateur;
