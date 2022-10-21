@@ -19,25 +19,33 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
 
     @Pattern(regexp = "(\\b([a-zA-Z]{0,1})\\b)(\\b([0-9]{0,1})\\b)", message = "Le champ souszone ne peut contenir qu'une lettre (en minuscule ou majuscule), ou un chiffre.")
     @NotNull(message = "Le champ souszone est obligatoire")
-    @JsonProperty("souszones")
-    private String sousZones;
+    @JsonProperty("souszone")
+    private String sousZone;
 
     @Pattern(regexp = "STRICTEMENT|CONTIENT|COMMENCE|TERMINE", message = "Le champ niveau de verification ne peut contenir que STRICTEMENT, CONTIENT, COMMENCE, TERMINE")
-    @JsonProperty("niveaudeverification")
+    @JsonProperty("type-de-verification")
     @NotNull
     private String typeDeVerification;
 
-    @JsonProperty("chainecaracteres")
+    @JsonProperty("chaine-caracteres")
     @NotNull
     private String chaineCaracteres;
 
     @JsonProperty("autre-chaine-caracteres")
     private List<ChaineCaracteresWebDto> listChaineCaracteres;
 
-    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZones, String niveauDeVerification, String chaineCaracteres) {
+    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZone, String typeDeVerification, String chaineCaracteres) {
         super(id, idExcel, message, zone, priority, typesDoc);
-        this.sousZones = sousZones;
-        this.niveauDeVerification = niveauDeVerification;
+        this.sousZone = sousZone;
+        this.typeDeVerification = typeDeVerification;
+        this.chaineCaracteres = chaineCaracteres;
+        this.listChaineCaracteres = new LinkedList<>();
+    }
+
+    public PresenceChaineCaracteresWebDto(Integer id, String zone, String booleanOperator, String sousZone, String typeDeVerification, String chaineCaracteres, List<ChaineCaracteresWebDto> listChaineCaracteres) {
+        super(id, zone, booleanOperator);
+        this.sousZone = sousZone;
+        this.typeDeVerification = typeDeVerification;
         this.chaineCaracteres = chaineCaracteres;
         this.listChaineCaracteres = new LinkedList<>();
     }
@@ -45,8 +53,6 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
     public void addChaineCaracteres(ChaineCaracteresWebDto chaineCaracteresWebDto) {
         this.listChaineCaracteres.add(chaineCaracteresWebDto);
     }
-
-    //TODO construire les constructeurs en fonction de la syntaxe du yaml à déterminer
 
     @Getter
     @NoArgsConstructor
@@ -56,7 +62,7 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
         @NotNull
         private String operateur;
 
-        @JsonProperty("chainecaracteres")
+        @JsonProperty("chaine-caracteres")
         @NotNull
         private String chaineCaracteres;
 

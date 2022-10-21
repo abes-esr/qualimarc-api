@@ -6,7 +6,7 @@ import fr.abes.qualimarc.core.model.entity.notice.SubField;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
-import fr.abes.qualimarc.core.utils.EnumChaineCaracteres;
+import fr.abes.qualimarc.core.utils.EnumTypeVerification;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -60,6 +60,9 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         this.listChainesCaracteres = listChainesCaracteres;
     }
 
+    public void addChaineCaracteres(ChaineCaracteres chaine) {
+        this.listChainesCaracteres.add(chaine);
+    }
 
     /**
      * Méthode qui vérifie la présence ou la position d'une ou plusieurs chaine.s de caractères dans une sous-zone d'une notice
