@@ -10,6 +10,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.LinkedList;
 import java.util.List;
 
 @Getter
@@ -32,8 +33,19 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
     private String chaineCaracteres;
 
     @JsonProperty("autrechainecaracteres")
-    @NotNull
     private List<ChaineCaracteresWebDto> listChaineCaracteres;
+
+    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZones, String niveauDeVerification, String chaineCaracteres) {
+        super(id, idExcel, message, zone, priority, typesDoc);
+        this.sousZones = sousZones;
+        this.niveauDeVerification = niveauDeVerification;
+        this.chaineCaracteres = chaineCaracteres;
+        this.listChaineCaracteres = new LinkedList<>();
+    }
+
+    public void addChaineCaracteres(ChaineCaracteresWebDto chaineCaracteresWebDto) {
+        this.listChaineCaracteres.add(chaineCaracteresWebDto);
+    }
 
     //TODO construire les constructeurs en fonction de la syntaxe du yaml à déterminer
 
@@ -42,18 +54,12 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
     public static class ChaineCaracteresWebDto {
         @Pattern(regexp = "ET|OU", message = "L'opérateur doit être égal à OU ou à ET")
         @JsonProperty("operateur")
+        @NotNull
         private String operateur;
 
         @JsonProperty("chainecaracteres")
         @NotNull
         private String chaineCaracteres;
-
-        /**
-         * Constructeur utilisé pour la première chaîne de caractères
-         */
-        public ChaineCaracteresWebDto(String chaineCaracteres){
-            this.chaineCaracteres = chaineCaracteres;
-        }
 
         public ChaineCaracteresWebDto(String operateur, String chaineCaracteres) {
             this.operateur = operateur;

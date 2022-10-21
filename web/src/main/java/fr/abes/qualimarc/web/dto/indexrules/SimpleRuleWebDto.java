@@ -1,6 +1,7 @@
 package fr.abes.qualimarc.web.dto.indexrules;
 
 import com.fasterxml.jackson.annotation.*;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.Getter;
 
@@ -18,7 +19,8 @@ import java.util.List;
         @JsonSubTypes.Type(value = NombreZoneWebDto.class, name = "nombrezone"),
         @JsonSubTypes.Type(value = NombreSousZoneWebDto.class, name = "nombresouszone"),
         @JsonSubTypes.Type(value = PositionSousZoneWebDto.class, name="positionsouszone"),
-        @JsonSubTypes.Type(value = PresenceSousZonesMemeZoneWebDto.class, name="presencesouszonesmemezone")
+        @JsonSubTypes.Type(value = PresenceSousZonesMemeZoneWebDto.class, name="presencesouszonesmemezone"),
+        @JsonSubTypes.Type(value = PresenceChaineCaracteresWebDto.class, name="presencechainecaracteres")
 })
 public abstract class SimpleRuleWebDto {
 
