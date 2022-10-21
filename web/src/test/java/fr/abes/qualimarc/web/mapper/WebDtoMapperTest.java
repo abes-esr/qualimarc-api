@@ -3,6 +3,8 @@ package fr.abes.qualimarc.web.mapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRule;
@@ -14,6 +16,7 @@ import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -405,5 +408,38 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(Priority.P1.toString(),responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 1).findFirst().get().getPriority());
         Assertions.assertEquals(Priority.P2.toString(),responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst().get().getPriority());
 
+    }
+
+    @Test
+    @DisplayName("Test Mapper converterPresenceChaineCaracteresTest")
+    void converterPresenceChaineCaracteres() {
+        //  Préparation d'un objet PresenceChaineCaracteresWebDto
+        ArrayList<String> typeDoc = new ArrayList<>();
+        typeDoc.add("A");
+        PresenceChaineCaracteresWebDto rule1 = new PresenceChaineCaracteresWebDto(1, 1, "Erreur", "200", "P1", typeDoc, "a", "STRICTEMENT", "Texte");
+
+        //  Appel du mapper
+        ComplexRule responseDto = mapper.map(rule1, ComplexRule.class);
+
+        //  Contrôle de la bonne conformité des résultats
+        PositionSousZone presenceZone = (PositionSousZone) responseDto.getFirstRule();
+        Assertions.assertEquals(rule1.getId(), responseDto.getId());
+        Assertions.assertEquals(rule1.getMessage(), responseDto.getMessage());
+        Assertions.assertEquals(rule1.getZone(), responseDto.getZonesFromChildren().get(0));
+
+        //  Test avec priorité nulle
+        // TODO modifier pour correspondre à l'objet PresenceChaineCaracteres
+//        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, "message 1", "100", null, typeDoc, "a", 2), ComplexRule.class));
+//        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+
+        //  Test avec message null
+        // TODO modifier pour correspondre à l'objet PresenceChaineCaracteres
+//        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, null, "100", "P1", typeDoc, "a", 2), ComplexRule.class));
+//        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+
+    }
+
+    @Test
+    void converterPresenceChaineCaracteresToSimple() {
     }
 }

@@ -4,10 +4,13 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.souszoneoperator.SousZoneOperator;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
+import fr.abes.qualimarc.core.utils.EnumTypeVerification;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
@@ -15,6 +18,7 @@ import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
 import fr.abes.qualimarc.web.dto.RuleResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.SneakyThrows;
 import org.modelmapper.Converter;
@@ -123,6 +127,23 @@ public class WebDtoMapper {
         };
         mapper.addConverter(myConverter);
     }
+
+    /**
+     * Convertion d'un modèle PresenceChaineCaracteresWebDto en modèle ComplexRule
+     */
+    @Bean
+    public void converterPresenceChaineCaracteres() {
+        Converter<PresenceChaineCaracteresWebDto, ComplexRule> myConverter = new Converter<PresenceChaineCaracteresWebDto, ComplexRule>() {
+            public ComplexRule convert(MappingContext<PresenceChaineCaracteresWebDto, ComplexRule> context) {
+                PresenceChaineCaracteresWebDto source = context.getSource();
+                checkSimpleRule(source);
+                PresenceChaineCaracteres target = constructPresenceChaineCaracteres(source);
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), target);
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
 
     /**
      * Convertion d'un modèle PresenceZoneWebDto en modèle SimpleRule
@@ -296,6 +317,21 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
+    /**
+     * Création d'un objet PresenceChaineCaracteres à partir des données issues d'un objet PresenceChaineCaracteresWebDto
+     * @param source PresenceChaineCaracteresWebDto
+     * @return PresenceChaineCaracteres
+     */
+    private PresenceChaineCaracteres constructPresenceChaineCaracteres(PresenceChaineCaracteresWebDto source) {
+        PresenceChaineCaracteres target = new PresenceChaineCaracteres(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeDeVerification()), source.getChaineCaracteres());
+        if (!source.getListChaineCaracteres().isEmpty()) {
+            for (PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaine : source.getListChaineCaracteres()) {
+                target.addChaineCaracteres(new ChaineCaracteres(getOperateur(chaine.getOperateur()), chaine.getChaineCaracteres()));
+            }
+        }
+        return target;
+    }
+
     private PresenceSousZonesMemeZone constructPresenceSousZonesMemeZone(PresenceSousZonesMemeZoneWebDto source) {
         PresenceSousZonesMemeZone target = new PresenceSousZonesMemeZone(source.getId(), source.getZone());
         if (source.getSousZones().size() < 2) {
@@ -327,6 +363,21 @@ public class WebDtoMapper {
             return Priority.P2;
         }
         return Priority.P1;
+    }
+
+    private EnumTypeVerification getTypeDeVerification(String typeDeVerification) {
+        switch (typeDeVerification) {
+            case "STRICTEMENT":
+                return EnumTypeVerification.STRICTEMENT;
+            case "COMMENCE":
+                return EnumTypeVerification.COMMENCE;
+            case "TERMINE":
+                return EnumTypeVerification.TERMINE;
+            case "CONTIENT":
+                return EnumTypeVerification.CONTIENT;
+            default:
+                return EnumTypeVerification.CONTIENT;
+        }
     }
 
     private BooleanOperateur getOperateur(String operateur) {

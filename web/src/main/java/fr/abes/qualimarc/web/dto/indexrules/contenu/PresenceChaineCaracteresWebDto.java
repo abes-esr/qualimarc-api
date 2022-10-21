@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.LinkedList;
@@ -26,13 +25,13 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
     @Pattern(regexp = "STRICTEMENT|CONTIENT|COMMENCE|TERMINE", message = "Le champ niveau de verification ne peut contenir que STRICTEMENT, CONTIENT, COMMENCE, TERMINE")
     @JsonProperty("niveaudeverification")
     @NotNull
-    private String niveauDeVerification;
+    private String typeDeVerification;
 
     @JsonProperty("chainecaracteres")
     @NotNull
     private String chaineCaracteres;
 
-    @JsonProperty("autrechainecaracteres")
+    @JsonProperty("autre-chaine-caracteres")
     private List<ChaineCaracteresWebDto> listChaineCaracteres;
 
     public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZones, String niveauDeVerification, String chaineCaracteres) {

@@ -14,6 +14,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,9 +33,9 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     @NotNull
     private String sousZone;
 
-    @Column(name = "ENUM_CHAINE_CARACTERES")
+    @Column(name = "ENUM_TYPE_DE_VERIFICATION")
     @NotNull
-    private EnumChaineCaracteres enumChaineCaracteres;
+    private EnumTypeVerification enumTypeDeVerification;
 
     @Column(name = "CHAINE_CARACTERES")
     @NotNull
@@ -43,17 +44,18 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     @OneToMany(mappedBy = "presenceChaineCaracteres", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ChaineCaracteres> listChainesCaracteres;
 
-    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumChaineCaracteres enumChaineCaracteres, String chaineCaracteres) {
+    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumTypeVerification enumTypeDeVerification, String chaineCaracteres) {
         super(id, zone);
         this.sousZone = sousZone;
-        this.enumChaineCaracteres = enumChaineCaracteres;
+        this.enumTypeDeVerification = enumTypeDeVerification;
         this.chaineCaracteres = chaineCaracteres;
+        this.listChainesCaracteres = new LinkedList<>();
     }
 
-    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumChaineCaracteres enumChaineCaracteres, String chaineCaracteres, List<ChaineCaracteres> listChainesCaracteres) {
+    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumTypeVerification enumTypeDeVerification, String chaineCaracteres, List<ChaineCaracteres> listChainesCaracteres) {
         super(id, zone);
         this.sousZone = sousZone;
-        this.enumChaineCaracteres = enumChaineCaracteres;
+        this.enumTypeDeVerification = enumTypeDeVerification;
         this.chaineCaracteres = chaineCaracteres;
         this.listChainesCaracteres = listChainesCaracteres;
     }
@@ -81,7 +83,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                 // si la sous-zone est celle recherchée
                 if (subField.getCode().equals(sousZone)) {
                     // détermination du type de recherche
-                    switch (enumChaineCaracteres) {
+                    switch (enumTypeDeVerification) {
                         // Si la sous-zone contient STRICTEMENT la/les chaine.s de caractères
                         case STRICTEMENT:
                             isOk = subField.getValue().equals(chaineCaracteres);
