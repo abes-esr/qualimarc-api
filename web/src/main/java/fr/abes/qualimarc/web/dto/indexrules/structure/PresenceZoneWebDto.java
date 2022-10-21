@@ -1,6 +1,5 @@
 package fr.abes.qualimarc.web.dto.indexrules.structure;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
