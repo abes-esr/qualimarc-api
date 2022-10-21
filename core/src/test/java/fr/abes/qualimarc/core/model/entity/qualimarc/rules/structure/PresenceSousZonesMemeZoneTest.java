@@ -143,4 +143,48 @@ class PresenceSousZonesMemeZoneTest {
 
         Assertions.assertTrue(presenceSousZonesMemeZone.isValid(noticeXml));
     }
+
+    @Test
+    @DisplayName("test de la methode isValid absence d'une $7 et presence d'une $6 dans une meme zone 214")
+    void isValid8() {
+        List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
+        sousZoneOperators.add(new SousZoneOperator("7",false, null));
+        sousZoneOperators.add(new SousZoneOperator("6",true,BooleanOperateur.ET, null));
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"214",sousZoneOperators);
+
+        Assertions.assertTrue(presenceSousZonesMemeZone.isValid(noticeXml));
+    }
+
+    @Test
+    @DisplayName("test de la methode isValid presence d'une $7 et absence d'une $6 dans une meme zone 214")
+    void isValid9() {
+        List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
+        sousZoneOperators.add(new SousZoneOperator("7",true, null));
+        sousZoneOperators.add(new SousZoneOperator("6",false,BooleanOperateur.ET, null));
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"214",sousZoneOperators);
+
+        Assertions.assertTrue(presenceSousZonesMemeZone.isValid(noticeXml));
+    }
+
+    @Test
+    @DisplayName("test de la methode isValid absence d'une $7 et absence d'une $6 dans une meme zone 214")
+    void isValid10() {
+        List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
+        sousZoneOperators.add(new SousZoneOperator("7",false, null));
+        sousZoneOperators.add(new SousZoneOperator("6",false,BooleanOperateur.ET, null));
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"214",sousZoneOperators);
+
+        Assertions.assertTrue(presenceSousZonesMemeZone.isValid(noticeXml));
+    }
+
+    @Test
+    @DisplayName("test de la methode isValid presence d'une $7 et presence d'une $6 dans une meme zone 214")
+    void isValid11() {
+        List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
+        sousZoneOperators.add(new SousZoneOperator("7",true, null));
+        sousZoneOperators.add(new SousZoneOperator("6",true,BooleanOperateur.ET, null));
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"214",sousZoneOperators);
+
+        Assertions.assertFalse(presenceSousZonesMemeZone.isValid(noticeXml));
+    }
 }
