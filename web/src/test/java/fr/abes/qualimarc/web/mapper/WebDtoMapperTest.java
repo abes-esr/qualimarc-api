@@ -416,24 +416,24 @@ public class WebDtoMapperTest {
         PresenceChaineCaracteresWebDto rule1 = new PresenceChaineCaracteresWebDto(1, 1, "Erreur", "200", "P1", typeDoc, "a", "STRICTEMENT", "Texte");
 
         //  Appel du mapper
-        ComplexRule responseDto = mapper.map(rule1, ComplexRule.class);
+        ComplexRule complexRule = mapper.map(rule1, ComplexRule.class);
 
         //  Contrôle de la bonne conformité des résultats
-        PositionSousZone presenceZone = (PositionSousZone) responseDto.getFirstRule();
-        Assertions.assertEquals(rule1.getId(), responseDto.getId());
-        Assertions.assertEquals(rule1.getMessage(), responseDto.getMessage());
-        Assertions.assertEquals(rule1.getZone(), responseDto.getZonesFromChildren().get(0));
+        PresenceChaineCaracteres simpleRule = (PresenceChaineCaracteres) complexRule.getFirstRule();
+        Assertions.assertEquals(rule1.getId(), complexRule.getId());
+        Assertions.assertEquals(rule1.getMessage(), complexRule.getMessage());
+        Assertions.assertEquals(rule1.getPriority(), complexRule.getPriority().toString());
+        Assertions.assertEquals(rule1.getSousZone(), simpleRule.getSousZone());
+        Assertions.assertEquals(rule1.getTypeDeVerification(), simpleRule.getEnumTypeDeVerification().toString());
+        Assertions.assertEquals(rule1.getChaineCaracteres(), simpleRule.getChaineCaracteres());
 
         //  Test avec priorité nulle
-        // TODO modifier pour correspondre à l'objet PresenceChaineCaracteres
-//        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, "message 1", "100", null, typeDoc, "a", 2), ComplexRule.class));
-//        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, "Erreur", "200", null, typeDoc, "a", "STRICTEMENT", "Texte"), ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
         //  Test avec message null
-        // TODO modifier pour correspondre à l'objet PresenceChaineCaracteres
-//        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, null, "100", "P1", typeDoc, "a", 2), ComplexRule.class));
-//        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
-
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, null, "200", "P1", typeDoc, "a", "STRICTEMENT", "Texte"), ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
     }
 
     @Test
