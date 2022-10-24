@@ -37,26 +37,19 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     @NotNull
     private EnumTypeVerification enumTypeDeVerification;
 
-    @Column(name = "CHAINE_CARACTERES")
-    @NotNull
-    private String chaineCaracteres;
-
     @OneToMany(mappedBy = "presenceChaineCaracteres", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ChaineCaracteres> listChainesCaracteres;
 
-    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumTypeVerification enumTypeDeVerification, String chaineCaracteres) {
+    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumTypeVerification enumTypeDeVerification) {
         super(id, zone);
         this.sousZone = sousZone;
         this.enumTypeDeVerification = enumTypeDeVerification;
-        this.chaineCaracteres = chaineCaracteres;
-        this.listChainesCaracteres = new LinkedList<>();
     }
 
-    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumTypeVerification enumTypeDeVerification, String chaineCaracteres, List<ChaineCaracteres> listChainesCaracteres) {
+    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumTypeVerification enumTypeDeVerification, List<ChaineCaracteres> listChainesCaracteres) {
         super(id, zone);
         this.sousZone = sousZone;
         this.enumTypeDeVerification = enumTypeDeVerification;
-        this.chaineCaracteres = chaineCaracteres;
         this.listChainesCaracteres = listChainesCaracteres;
     }
 
@@ -89,12 +82,15 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                     switch (enumTypeDeVerification) {
                         // Si la sous-zone contient STRICTEMENT la/les chaine.s de caractères
                         case STRICTEMENT:
-                            isOk = subField.getValue().equals(chaineCaracteres);
                             if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
                                 for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
                                 ) {
+                                    // si il n'y a pas d'opérateur
+                                    if (chaineCaracteres.getBooleanOperateur() == null) {
+                                        isOk = subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
+                                    }
                                     // si l'opérateur logique de la chaine de caractères recherchée est ET
-                                    if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
+                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
                                         isOk &= subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
                                     }
                                     // si l'opérateur logique de la chaine de caractères recherchée est OU
@@ -106,12 +102,15 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                             break;
                         // Si la sous-zone COMMENCE par la/les chaine.s de caractères
                         case COMMENCE:
-                            isOk = subField.getValue().startsWith(chaineCaracteres);
                             if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
                                 for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
                                 ) {
+                                    // si il n'y a pas d'opérateur
+                                    if (chaineCaracteres.getBooleanOperateur() == null) {
+                                        isOk = subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres());
+                                    }
                                     // si l'opérateur logique de la chaine de caractères recherchée est ET
-                                    if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
+                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
                                         isOk &= subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres());
                                     }
                                     // si l'opérateur logique de la chaine de caractères recherchée est OU
@@ -123,12 +122,15 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                             break;
                         // Si la sous-zone TERMINE par la/les chaine.s de caractères
                         case TERMINE:
-                            isOk = subField.getValue().endsWith(chaineCaracteres);
                             if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
                                 for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
                                 ) {
+                                    // si il n'y a pas d'opérateur
+                                    if (chaineCaracteres.getBooleanOperateur() == null) {
+                                        isOk = subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres());
+                                    }
                                     // si l'opérateur logique de la chaine de caractères recherchée est ET
-                                    if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
+                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
                                         isOk &= subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres());
                                     }
                                     // si l'opérateur logique de la chaine de caractères recherchée est OU
@@ -140,12 +142,15 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                             break;
                         // Si la sous-zone CONTIENT la/les chaine.s de caractères
                         case CONTIENT:
-                            isOk = subField.getValue().contains(chaineCaracteres);
                             if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
                                 for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
                                 ) {
+                                    // si il n'y a pas d'opérateur
+                                    if (chaineCaracteres.getBooleanOperateur() == null) {
+                                        isOk = subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    }
                                     // si l'opérateur logique de la chaine de caractères recherchée est ET
-                                    if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
+                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
                                         isOk &= subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
                                     }
                                     // si l'opérateur logique de la chaine de caractères recherchée est OU

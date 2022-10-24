@@ -233,9 +233,7 @@ public class WebDtoMapper {
     public void converterPresenceChaineCaracteresToSimple() {
         Converter<PresenceChaineCaracteresWebDto, SimpleRule> myConverter = new Converter<PresenceChaineCaracteresWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<PresenceChaineCaracteresWebDto, SimpleRule> context) {
-                PresenceChaineCaracteresWebDto source = context.getSource();
-                PresenceChaineCaracteres target = constructPresenceChaineCaracteres(source);
-                return target;
+                return constructPresenceChaineCaracteres(context.getSource());
             }
         };
         mapper.addConverter(myConverter);
@@ -335,10 +333,15 @@ public class WebDtoMapper {
      * @return PresenceChaineCaracteres
      */
     private PresenceChaineCaracteres constructPresenceChaineCaracteres(PresenceChaineCaracteresWebDto source) {
-        PresenceChaineCaracteres target = new PresenceChaineCaracteres(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeDeVerification()), source.getChaineCaracteres());
+        PresenceChaineCaracteres target = new PresenceChaineCaracteres(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeDeVerification()));
         if (!source.getListChaineCaracteres().isEmpty()) {
+            // TODO vérifier le mapper
             for (PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaine : source.getListChaineCaracteres()) {
-                target.addChaineCaracteres(new ChaineCaracteres(getOperateur(chaine.getOperateur()), chaine.getChaineCaracteres()));
+                if (chaine.getOperateur().isEmpty() || chaine.getOperateur() == null) {
+                    target.addChaineCaracteres(new ChaineCaracteres(chaine.getChaineCaracteres()));
+                } else if (!chaine.getOperateur().isEmpty() && chaine.getOperateur() != null) {
+                    target.addChaineCaracteres(new ChaineCaracteres(getOperateur(chaine.getOperateur()), chaine.getChaineCaracteres()));
+                }
             }
         }
         return target;

@@ -27,7 +27,6 @@ public class ChaineCaracteres implements Serializable {
     private Integer id;
 
     @Column(name= "BOOLEAN_OPERATOR")
-    @NotNull
     private BooleanOperateur booleanOperateur;
 
     @Column(name = "CHAINE_CARACTERES")
@@ -37,6 +36,10 @@ public class ChaineCaracteres implements Serializable {
     @ManyToOne
     @JoinColumn(name = "ID_CHAINE_CARACTERES")
     private PresenceChaineCaracteres presenceChaineCaracteres;
+
+    public ChaineCaracteres(String chaineCaracteres) {
+        this.chaineCaracteres = chaineCaracteres;
+    }
 
     public ChaineCaracteres(BooleanOperateur booleanOperateur, String chaineCaracteres) {
         this.booleanOperateur = booleanOperateur;

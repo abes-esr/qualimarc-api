@@ -27,26 +27,20 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
     @NotNull
     private String typeDeVerification;
 
-    @JsonProperty("chaine-caracteres")
-    @NotNull
-    private String chaineCaracteres;
-
     @JsonProperty("autre-chaine-caracteres")
     private List<ChaineCaracteresWebDto> listChaineCaracteres;
 
-    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZone, String typeDeVerification, String chaineCaracteres) {
+    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZone, String typeDeVerifications) {
         super(id, idExcel, message, zone, priority, typesDoc);
         this.sousZone = sousZone;
-        this.typeDeVerification = typeDeVerification;
-        this.chaineCaracteres = chaineCaracteres;
+        this.typeDeVerification = typeDeVerifications;
         this.listChaineCaracteres = new LinkedList<>();
     }
 
-    public PresenceChaineCaracteresWebDto(Integer id, String zone, String booleanOperator, String sousZone, String typeDeVerification, String chaineCaracteres, List<ChaineCaracteresWebDto> listChaineCaracteres) {
+    public PresenceChaineCaracteresWebDto(Integer id, String zone, String booleanOperator, String sousZone, String typeDeVerification, List<ChaineCaracteresWebDto> listChaineCaracteres) {
         super(id, zone, booleanOperator);
         this.sousZone = sousZone;
         this.typeDeVerification = typeDeVerification;
-        this.chaineCaracteres = chaineCaracteres;
         this.listChaineCaracteres = new LinkedList<>();
     }
 
@@ -59,12 +53,15 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
     public static class ChaineCaracteresWebDto {
         @Pattern(regexp = "ET|OU", message = "L'opérateur doit être égal à OU ou à ET")
         @JsonProperty("operateur")
-        @NotNull
         private String operateur;
 
         @JsonProperty("chaine-caracteres")
         @NotNull
         private String chaineCaracteres;
+
+        public ChaineCaracteresWebDto(String chaineCaracteres) {
+            this.chaineCaracteres = chaineCaracteres;
+        }
 
         public ChaineCaracteresWebDto(String operateur, String chaineCaracteres) {
             this.operateur = operateur;
