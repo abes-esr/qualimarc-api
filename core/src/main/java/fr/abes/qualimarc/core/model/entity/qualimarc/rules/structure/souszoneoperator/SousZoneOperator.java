@@ -36,13 +36,15 @@ public class SousZoneOperator implements Serializable {
     @JoinColumn(name = "ID_PRESENCE_SOUS_ZONE_MEME_ZONE")
     private PresenceSousZonesMemeZone presenceSousZonesMemeZone;
 
-    public SousZoneOperator(String sousZone, boolean isPresent, BooleanOperateur operateur) {
+    public SousZoneOperator(String sousZone, boolean isPresent, BooleanOperateur operateur, PresenceSousZonesMemeZone presenceSousZonesMemeZone) {
         this.sousZone = sousZone;
         this.isPresent = isPresent;
         this.operateur = operateur;
+        this.presenceSousZonesMemeZone = presenceSousZonesMemeZone;
     }
-    public SousZoneOperator(String sousZone, boolean isPresent) {
+    public SousZoneOperator(String sousZone, boolean isPresent, PresenceSousZonesMemeZone presenceSousZonesMemeZone) {
         this.sousZone = sousZone;
         this.isPresent = isPresent;
+        this.presenceSousZonesMemeZone = presenceSousZonesMemeZone;
     }
 }

@@ -25,11 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @ExtendWith({SpringExtension.class})
 @SpringBootTest(classes = {UtilsMapper.class, ObjectMapper.class, WebDtoMapper.class})
