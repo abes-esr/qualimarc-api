@@ -70,6 +70,8 @@
         <subfield code="b">Texte imprimé</subfield>
         <subfield code="e">[brochure n° 3296]</subfield>
         <subfield code="f">[publiée par] JuriTravail.com</subfield>
+        <subfield code="x">é</subfield>
+        <subfield code="y">É</subfield>
     </datafield>
     <datafield tag="205" ind1=" " ind2=" ">
         <subfield code="a">Éd. 2010</subfield>

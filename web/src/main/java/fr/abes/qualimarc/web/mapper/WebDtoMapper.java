@@ -5,10 +5,12 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.NombreCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.souszoneoperator.SousZoneOperator;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
+import fr.abes.qualimarc.core.utils.Operateur;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
@@ -17,6 +19,7 @@ import fr.abes.qualimarc.web.dto.RuleResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.SneakyThrows;
 import org.modelmapper.Converter;
@@ -74,6 +77,9 @@ public class WebDtoMapper {
             public ComplexRule convert(MappingContext<NombreZoneWebDto, ComplexRule> context) {
                 NombreZoneWebDto source = context.getSource();
                 checkSimpleRule(source);
+                if (!Operateur.EGAL.equals(source.getOperateur()) && !Operateur.SUPERIEUR.equals(source.getOperateur()) && !Operateur.INFERIEUR.equals(source.getOperateur())) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : Seuls les opérateurs INFERIEUR, SUPERIEUR ou EGAL sont autorisés sur ce type de règle");
+                }
                 return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new NombreZone(source.getId(), source.getZone(), source.getOperateur(), source.getOccurrences()));
             }
         };
@@ -145,6 +151,22 @@ public class WebDtoMapper {
     }
 
     /**
+     * Convertion d'un modèle NombreCaracteresWebDto en modèle ComplexRule
+     */
+    @Bean
+    public void converterNombreCaractere() {
+        Converter<NombreCaracteresWebDto, ComplexRule> myConverter = new Converter<NombreCaracteresWebDto, ComplexRule>() {
+            @Override
+            public ComplexRule convert(MappingContext<NombreCaracteresWebDto, ComplexRule> context) {
+                NombreCaracteresWebDto source = context.getSource();
+                checkSimpleRule(source);
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new NombreCaracteres(source.getId(), source.getZone(), source.getSousZone(), source.getOperateur(), source.getOccurrences()));
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
      * Convertion d'un modèle PresenceZoneWebDto en modèle SimpleRule
      */
     @Bean
@@ -153,20 +175,6 @@ public class WebDtoMapper {
             public SimpleRule convert(MappingContext<PresenceZoneWebDto, SimpleRule> context) {
                 PresenceZoneWebDto source = context.getSource();
                 return new PresenceZone(source.getId(), source.getZone(), source.isPresent());
-            }
-        };
-        mapper.addConverter(myConverter);
-    }
-
-    /**
-     * Convertion d'un modèle IndicateurWebDto en modèle SimpleRule
-     */
-    @Bean
-    public void converterIndicateurToSimple() {
-        Converter<IndicateurWebDto, SimpleRule> myConverter = new Converter<IndicateurWebDto, SimpleRule>() {
-            public SimpleRule convert(MappingContext<IndicateurWebDto, SimpleRule> context) {
-                IndicateurWebDto source = context.getSource();
-                return new Indicateur(source.getId(), source.getZone(), source.getIndicateur(), source.getValeur());
             }
         };
         mapper.addConverter(myConverter);
@@ -194,6 +202,9 @@ public class WebDtoMapper {
         Converter<NombreZoneWebDto, SimpleRule> myConverter = new Converter<NombreZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<NombreZoneWebDto, SimpleRule> context) {
                 NombreZoneWebDto source = context.getSource();
+                if (!Operateur.EGAL.equals(source.getOperateur()) && !Operateur.SUPERIEUR.equals(source.getOperateur()) && !Operateur.INFERIEUR.equals(source.getOperateur())) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : Seuls les opérateurs INFERIEUR, SUPERIEUR ou EGAL sont autorisés sur ce type de règle");
+                }
                 return new NombreZone(source.getId(), source.getZone(), source.getOperateur(), source.getOccurrences());
             }
         };
@@ -242,6 +253,34 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
+    /**
+     * Convertion d'un modèle IndicateurWebDto en modèle SimpleRule
+     */
+    @Bean
+    public void converterIndicateurToSimple() {
+        Converter<IndicateurWebDto, SimpleRule> myConverter = new Converter<IndicateurWebDto, SimpleRule>() {
+            public SimpleRule convert(MappingContext<IndicateurWebDto, SimpleRule> context) {
+                IndicateurWebDto source = context.getSource();
+                return new Indicateur(source.getId(), source.getZone(), source.getIndicateur(), source.getValeur());
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+
+    /**
+     * Convertion d'un modèle NombreCaracteresWebDto en modèle SimpleRule
+     */
+    @Bean
+    public void converterNombreCaractereToSimple() {
+        Converter<NombreCaracteresWebDto, SimpleRule> myConverter = new Converter<NombreCaracteresWebDto, SimpleRule>() {
+            public SimpleRule convert(MappingContext<NombreCaracteresWebDto, SimpleRule> context) {
+                NombreCaracteresWebDto source = context.getSource();
+                return new NombreCaracteres(source.getId(), source.getZone(), source.getSousZone(), source.getOperateur(), source.getOccurrences());
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
 
     /**
      * Convertion d'un modèle ComplexRuleWebDto en ComplexRule
