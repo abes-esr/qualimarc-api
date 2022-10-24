@@ -24,8 +24,7 @@ import java.util.stream.Collectors;
 @Table(name = "RULE_PRESENCESOUSZONEMEMEZONE")
 public class PresenceSousZonesMemeZone extends SimpleRule implements Serializable {
 
-    @OneToMany(mappedBy = "presenceSousZonesMemeZone", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Fetch(FetchMode.JOIN)
+    @OneToMany(mappedBy = "presenceSousZonesMemeZone", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<SousZoneOperator> sousZoneOperators;
 
     public PresenceSousZonesMemeZone(Integer id, String zone, List<SousZoneOperator> sousZoneOperators) {
@@ -47,13 +46,23 @@ public class PresenceSousZonesMemeZone extends SimpleRule implements Serializabl
         List<Datafield> datafields = notice.getDatafields().stream().filter(dataField -> dataField.getTag().equals(this.getZone())).collect(Collectors.toList());
         boolean isOk;
         for (Datafield datafield : datafields){
-            isOk = this.sousZoneOperators.get(0).isPresent() && datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(this.sousZoneOperators.get(0).getSousZone()));
+            if(this.sousZoneOperators.get(0).isPresent())
+                isOk = datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(this.sousZoneOperators.get(0).getSousZone()));
+            else
+                isOk = datafield.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(this.sousZoneOperators.get(0).getSousZone()));
+
             for (int i = 1; i < this.sousZoneOperators.size(); i++) {
                 SousZoneOperator sousZoneOperator = this.sousZoneOperators.get(i);
-                if (this.sousZoneOperators.get(i).getOperateur().equals(BooleanOperateur.OU)) {
-                    isOk |= sousZoneOperator.isPresent() && datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
+                if (sousZoneOperator.getOperateur().equals(BooleanOperateur.OU)) {
+                    if(sousZoneOperator.isPresent())
+                        isOk |= datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
+                    else
+                        isOk |= datafield.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
                 } else {
-                    isOk &= sousZoneOperator.isPresent() && datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
+                    if(sousZoneOperator.isPresent())
+                        isOk &= datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
+                    else
+                        isOk &= datafield.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
                 }
             }
             if(isOk)
