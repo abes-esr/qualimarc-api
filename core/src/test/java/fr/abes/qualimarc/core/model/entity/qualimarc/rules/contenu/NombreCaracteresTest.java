@@ -71,8 +71,22 @@ class NombreCaracteresTest {
     }
 
     @Test
-    @DisplayName("test isValid ok sur plusieurs sous zones dans une même zone")
+    @DisplayName("test isValid ok Opérateur SUPERIEUR_EGAL")
     void isValid6() {
+        NombreCaracteres rule = new NombreCaracteres(1, "200", "a", Operateur.SUPERIEUR_EGAL, 47);
+        Assertions.assertTrue(rule.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("test isValid ok Opérateur INFERIEUR_EGAL")
+    void isValid7() {
+        NombreCaracteres rule = new NombreCaracteres(1, "200", "a", Operateur.INFERIEUR_EGAL, 47);
+        Assertions.assertTrue(rule.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("test isValid ok sur plusieurs sous zones dans une même zone")
+    void isValid8() {
         NombreCaracteres rule = new NombreCaracteres(1, "606", "x", Operateur.EGAL, 9);
         Assertions.assertTrue(rule.isValid(notice));
         NombreCaracteres rule2 = new NombreCaracteres(1, "606", "x", Operateur.EGAL, 23);
@@ -81,7 +95,7 @@ class NombreCaracteresTest {
 
     @Test
     @DisplayName("test isValid ok sur zones répétées")
-    void isValid7() {
+    void isValid9() {
         NombreCaracteres rule = new NombreCaracteres(1, "300", "a", Operateur.EGAL, 28);
         Assertions.assertTrue(rule.isValid(notice));
         NombreCaracteres rule2 = new NombreCaracteres(1, "300", "a", Operateur.EGAL, 32);

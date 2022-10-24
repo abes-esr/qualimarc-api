@@ -55,6 +55,12 @@ public class NombreCaracteres extends SimpleRule {
                     case INFERIEUR:
                         isOk = subField.getValue().length()<this.occurrences;
                         break;
+                    case INFERIEUR_EGAL:
+                        isOk = subField.getValue().length()<=this.occurrences;
+                        break;
+                    case SUPERIEUR_EGAL:
+                        isOk = subField.getValue().length()>=this.occurrences;
+                        break;
                 }
                 if (isOk) {
                     return true;
