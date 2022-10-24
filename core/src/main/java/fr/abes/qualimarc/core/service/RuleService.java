@@ -157,4 +157,8 @@ public class RuleService {
             }
         }
     }
+
+    public void viderRegles() {
+        this.complexRulesRepository.deleteAll();
+    }
 }
