@@ -75,60 +75,51 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
 
 /*
 // SIMPLE
-La vérification STRICTEMENT peut comporter un ou plusieurs chaines de caractères mais chacune de ces chaines ne peut recevoir que l'opérateur OU
-La vérification COMMENCE peut comporter un ou plusieurs chaines de caractères mais chacune de ces chaines ne peut recevoir que l'opérateur OU
-La vérification TERMINE peut comporter un ou plusieurs chaines de caractères mais chacune de ces chaines ne peut recevoir que l'opérateur OU
-La vérification CONTIENT peut comporter un ou plusieurs chaines de caractères recevant au choix l'opérateur ET ou OU
----
+### Présence d'une chaine de caractères
+
+* La vérification STRICTEMENT peut comporter :
+    * soit une chaine-caracteres,
+    * soit une chaine-caracteres et plusieurs autre-chaine-caracteres, mais chacune de ces autre-chaine-caracteres ne peut recevoir que l'opérateur OU
+* La vérification COMMENCE peut comporter :
+    * soit chaine-caracteres,
+    * soit une chaine-caracteres et plusieurs autre-chaine-caracteres, mais chacune de ces autre-chaine-caracteres ne peut recevoir que l'opérateur OU
+* La vérification TERMINE peut comporter :
+    * soit chaine-caracteres,
+    * soit une chaine-caracteres et plusieurs autre-chaine-caracteres, mais chacune de ces autre-chaine-caracteres ne peut recevoir que l'opérateur OU
+* La vérification CONTIENT peut comporter :
+    * soit chaine-caracteres,
+    * soit une chaine-caracteres et plusieurs autre-chaine-caracteres, chacune de ces autre-chaine-caracteres pouvant recevoir l'opérateur ET ou OU
+
+``` YAML
 rules:
     - id:                       1
       id-excel:                 1
       type:                     presencechainecaracteres
-      message:                  "la chaine blabla.."
+      message:                  message test
       zone:                     200
       priorite:                 P1
       souszone:                 a
-      type-de-verification:             STRICTEMENT
-      chaine-caracteres:        "Texte"
+      type-de-verification:     STRICTEMENT
+      chaine-caracteres:        un texte à chercher
+      autre-chaine-caracteres:
+        - operateur:            OU
+          chaine-caracteres:    ou autre texte à chercher
 
     - id:                       2
       id-excel:                 2
       type:                     presencechainecaracteres
-      message:                  "la chaine blabla.."
+      message:                  message test
       zone:                     200
       priorite:                 P1
       souszone:                 a
-      type-de-verification:             CONTIENT
-      chaine-caracteres:        "Texte"
+      type-de-verification:     CONTIENT
+      chaine-caracteres:        premier texte à chercher
       autre-chaine-caracteres:
         - operateur:            ET
-          chaine-caracteres:    "Autre texte"
+          chaine-caracteres:    et deuxième texte à chercher
         - operateur:            OU
-          chaine-caracteres:    "Autre autre texte"
-
-// COMPLEX
----
-rules:
-    - id:                       1
-      message:                  "la chaine blabla.."
-      priorite:                 P1
-      regles:
-        - id: 1
-          type: presencechainecaracteres
-          zone: 203
-          souszone: b
-          type-de-verification: STRICTEMENT
-          chaine-caracteres: "ballon"
-        - id: 2
-          type: presencechainecaracteres
-          zone: 203
-          souszone: b
-          type-de-verification: CONTIENT
-          chaine-caracteres: "rouge"
-          operateur-booleen: OU
-          autre-chaine-caracteres:
-            - operateur: OU
-              chaine-caracteres: "poulet"
+          chaine-caracteres:    autre autre texte à chercher
+```
 */
 
 
