@@ -165,7 +165,6 @@ public class NoticeXml {
         switch (this.getTypeDocument()) {
             //Famille AUDIOVISUEL
             case "gm":
-            case "gd":
             case "gc":
                 return "B";
             //FAMILLE CARTE
@@ -175,7 +174,6 @@ public class NoticeXml {
                 return "K";
             //FAMILLE DOCUMENT ELECTRONIQUE
             case "lm":
-            case "ld":
             case "lc":
                 return "O";
             //FAMILLE ENREGISTREMENT
@@ -191,12 +189,10 @@ public class NoticeXml {
                 return "F";
             //FAMILLE MULTIMEDIA
             case "mm":
-            case "md":
             case "mc":
                 return "Z";
             //FAMILLE MUSIQUE
             case "jm":
-            case "jd":
                 return "G";
             //FAMILLE OBJET
             case "rm":
@@ -204,7 +200,6 @@ public class NoticeXml {
             //FAMILLE PARTITION
             case "dm":
             case "cm":
-            case "cd":
             case "cc":
                 return "M";
             //FAMILLE RESSOURCE CONTINUE
@@ -213,10 +208,15 @@ public class NoticeXml {
             case "ls":
             case "ms":
             case "is":
+            case "gd":
+            case "ld":
+            case "cd":
+            case "md":
+            case "jd":
+            case "ad":
                 return "BD";
             //FAMILLE MONOGRAPHIE
             case "am":
-            case "ad":
             case "ac":
                 return "A";
             //FAMILLE PARTIE COMPOSANTE
