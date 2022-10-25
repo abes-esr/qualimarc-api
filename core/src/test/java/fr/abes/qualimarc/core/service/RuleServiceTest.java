@@ -134,7 +134,7 @@ class RuleServiceTest {
         Assertions.assertEquals(Priority.P1,result1.getDetailErreurs().get(0).getPriority());
 
         ResultRules result3 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("333333333")).findFirst().get();
-        Assertions.assertEquals("O", result3.getFamilleDocument().getId());
+        Assertions.assertEquals("BD", result3.getFamilleDocument().getId());
         Assertions.assertEquals(0, result3.getMessages().size());
         Assertions.assertEquals(2, result3.getDetailErreurs().size());
         Assertions.assertTrue(result3.getDetailErreurs().stream().anyMatch(r -> r.getMessage().equals("La zone 012 est présente")));
@@ -217,13 +217,6 @@ class RuleServiceTest {
         //cas ou la règle porte sur les thèses de soutenance, et la notice aussi
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
-
-        Set<FamilleDocument> typesDoc1 = new HashSet<>();
-        typesDoc1.add(new FamilleDocument("TS", "Thèse de soutenance"));
-
-        ComplexRule rule = new ComplexRule(1, "La zone 010 est présente",  Priority.P1, typesDoc1, new PresenceZone(1, "010", true));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, rule));
-
     }
 
 
