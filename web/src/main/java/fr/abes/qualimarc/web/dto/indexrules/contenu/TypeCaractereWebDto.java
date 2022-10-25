@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.List;
@@ -23,8 +22,20 @@ public class TypeCaractereWebDto extends SimpleRuleWebDto {
     private String sousZone;
 
     @JsonProperty("type-caracteres")
-    @NotEmpty
     private List<String> typeCaracteres;
+
+    public TypeCaractereWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZone, List<String> typeCaracteres) {
+        super(id, idExcel, message, zone, priority, typesDoc);
+        this.sousZone = sousZone;
+        this.typeCaracteres = typeCaracteres;
+
+    }
+
+    public TypeCaractereWebDto(Integer id, String zone, String booleanOperator, String sousZone, List<String> typeCaracteres) {
+        super(id, zone, booleanOperator);
+        this.sousZone = sousZone;
+        this.typeCaracteres = typeCaracteres;
+    }
 }
 
 /*
