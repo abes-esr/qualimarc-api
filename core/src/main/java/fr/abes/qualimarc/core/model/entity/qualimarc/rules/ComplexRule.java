@@ -8,6 +8,7 @@ import fr.abes.qualimarc.core.utils.TypeThese;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -47,6 +48,8 @@ public class ComplexRule implements Serializable {
     @ElementCollection(targetClass = TypeThese.class)
     @CollectionTable(name = "RULE_TYPETHESE", joinColumns = @JoinColumn(name = "RULE_ID"))
     @Column(name = "TYPES_THESE")
+    @Fetch(FetchMode.JOIN)
+    @Enumerated(EnumType.STRING)
     private Set<TypeThese> typesThese;
 
     //liste des jeux de règles préconçus auxquels appartient la règle

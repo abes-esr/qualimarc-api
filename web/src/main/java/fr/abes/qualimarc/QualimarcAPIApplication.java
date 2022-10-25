@@ -70,32 +70,32 @@ public class QualimarcAPIApplication implements CommandLineRunner {
             rule4.addOtherRule(rule7);
             rule4.addOtherRule(rule8);
 
-            ComplexRule rule9 = new ComplexRule(9, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(9, "011", false));
-            ComplexRule rule10 = new ComplexRule(10, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(10, "011", false));
-            ComplexRule rule11 = new ComplexRule(11, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(11, "011", false));
-            ComplexRule rule12 = new ComplexRule(12, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(12, "011", false));
-            ComplexRule rule13 = new ComplexRule(13, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(13, "011", false));
-            ComplexRule rule14 = new ComplexRule(14, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(14, "011", false));
-            ComplexRule rule15 = new ComplexRule(15, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(15, "011", false));
-            ComplexRule rule16 = new ComplexRule(16, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(16, "011", false));
-            ComplexRule rule17 = new ComplexRule(17, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(17, "011", false));
-            ComplexRule rule18 = new ComplexRule(18, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new NombreCaracteres(18, "011", "a", Operateur.INFERIEUR, 2));
+//            ComplexRule rule9 = new ComplexRule(9, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(9, "011", false));
+//            ComplexRule rule10 = new ComplexRule(10, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(10, "011", false));
+//            ComplexRule rule11 = new ComplexRule(11, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(11, "011", false));
+//            ComplexRule rule12 = new ComplexRule(12, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(12, "011", false));
+//            ComplexRule rule13 = new ComplexRule(13, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(13, "011", false));
+//            ComplexRule rule14 = new ComplexRule(14, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(14, "011", false));
+//            ComplexRule rule15 = new ComplexRule(15, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(15, "011", false));
+//            ComplexRule rule16 = new ComplexRule(16, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(16, "011", false));
+//            ComplexRule rule17 = new ComplexRule(17, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(17, "011", false));
+//            ComplexRule rule18 = new ComplexRule(18, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new NombreCaracteres(18, "011", "a", Operateur.INFERIEUR, 2));
 
             List<ComplexRule> rules = new ArrayList<>();
             rules.add(rule1);
             rules.add(rule2);
             rules.add(rule3);
             rules.add(rule4);
-            rules.add(rule9);
-            rules.add(rule10);
-            rules.add(rule11);
-            rules.add(rule12);
-            rules.add(rule13);
-            rules.add(rule14);
-            rules.add(rule15);
-            rules.add(rule16);
-            rules.add(rule17);
-            rules.add(rule18);
+//            rules.add(rule9);
+//            rules.add(rule10);
+//            rules.add(rule11);
+//            rules.add(rule12);
+//            rules.add(rule13);
+//            rules.add(rule14);
+//            rules.add(rule15);
+//            rules.add(rule16);
+//            rules.add(rule17);
+//            rules.add(rule18);
 
 
             complexRulesRepository.saveAll(rules);

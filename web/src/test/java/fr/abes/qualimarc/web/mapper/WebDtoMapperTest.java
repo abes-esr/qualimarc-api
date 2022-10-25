@@ -9,10 +9,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRule;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
-import fr.abes.qualimarc.core.utils.BooleanOperateur;
-import fr.abes.qualimarc.core.utils.Operateur;
-import fr.abes.qualimarc.core.utils.Priority;
-import fr.abes.qualimarc.core.utils.UtilsMapper;
+import fr.abes.qualimarc.core.utils.*;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
@@ -512,6 +509,11 @@ public class WebDtoMapperTest {
         Assertions.assertEquals("Message TEST2",responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst().get().getMessage());
         Assertions.assertEquals(Priority.P1.toString(),responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 1).findFirst().get().getPriority());
         Assertions.assertEquals(Priority.P2.toString(),responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst().get().getPriority());
+
+        //test où la notice est une thèse
+        resultRules.setTypeThese(TypeThese.REPRO);
+        responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
+        Assertions.assertEquals("Thèse", responseDto.getResultRules().get(0).getTypeDocument());
 
     }
 

@@ -76,6 +76,7 @@ public class RuleService {
     @SneakyThrows
     private boolean constructResultRuleOnNotice(ResultRules result, NoticeXml notice, ComplexRule rule) {
         result.setFamilleDocument(referenceService.getFamilleDocument(notice.getFamilleDocument()));
+        result.setTypeThese(notice.getTypeThese());
         try {
             result.setTitre(notice.getTitre());
         } catch ( ZoneNotFoundException e) {

@@ -331,7 +331,12 @@ public class WebDtoMapper {
                 source.getResultRules().forEach(resultRules -> {
                     ResultRulesResponseDto resultRulesResponseDto;
                     if (resultRules.getFamilleDocument() != null) {
-                        resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());
+                        if (resultRules.getTypeThese() != null) {
+                            resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), "Thèse", resultRules.getMessages());
+                        }
+                        else {
+                            resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());
+                        }
                     } else {
                         resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getMessages());
                     }
