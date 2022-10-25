@@ -334,12 +334,11 @@ public class WebDtoMapper {
      */
     private PresenceChaineCaracteres constructPresenceChaineCaracteres(PresenceChaineCaracteresWebDto source) {
         PresenceChaineCaracteres target = new PresenceChaineCaracteres(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeDeVerification()));
-        if (!source.getListChaineCaracteres().isEmpty()) {
-            // TODO vérifier le mapper
+        if (source.getListChaineCaracteres() != null || source.getListChaineCaracteres().size() > 0 || !source.getListChaineCaracteres().isEmpty()) {
             for (PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaine : source.getListChaineCaracteres()) {
-                if (chaine.getOperateur().isEmpty() || chaine.getOperateur() == null) {
+                if (chaine.getOperateur() == null || chaine.getOperateur().isEmpty()) {
                     target.addChaineCaracteres(new ChaineCaracteres(chaine.getChaineCaracteres()));
-                } else if (!chaine.getOperateur().isEmpty() && chaine.getOperateur() != null) {
+                } else if (chaine.getOperateur() != null || !chaine.getOperateur().isEmpty()) {
                     target.addChaineCaracteres(new ChaineCaracteres(getOperateur(chaine.getOperateur()), chaine.getChaineCaracteres()));
                 }
             }

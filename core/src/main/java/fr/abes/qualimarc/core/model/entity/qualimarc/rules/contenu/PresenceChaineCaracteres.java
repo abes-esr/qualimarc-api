@@ -44,6 +44,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         super(id, zone);
         this.sousZone = sousZone;
         this.enumTypeDeVerification = enumTypeDeVerification;
+        this.listChainesCaracteres = new LinkedList<>();
     }
 
     public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumTypeVerification enumTypeDeVerification, List<ChaineCaracteres> listChainesCaracteres) {

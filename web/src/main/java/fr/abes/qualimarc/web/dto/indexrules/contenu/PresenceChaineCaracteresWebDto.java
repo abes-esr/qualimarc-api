@@ -41,7 +41,7 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
         super(id, zone, booleanOperator);
         this.sousZone = sousZone;
         this.typeDeVerification = typeDeVerification;
-        this.listChaineCaracteres = new LinkedList<>();
+        this.listChaineCaracteres = listChaineCaracteres;
     }
 
     public void addChaineCaracteres(ChaineCaracteresWebDto chaineCaracteresWebDto) {

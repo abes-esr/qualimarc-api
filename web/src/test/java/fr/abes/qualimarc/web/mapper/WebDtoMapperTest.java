@@ -425,19 +425,20 @@ public class WebDtoMapperTest {
         PresenceChaineCaracteres simpleRule = (PresenceChaineCaracteres) complexRule.getFirstRule();
         Assertions.assertEquals(rule1.getId(), complexRule.getId());
         Assertions.assertEquals(rule1.getMessage(), complexRule.getMessage());
+        Assertions.assertEquals((rule1.getZone() + "$" + rule1.getSousZone()), complexRule.getZonesFromChildren().get(0));
         Assertions.assertEquals(rule1.getPriority(), complexRule.getPriority().toString());
+        Assertions.assertTrue(complexRule.getFamillesDocuments().stream().anyMatch(familleDocument -> familleDocument.getId().equals(rule1.getTypesDoc().get(0))));
         Assertions.assertEquals(rule1.getSousZone(), simpleRule.getSousZone());
         Assertions.assertEquals(rule1.getTypeDeVerification(), simpleRule.getEnumTypeDeVerification().toString());
         Assertions.assertEquals(rule1.getListChaineCaracteres().get(0).getChaineCaracteres(), simpleRule.getListChainesCaracteres().get(0).getChaineCaracteres());
 
-        // TODO corriger le mapper avant de réactiver ses deux tests
-//        //  Test avec priorité nulle
-//        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, "Erreur", "200", null, typeDoc, "a", "STRICTEMENT", "Texte"), ComplexRule.class));
-//        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
-//
-//        //  Test avec message null
-//        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, null, "200", "P1", typeDoc, "a", "STRICTEMENT", "Texte"), ComplexRule.class));
-//        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+        //  Test avec priorité nulle
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, "Erreur", "200", null, typeDoc, "a", "STRICTEMENT"), ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+
+        //  Test avec message null
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, null, "200", "P1", typeDoc, "a", "STRICTEMENT"), ComplexRule.class));
+        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
     }
 
     @Test
