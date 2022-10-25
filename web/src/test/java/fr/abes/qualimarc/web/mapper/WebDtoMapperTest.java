@@ -384,11 +384,11 @@ public class WebDtoMapperTest {
     void converterNombreCaracteresTest() {
         NombreCaracteresWebDto rule1 = new NombreCaracteresWebDto(1, "200", "a", "ET", Operateur.INFERIEUR_EGAL, 1);
         MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule1, ComplexRule.class));
-        Assertions.assertEquals("L'opérateur est interdit lors de la création d'une seule règle", exception.getCause().getMessage());
+        Assertions.assertEquals("Règle 1 : L'opérateur est interdit lors de la création d'une seule règle", exception.getCause().getMessage());
 
         NombreCaracteresWebDto rule2 = new NombreCaracteresWebDto(1, 1, null, "200", "a", null, null, Operateur.INFERIEUR_EGAL, 1);
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule2, ComplexRule.class));
-        Assertions.assertEquals("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+        Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
         NombreCaracteresWebDto rule3 = new NombreCaracteresWebDto(1, 1, "test", "200", "a", "P1", new ArrayList<>(), Operateur.INFERIEUR, 2);
         ComplexRule complexRule = mapper.map(rule3, ComplexRule.class);
