@@ -93,7 +93,7 @@ public class RuleController {
         return rulesEntity;
     }
 
-    @GetMapping(value = "/viderRegles")
+    @GetMapping(value = "/emptyRules")
     public void viderRegles() {
         ruleService.viderRegles();
     }
