@@ -4,6 +4,7 @@ import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.utils.Priority;
+import fr.abes.qualimarc.core.utils.TypeThese;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Fetch;
@@ -43,6 +44,11 @@ public class ComplexRule implements Serializable {
     )
     private Set<FamilleDocument> famillesDocuments;
 
+    @ElementCollection(targetClass = TypeThese.class)
+    @CollectionTable(name = "RULE_TYPETHESE", joinColumns = @JoinColumn(name = "RULE_ID"))
+    @Column(name = "TYPES_THESE")
+    private Set<TypeThese> typesThese;
+
     //liste des jeux de règles préconçus auxquels appartient la règle
     @ManyToMany
     @JoinTable(
@@ -61,11 +67,12 @@ public class ComplexRule implements Serializable {
 
     protected ComplexRule(){}
 
-    public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, SimpleRule firstRule, List<LinkedRule> otherRules) {
+    public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, SimpleRule firstRule, List<LinkedRule> otherRules) {
         this.id = id;
         this.message = message;
         this.priority = priority;
         this.famillesDocuments = famillesDocuments;
+        this.typesThese = typesThese;
         this.ruleSet = new HashSet<>();
         this.firstRule = firstRule;
         this.otherRules = otherRules;
@@ -76,16 +83,18 @@ public class ComplexRule implements Serializable {
         this.message = message;
         this.priority = priority;
         this.famillesDocuments = new HashSet<>();
+        this.typesThese = new HashSet<>();
         this.ruleSet = new HashSet<>();
         this.firstRule = firstRule;
         this.otherRules = otherRules;
     }
 
-    public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, SimpleRule firstRule) {
+    public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, SimpleRule firstRule) {
         this.id = id;
         this.message = message;
         this.priority = priority;
         this.famillesDocuments = famillesDocuments;
+        this.typesThese = typesThese;
         this.ruleSet = new HashSet<>();
         this.firstRule = firstRule;
         this.otherRules = new LinkedList<>();
@@ -115,6 +124,8 @@ public class ComplexRule implements Serializable {
     public void addTypeDocument(FamilleDocument typeDocument) {
         this.famillesDocuments.add(typeDocument);
     }
+
+    public void addTypeThese(TypeThese typeThese) { this.typesThese.add(typeThese); }
 
     public void addOtherRule(LinkedRule linkedRule) {
         this.otherRules.add(linkedRule);

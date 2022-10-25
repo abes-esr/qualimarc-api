@@ -12,6 +12,7 @@ import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.core.utils.Operateur;
 import fr.abes.qualimarc.core.utils.Priority;
+import fr.abes.qualimarc.core.utils.TypeThese;
 import fr.abes.qualimarc.web.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,10 +26,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @SpringBootApplication
@@ -57,8 +55,8 @@ public class QualimarcAPIApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         if(Arrays.stream(env.getActiveProfiles()).anyMatch(env -> (env.equalsIgnoreCase("localhost")))) {
             List<FamilleDocument> familles = familleDocumentRepository.findAll();
-            ComplexRule rule1 = new ComplexRule(1, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, familles.stream().filter(f -> !f.getId().equals("BD")).collect(Collectors.toSet()), new PresenceZone(1, "011", false));
-            ComplexRule rule2 = new ComplexRule(2, "Zone 013  : lorsque la ressource de type Enregistrement sonore (G*) est identifiée par un ISMN, sa transcription est obligatoire.", Priority.P2, familles.stream().filter(f -> f.getId().equals("G")).collect(Collectors.toSet()), new PresenceZone(2, "013", false));
+            ComplexRule rule1 = new ComplexRule(1, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, familles.stream().filter(f -> !f.getId().equals("BD")).collect(Collectors.toSet()), new HashSet<>(), new PresenceZone(1, "011", false));
+            ComplexRule rule2 = new ComplexRule(2, "Zone 013  : lorsque la ressource de type Enregistrement sonore (G*) est identifiée par un ISMN, sa transcription est obligatoire.", Priority.P2, familles.stream().filter(f -> f.getId().equals("G")).collect(Collectors.toSet()), new HashSet<>(), new PresenceZone(2, "013", false));
             ComplexRule rule3 = new ComplexRule(3, "Zone 101 : l'enregistrement d'un code de langue est obligatoire.", Priority.P2, new PresenceZone(3, "101", false));
 
             ComplexRule rule4 = new ComplexRule(4, "Document électronique : si la ressource possède un DOI et qu'il est présent sur la ressource, le saisir en 107$a", Priority.P2, new PresenceSousZone(4, "101", "a", true));

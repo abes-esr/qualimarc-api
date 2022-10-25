@@ -156,12 +156,6 @@ public class NoticeXml {
      * @return famille de type de document
      */
     public String getFamilleDocument() {
-        if (this.isTheseSoutenance()) {
-            return "TS";
-        }
-        if (this.isTheseRepro()) {
-            return "TR";
-        }
         switch (this.getTypeDocument()) {
             //Famille AUDIOVISUEL
             case "gm":

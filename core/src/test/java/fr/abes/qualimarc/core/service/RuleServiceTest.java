@@ -60,11 +60,15 @@ class RuleServiceTest {
     @Value("classpath:theseMono.xml")
     Resource xmlTheseMono;
 
+    @Value("classpath:theseRepro.xml")
+    Resource xmlTheseRepro;
+
     NoticeXml notice1;
     NoticeXml notice2;
     NoticeXml notice3;
     NoticeXml noticeDeleted;
     NoticeXml theseMono;
+    NoticeXml theseRepro;
 
     Set<ComplexRule> listeRegles;
 
@@ -91,10 +95,13 @@ class RuleServiceTest {
         xml = IOUtils.toString(new FileInputStream(xmlTheseMono.getFile()), StandardCharsets.UTF_8);
         theseMono = xmlMapper.readValue(xml, NoticeXml.class);
 
+        xml = IOUtils.toString(new FileInputStream(xmlTheseRepro.getFile()), StandardCharsets.UTF_8);
+        theseRepro = xmlMapper.readValue(xml, NoticeXml.class);
+
         Set<FamilleDocument> familleDoc1 = new HashSet<>();
         familleDoc1.add(new FamilleDocument("A", "Monographie"));
 
-        listeRegles.add(new ComplexRule(1, "La zone 010 est présente", Priority.P1, familleDoc1, new PresenceZone(1, "010", true)));
+        listeRegles.add(new ComplexRule(1, "La zone 010 est présente", Priority.P1, familleDoc1, new HashSet<>(), new PresenceZone(1, "010", true)));
         listeRegles.add(new ComplexRule(2, "La zone 011 est absente", Priority.P1, new PresenceZone(2, "011", false)));
         listeRegles.add(new ComplexRule(3, "La zone 012 est présente", Priority.P1, new PresenceZone(3, "012",  true)));
     }
@@ -217,6 +224,8 @@ class RuleServiceTest {
         //cas ou la règle porte sur les thèses de soutenance, et la notice aussi
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseRepro, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseRepro, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
     }
 
 
@@ -278,7 +287,7 @@ class RuleServiceTest {
         Set<FamilleDocument> typesDoc = new HashSet<>();
         typesDoc.add(new FamilleDocument("B", "Audiovisuel"));
         Set<ComplexRule> rules = new HashSet<>();
-        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, typesDoc, new PresenceZone(1, "010", true)));
+        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, typesDoc, null, new PresenceZone(1, "010", true)));
 
         Mockito.when(complexRulesRepository.findByFamillesDocuments(Mockito.any())).thenReturn(rules);
 
@@ -318,7 +327,7 @@ class RuleServiceTest {
         typesDoc.add(new FamilleDocument("B", "Audiovisuel"));
 
         ComplexRule rule1 = new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010", true));
-        ComplexRule rule2 = new ComplexRule(2, "Zone 200 obligatoire", Priority.P1, typesDoc, new PresenceZone(2, "200", true));
+        ComplexRule rule2 = new ComplexRule(2, "Zone 200 obligatoire", Priority.P1, typesDoc, null, new PresenceZone(2, "200", true));
 
         //déclaration du set de rule utilisé pour vérifier le résultat de l'appel à la méthode testée
         Set<ComplexRule> rulesIn = new HashSet<>();

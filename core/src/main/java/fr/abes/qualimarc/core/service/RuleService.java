@@ -13,6 +13,7 @@ import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
+import fr.abes.qualimarc.core.utils.TypeThese;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
@@ -104,6 +105,14 @@ public class RuleService {
     public boolean isRuleAppliedToNotice(NoticeXml notice, ComplexRule rule) {
         if (rule.getFamillesDocuments().size() == 0 || rule.getFamillesDocuments().stream().anyMatch(type -> notice.getFamilleDocument().equals(type.getId())))
             return true;
+//        if (rule.getTypesThese().size() != 0) {
+//            if (notice.isTheseRepro())
+//                if (rule.getTypesThese().stream().filter(tt -> tt.equals(TypeThese.REPRO)).count() > 0)
+//                    return true;
+//            if (notice.isTheseSoutenance())
+//                if (rule.getTypesThese().stream().filter(tt -> tt.equals(TypeThese.SOUTENANCE)).count() > 0)
+//                    return true;
+//        }
         return false;
     }
 
