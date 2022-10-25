@@ -21,6 +21,7 @@ import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.EnumUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
@@ -329,6 +330,16 @@ public class WebDtoMapper {
                     if (source.getTypesDoc() != null)
                         target.setFamillesDocuments(getFamilleDocument(source.getTypesDoc()));
                     if (source.getTypesThese() != null) {
+                        if (source.getTypesThese().stream().filter(tt ->  EnumUtils.isValidEnum(TypeThese.class, tt)).count() == 0) {
+                            StringBuilder message = new StringBuilder("Les types de thèses ne peuvent prendre que les valeurs ");
+                            int j = 0;
+                            for (TypeThese tt : TypeThese.values()) {
+                                message.append(tt.toString());
+                                if (j++ < (TypeThese.values().length - 1))
+                                    message.append("|");
+                            }
+                            throw new IllegalArgumentException(message.toString());
+                        }
                         target.setTypesThese(getTypeThese(source.getTypesThese()));
                     }
                     while (reglesIt.hasNext()) {

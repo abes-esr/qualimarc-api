@@ -39,7 +39,7 @@ public class ComplexRuleWebDto {
     private List<@Pattern(regexp = "\\b([A-Z]{0,2}){0,}\\b", message = "Le champ type-doc ne peut contenir qu'une ou deux lettre(s) majuscule(s).") String> typesDoc;
 
     @JsonProperty("type-these")
-    private List<@Pattern(regexp = "REPRO|SOUTENANCE", message = "Le champ type-these ne peut prendre que les valeurs SOUTENANCE ou REPRO") String> typesThese;
+    private List<@Pattern(regexp = "\\bREPRO|SOUTENANCE\\b", message = "Le champ type-these ne peut prendre que les valeurs SOUTENANCE ou REPRO") String> typesThese;
 
     @JsonProperty("regles")
     @NotEmpty(message = "Une règle complexe doit contenir au moins une règle")
