@@ -70,6 +70,8 @@
         <subfield code="b">Texte imprimé</subfield>
         <subfield code="e">[brochure n° 3296]</subfield>
         <subfield code="f">[publiée par] JuriTravail.com</subfield>
+        <subfield code="x">é</subfield>
+        <subfield code="y">É</subfield>
     </datafield>
     <datafield tag="205" ind1=" " ind2=" ">
         <subfield code="a">Éd. 2010</subfield>
@@ -80,6 +82,23 @@
         <subfield code="d">2010</subfield>
         <subfield code="e">95-Domont</subfield>
         <subfield code="g">Dupli-print</subfield>
+    </datafield>
+    <datafield tag="214" ind1="4" ind2="#">
+        <subfield code="7">bla</subfield>
+        <subfield code="a">jdsfh</subfield>
+        <subfield code="c">dsifh</subfield>
+        <subfield code="d">dlshf</subfield>
+    </datafield>
+    <datafield tag="214" ind1="4" ind2="#">
+        <subfield code="6">abla</subfield>
+        <subfield code="a">jdsfh</subfield>
+        <subfield code="c">dsifh</subfield>
+        <subfield code="d">dlshf</subfield>
+    </datafield>
+    <datafield tag="214" ind1="0" ind2="#">
+        <subfield code="a">Champs-sur-Marne</subfield>
+        <subfield code="c">Ecole nationale des Ponts et Chaussées</subfield>
+        <subfield code="d">2016</subfield>
     </datafield>
     <datafield tag="215" ind1=" " ind2=" ">
         <subfield code="a">1 vol. (IV-90-10 p.)</subfield>

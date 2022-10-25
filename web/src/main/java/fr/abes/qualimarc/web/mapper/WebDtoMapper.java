@@ -4,6 +4,8 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.NombreCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
@@ -11,6 +13,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.souszoneope
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.core.utils.EnumTypeVerification;
+import fr.abes.qualimarc.core.utils.Operateur;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
@@ -18,6 +21,8 @@ import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
 import fr.abes.qualimarc.web.dto.RuleResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.SneakyThrows;
@@ -76,6 +81,9 @@ public class WebDtoMapper {
             public ComplexRule convert(MappingContext<NombreZoneWebDto, ComplexRule> context) {
                 NombreZoneWebDto source = context.getSource();
                 checkSimpleRule(source);
+                if (!Operateur.EGAL.equals(source.getOperateur()) && !Operateur.SUPERIEUR.equals(source.getOperateur()) && !Operateur.INFERIEUR.equals(source.getOperateur())) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : Seuls les opérateurs INFERIEUR, SUPERIEUR ou EGAL sont autorisés sur ce type de règle");
+                }
                 return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new NombreZone(source.getId(), source.getZone(), source.getOperateur(), source.getOccurrences()));
             }
         };
@@ -123,6 +131,40 @@ public class WebDtoMapper {
                 checkSimpleRule(source);
                 PresenceSousZonesMemeZone target = constructPresenceSousZonesMemeZone(source);
                 return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), target);
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un modèle IndicateurWebDto en modèle ComplexRule
+     */
+    @Bean
+    public void converterIndicateur() {
+        Converter<IndicateurWebDto, ComplexRule> myConverter = new Converter<IndicateurWebDto, ComplexRule>() {
+            public ComplexRule convert(MappingContext<IndicateurWebDto, ComplexRule> context) {
+                IndicateurWebDto source = context.getSource();
+                checkSimpleRule(source);
+                if (source.getIndicateur() != 1 && source.getIndicateur() != 2) {
+                    throw new IllegalArgumentException("le champ indicateur peut etre soit '1', soit '2'");
+                }
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new Indicateur(source.getId(), source.getZone(), source.getIndicateur(), source.getValeur()));
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un modèle NombreCaracteresWebDto en modèle ComplexRule
+     */
+    @Bean
+    public void converterNombreCaractere() {
+        Converter<NombreCaracteresWebDto, ComplexRule> myConverter = new Converter<NombreCaracteresWebDto, ComplexRule>() {
+            @Override
+            public ComplexRule convert(MappingContext<NombreCaracteresWebDto, ComplexRule> context) {
+                NombreCaracteresWebDto source = context.getSource();
+                checkSimpleRule(source);
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new NombreCaracteres(source.getId(), source.getZone(), source.getSousZone(), source.getOperateur(), source.getOccurrences()));
             }
         };
         mapper.addConverter(myConverter);
@@ -181,6 +223,9 @@ public class WebDtoMapper {
         Converter<NombreZoneWebDto, SimpleRule> myConverter = new Converter<NombreZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<NombreZoneWebDto, SimpleRule> context) {
                 NombreZoneWebDto source = context.getSource();
+                if (!Operateur.EGAL.equals(source.getOperateur()) && !Operateur.SUPERIEUR.equals(source.getOperateur()) && !Operateur.INFERIEUR.equals(source.getOperateur())) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : Seuls les opérateurs INFERIEUR, SUPERIEUR ou EGAL sont autorisés sur ce type de règle");
+                }
                 return new NombreZone(source.getId(), source.getZone(), source.getOperateur(), source.getOccurrences());
             }
         };
@@ -239,6 +284,35 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
+
+    /**
+     * Convertion d'un modèle IndicateurWebDto en modèle SimpleRule
+     */
+    @Bean
+    public void converterIndicateurToSimple() {
+        Converter<IndicateurWebDto, SimpleRule> myConverter = new Converter<IndicateurWebDto, SimpleRule>() {
+            public SimpleRule convert(MappingContext<IndicateurWebDto, SimpleRule> context) {
+                IndicateurWebDto source = context.getSource();
+                return new Indicateur(source.getId(), source.getZone(), source.getIndicateur(), source.getValeur());
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+
+    /**
+     * Convertion d'un modèle NombreCaracteresWebDto en modèle SimpleRule
+     */
+    @Bean
+    public void converterNombreCaractereToSimple() {
+        Converter<NombreCaracteresWebDto, SimpleRule> myConverter = new Converter<NombreCaracteresWebDto, SimpleRule>() {
+            public SimpleRule convert(MappingContext<NombreCaracteresWebDto, SimpleRule> context) {
+                NombreCaracteresWebDto source = context.getSource();
+                return new NombreCaracteres(source.getId(), source.getZone(), source.getSousZone(), source.getOperateur(), source.getOccurrences());
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
 
     /**
      * Convertion d'un modèle ComplexRuleWebDto en ComplexRule
@@ -354,11 +428,11 @@ public class WebDtoMapper {
             Iterator<PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto> sousZoneOperatorIt = source.getSousZones().listIterator();
             PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto firstSousZone = sousZoneOperatorIt.next();
             if (null == firstSousZone.getOperator()) {
-                target.addSousZoneOperator(new SousZoneOperator(firstSousZone.getSousZone(), firstSousZone.isPresent()));
+                target.addSousZoneOperator(new SousZoneOperator(firstSousZone.getSousZone(), firstSousZone.isPresent(), target));
                 while (sousZoneOperatorIt.hasNext()) {
                     PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto nextSousZone = sousZoneOperatorIt.next();
                     if (null != nextSousZone.getOperator()) {
-                        target.addSousZoneOperator(new SousZoneOperator(nextSousZone.getSousZone(), nextSousZone.isPresent(), nextSousZone.getOperator()));
+                        target.addSousZoneOperator(new SousZoneOperator(nextSousZone.getSousZone(), nextSousZone.isPresent(), nextSousZone.getOperator(), target));
                     } else {
                         throw new IllegalArgumentException("Règle " + source.getId() + " : Les sous-zones en dehors de la première doivent avoir un opérateur booléen");
                     }

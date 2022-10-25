@@ -8,6 +8,8 @@ import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -44,13 +46,23 @@ public class PresenceSousZonesMemeZone extends SimpleRule implements Serializabl
         List<Datafield> datafields = notice.getDatafields().stream().filter(dataField -> dataField.getTag().equals(this.getZone())).collect(Collectors.toList());
         boolean isOk;
         for (Datafield datafield : datafields){
-            isOk = this.sousZoneOperators.get(0).isPresent() && datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(this.sousZoneOperators.get(0).getSousZone()));
+            if(this.sousZoneOperators.get(0).isPresent())
+                isOk = datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(this.sousZoneOperators.get(0).getSousZone()));
+            else
+                isOk = datafield.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(this.sousZoneOperators.get(0).getSousZone()));
+
             for (int i = 1; i < this.sousZoneOperators.size(); i++) {
                 SousZoneOperator sousZoneOperator = this.sousZoneOperators.get(i);
-                if (this.sousZoneOperators.get(i).getOperateur().equals(BooleanOperateur.OU)) {
-                    isOk |= sousZoneOperator.isPresent() && datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
+                if (sousZoneOperator.getOperateur().equals(BooleanOperateur.OU)) {
+                    if(sousZoneOperator.isPresent())
+                        isOk |= datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
+                    else
+                        isOk |= datafield.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
                 } else {
-                    isOk &= sousZoneOperator.isPresent() && datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
+                    if(sousZoneOperator.isPresent())
+                        isOk &= datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
+                    else
+                        isOk &= datafield.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
                 }
             }
             if(isOk)

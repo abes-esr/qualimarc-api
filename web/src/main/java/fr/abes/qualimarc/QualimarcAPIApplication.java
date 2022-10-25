@@ -3,12 +3,14 @@ package fr.abes.qualimarc;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.NombreCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
+import fr.abes.qualimarc.core.utils.Operateur;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.web.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @SpringBootApplication
@@ -46,6 +49,7 @@ public class QualimarcAPIApplication implements CommandLineRunner {
     private JwtTokenProvider tokenProvider;
 
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Paris"));   // It will set UTC timezone
         SpringApplication.run(QualimarcAPIApplication.class, args);
     }
 
@@ -77,7 +81,7 @@ public class QualimarcAPIApplication implements CommandLineRunner {
             ComplexRule rule15 = new ComplexRule(15, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(15, "011", false));
             ComplexRule rule16 = new ComplexRule(16, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(16, "011", false));
             ComplexRule rule17 = new ComplexRule(17, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(17, "011", false));
-            ComplexRule rule18 = new ComplexRule(18, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(18, "011", false));
+            ComplexRule rule18 = new ComplexRule(18, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new NombreCaracteres(18, "011", "a", Operateur.INFERIEUR, 2));
 
             List<ComplexRule> rules = new ArrayList<>();
             rules.add(rule1);
@@ -96,7 +100,7 @@ public class QualimarcAPIApplication implements CommandLineRunner {
             rules.add(rule18);
 
 
-            //rulesRepository.saveAll(rules);
+            complexRulesRepository.saveAll(rules);
         }
         initSpringSecurity();
     }
