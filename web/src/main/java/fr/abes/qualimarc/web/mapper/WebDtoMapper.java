@@ -5,6 +5,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.TypeCaractere;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.NombreCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.souszoneoperator.SousZoneOperator;
@@ -12,6 +13,7 @@ import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.core.utils.Operateur;
 import fr.abes.qualimarc.core.utils.Priority;
+import fr.abes.qualimarc.core.utils.TypeCaracteres;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
@@ -19,6 +21,7 @@ import fr.abes.qualimarc.web.dto.RuleResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.SneakyThrows;
@@ -142,7 +145,7 @@ public class WebDtoMapper {
                 IndicateurWebDto source = context.getSource();
                 checkSimpleRule(source);
                 if (source.getIndicateur() != 1 && source.getIndicateur() != 2) {
-                    throw new IllegalArgumentException("le champ indicateur peut etre soit '1', soit '2'");
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : le champ indicateur peut etre soit '1', soit '2'");
                 }
                 return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new Indicateur(source.getId(), source.getZone(), source.getIndicateur(), source.getValeur()));
             }
@@ -165,6 +168,23 @@ public class WebDtoMapper {
         };
         mapper.addConverter(myConverter);
     }
+
+    /**
+     * Convertion d'un modèle TypeCaractereWebDto en modèle ComplexRule
+     */
+    @Bean
+    public void converterTypeCaractere() {
+        Converter<TypeCaractereWebDto, ComplexRule> myConverter = new Converter<TypeCaractereWebDto, ComplexRule>() {
+            public ComplexRule convert(MappingContext<TypeCaractereWebDto, ComplexRule> context) {
+                TypeCaractereWebDto source = context.getSource();
+                checkSimpleRule(source);
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), constructTypeCaractere(source));
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+
 
     /**
      * Convertion d'un modèle PresenceZoneWebDto en modèle SimpleRule
@@ -248,6 +268,20 @@ public class WebDtoMapper {
             public SimpleRule convert(MappingContext<PresenceSousZonesMemeZoneWebDto, SimpleRule> context) {
                 PresenceSousZonesMemeZoneWebDto source = context.getSource();
                 return constructPresenceSousZonesMemeZone(source);
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un modèle TypeCaractereWebDto en modèle SimpleRule
+     */
+    @Bean
+    public void converterTypeCaractereToSimple() {
+        Converter<TypeCaractereWebDto, SimpleRule> myConverter = new Converter<TypeCaractereWebDto, SimpleRule>() {
+            public SimpleRule convert(MappingContext<TypeCaractereWebDto, SimpleRule> context) {
+                TypeCaractereWebDto source = context.getSource();
+                return constructTypeCaractere(source);
             }
         };
         mapper.addConverter(myConverter);
@@ -411,6 +445,22 @@ public class WebDtoMapper {
         return BooleanOperateur.ET;
     }
 
+    private TypeCaracteres getTypeCaracteres(String type){
+        switch (type) {
+            case "ALPHABETIQUE":
+                return TypeCaracteres.ALPHABETIQUE;
+            case "ALPHABETIQUE_MAJ":
+                return TypeCaracteres.ALPHABETIQUE_MAJ;
+            case "ALPHABETIQUE_MIN":
+                return TypeCaracteres.ALPHABETIQUE_MIN;
+            case "NUMERIQUE":
+                return TypeCaracteres.NUMERIQUE;
+            case "SPECIAL":
+                return TypeCaracteres.SPECIAL;
+        }
+        return TypeCaracteres.ALPHABETIQUE;
+    }
+
 
     private Set<FamilleDocument> getFamilleDocument(List<String> familleDoc) {
         Set<FamilleDocument> familleDocumentSet = new HashSet<>();
@@ -422,10 +472,21 @@ public class WebDtoMapper {
 
     private void checkSimpleRule(SimpleRuleWebDto source) {
         if (source.getBooleanOperator() != null) {
-            throw new IllegalArgumentException("L'opérateur est interdit lors de la création d'une seule règle");
+            throw new IllegalArgumentException("Règle " + source.getId() + " : L'opérateur est interdit lors de la création d'une seule règle");
         }
         if (source.getMessage() == null || source.getPriority() == null) {
-            throw new IllegalArgumentException("Le message et / ou la priorité est obligatoire lors de la création d'une règle simple");
+            throw new IllegalArgumentException("Règle " + source.getId() + " : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple");
         }
+    }
+
+    private TypeCaractere constructTypeCaractere(TypeCaractereWebDto source) {
+        if(source.getTypeCaracteres().isEmpty()){
+            throw new IllegalArgumentException("Règle " + source.getId() + " : Le champ type-caracteres est obligatoire");
+        }
+        TypeCaractere target = new TypeCaractere(source.getId(), source.getZone(), source.getSousZone());
+        for(String typeCaracteresString : source.getTypeCaracteres()){
+            target.addTypeCaractere(getTypeCaracteres(typeCaracteresString));
+        }
+        return target;
     }
 }
