@@ -14,7 +14,9 @@ import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
+import fr.abes.qualimarc.core.utils.TypeThese;
 import org.apache.commons.io.IOUtils;
+import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,8 +59,8 @@ class RuleServiceTest {
     @Value("classpath:checkRulesDeletedPpn.xml")
     Resource xmlFileNoticeDeleted;
 
-    @Value("classpath:theseMono.xml")
-    Resource xmlTheseMono;
+    @Value("classpath:theseSout.xml")
+    Resource xmlTheseSout;
 
     @Value("classpath:theseRepro.xml")
     Resource xmlTheseRepro;
@@ -67,7 +69,7 @@ class RuleServiceTest {
     NoticeXml notice2;
     NoticeXml notice3;
     NoticeXml noticeDeleted;
-    NoticeXml theseMono;
+    NoticeXml theseSout;
     NoticeXml theseRepro;
 
     Set<ComplexRule> listeRegles;
@@ -92,8 +94,8 @@ class RuleServiceTest {
         xml = IOUtils.toString(new FileInputStream(xmlFileNoticeDeleted.getFile()), StandardCharsets.UTF_8);
         noticeDeleted = xmlMapper.readValue(xml, NoticeXml.class);
 
-        xml = IOUtils.toString(new FileInputStream(xmlTheseMono.getFile()), StandardCharsets.UTF_8);
-        theseMono = xmlMapper.readValue(xml, NoticeXml.class);
+        xml = IOUtils.toString(new FileInputStream(xmlTheseSout.getFile()), StandardCharsets.UTF_8);
+        theseSout = xmlMapper.readValue(xml, NoticeXml.class);
 
         xml = IOUtils.toString(new FileInputStream(xmlTheseRepro.getFile()), StandardCharsets.UTF_8);
         theseRepro = xmlMapper.readValue(xml, NoticeXml.class);
@@ -214,18 +216,29 @@ class RuleServiceTest {
 
     @Test
     void testIsRuleAppliedToNotice() {
-        //cas ou la règle et la notice n'ont pas le même type de document
-        Assertions.assertFalse(service.isRuleAppliedToNotice(notice1, listeRegles.stream().filter(rule -> rule.getId().equals(1)).findFirst().get()));
-        //cas ou là règle et la notice ont le même type de doc "Monographie"
-        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, listeRegles.stream().filter(rule -> rule.getId().equals(1)).findFirst().get()));
-        //cas ou la règle n'a pas de type de document spécifique -> s'applique à toutes les notices
-        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
-
-        //cas ou la règle porte sur les thèses de soutenance, et la notice aussi
-        Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(theseRepro, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(theseRepro, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
+        //Notice 1 est de type ressource continue
+        //Notice 2 est de type Monographie
+        //theseElec est de type Ressource continue et est une thèse de soutenance
+        //theseRepro est de type Monographie et est une thèse de reproduction
+        Set<TypeThese> setThesesRepro = new HashSet<>();
+        setThesesRepro.add(TypeThese.REPRO);
+        Set<TypeThese> setThesesSout = new HashSet<>();
+        setThesesSout.add(TypeThese.SOUTENANCE);
+        Set<FamilleDocument> setTypeResContinue = new HashSet<>();
+        setTypeResContinue.add(new FamilleDocument("BD", "RessourceContinue"));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesSout, new PresenceZone())));
+        Assertions.assertFalse(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertFalse(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertFalse(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, setThesesRepro, new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, setThesesSout, new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, setThesesSout, new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), new PresenceZone())));
     }
 
 
