@@ -36,6 +36,8 @@ public class TypeCaractereWebDto extends SimpleRuleWebDto {
         this.sousZone = sousZone;
         this.typeCaracteres = typeCaracteres;
     }
+
+    public TypeCaractereWebDto() {super();}
 }
 
 /*
