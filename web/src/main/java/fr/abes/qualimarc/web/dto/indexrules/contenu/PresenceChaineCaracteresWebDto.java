@@ -12,6 +12,10 @@ import javax.validation.constraints.Pattern;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Classe WebDto qui définie une règle permettant de tester la présence d'une zone et sous-zone ainsi que la présence,
+ * la position ou la conformité d'une ou plusieurs chaines de caractères dans une sous-zone.
+ */
 @Getter
 @Setter
 @JsonTypeName("presencechainecaracteres")
@@ -30,6 +34,17 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
     @JsonProperty("autre-chaine-caracteres")
     private List<ChaineCaracteresWebDto> listChaineCaracteres;
 
+    /**
+     * Constructeur sans liste de chaines de caractères
+     * @param id identifiant de la règle
+     * @param idExcel identifiant excel de la règle
+     * @param message message à renvoyer si la règle est vérifiée
+     * @param zone zone sur laquelle appliquer la règle
+     * @param priority priorité de la règle
+     * @param typesDoc type de document de la notice sur laquelle appliquer la règle
+     * @param sousZone sous-zone sur laquelle appliquer la règle
+     * @param typeDeVerifications type de vérification à appliquer pour la règle
+     */
     public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZone, String typeDeVerifications) {
         super(id, idExcel, message, zone, priority, typesDoc);
         this.sousZone = sousZone;
@@ -37,6 +52,15 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
         this.listChaineCaracteres = new LinkedList<>();
     }
 
+    /**
+     * Constructeur avec liste de chaines de caractères
+     * @param id identifiant de la règle
+     * @param zone zone sur laquelle appliquer la règle
+     * @param booleanOperator opérateur logique qui définit l'enchainement des règles
+     * @param sousZone sous-zone sur laquelle appliquer la règle
+     * @param typeDeVerification type de vérification à appliquer pour la règle
+     * @param listChaineCaracteres liste de chaines de caractères à rechercher
+     */
     public PresenceChaineCaracteresWebDto(Integer id, String zone, String booleanOperator, String sousZone, String typeDeVerification, List<ChaineCaracteresWebDto> listChaineCaracteres) {
         super(id, zone, booleanOperator);
         this.sousZone = sousZone;
@@ -44,10 +68,17 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
         this.listChaineCaracteres = listChaineCaracteres;
     }
 
+    /**
+     * Méthode qui ajoute une chaine de caractères à la liste de chaines de caractères
+     * @param chaineCaracteresWebDto chaine de caractères à rechercher
+     */
     public void addChaineCaracteres(ChaineCaracteresWebDto chaineCaracteresWebDto) {
         this.listChaineCaracteres.add(chaineCaracteresWebDto);
     }
 
+    /**
+     * Chaine de caractères qui vient allimenter la liste de chaines de caractères de la classe PresenceChaineCaractèresWebDto
+     */
     @Getter
     @NoArgsConstructor
     public static class ChaineCaracteresWebDto {
@@ -59,10 +90,19 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
         @NotNull
         private String chaineCaracteres;
 
+        /**
+         * Construction sans opérateur
+         * @param chaineCaracteres chaine de caractères à rechercher
+         */
         public ChaineCaracteresWebDto(String chaineCaracteres) {
             this.chaineCaracteres = chaineCaracteres;
         }
 
+        /**
+         * Constructeur avec opérateur
+         * @param operateur opérateur logique pour l'enchainement des chaines de caractères
+         * @param chaineCaracteres chaine de caractères à rechercher
+         */
         public ChaineCaracteresWebDto(String operateur, String chaineCaracteres) {
             this.operateur = operateur;
             this.chaineCaracteres = chaineCaracteres;
@@ -75,17 +115,17 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
 ### Présence d'une chaine de caractères
 
 * La vérification STRICTEMENT peut comporter :
-    * soit une chaine-caracteres,
-    * soit une chaine-caracteres et plusieurs autre-chaine-caracteres, mais chacune de ces autre-chaine-caracteres ne peut recevoir que l'opérateur OU
+    * soit une chaine-caracteres sans operateur,
+    * soit une chaine-caracteres sans operateur et plusieurs autre-chaine-caracteres, mais chacune de ces autre-chaine-caracteres ne peut recevoir que l'opérateur OU
 * La vérification COMMENCE peut comporter :
-    * soit chaine-caracteres,
-    * soit une chaine-caracteres et plusieurs autre-chaine-caracteres, mais chacune de ces autre-chaine-caracteres ne peut recevoir que l'opérateur OU
+    * soit une chaine-caracteres sans operateur,
+    * soit une chaine-caracteres sans operateur et plusieurs autre-chaine-caracteres, mais chacune de ces autre-chaine-caracteres ne peut recevoir que l'opérateur OU
 * La vérification TERMINE peut comporter :
-    * soit chaine-caracteres,
-    * soit une chaine-caracteres et plusieurs autre-chaine-caracteres, mais chacune de ces autre-chaine-caracteres ne peut recevoir que l'opérateur OU
+    * soit une chaine-caracteres sans operateur,
+    * soit une chaine-caracteres sans operateur et plusieurs autre-chaine-caracteres, mais chacune de ces autre-chaine-caracteres ne peut recevoir que l'opérateur OU
 * La vérification CONTIENT peut comporter :
-    * soit chaine-caracteres,
-    * soit une chaine-caracteres et plusieurs autre-chaine-caracteres, chacune de ces autre-chaine-caracteres pouvant recevoir l'opérateur ET ou OU
+    * soit une chaine-caracteres sans operateur,
+    * soit une chaine-caracteres sans operateur et plusieurs autre-chaine-caracteres, chacune de ces autre-chaine-caracteres pouvant recevoir l'opérateur ET ou OU
 
 ``` YAML
 rules:
@@ -97,10 +137,8 @@ rules:
       priorite:                 P1
       souszone:                 a
       type-de-verification:     STRICTEMENT
-      chaine-caracteres:        un texte à chercher
-      autre-chaine-caracteres:
-        - operateur:            OU
-          chaine-caracteres:    ou autre texte à chercher
+      chaines-caracteres:
+        - chaine-caracteres:    texte à chercher
 
     - id:                       2
       id-excel:                 2
@@ -110,12 +148,10 @@ rules:
       priorite:                 P1
       souszone:                 a
       type-de-verification:     CONTIENT
-      chaine-caracteres:        premier texte à chercher
-      autre-chaine-caracteres:
-        - operateur:            ET
-          chaine-caracteres:    et deuxième texte à chercher
+      chaines-caracteres:
+        - chaine-caracteres:    premier à chercher
         - operateur:            OU
-          chaine-caracteres:    autre autre texte à chercher
+          chaine-caracteres:    deuxième texte à chercher
 ```
 */
 

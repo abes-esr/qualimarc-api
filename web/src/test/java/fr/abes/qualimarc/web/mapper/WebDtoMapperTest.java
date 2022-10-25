@@ -476,9 +476,11 @@ public class WebDtoMapperTest {
         ArrayList<String> typeDoc = new ArrayList<>();
         typeDoc.add("A");
         List<PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto> list1ChaineCaracteres = new ArrayList<>();
-        PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaineCaracteresWebDto = new PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto("Texte");
+        PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaineCaracteresWebDto1 = new PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto("Texte");
+        PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaineCaracteresWebDto2 = new PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto("OU", "Texte");
         PresenceChaineCaracteresWebDto rule1 = new PresenceChaineCaracteresWebDto(1, 1, "Erreur", "200", "P1", typeDoc, "a", "STRICTEMENT");
-        rule1.addChaineCaracteres(chaineCaracteresWebDto);
+        rule1.addChaineCaracteres(chaineCaracteresWebDto1);
+        rule1.addChaineCaracteres(chaineCaracteresWebDto2);
 
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(rule1, ComplexRule.class);
@@ -493,6 +495,8 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(rule1.getSousZone(), simpleRule.getSousZone());
         Assertions.assertEquals(rule1.getTypeDeVerification(), simpleRule.getEnumTypeDeVerification().toString());
         Assertions.assertEquals(rule1.getListChaineCaracteres().get(0).getChaineCaracteres(), simpleRule.getListChainesCaracteres().get(0).getChaineCaracteres());
+        Assertions.assertEquals(rule1.getListChaineCaracteres().get(1).getOperateur(), simpleRule.getListChainesCaracteres().get(1).getBooleanOperateur().toString());
+        Assertions.assertEquals(rule1.getListChaineCaracteres().get(1).getChaineCaracteres(), simpleRule.getListChainesCaracteres().get(1).getChaineCaracteres());
 
         //  Test avec priorité nulle
         MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, "Erreur", "200", null, typeDoc, "a", "STRICTEMENT"), ComplexRule.class));

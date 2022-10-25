@@ -10,15 +10,12 @@ import fr.abes.qualimarc.core.utils.EnumTypeVerification;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +40,13 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     @OneToMany(mappedBy = "presenceChaineCaracteres", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ChaineCaracteres> listChainesCaracteres;
 
+    /**
+     * Constructeur sans liste de chaines de caractères
+     * @param id identifiant de la règle
+     * @param zone zone sur laquelle appliquer la recherche
+     * @param sousZone sous-zone sur laquelle appliquer la recherhe
+     * @param enumTypeDeVerification type de vérification à appliquer pour la règle
+     */
     public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumTypeVerification enumTypeDeVerification) {
         super(id, zone);
         this.sousZone = sousZone;
@@ -50,6 +54,14 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         this.listChainesCaracteres = new LinkedList<>();
     }
 
+    /**
+     * Constructeur avec liste de chaines de caractères
+     * @param id identifiant de la règle
+     * @param zone zone sur laquelle appliquer la recherche
+     * @param sousZone sous-zone sur laquelle appliquer la recherhe
+     * @param enumTypeDeVerification type de vérification à appliquer pour la règle
+     * @param listChainesCaracteres liste de chaines de caractères à rechercher
+     */
     public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumTypeVerification enumTypeDeVerification, List<ChaineCaracteres> listChainesCaracteres) {
         super(id, zone);
         this.sousZone = sousZone;
@@ -57,6 +69,10 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         this.listChainesCaracteres = listChainesCaracteres;
     }
 
+    /**
+     * Méthode qui ajoute une chaine de caractères à la liste de chaines de caractères
+     * @param chaine chaine de caractères à rechercher
+     */
     public void addChaineCaracteres(ChaineCaracteres chaine) {
         this.listChainesCaracteres.add(chaine);
     }

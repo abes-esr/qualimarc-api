@@ -37,10 +37,19 @@ public class ChaineCaracteres implements Serializable {
     @JoinColumn(name = "ID_CHAINE_CARACTERES")
     private PresenceChaineCaracteres presenceChaineCaracteres;
 
+    /**
+     * Constructeur sans opérateur
+     * @param chaineCaracteres chaines de caractères à rechercher
+     */
     public ChaineCaracteres(String chaineCaracteres) {
         this.chaineCaracteres = chaineCaracteres;
     }
 
+    /**
+     * Constructeur avec opérateur
+     * @param booleanOperateur opérateur logique pour l'enchainement des chaines de caractères
+     * @param chaineCaracteres chaines de caractères à rechercher
+     */
     public ChaineCaracteres(BooleanOperateur booleanOperateur, String chaineCaracteres) {
         this.booleanOperateur = booleanOperateur;
         this.chaineCaracteres = chaineCaracteres;
