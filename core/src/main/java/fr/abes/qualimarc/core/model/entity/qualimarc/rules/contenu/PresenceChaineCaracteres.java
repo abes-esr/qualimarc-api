@@ -14,8 +14,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -38,7 +37,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     private EnumTypeVerification enumTypeDeVerification;
 
     @OneToMany(mappedBy = "presenceChaineCaracteres", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<ChaineCaracteres> listChainesCaracteres;
+    private Set<ChaineCaracteres> listChainesCaracteres;
 
     /**
      * Constructeur sans liste de chaines de caractères
@@ -51,7 +50,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         super(id, zone);
         this.sousZone = sousZone;
         this.enumTypeDeVerification = enumTypeDeVerification;
-        this.listChainesCaracteres = new LinkedList<>();
+        this.listChainesCaracteres = new HashSet<>();
     }
 
     /**
@@ -62,7 +61,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
      * @param enumTypeDeVerification type de vérification à appliquer pour la règle
      * @param listChainesCaracteres liste de chaines de caractères à rechercher
      */
-    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumTypeVerification enumTypeDeVerification, List<ChaineCaracteres> listChainesCaracteres) {
+    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumTypeVerification enumTypeDeVerification, Set<ChaineCaracteres> listChainesCaracteres) {
         super(id, zone);
         this.sousZone = sousZone;
         this.enumTypeDeVerification = enumTypeDeVerification;
@@ -103,7 +102,8 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                         // Si la sous-zone contient STRICTEMENT la/les chaine.s de caractères
                         case STRICTEMENT:
                             if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
-                                for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
+                                List<ChaineCaracteres> sortedList = sortListChaineCaracteres(listChainesCaracteres);
+                                for (ChaineCaracteres chaineCaracteres : sortedList
                                 ) {
                                     // si il n'y a pas d'opérateur
                                     if (chaineCaracteres.getBooleanOperateur() == null) {
@@ -123,7 +123,8 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                         // Si la sous-zone COMMENCE par la/les chaine.s de caractères
                         case COMMENCE:
                             if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
-                                for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
+                                List<ChaineCaracteres> sortedList = sortListChaineCaracteres(listChainesCaracteres);
+                                for (ChaineCaracteres chaineCaracteres : sortedList
                                 ) {
                                     // si il n'y a pas d'opérateur
                                     if (chaineCaracteres.getBooleanOperateur() == null) {
@@ -143,7 +144,8 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                         // Si la sous-zone TERMINE par la/les chaine.s de caractères
                         case TERMINE:
                             if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
-                                for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
+                                List<ChaineCaracteres> sortedList = sortListChaineCaracteres(listChainesCaracteres);
+                                for (ChaineCaracteres chaineCaracteres : sortedList
                                 ) {
                                     // si il n'y a pas d'opérateur
                                     if (chaineCaracteres.getBooleanOperateur() == null) {
@@ -163,7 +165,8 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                         // Si la sous-zone CONTIENT la/les chaine.s de caractères
                         case CONTIENT:
                             if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
-                                for (ChaineCaracteres chaineCaracteres : listChainesCaracteres
+                                List<ChaineCaracteres> sortedList = sortListChaineCaracteres(listChainesCaracteres);
+                                for (ChaineCaracteres chaineCaracteres : sortedList
                                 ) {
                                     // si il n'y a pas d'opérateur
                                     if (chaineCaracteres.getBooleanOperateur() == null) {
@@ -194,5 +197,9 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     @Override
     public String getZones() {
         return this.getZone() + "$" + this.getSousZone();
+    }
+
+    private List<ChaineCaracteres> sortListChaineCaracteres(Set<ChaineCaracteres> listChainesCaracteres) {
+        return listChainesCaracteres.stream().sorted(Comparator.comparing(ChaineCaracteres::getPosition)).collect(Collectors.toList());
     }
 }

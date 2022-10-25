@@ -32,6 +32,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class WebDtoMapper {
@@ -409,11 +410,14 @@ public class WebDtoMapper {
     private PresenceChaineCaracteres constructPresenceChaineCaracteres(PresenceChaineCaracteresWebDto source) {
         PresenceChaineCaracteres target = new PresenceChaineCaracteres(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeDeVerification()));
         if (source.getListChaineCaracteres() != null || source.getListChaineCaracteres().size() > 0 || !source.getListChaineCaracteres().isEmpty()) {
+            int i = 0;
             for (PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaine : source.getListChaineCaracteres()) {
                 if (chaine.getOperateur() == null || chaine.getOperateur().isEmpty()) {
-                    target.addChaineCaracteres(new ChaineCaracteres(chaine.getChaineCaracteres()));
+                    target.addChaineCaracteres(new ChaineCaracteres(i, chaine.getChaineCaracteres()));
+                    i++;
                 } else if (chaine.getOperateur() != null || !chaine.getOperateur().isEmpty()) {
-                    target.addChaineCaracteres(new ChaineCaracteres(getOperateur(chaine.getOperateur()), chaine.getChaineCaracteres()));
+                    target.addChaineCaracteres(new ChaineCaracteres(i, getOperateur(chaine.getOperateur()), chaine.getChaineCaracteres()));
+                    i++;
                 }
             }
         }

@@ -32,7 +32,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ExtendWith({SpringExtension.class})
 @SpringBootTest(classes = {UtilsMapper.class, ObjectMapper.class, WebDtoMapper.class})
@@ -475,7 +478,7 @@ public class WebDtoMapperTest {
         //  Préparation d'un objet PresenceChaineCaracteresWebDto
         ArrayList<String> typeDoc = new ArrayList<>();
         typeDoc.add("A");
-        List<PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto> list1ChaineCaracteres = new ArrayList<>();
+        LinkedList<PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto> list1ChaineCaracteres = new LinkedList<>();
         PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaineCaracteresWebDto1 = new PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto("Texte");
         PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaineCaracteresWebDto2 = new PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto("OU", "Texte");
         PresenceChaineCaracteresWebDto rule1 = new PresenceChaineCaracteresWebDto(1, 1, "Erreur", "200", "P1", typeDoc, "a", "STRICTEMENT");
@@ -487,6 +490,7 @@ public class WebDtoMapperTest {
 
         //  Contrôle de la bonne conformité des résultats
         PresenceChaineCaracteres simpleRule = (PresenceChaineCaracteres) complexRule.getFirstRule();
+        List<ChaineCaracteres> sortedList = simpleRule.getListChainesCaracteres().stream().sorted(Comparator.comparing(ChaineCaracteres::getPosition)).collect(Collectors.toList());
         Assertions.assertEquals(rule1.getId(), complexRule.getId());
         Assertions.assertEquals(rule1.getMessage(), complexRule.getMessage());
         Assertions.assertEquals((rule1.getZone() + "$" + rule1.getSousZone()), complexRule.getZonesFromChildren().get(0));
@@ -494,9 +498,11 @@ public class WebDtoMapperTest {
         Assertions.assertTrue(complexRule.getFamillesDocuments().stream().anyMatch(familleDocument -> familleDocument.getId().equals(rule1.getTypesDoc().get(0))));
         Assertions.assertEquals(rule1.getSousZone(), simpleRule.getSousZone());
         Assertions.assertEquals(rule1.getTypeDeVerification(), simpleRule.getEnumTypeDeVerification().toString());
-        Assertions.assertEquals(rule1.getListChaineCaracteres().get(0).getChaineCaracteres(), simpleRule.getListChainesCaracteres().get(0).getChaineCaracteres());
-        Assertions.assertEquals(rule1.getListChaineCaracteres().get(1).getOperateur(), simpleRule.getListChainesCaracteres().get(1).getBooleanOperateur().toString());
-        Assertions.assertEquals(rule1.getListChaineCaracteres().get(1).getChaineCaracteres(), simpleRule.getListChainesCaracteres().get(1).getChaineCaracteres());
+        Assertions.assertEquals(rule1.getListChaineCaracteres().get(0).getChaineCaracteres(), sortedList.get(0).getChaineCaracteres());
+        Assertions.assertEquals(0, sortedList.get(0).getPosition());
+        Assertions.assertEquals(rule1.getListChaineCaracteres().get(1).getOperateur(), sortedList.get(1).getBooleanOperateur().toString());
+        Assertions.assertEquals(1, sortedList.get(1).getPosition());
+        Assertions.assertEquals(rule1.getListChaineCaracteres().get(1).getChaineCaracteres(), sortedList.get(1).getChaineCaracteres());
 
         //  Test avec priorité nulle
         MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, "Erreur", "200", null, typeDoc, "a", "STRICTEMENT"), ComplexRule.class));
