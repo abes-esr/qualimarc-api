@@ -76,6 +76,7 @@ public class RuleService {
     @SneakyThrows
     private boolean constructResultRuleOnNotice(ResultRules result, NoticeXml notice, ComplexRule rule) {
         result.setFamilleDocument(referenceService.getFamilleDocument(notice.getFamilleDocument()));
+        result.setTypeThese(notice.getTypeThese());
         try {
             result.setTitre(notice.getTitre());
         } catch ( ZoneNotFoundException e) {
@@ -102,12 +103,19 @@ public class RuleService {
     }
 
     public boolean isRuleAppliedToNotice(NoticeXml notice, ComplexRule rule) {
-        if (rule.getFamillesDocuments().size() == 0 || rule.getFamillesDocuments().stream().anyMatch(type -> notice.getFamilleDocument().equals(type.getId())))
+        //si pas de type de document renseigné, la règle est appliquée quoi qu'il arrive
+        if (rule.getFamillesDocuments().size() == 0)
             return true;
-        if (notice.isTheseSoutenance() && rule.getFamillesDocuments().stream().anyMatch(type -> type.getId().equals("TS")))
+        //si l'un des types de doc de la règle matche avec le type de la notice
+        if (rule.getFamillesDocuments().stream().anyMatch(type -> notice.getFamilleDocument().equals(type.getId()))) {
             return true;
-        if (notice.isTheseRepro() && rule.getFamillesDocuments().stream().anyMatch(type -> type.getId().equals("TR")))
-            return true;
+        }
+        else {
+            if (rule.getTypesThese().size() != 0) {
+                if (rule.getTypesThese().stream().filter(tt -> tt.equals(notice.getTypeThese())).count() > 0)
+                    return true;
+            }
+        }
         return false;
     }
 

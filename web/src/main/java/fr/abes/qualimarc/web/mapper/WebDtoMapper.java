@@ -10,11 +10,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.NombreCaracte
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.souszoneoperator.SousZoneOperator;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
-import fr.abes.qualimarc.core.utils.BooleanOperateur;
-import fr.abes.qualimarc.core.utils.Operateur;
-import fr.abes.qualimarc.core.utils.Priority;
-import fr.abes.qualimarc.core.utils.TypeCaracteres;
-import fr.abes.qualimarc.core.utils.UtilsMapper;
+import fr.abes.qualimarc.core.utils.*;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
 import fr.abes.qualimarc.web.dto.RuleResponseDto;
@@ -25,6 +21,7 @@ import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.EnumUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
@@ -50,7 +47,7 @@ public class WebDtoMapper {
             public ComplexRule convert(MappingContext<PresenceZoneWebDto, ComplexRule> context) {
                 PresenceZoneWebDto source = context.getSource();
                 checkSimpleRule(source);
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new PresenceZone(source.getId(), source.getZone(), source.isPresent()));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), new PresenceZone(source.getId(), source.getZone(), source.isPresent()));
             }
         };
         mapper.addConverter(myConverter);
@@ -65,7 +62,7 @@ public class WebDtoMapper {
             public ComplexRule convert(MappingContext<PresenceSousZoneWebDto, ComplexRule> context) {
                 PresenceSousZoneWebDto source = context.getSource();
                 checkSimpleRule(source);
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new PresenceSousZone(source.getId(), source.getZone(), source.getSousZone(), source.isPresent()));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), new PresenceSousZone(source.getId(), source.getZone(), source.getSousZone(), source.isPresent()));
             }
         };
         mapper.addConverter(myConverter);
@@ -83,7 +80,7 @@ public class WebDtoMapper {
                 if (!Operateur.EGAL.equals(source.getOperateur()) && !Operateur.SUPERIEUR.equals(source.getOperateur()) && !Operateur.INFERIEUR.equals(source.getOperateur())) {
                     throw new IllegalArgumentException("Règle " + source.getId() + " : Seuls les opérateurs INFERIEUR, SUPERIEUR ou EGAL sont autorisés sur ce type de règle");
                 }
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new NombreZone(source.getId(), source.getZone(), source.getOperateur(), source.getOccurrences()));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), new NombreZone(source.getId(), source.getZone(), source.getOperateur(), source.getOccurrences()));
             }
         };
         mapper.addConverter(myConverter);
@@ -98,7 +95,7 @@ public class WebDtoMapper {
             public ComplexRule convert(MappingContext<NombreSousZoneWebDto, ComplexRule> context) {
                 NombreSousZoneWebDto source = context.getSource();
                 checkSimpleRule(source);
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new NombreSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getZoneCible(), source.getSousZoneCible()));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), new NombreSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getZoneCible(), source.getSousZoneCible()));
             }
         };
         mapper.addConverter(myConverter);
@@ -113,7 +110,7 @@ public class WebDtoMapper {
             public ComplexRule convert(MappingContext<PositionSousZoneWebDto, ComplexRule> context) {
                 PositionSousZoneWebDto source = context.getSource();
                 checkSimpleRule(source);
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new PositionSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getPosition()));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), new PositionSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getPosition()));
             }
         };
         mapper.addConverter(myConverter);
@@ -129,7 +126,7 @@ public class WebDtoMapper {
                 PresenceSousZonesMemeZoneWebDto source = context.getSource();
                 checkSimpleRule(source);
                 PresenceSousZonesMemeZone target = constructPresenceSousZonesMemeZone(source);
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), target);
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), target);
             }
         };
         mapper.addConverter(myConverter);
@@ -147,7 +144,7 @@ public class WebDtoMapper {
                 if (source.getIndicateur() != 1 && source.getIndicateur() != 2) {
                     throw new IllegalArgumentException("Règle " + source.getId() + " : le champ indicateur peut etre soit '1', soit '2'");
                 }
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new Indicateur(source.getId(), source.getZone(), source.getIndicateur(), source.getValeur()));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), new Indicateur(source.getId(), source.getZone(), source.getIndicateur(), source.getValeur()));
             }
         };
         mapper.addConverter(myConverter);
@@ -163,7 +160,7 @@ public class WebDtoMapper {
             public ComplexRule convert(MappingContext<NombreCaracteresWebDto, ComplexRule> context) {
                 NombreCaracteresWebDto source = context.getSource();
                 checkSimpleRule(source);
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), new NombreCaracteres(source.getId(), source.getZone(), source.getSousZone(), source.getOperateur(), source.getOccurrences()));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), new NombreCaracteres(source.getId(), source.getZone(), source.getSousZone(), source.getOperateur(), source.getOccurrences()));
             }
         };
         mapper.addConverter(myConverter);
@@ -178,7 +175,7 @@ public class WebDtoMapper {
             public ComplexRule convert(MappingContext<TypeCaractereWebDto, ComplexRule> context) {
                 TypeCaractereWebDto source = context.getSource();
                 checkSimpleRule(source);
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), constructTypeCaractere(source));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), constructTypeCaractere(source));
             }
         };
         mapper.addConverter(myConverter);
@@ -332,7 +329,19 @@ public class WebDtoMapper {
                     target = new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), mapper.map(firstRegle, SimpleRule.class));
                     if (source.getTypesDoc() != null)
                         target.setFamillesDocuments(getFamilleDocument(source.getTypesDoc()));
-
+                    if (source.getTypesThese() != null) {
+                        if (source.getTypesThese().stream().filter(tt ->  EnumUtils.isValidEnum(TypeThese.class, tt)).count() == 0) {
+                            StringBuilder message = new StringBuilder("Les types de thèses ne peuvent prendre que les valeurs ");
+                            int j = 0;
+                            for (TypeThese tt : TypeThese.values()) {
+                                message.append(tt.toString());
+                                if (j++ < (TypeThese.values().length - 1))
+                                    message.append("|");
+                            }
+                            throw new IllegalArgumentException(message.toString());
+                        }
+                        target.setTypesThese(getTypeThese(source.getTypesThese()));
+                    }
                     while (reglesIt.hasNext()) {
                         SimpleRuleWebDto otherRegle = reglesIt.next();
                         if (otherRegle.getBooleanOperator() == null) {
@@ -366,7 +375,12 @@ public class WebDtoMapper {
                 source.getResultRules().forEach(resultRules -> {
                     ResultRulesResponseDto resultRulesResponseDto;
                     if (resultRules.getFamilleDocument() != null) {
-                        resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());
+                        if (resultRules.getTypeThese() != null) {
+                            resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), "Thèse", resultRules.getMessages());
+                        }
+                        else {
+                            resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());
+                        }
                     } else {
                         resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getMessages());
                     }
@@ -468,6 +482,17 @@ public class WebDtoMapper {
             familleDocumentSet.add(new FamilleDocument(typeDocument));
         }
         return familleDocumentSet;
+    }
+
+    private Set<TypeThese> getTypeThese(List<String> types) {
+        Set<TypeThese> typeTheseSet = new HashSet<>();
+        for (String type : types) {
+            if (("REPRO").equals(type))
+                typeTheseSet.add(TypeThese.REPRO);
+            if (("SOUTENANCE").equals(type))
+                typeTheseSet.add(TypeThese.SOUTENANCE);
+        }
+        return typeTheseSet;
     }
 
     private void checkSimpleRule(SimpleRuleWebDto source) {

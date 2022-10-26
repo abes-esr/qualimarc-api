@@ -1,0 +1,7 @@
+<record>
+    <leader>     cam0 22        450 </leader>
+    <controlfield tag="001">222222222</controlfield>
+    <datafield tag="105" ind1=" " ind2=" ">
+        <subfield code="a">     v     </subfield>
+    </datafield>
+</record>

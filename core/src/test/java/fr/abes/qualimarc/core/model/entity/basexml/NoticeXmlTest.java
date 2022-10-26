@@ -7,6 +7,7 @@ import fr.abes.qualimarc.core.model.entity.notice.Controlfield;
 import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.notice.SubField;
+import fr.abes.qualimarc.core.utils.TypeThese;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ class NoticeXmlTest {
     }
 
     @Test
-    void getTheseSoutenance() {
+    void checkTheseSoutenance() {
         NoticeXml notice = new NoticeXml();
         List<Datafield> datafields = new ArrayList<>();
         Datafield datafield = new Datafield();
@@ -38,14 +39,17 @@ class NoticeXmlTest {
         datafield.setSubFields(subFields);
         datafields.add(datafield);
         notice.setDatafields(datafields);
-        Assertions.assertTrue(notice.isTheseSoutenance());
+        Assertions.assertEquals(TypeThese.SOUTENANCE, notice.getTypeThese());
 
         subField.setValue("       7  ");
-        Assertions.assertTrue(notice.isTheseSoutenance());
+        Assertions.assertEquals(TypeThese.SOUTENANCE, notice.getTypeThese());
+
+        subField.setValue("");
+        Assertions.assertEquals(null, notice.getTypeThese());
     }
 
     @Test
-    void getTheseRepro() {
+    void checkTheseRepro() {
         NoticeXml notice = new NoticeXml();
         notice.setLeader("");
         List<Datafield> datafields = new ArrayList<>();
@@ -59,14 +63,14 @@ class NoticeXmlTest {
         datafield.setSubFields(subFields);
         datafields.add(datafield);
         notice.setDatafields(datafields);
-        Assertions.assertTrue(notice.isTheseRepro());
+        Assertions.assertEquals(TypeThese.REPRO, notice.getTypeThese());
 
         subField.setValue("       v  ");
-        Assertions.assertTrue(notice.isTheseRepro());
+        Assertions.assertEquals(TypeThese.REPRO, notice.getTypeThese());
 
 
         subField.setValue("");
-        Assertions.assertFalse(notice.isTheseRepro());
+        Assertions.assertEquals(null, notice.getTypeThese());
     }
 
     @Test

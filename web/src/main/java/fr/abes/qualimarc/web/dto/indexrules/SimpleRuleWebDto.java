@@ -48,6 +48,9 @@ public abstract class SimpleRuleWebDto {
     @JsonProperty("type-doc")
     protected List<@Pattern(regexp = "\\b([A-Z]{0,2}){0,}\\b", message = "Le champ message ne peut contenir qu'une ou deux lettre(s) majuscule(s).") String> typesDoc = new ArrayList<>();
 
+    @JsonProperty("type-these")
+    private List<@Pattern(regexp = "REPRO|SOUTENANCE", message = "Le champ type-these ne peut prendre que les valeurs SOUTENANCE ou REPRO") String> typesThese = new ArrayList<>();
+
     @JsonProperty("zone")
     @Pattern(regexp = "\\b([A-Z]{0,1}[0-9]{3})\\b", message = "Le champ zone doit contenir : soit trois chiffres, soit une lettre majuscule suivie de trois chiffres.")
     @NotNull(message = "Le champ zone est obligatoire")
@@ -73,13 +76,15 @@ public abstract class SimpleRuleWebDto {
                             @JsonProperty("message") String message,
                             @JsonProperty("zone") String zone,
                             @JsonProperty("priorite") String priority,
-                            @JsonProperty("type-doc") List<String> typesDoc) {
+                            @JsonProperty("type-doc") List<String> typesDoc,
+                            @JsonProperty("type-these") List<String> typesThese) {
         this.id = id;
         this.idExcel = idExcel;
         this.message = message;
         this.zone = zone;
         this.priority = priority;
         this.typesDoc = typesDoc;
+        this.typesThese = typesThese;
     }
 
     /**
