@@ -44,6 +44,6 @@ public class ReferenceService {
     }
 
     public List<String> getZonesGeneriques(String zone) {
-        return this.zoneGeneriqueRepository.findAllByZoneGenerique(zone);
+        return this.zoneGeneriqueRepository.getZoneGeneriqueZoneByZoneGenerique(zone);
     }
 }

@@ -28,6 +28,11 @@ public class PresenceSousZonesMemeZoneWebDto extends SimpleRuleWebDto {
         this.sousZones = new LinkedList<>();
     }
 
+    public PresenceSousZonesMemeZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, List<SousZoneOperatorWebDto> sousZones) {
+        super(id, idExcel, message, zone, priority, typesDoc, typesThese);
+        this.sousZones = sousZones;
+    }
+
     public PresenceSousZonesMemeZoneWebDto(Integer id, String zone, String booleanOperator) {
         super(id, zone, booleanOperator);
         this.sousZones = new LinkedList<>();
