@@ -10,8 +10,6 @@ insert into FAMILLEDOCUMENT(FAMILLEDOCUMENT_ID, LIBELLE) values ('G', 'Musique')
 insert into FAMILLEDOCUMENT(FAMILLEDOCUMENT_ID, LIBELLE) values ('M', 'Partition');
 insert into FAMILLEDOCUMENT(FAMILLEDOCUMENT_ID, LIBELLE) values ('BD', 'Ressource continue');
 insert into FAMILLEDOCUMENT(FAMILLEDOCUMENT_ID, LIBELLE) values ('A', 'Monographie');
-insert into FAMILLEDOCUMENT(FAMILLEDOCUMENT_ID, LIBELLE) values ('TS', 'Thèse soutenance');
-insert into FAMILLEDOCUMENT(FAMILLEDOCUMENT_ID, LIBELLE) values ('TR', 'Thèse reproduction');
 insert into FAMILLEDOCUMENT(FAMILLEDOCUMENT_ID, LIBELLE) values ('PC', 'Partie composante');
 
 insert into RULESSET(RULESET_ID, LIBELLE) values (1, 'Zones 210/214 (publication, production, diffusion)');

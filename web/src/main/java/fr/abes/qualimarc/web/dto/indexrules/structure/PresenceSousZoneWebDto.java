@@ -27,8 +27,8 @@ public class PresenceSousZoneWebDto extends SimpleRuleWebDto {
 
     public boolean isPresent() {return this.isPresent;}
 
-    public PresenceSousZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZone, boolean isPresent) {
-        super(id, idExcel, message, zone, priority, typesDoc);
+    public PresenceSousZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, boolean isPresent) {
+        super(id, idExcel, message, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
         this.isPresent = isPresent;
     }

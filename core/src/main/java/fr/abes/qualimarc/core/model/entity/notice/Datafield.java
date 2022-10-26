@@ -21,4 +21,9 @@ public class Datafield {
 
     @JacksonXmlProperty(localName = "subfield")
     private List<SubField> subFields;
+
+    @Override
+    public String toString() {
+        return "Datafield : [" + tag + "] [" + ind1 + ind2 + "]";
+    }
 }

@@ -1,6 +1,7 @@
 package fr.abes.qualimarc.core.model.resultats;
 
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
+import fr.abes.qualimarc.core.utils.TypeThese;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,7 @@ public class ResultRules {
     private String dateModification;
     private String rcr;
     private FamilleDocument familleDocument;
+    private TypeThese typeThese;
     private String titre;
     private String auteur;
     private String isbn;

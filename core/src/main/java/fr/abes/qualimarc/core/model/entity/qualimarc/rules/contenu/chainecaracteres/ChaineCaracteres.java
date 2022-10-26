@@ -22,12 +22,13 @@ public class ChaineCaracteres implements Serializable {
 
     @Id
     @Column(name = "ID")
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "POSITION")
+    private Integer position;
+
     @Column(name= "BOOLEAN_OPERATOR")
-    @NotNull
     private BooleanOperateur booleanOperateur;
 
     @Column(name = "CHAINE_CARACTERES")
@@ -38,7 +39,24 @@ public class ChaineCaracteres implements Serializable {
     @JoinColumn(name = "ID_CHAINE_CARACTERES")
     private PresenceChaineCaracteres presenceChaineCaracteres;
 
-    public ChaineCaracteres(BooleanOperateur booleanOperateur, String chaineCaracteres) {
+    /**
+     * Constructeur sans opérateur
+     * @param position position de la chaine de caractères dans la liste de chaines de caractères
+     * @param chaineCaracteres chaines de caractères à rechercher
+     */
+    public ChaineCaracteres(int position, String chaineCaracteres) {
+        this.position = position;
+        this.chaineCaracteres = chaineCaracteres;
+    }
+
+    /**
+     * Constructeur avec opérateur
+     * @param position position de la chaine de caractères dans la liste de chaines de caractères
+     * @param booleanOperateur opérateur logique pour l'enchainement des chaines de caractères
+     * @param chaineCaracteres chaines de caractères à rechercher
+     */
+    public ChaineCaracteres(int position, BooleanOperateur booleanOperateur, String chaineCaracteres) {
+        this.position = position;
         this.booleanOperateur = booleanOperateur;
         this.chaineCaracteres = chaineCaracteres;
     }
