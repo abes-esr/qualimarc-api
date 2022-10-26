@@ -2,8 +2,11 @@ package fr.abes.qualimarc.web.dto.indexrules;
 
 import com.fasterxml.jackson.annotation.*;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.TypeCaractere;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.Getter;
 
@@ -23,7 +26,9 @@ import java.util.List;
         @JsonSubTypes.Type(value = PositionSousZoneWebDto.class, name="positionsouszone"),
         @JsonSubTypes.Type(value = PresenceSousZonesMemeZoneWebDto.class, name="presencesouszonesmemezone"),
         @JsonSubTypes.Type(value = IndicateurWebDto.class, name="indicateur"),
-        @JsonSubTypes.Type(value = NombreCaracteresWebDto.class, name = "nombrecaractere")
+        @JsonSubTypes.Type(value = NombreCaracteresWebDto.class, name = "nombrecaractere"),
+        @JsonSubTypes.Type(value = TypeCaractereWebDto.class, name = "typecaractere"),
+        @JsonSubTypes.Type(value = PresenceChaineCaracteresWebDto.class, name="presencechainecaracteres")
 })
 public abstract class SimpleRuleWebDto {
 
@@ -44,6 +49,9 @@ public abstract class SimpleRuleWebDto {
 
     @JsonProperty("type-doc")
     protected List<@Pattern(regexp = "\\b([A-Z]{0,2}){0,}\\b", message = "Le champ message ne peut contenir qu'une ou deux lettre(s) majuscule(s).") String> typesDoc = new ArrayList<>();
+
+    @JsonProperty("type-these")
+    private List<@Pattern(regexp = "REPRO|SOUTENANCE", message = "Le champ type-these ne peut prendre que les valeurs SOUTENANCE ou REPRO") String> typesThese = new ArrayList<>();
 
     @JsonProperty("zone")
     @Pattern(regexp = "\\b([A-Z]{0,1}[0-9]{3})\\b", message = "Le champ zone doit contenir : soit trois chiffres, soit une lettre majuscule suivie de trois chiffres.")
@@ -70,13 +78,15 @@ public abstract class SimpleRuleWebDto {
                             @JsonProperty("message") String message,
                             @JsonProperty("zone") String zone,
                             @JsonProperty("priorite") String priority,
-                            @JsonProperty("type-doc") List<String> typesDoc) {
+                            @JsonProperty("type-doc") List<String> typesDoc,
+                            @JsonProperty("type-these") List<String> typesThese) {
         this.id = id;
         this.idExcel = idExcel;
         this.message = message;
         this.zone = zone;
         this.priority = priority;
         this.typesDoc = typesDoc;
+        this.typesThese = typesThese;
     }
 
     /**

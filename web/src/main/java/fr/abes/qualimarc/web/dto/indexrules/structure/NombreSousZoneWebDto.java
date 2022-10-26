@@ -1,12 +1,9 @@
 package fr.abes.qualimarc.web.dto.indexrules.structure;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
@@ -33,8 +30,8 @@ public class NombreSousZoneWebDto extends SimpleRuleWebDto {
     @NotNull(message = "Le champ souszonecible est obligatoire")
     private String sousZoneCible;
 
-    public NombreSousZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, String sousZone, String zoneCible, String sousZoneCible) {
-        super(id, idExcel, message, zone, priority, typesDoc);
+    public NombreSousZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String zoneCible, String sousZoneCible) {
+        super(id, idExcel, message, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;

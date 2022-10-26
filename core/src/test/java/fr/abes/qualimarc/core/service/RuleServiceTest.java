@@ -10,14 +10,18 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
+import fr.abes.qualimarc.core.model.resultats.ResultRule;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
+import fr.abes.qualimarc.core.utils.TypeThese;
 import org.apache.commons.io.IOUtils;
+import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,14 +61,18 @@ class RuleServiceTest {
     @Value("classpath:checkRulesDeletedPpn.xml")
     Resource xmlFileNoticeDeleted;
 
-    @Value("classpath:theseMono.xml")
-    Resource xmlTheseMono;
+    @Value("classpath:theseSout.xml")
+    Resource xmlTheseSout;
+
+    @Value("classpath:theseRepro.xml")
+    Resource xmlTheseRepro;
 
     NoticeXml notice1;
     NoticeXml notice2;
     NoticeXml notice3;
     NoticeXml noticeDeleted;
-    NoticeXml theseMono;
+    NoticeXml theseSout;
+    NoticeXml theseRepro;
 
     Set<ComplexRule> listeRegles;
 
@@ -88,13 +96,18 @@ class RuleServiceTest {
         xml = IOUtils.toString(new FileInputStream(xmlFileNoticeDeleted.getFile()), StandardCharsets.UTF_8);
         noticeDeleted = xmlMapper.readValue(xml, NoticeXml.class);
 
-        xml = IOUtils.toString(new FileInputStream(xmlTheseMono.getFile()), StandardCharsets.UTF_8);
-        theseMono = xmlMapper.readValue(xml, NoticeXml.class);
+        xml = IOUtils.toString(new FileInputStream(xmlTheseSout.getFile()), StandardCharsets.UTF_8);
+        theseSout = xmlMapper.readValue(xml, NoticeXml.class);
+
+        xml = IOUtils.toString(new FileInputStream(xmlTheseRepro.getFile()), StandardCharsets.UTF_8);
+        theseRepro = xmlMapper.readValue(xml, NoticeXml.class);
 
         Set<FamilleDocument> familleDoc1 = new HashSet<>();
         familleDoc1.add(new FamilleDocument("A", "Monographie"));
 
-        listeRegles.add(new ComplexRule(1, "La zone 010 est présente", Priority.P1, familleDoc1, new PresenceZone(1, "010", true)));
+        Set<TypeThese> typesThese = new HashSet<>();
+        typesThese.add(TypeThese.REPRO);
+        listeRegles.add(new ComplexRule(1, "La zone 010 est présente", Priority.P1, familleDoc1, typesThese, new PresenceZone(1, "010", true)));
         listeRegles.add(new ComplexRule(2, "La zone 011 est absente", Priority.P1, new PresenceZone(2, "011", false)));
         listeRegles.add(new ComplexRule(3, "La zone 012 est présente", Priority.P1, new PresenceZone(3, "012",  true)));
     }
@@ -126,15 +139,21 @@ class RuleServiceTest {
 
         ResultRules result1 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("111111111")).findFirst().get();
         Assertions.assertEquals("BD", result1.getFamilleDocument().getId());
+        Assertions.assertEquals(TypeThese.REPRO, result1.getTypeThese());
         Assertions.assertEquals(0, result1.getMessages().size());
-        Assertions.assertEquals(1, result1.getDetailErreurs().size());
-        Assertions.assertEquals("La zone 011 est absente", result1.getDetailErreurs().get(0).getMessage());
-        Assertions.assertEquals("011",result1.getDetailErreurs().get(0).getZonesUnm().get(0));
+        Assertions.assertEquals(2, result1.getDetailErreurs().size());
+        result1.getDetailErreurs().sort(Comparator.comparing(o -> o.getZonesUnm().get(0)));
+        Assertions.assertEquals("La zone 011 est absente", result1.getDetailErreurs().get(1).getMessage());
+        Assertions.assertEquals("011",result1.getDetailErreurs().get(1).getZonesUnm().get(0));
+        Assertions.assertEquals(1, result1.getDetailErreurs().get(1).getZonesUnm().size());
+        Assertions.assertEquals(Priority.P1,result1.getDetailErreurs().get(1).getPriority());
+        Assertions.assertEquals("La zone 010 est présente", result1.getDetailErreurs().get(0).getMessage());
+        Assertions.assertEquals("010",result1.getDetailErreurs().get(0).getZonesUnm().get(0));
         Assertions.assertEquals(1, result1.getDetailErreurs().get(0).getZonesUnm().size());
         Assertions.assertEquals(Priority.P1,result1.getDetailErreurs().get(0).getPriority());
 
         ResultRules result3 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("333333333")).findFirst().get();
-        Assertions.assertEquals("O", result3.getFamilleDocument().getId());
+        Assertions.assertEquals("BD", result3.getFamilleDocument().getId());
         Assertions.assertEquals(0, result3.getMessages().size());
         Assertions.assertEquals(2, result3.getDetailErreurs().size());
         Assertions.assertTrue(result3.getDetailErreurs().stream().anyMatch(r -> r.getMessage().equals("La zone 012 est présente")));
@@ -207,23 +226,29 @@ class RuleServiceTest {
 
     @Test
     void testIsRuleAppliedToNotice() {
-        //cas ou la règle et la notice n'ont pas le même type de document
-        Assertions.assertFalse(service.isRuleAppliedToNotice(notice1, listeRegles.stream().filter(rule -> rule.getId().equals(1)).findFirst().get()));
-        //cas ou là règle et la notice ont le même type de doc "Monographie"
-        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, listeRegles.stream().filter(rule -> rule.getId().equals(1)).findFirst().get()));
-        //cas ou la règle n'a pas de type de document spécifique -> s'applique à toutes les notices
-        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
-
-        //cas ou la règle porte sur les thèses de soutenance, et la notice aussi
-        Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, listeRegles.stream().filter(rule -> rule.getId().equals(2)).findFirst().get()));
-
-        Set<FamilleDocument> typesDoc1 = new HashSet<>();
-        typesDoc1.add(new FamilleDocument("TS", "Thèse de soutenance"));
-
-        ComplexRule rule = new ComplexRule(1, "La zone 010 est présente",  Priority.P1, typesDoc1, new PresenceZone(1, "010", true));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(theseMono, rule));
-
+        //Notice 1 est de type ressource continue
+        //Notice 2 est de type Monographie
+        //theseElec est de type Ressource continue et est une thèse de soutenance
+        //theseRepro est de type Monographie et est une thèse de reproduction
+        Set<TypeThese> setThesesRepro = new HashSet<>();
+        setThesesRepro.add(TypeThese.REPRO);
+        Set<TypeThese> setThesesSout = new HashSet<>();
+        setThesesSout.add(TypeThese.SOUTENANCE);
+        Set<FamilleDocument> setTypeResContinue = new HashSet<>();
+        setTypeResContinue.add(new FamilleDocument("BD", "RessourceContinue"));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesSout, new PresenceZone())));
+        Assertions.assertFalse(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertFalse(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertFalse(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, setThesesRepro, new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, setThesesSout, new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, setThesesSout, new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), new PresenceZone())));
     }
 
 
@@ -285,7 +310,7 @@ class RuleServiceTest {
         Set<FamilleDocument> typesDoc = new HashSet<>();
         typesDoc.add(new FamilleDocument("B", "Audiovisuel"));
         Set<ComplexRule> rules = new HashSet<>();
-        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, typesDoc, new PresenceZone(1, "010", true)));
+        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, typesDoc, null, new PresenceZone(1, "010", true)));
 
         Mockito.when(complexRulesRepository.findByFamillesDocuments(Mockito.any())).thenReturn(rules);
 
@@ -325,7 +350,7 @@ class RuleServiceTest {
         typesDoc.add(new FamilleDocument("B", "Audiovisuel"));
 
         ComplexRule rule1 = new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010", true));
-        ComplexRule rule2 = new ComplexRule(2, "Zone 200 obligatoire", Priority.P1, typesDoc, new PresenceZone(2, "200", true));
+        ComplexRule rule2 = new ComplexRule(2, "Zone 200 obligatoire", Priority.P1, typesDoc, null, new PresenceZone(2, "200", true));
 
         //déclaration du set de rule utilisé pour vérifier le résultat de l'appel à la méthode testée
         Set<ComplexRule> rulesIn = new HashSet<>();
