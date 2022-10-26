@@ -12,8 +12,11 @@ insert into FAMILLEDOCUMENT(FAMILLEDOCUMENT_ID, LIBELLE) values ('BD', 'Ressourc
 insert into FAMILLEDOCUMENT(FAMILLEDOCUMENT_ID, LIBELLE) values ('A', 'Monographie');
 insert into FAMILLEDOCUMENT(FAMILLEDOCUMENT_ID, LIBELLE) values ('PC', 'Partie composante');
 
-insert into RULESSET(RULESET_ID, LIBELLE) values (1, 'Zones 210/214 (publication, production, diffusion)');
-insert into RULESSET(RULESET_ID, LIBELLE) values (2, 'Implémentations UNM 2022');
-insert into RULESSET(RULESET_ID, LIBELLE) values (3, 'Translittération (présence $6, $7)');
-insert into RULESSET(RULESET_ID, LIBELLE) values (4, 'Zones de données codées (1XX)');
-insert into RULESSET(RULESET_ID, LIBELLE) values (5, 'Zones d''indexation-matière (6XX)');
+insert into RULESSET(RULESET_ID, LIBELLE) values (1, 'Données codées (1XX)');
+insert into RULESSET(RULESET_ID, LIBELLE) values (2, 'Indexation-matière (6XX)');
+insert into RULESSET(RULESET_ID, LIBELLE) values (3, 'Liens ($0/$3)');
+insert into RULESSET(RULESET_ID, LIBELLE) values (4, 'Informations descriptives (2XX)');
+insert into RULESSET(RULESET_ID, LIBELLE) values (5, 'Translittération ($6/$7)');
+insert into RULESSET(RULESET_ID, LIBELLE) values (6, 'Dates');
+insert into RULESSET(RULESET_ID, LIBELLE) values (7, 'Responsabilités (7XX)');
+insert into RULESSET(RULESET_ID, LIBELLE) values (5, 'Nouvelles implémentations Unimarc');
