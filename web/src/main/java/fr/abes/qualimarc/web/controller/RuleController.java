@@ -3,6 +3,7 @@ package fr.abes.qualimarc.web.controller;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
+import fr.abes.qualimarc.core.service.ReferenceService;
 import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
@@ -11,6 +12,7 @@ import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.ListComplexRulesWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.ListRulesWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.structure.PresenceZoneWebDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
@@ -35,6 +37,9 @@ public class RuleController {
 
     @Autowired
     private RuleService ruleService;
+
+    @Autowired
+    private ReferenceService referenceService;
 
     @Autowired
     private UtilsMapper mapper;
@@ -63,6 +68,14 @@ public class RuleController {
     private List<ComplexRule> handleRulesWebDto(ListRulesWebDto rules) {
         List<ComplexRule> rulesEntity = new ArrayList<>();
         for (SimpleRuleWebDto rule : rules.getRules()) {
+            List<String> zonesGeneriques = referenceService.getZonesGeneriques(rule.getZone());
+            if (zonesGeneriques.size() > 0) {
+                for (String zoneGenerique : zonesGeneriques) {
+                    if (rule instanceof PresenceZoneWebDto)
+                        rulesEntity.add(mapper.map(new PresenceZoneWebDto(rule.getId(), rule.getIdExcel(), rule.getMessage(), zoneGenerique, rule.getPriority(), rule.getTypesDoc(), ((PresenceZoneWebDto) rule).isPresent()), ComplexRule.class));
+                }
+
+            }
             rulesEntity.add(mapper.map(rule, ComplexRule.class));
         }
         return rulesEntity;
