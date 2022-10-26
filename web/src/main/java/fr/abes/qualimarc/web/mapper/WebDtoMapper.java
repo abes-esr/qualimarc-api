@@ -195,7 +195,7 @@ public class WebDtoMapper {
                 PresenceChaineCaracteresWebDto source = context.getSource();
                 checkSimpleRule(source);
                 PresenceChaineCaracteres target = constructPresenceChaineCaracteres(source);
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), target);
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), target);
             }
         };
         mapper.addConverter(myConverter);
