@@ -7,6 +7,8 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.TypeCaractere;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.NombreCaracteres;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.souszoneoperator.SousZoneOperator;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
@@ -19,6 +21,7 @@ import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.EnumUtils;
@@ -28,6 +31,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class WebDtoMapper {
@@ -181,7 +185,21 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
-
+    /**
+     * Convertion d'un modèle PresenceChaineCaracteresWebDto en modèle ComplexRule
+     */
+    @Bean
+    public void converterPresenceChaineCaracteres() {
+        Converter<PresenceChaineCaracteresWebDto, ComplexRule> myConverter = new Converter<PresenceChaineCaracteresWebDto, ComplexRule>() {
+            public ComplexRule convert(MappingContext<PresenceChaineCaracteresWebDto, ComplexRule> context) {
+                PresenceChaineCaracteresWebDto source = context.getSource();
+                checkSimpleRule(source);
+                PresenceChaineCaracteres target = constructPresenceChaineCaracteres(source);
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), target);
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
 
     /**
      * Convertion d'un modèle PresenceZoneWebDto en modèle SimpleRule
@@ -283,6 +301,17 @@ public class WebDtoMapper {
         };
         mapper.addConverter(myConverter);
     }
+
+    @Bean
+    public void converterPresenceChaineCaracteresToSimple() {
+        Converter<PresenceChaineCaracteresWebDto, SimpleRule> myConverter = new Converter<PresenceChaineCaracteresWebDto, SimpleRule>() {
+            public SimpleRule convert(MappingContext<PresenceChaineCaracteresWebDto, SimpleRule> context) {
+                return constructPresenceChaineCaracteres(context.getSource());
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
 
     /**
      * Convertion d'un modèle IndicateurWebDto en modèle SimpleRule
@@ -417,6 +446,28 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
+    /**
+     * Création d'un objet PresenceChaineCaracteres à partir des données issues d'un objet PresenceChaineCaracteresWebDto
+     * @param source PresenceChaineCaracteresWebDto
+     * @return PresenceChaineCaracteres
+     */
+    private PresenceChaineCaracteres constructPresenceChaineCaracteres(PresenceChaineCaracteresWebDto source) {
+        PresenceChaineCaracteres target = new PresenceChaineCaracteres(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeDeVerification()));
+        if (source.getListChaineCaracteres() != null || source.getListChaineCaracteres().size() > 0 || !source.getListChaineCaracteres().isEmpty()) {
+            int i = 0;
+            for (PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaine : source.getListChaineCaracteres()) {
+                if (chaine.getOperateur() == null || chaine.getOperateur().isEmpty()) {
+                    target.addChaineCaracteres(new ChaineCaracteres(i, chaine.getChaineCaracteres()));
+                    i++;
+                } else if (chaine.getOperateur() != null || !chaine.getOperateur().isEmpty()) {
+                    target.addChaineCaracteres(new ChaineCaracteres(i, getOperateur(chaine.getOperateur()), chaine.getChaineCaracteres()));
+                    i++;
+                }
+            }
+        }
+        return target;
+    }
+
     private PresenceSousZonesMemeZone constructPresenceSousZonesMemeZone(PresenceSousZonesMemeZoneWebDto source) {
         PresenceSousZonesMemeZone target = new PresenceSousZonesMemeZone(source.getId(), source.getZone());
         if (source.getSousZones().size() < 2) {
@@ -448,6 +499,21 @@ public class WebDtoMapper {
             return Priority.P2;
         }
         return Priority.P1;
+    }
+
+    private EnumTypeVerification getTypeDeVerification(String typeDeVerification) {
+        switch (typeDeVerification) {
+            case "STRICTEMENT":
+                return EnumTypeVerification.STRICTEMENT;
+            case "COMMENCE":
+                return EnumTypeVerification.COMMENCE;
+            case "TERMINE":
+                return EnumTypeVerification.TERMINE;
+            case "CONTIENT":
+                return EnumTypeVerification.CONTIENT;
+            default:
+                return EnumTypeVerification.CONTIENT;
+        }
     }
 
     private BooleanOperateur getOperateur(String operateur) {

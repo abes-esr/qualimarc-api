@@ -6,6 +6,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.TypeCaractere
 import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.Getter;
 
@@ -26,7 +27,8 @@ import java.util.List;
         @JsonSubTypes.Type(value = PresenceSousZonesMemeZoneWebDto.class, name="presencesouszonesmemezone"),
         @JsonSubTypes.Type(value = IndicateurWebDto.class, name="indicateur"),
         @JsonSubTypes.Type(value = NombreCaracteresWebDto.class, name = "nombrecaractere"),
-        @JsonSubTypes.Type(value = TypeCaractereWebDto.class, name = "typecaractere")
+        @JsonSubTypes.Type(value = TypeCaractereWebDto.class, name = "typecaractere"),
+        @JsonSubTypes.Type(value = PresenceChaineCaracteresWebDto.class, name="presencechainecaracteres")
 })
 public abstract class SimpleRuleWebDto {
 

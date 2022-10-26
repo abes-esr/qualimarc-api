@@ -6,7 +6,6 @@ import fr.abes.qualimarc.core.configuration.BaseXMLConfiguration;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.utils.Operateur;
-import fr.abes.qualimarc.core.utils.Priority;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
