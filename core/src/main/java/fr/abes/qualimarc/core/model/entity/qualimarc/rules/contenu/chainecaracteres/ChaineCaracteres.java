@@ -44,9 +44,10 @@ public class ChaineCaracteres implements Serializable {
      * @param position position de la chaine de caractères dans la liste de chaines de caractères
      * @param chaineCaracteres chaines de caractères à rechercher
      */
-    public ChaineCaracteres(int position, String chaineCaracteres) {
+    public ChaineCaracteres(int position, String chaineCaracteres, PresenceChaineCaracteres presenceChaineCaracteres) {
         this.position = position;
         this.chaineCaracteres = chaineCaracteres;
+        this.presenceChaineCaracteres = presenceChaineCaracteres;
     }
 
     /**
@@ -55,9 +56,10 @@ public class ChaineCaracteres implements Serializable {
      * @param booleanOperateur opérateur logique pour l'enchainement des chaines de caractères
      * @param chaineCaracteres chaines de caractères à rechercher
      */
-    public ChaineCaracteres(int position, BooleanOperateur booleanOperateur, String chaineCaracteres) {
+    public ChaineCaracteres(int position, BooleanOperateur booleanOperateur, String chaineCaracteres, PresenceChaineCaracteres presenceChaineCaracteres) {
         this.position = position;
         this.booleanOperateur = booleanOperateur;
         this.chaineCaracteres = chaineCaracteres;
+        this.presenceChaineCaracteres = presenceChaineCaracteres;
     }
 }
