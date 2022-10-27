@@ -24,8 +24,8 @@ public class IndicateurWebDto extends SimpleRuleWebDto {
     @JsonProperty("valeur")
     private String valeur;
 
-    public IndicateurWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, Integer indicateur, String valeur) {
-        super(id, idExcel, message, zone, priority, typesDoc, typesThese);
+    public IndicateurWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, Integer indicateur, String valeur) {
+        super(id, idExcel, ruleSetList, message, zone, priority, typesDoc, typesThese);
         this.indicateur = indicateur;
         this.valeur = valeur;
     }

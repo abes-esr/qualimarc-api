@@ -1,19 +1,15 @@
 package fr.abes.qualimarc.web.dto.indexrules;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import fr.abes.qualimarc.core.utils.Priority;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class ComplexRuleWebDto {
@@ -23,6 +19,9 @@ public class ComplexRuleWebDto {
 
     @JsonProperty("id-excel")
     private Integer idExcel;
+
+    @JsonProperty("rule-set-id")
+    private List<Integer> ruleSetList;
 
     @JsonProperty("message")
     @NotNull(message = "Le champ message est obligatoire")
