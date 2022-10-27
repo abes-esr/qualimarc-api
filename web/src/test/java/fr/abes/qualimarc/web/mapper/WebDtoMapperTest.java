@@ -16,6 +16,8 @@ import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.RuleSetRepository;
 import fr.abes.qualimarc.core.utils.*;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
+import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
+import fr.abes.qualimarc.web.dto.RuleResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
@@ -90,10 +92,17 @@ public class WebDtoMapperTest {
 
         ResultAnalyseResponseDto responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
 
+        Optional<ResultRulesResponseDto> first1 = responseDto.getResultRules().stream().filter(r -> r.getPpn().equals("111111111")).findFirst();
+        Optional<ResultRulesResponseDto> first2 = responseDto.getResultRules().stream().filter(r -> r.getPpn().equals("888888888")).findFirst();
+        Optional<ResultRulesResponseDto> first3 = responseDto.getResultRules().stream().filter(r -> r.getPpn().equals("777777777")).findFirst();
+
         Assertions.assertEquals(3, responseDto.getResultRules().size());
-        Assertions.assertEquals(2, responseDto.getResultRules().stream().filter(r -> r.getPpn().equals("111111111")).findFirst().get().getMessages().size());
-        Assertions.assertEquals(3, responseDto.getResultRules().stream().filter(r -> r.getPpn().equals("888888888")).findFirst().get().getMessages().size());
-        Assertions.assertEquals(1, responseDto.getResultRules().stream().filter(r -> r.getPpn().equals("777777777")).findFirst().get().getMessages().size());
+        Assertions.assertTrue(first1.isPresent());
+        Assertions.assertTrue(first2.isPresent());
+        Assertions.assertTrue(first3.isPresent());
+        Assertions.assertEquals(2, first1.get().getMessages().size());
+        Assertions.assertEquals(3, first2.get().getMessages().size());
+        Assertions.assertEquals(1, first3.get().getMessages().size());
         Assertions.assertEquals(3, responseDto.getNbPpnErrones());
         Assertions.assertEquals(8, responseDto.getNbPpnAnalyses());
         Assertions.assertEquals(3, responseDto.getNbPpnInconnus());
@@ -135,8 +144,10 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(presenceZoneWebDto.getRuleSetList().get(0), new ArrayList<>(complexRule.getRuleSet()).get(0).getId());
         Assertions.assertEquals(presenceZoneWebDto.getPriority(), complexRule.getPriority().toString());
         Assertions.assertEquals(presenceZoneWebDto.getTypesDoc().size(), complexRule.getFamillesDocuments().size());
+        Assertions.assertTrue(complexRule.getFamillesDocuments().stream().findFirst().isPresent());
         Assertions.assertEquals(presenceZoneWebDto.getTypesDoc().get(0), complexRule.getFamillesDocuments().stream().findFirst().get().getId());
         Assertions.assertEquals(presenceZoneWebDto.getTypesThese().size(), complexRule.getTypesThese().size());
+        Assertions.assertTrue(complexRule.getTypesThese().stream().findFirst().isPresent());
         Assertions.assertEquals(presenceZoneWebDto.getTypesThese().get(0), complexRule.getTypesThese().stream().findFirst().get().toString());
         Assertions.assertEquals(presenceZoneWebDto.getId(), firstRule.getId());
         Assertions.assertEquals(presenceZoneWebDto.getZone(), firstRule.getZone());
@@ -183,8 +194,10 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(presenceSousZoneWebDto.getRuleSetList().get(0), new ArrayList<>(complexRule.getRuleSet()).get(0).getId());
         Assertions.assertEquals(presenceSousZoneWebDto.getPriority(), complexRule.getPriority().toString());
         Assertions.assertEquals(presenceSousZoneWebDto.getTypesDoc().size(), complexRule.getFamillesDocuments().size());
+        Assertions.assertTrue(complexRule.getFamillesDocuments().stream().findFirst().isPresent());
         Assertions.assertEquals(presenceSousZoneWebDto.getTypesDoc().get(0), complexRule.getFamillesDocuments().stream().findFirst().get().getId());
         Assertions.assertEquals(presenceSousZoneWebDto.getTypesThese().size(), complexRule.getTypesThese().size());
+        Assertions.assertTrue(complexRule.getTypesThese().stream().findFirst().isPresent());
         Assertions.assertEquals(presenceSousZoneWebDto.getTypesThese().get(0), complexRule.getTypesThese().stream().findFirst().get().toString());
         Assertions.assertEquals(presenceSousZoneWebDto.getSousZone(), firstRule.getSousZone());
         Assertions.assertEquals(presenceSousZoneWebDto.getId(), firstRule.getId());
@@ -239,8 +252,10 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(nombreZoneWebDto.getRuleSetList().get(0), new ArrayList<>(complexRule.getRuleSet()).get(0).getId());
         Assertions.assertEquals(nombreZoneWebDto.getPriority(), complexRule.getPriority().toString());
         Assertions.assertEquals(nombreZoneWebDto.getTypesDoc().size(), complexRule.getFamillesDocuments().size());
+        Assertions.assertTrue(complexRule.getFamillesDocuments().stream().findFirst().isPresent());
         Assertions.assertEquals(nombreZoneWebDto.getTypesDoc().get(0), complexRule.getFamillesDocuments().stream().findFirst().get().getId());
         Assertions.assertEquals(nombreZoneWebDto.getTypesThese().size(), complexRule.getTypesThese().size());
+        Assertions.assertTrue(complexRule.getTypesThese().stream().findFirst().isPresent());
         Assertions.assertEquals(nombreZoneWebDto.getTypesThese().get(0), complexRule.getTypesThese().stream().findFirst().get().toString());
         Assertions.assertEquals(nombreZoneWebDto.getOperateur(), firstRule.getOperateur());
         Assertions.assertEquals(nombreZoneWebDto.getOccurrences(), firstRule.getOccurrences());
@@ -287,8 +302,10 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(nombreSousZoneWebDto.getRuleSetList().get(0), new ArrayList<>(complexRule.getRuleSet()).get(0).getId());
         Assertions.assertEquals(nombreSousZoneWebDto.getPriority(), complexRule.getPriority().toString());
         Assertions.assertEquals(nombreSousZoneWebDto.getTypesDoc().size(), complexRule.getFamillesDocuments().size());
+        Assertions.assertTrue(complexRule.getFamillesDocuments().stream().findFirst().isPresent());
         Assertions.assertEquals(nombreSousZoneWebDto.getTypesDoc().get(0), complexRule.getFamillesDocuments().stream().findFirst().get().getId());
         Assertions.assertEquals(nombreSousZoneWebDto.getTypesThese().size(), complexRule.getTypesThese().size());
+        Assertions.assertTrue(complexRule.getTypesThese().stream().findFirst().isPresent());
         Assertions.assertEquals(nombreSousZoneWebDto.getTypesThese().get(0), complexRule.getTypesThese().stream().findFirst().get().toString());
         Assertions.assertEquals(nombreSousZoneWebDto.getSousZone(), firstRule.getSousZone());
         Assertions.assertEquals(nombreSousZoneWebDto.getZoneCible(), firstRule.getZoneCible());
@@ -337,8 +354,10 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(positionSousZoneWebDto.getRuleSetList().get(0), new ArrayList<>(complexRule.getRuleSet()).get(0).getId());
         Assertions.assertEquals(positionSousZoneWebDto.getPriority(), complexRule.getPriority().toString());
         Assertions.assertEquals(positionSousZoneWebDto.getTypesDoc().size(), complexRule.getFamillesDocuments().size());
+        Assertions.assertTrue(complexRule.getFamillesDocuments().stream().findFirst().isPresent());
         Assertions.assertEquals(positionSousZoneWebDto.getTypesDoc().get(0), complexRule.getFamillesDocuments().stream().findFirst().get().getId());
         Assertions.assertEquals(positionSousZoneWebDto.getTypesThese().size(), complexRule.getTypesThese().size());
+        Assertions.assertTrue(complexRule.getTypesThese().stream().findFirst().isPresent());
         Assertions.assertEquals(positionSousZoneWebDto.getTypesThese().get(0), complexRule.getTypesThese().stream().findFirst().get().toString());
         Assertions.assertEquals(positionSousZoneWebDto.getSousZone(), firstRule.getSousZone());
         Assertions.assertEquals(positionSousZoneWebDto.getPosition(), firstRule.getPosition());
@@ -412,8 +431,10 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(BooleanOperateur.ET, firstRule.getSousZoneOperators().get(1).getOperateur());
         Assertions.assertFalse(firstRule.getSousZoneOperators().get(1).isPresent());
         Assertions.assertEquals(rule5.getTypesDoc().size(), complexRule.getFamillesDocuments().size());
+        Assertions.assertTrue(complexRule.getFamillesDocuments().stream().findFirst().isPresent());
         Assertions.assertEquals(rule5.getTypesDoc().get(0), complexRule.getFamillesDocuments().stream().findFirst().get().getId());
         Assertions.assertEquals(rule5.getTypesThese().size(), complexRule.getTypesThese().size());
+        Assertions.assertTrue(complexRule.getTypesThese().stream().findFirst().isPresent());
         Assertions.assertEquals(rule5.getTypesThese().get(0), complexRule.getTypesThese().stream().findFirst().get().toString());
     }
 
@@ -456,8 +477,10 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(simpleRule.getIndicateur(), simpleRule.getIndicateur());
         Assertions.assertEquals(simpleRule.getValeur(), simpleRule.getValeur());
         Assertions.assertEquals(rule4.getTypesDoc().size(), complexRule.getFamillesDocuments().size());
+        Assertions.assertTrue(complexRule.getFamillesDocuments().stream().findFirst().isPresent());
         Assertions.assertEquals(rule4.getTypesDoc().get(0), complexRule.getFamillesDocuments().stream().findFirst().get().getId());
         Assertions.assertEquals(rule4.getTypesThese().size(), complexRule.getTypesThese().size());
+        Assertions.assertTrue(complexRule.getTypesThese().stream().findFirst().isPresent());
         Assertions.assertEquals(rule4.getTypesThese().get(0), complexRule.getTypesThese().stream().findFirst().get().toString());
     }
 
@@ -534,8 +557,10 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(ruleWebDto3.getOccurrences(), simpleRule.getOccurrences());
         Assertions.assertEquals(ruleWebDto3.getOperateur(), simpleRule.getOperateur());
         Assertions.assertEquals(ruleWebDto3.getTypesDoc().size(), complexRule.getFamillesDocuments().size());
+        Assertions.assertTrue(complexRule.getFamillesDocuments().stream().findFirst().isPresent());
         Assertions.assertEquals(ruleWebDto3.getTypesDoc().get(0), complexRule.getFamillesDocuments().stream().findFirst().get().getId());
         Assertions.assertEquals(ruleWebDto3.getTypesThese().size(), complexRule.getTypesThese().size());
+        Assertions.assertTrue(complexRule.getTypesThese().stream().findFirst().isPresent());
         Assertions.assertEquals(ruleWebDto3.getTypesThese().get(0), complexRule.getTypesThese().stream().findFirst().get().toString());
     }
 
@@ -684,10 +709,16 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(resultRules.getDateModification(), responseDto.getResultRules().get(0).getDateModification());
 
         Assertions.assertEquals(2,responseDto.getResultRules().get(0).getDetailerreurs().size());
-        Assertions.assertEquals("Message TEST",responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 1).findFirst().get().getMessage());
-        Assertions.assertEquals("Message TEST2",responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst().get().getMessage());
-        Assertions.assertEquals(Priority.P1.toString(),responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 1).findFirst().get().getPriority());
-        Assertions.assertEquals(Priority.P2.toString(),responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst().get().getPriority());
+
+        Optional<RuleResponseDto> first1 = responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 1).findFirst();
+        Optional<RuleResponseDto> first2 = responseDto.getResultRules().get(0).getDetailerreurs().stream().filter(ruleResponseDto -> ruleResponseDto.getId() == 2).findFirst();
+
+        Assertions.assertTrue(first1.isPresent());
+        Assertions.assertTrue(first2.isPresent());
+        Assertions.assertEquals("Message TEST",first1.get().getMessage());
+        Assertions.assertEquals("Message TEST2",first2.get().getMessage());
+        Assertions.assertEquals(Priority.P1.toString(),first1.get().getPriority());
+        Assertions.assertEquals(Priority.P2.toString(),first2.get().getPriority());
 
         //test où la notice est une thèse
         resultRules.setTypeThese(TypeThese.REPRO);
