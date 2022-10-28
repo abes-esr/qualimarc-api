@@ -92,13 +92,13 @@ public class ComplexRule implements Serializable {
         this.otherRules = otherRules;
     }
 
-    public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, SimpleRule firstRule) {
+    public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, Set<RuleSet> ruleSet, SimpleRule firstRule) {
         this.id = id;
         this.message = message;
         this.priority = priority;
         this.famillesDocuments = famillesDocuments;
         this.typesThese = typesThese;
-        this.ruleSet = new HashSet<>();
+        this.ruleSet = ruleSet;
         this.firstRule = firstRule;
         this.otherRules = new LinkedList<>();
     }
@@ -136,8 +136,8 @@ public class ComplexRule implements Serializable {
 
     /**
      * Retourne true si toutes les règles qui la composent sont valides
-     * @param notice
-     * @return
+     * @param notice notice au format xml
+     * @return boolean
      */
     public boolean isValid(NoticeXml notice) {
         boolean isValid = firstRule.isValid(notice);

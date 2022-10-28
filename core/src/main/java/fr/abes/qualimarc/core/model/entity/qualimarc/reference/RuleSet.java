@@ -2,7 +2,9 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.reference;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,5 +30,9 @@ public class RuleSet implements Serializable {
     public RuleSet(Integer id, String libelle) {
         this.id = id;
         this.libelle = libelle;
+    }
+
+    public RuleSet(Integer id) {
+        this.id = id;
     }
 }

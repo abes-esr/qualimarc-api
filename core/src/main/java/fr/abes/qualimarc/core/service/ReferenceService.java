@@ -32,7 +32,7 @@ public class ReferenceService {
     }
 
     public List<RuleSet> getTypesAnalyses() {
-        return ruleSetRepository.findAll();
+        return ruleSetRepository.findAllByRulesNotEmpty();
     }
 
     public FamilleDocument getFamilleDocument(String typeDocument) {
