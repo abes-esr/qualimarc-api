@@ -1,6 +1,8 @@
 package fr.abes.qualimarc.web.controller;
 
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.service.NoticeBibioService;
 import fr.abes.qualimarc.core.service.RuleService;
@@ -23,7 +25,9 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -46,7 +50,17 @@ public class RuleController {
 
     @PostMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResultAnalyseResponseDto checkPpn(@Valid @RequestBody PpnWithRuleSetsRequestDto requestBody) {
-        return mapper.map(ruleService.checkRulesOnNotices(requestBody.getPpnList(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), requestBody.getFamilleDocumentSet(), requestBody.getRuleSet())), ResultAnalyseResponseDto.class);
+
+        Set<RuleSet> ruleSets = new HashSet<>();
+        Set<FamilleDocument> familleDocuments =  new HashSet<>();
+
+        if ((requestBody.getFamilleDocumentSet()!= null) && (!requestBody.getFamilleDocumentSet().isEmpty())) {
+            familleDocuments = mapper.mapSet(requestBody.getFamilleDocumentSet(),FamilleDocument.class);
+        }
+        if ((requestBody.getRuleSet() != null) && (!requestBody.getRuleSet().isEmpty())){
+            ruleSets = mapper.mapSet(requestBody.getRuleSet(),RuleSet.class);
+        }
+        return mapper.map(ruleService.checkRulesOnNotices(requestBody.getPpnList(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, ruleSets)), ResultAnalyseResponseDto.class);
     }
 
     @PostMapping(value = "/indexRules", consumes = {"text/yaml", "text/yml"})

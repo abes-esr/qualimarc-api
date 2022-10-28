@@ -1,9 +1,9 @@
 package fr.abes.qualimarc.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
-import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
+import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
+import fr.abes.qualimarc.web.dto.reference.RuleSetWebDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,15 +23,8 @@ public class PpnWithRuleSetsRequestDto {
     private TypeAnalyse typeAnalyse;
 
     @JsonProperty("famillesDocuments")
-    private Set<FamilleDocument> familleDocumentSet;
+    private Set<FamilleDocumentWebDto> familleDocumentSet;
 
-    @JsonProperty("rules")
-    private Set<RuleSet> ruleSet;
-
-    public PpnWithRuleSetsRequestDto(List<String> ppnList, TypeAnalyse typeAnalyse, Set<FamilleDocument> familleDocumentSet, Set<RuleSet> ruleSet) {
-        this.ppnList = ppnList;
-        this.typeAnalyse = typeAnalyse;
-        this.familleDocumentSet = familleDocumentSet;
-        this.ruleSet= ruleSet;
-    }
+    @JsonProperty("ruleSet")
+    private Set<RuleSetWebDto> ruleSet;
 }

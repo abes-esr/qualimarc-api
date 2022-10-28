@@ -1,6 +1,5 @@
 package fr.abes.qualimarc.core.service;
 
-import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
 import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
@@ -28,7 +27,7 @@ public class ReferenceService {
         return familleDocumentRepository.findAll();
     }
 
-    public List<RuleSet> getTypesAnalyses() {
+    public List<RuleSet> getRuleSets() {
         return ruleSetRepository.findAllByRulesNotEmpty();
     }
 

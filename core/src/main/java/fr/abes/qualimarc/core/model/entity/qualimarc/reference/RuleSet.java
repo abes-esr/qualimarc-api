@@ -22,7 +22,7 @@ public class RuleSet {
     @Column(name = "LIBELLE")
     private String libelle;
 
-    @ManyToMany(mappedBy = "ruleSet", targetEntity = ComplexRule.class)
+    @ManyToMany(mappedBy = "ruleSet", targetEntity = ComplexRule.class, cascade = CascadeType.ALL)
     @JsonIgnore
     Set<ComplexRule> rules;
 
