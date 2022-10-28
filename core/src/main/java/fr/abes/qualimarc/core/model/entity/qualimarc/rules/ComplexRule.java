@@ -3,6 +3,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.dependance.Reciprocite;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeThese;
 import lombok.Getter;
@@ -136,10 +137,26 @@ public class ComplexRule implements Serializable {
 
     /**
      * Retourne true si toutes les règles qui la composent sont valides
-     * @param notice
+     * @param notices
      * @return
      */
-    public boolean isValid(NoticeXml notice) {
+    public boolean isValid(NoticeXml ... notices) {
+        switch (notices.length) {
+            case 0:
+                return false;
+            case 1 :
+                NoticeXml notice = Arrays.stream(notices).findFirst().get();
+                return isValidOneNotice(notice);
+            default :
+                return isValidTwoNotices(Arrays.stream(notices).findFirst().get(), Arrays.stream(notices).collect(Collectors.toList()).get(1));
+        }
+    }
+
+    private boolean isValidTwoNotices(NoticeXml notice, NoticeXml noticeLiee) {
+        return false;
+    }
+
+    private boolean isValidOneNotice(NoticeXml notice) {
         boolean isValid = firstRule.isValid(notice);
         for (LinkedRule linkedRule : otherRules.stream().sorted(Comparator.comparing(LinkedRule::getPosition)).collect(Collectors.toList())) {
             switch (linkedRule.getOperateur()) {
@@ -165,5 +182,23 @@ public class ComplexRule implements Serializable {
             liste.add(rule.getRule().getZones());
         });
         return liste;
+    }
+
+    public Map<String, String> getZoneFromDependencyRule() {
+        if (this.getFirstRule() instanceof Reciprocite) {
+            Map<String, String> mapZone = new HashMap<>();
+            mapZone.put(this.getFirstRule().getZone(), ((Reciprocite) this.getFirstRule()).getSousZoneSource());
+            mapZone.put(((Reciprocite) this.getFirstRule()).getZoneCible(), ((Reciprocite) this.getFirstRule()).getSousZoneCible());
+            return mapZone;
+        }
+        for (LinkedRule otherRules : this.getOtherRules()) {
+            if (otherRules.getRule() instanceof Reciprocite) {
+                Map<String, String> mapZone = new HashMap<>();
+                mapZone.put(otherRules.getRule().getZone(), ((Reciprocite) otherRules.getRule()).getSousZoneSource());
+                mapZone.put(((Reciprocite) otherRules.getRule()).getZoneCible(), ((Reciprocite) otherRules.getRule()).getSousZoneCible());
+                return mapZone;
+            }
+        }
+        return null;
     }
 }

@@ -85,12 +85,32 @@ public class RuleController {
         List<ComplexRule> rulesEntity = new ArrayList<>();
         for (ComplexRuleWebDto complexRuleWebDto : rules.getComplexRules()) {
             if(complexRuleWebDto.getRegles().size() > 1) {
-                rulesEntity.add(mapper.map(complexRuleWebDto, ComplexRule.class));
+                ComplexRule complexRule = mapper.map(complexRuleWebDto, ComplexRule.class);
+                addRuleZoneGenerique(complexRuleWebDto,  complexRule);
+                rulesEntity.add(complexRule);
             } else {
                 throw new IllegalArgumentException("Une règle complexe doit contenir au moins deux règles simples");
             }
         }
         return rulesEntity;
+    }
+
+    private void addRuleZoneGenerique(ComplexRuleWebDto complexRuleWebDto, ComplexRule complexRule) {
+        for (SimpleRuleWebDto simpleRule : complexRuleWebDto.getRegles()) {
+            List<String> zonesGeneriques = referenceService.getZonesGeneriques(simpleRule.getZone());
+            //si l'une des règles simples qui composent la règle complexe a une zone générique
+            if (zonesGeneriques.size() > 0) {
+                int i = 0;
+                //suppression de la règle simple avec zone générique de la complexRule
+                if (complexRule.getFirstRule().getId().equals(simpleRule.getId())) {
+                    complexRule.setFirstRule(mapper.map());
+                }
+                for (String zoneGenerique : zonesGeneriques) {
+
+                    i++;
+                }
+            }
+        }
     }
 
     @GetMapping(value = "/emptyRules")
