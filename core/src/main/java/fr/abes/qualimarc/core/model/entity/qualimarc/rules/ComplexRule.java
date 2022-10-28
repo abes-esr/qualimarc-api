@@ -108,6 +108,7 @@ public class ComplexRule implements Serializable {
         this.message = message;
         this.priority = priority;
         this.famillesDocuments = new HashSet<>();
+        this.typesThese = new HashSet<>();
         this.ruleSet = new HashSet<>();
         this.firstRule = firstRule;
         this.otherRules = new LinkedList<>();

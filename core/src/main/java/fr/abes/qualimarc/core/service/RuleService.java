@@ -104,8 +104,15 @@ public class RuleService {
 
     public boolean isRuleAppliedToNotice(NoticeXml notice, ComplexRule rule) {
         //si pas de type de document renseigné, la règle est appliquée quoi qu'il arrive
-        if (rule.getFamillesDocuments().size() == 0)
+        if (rule.getFamillesDocuments().size() == 0) {
+            if (rule.getTypesThese().size() != 0) {
+                if (rule.getTypesThese().stream().filter(tt -> tt.equals(notice.getTypeThese())).count() > 0)
+                    return true;
+                else
+                    return false;
+            }
             return true;
+        }
         //si l'un des types de doc de la règle matche avec le type de la notice
         if (rule.getFamillesDocuments().stream().anyMatch(type -> notice.getFamilleDocument().equals(type.getId()))) {
             return true;

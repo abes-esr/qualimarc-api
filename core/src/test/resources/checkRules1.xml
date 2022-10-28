@@ -11,7 +11,4 @@
     <datafield tag="034" ind1=" " ind2=" ">
         <subfield code="a">(OCoLC)123456789</subfield>
     </datafield>
-    <datafield tag="105" ind1=" " ind2=" ">
-        <subfield code="a">     v     </subfield>
-    </datafield>
 </record>
