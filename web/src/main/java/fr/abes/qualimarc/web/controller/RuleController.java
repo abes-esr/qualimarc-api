@@ -98,6 +98,8 @@ public class RuleController {
                         rulesEntity.add(mapper.map(new IndicateurWebDto(generateNewId(rule.getId(), i), rule.getIdExcel(), rule.getRuleSetList(), rule.getMessage(), zoneGenerique, rule.getPriority(), rule.getTypesDoc(), rule.getTypesThese(), ((IndicateurWebDto) rule).getIndicateur(), ((IndicateurWebDto) rule).getValeur()), ComplexRule.class));
                     i++;
                 }
+            } else {
+                rulesEntity.add(mapper.map(rule, ComplexRule.class));
             }
         }
         return rulesEntity;
