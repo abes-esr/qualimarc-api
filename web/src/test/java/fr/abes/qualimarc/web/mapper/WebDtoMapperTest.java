@@ -2,7 +2,6 @@ package fr.abes.qualimarc.web.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
-import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.NombreCaracteres;
@@ -124,10 +123,6 @@ public class WebDtoMapperTest {
 
         PresenceZoneWebDto presenceZoneWebDto = new PresenceZoneWebDto(1, 1, ruleSetsList, "message 1", "100", "P1", typeDoc, typeThese, true);
 
-        //  Création du mockito
-        RuleSet ruleSet = new RuleSet(1, "libellé");
-        Mockito.when(ruleSetRepository.findRuleSetById(ruleSetWebDto)).thenReturn(ruleSet);
-
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(presenceZoneWebDto, ComplexRule.class);
 
@@ -173,10 +168,6 @@ public class WebDtoMapperTest {
         ruleSetsList.add(ruleSetWebDto);
 
         PresenceSousZoneWebDto presenceSousZoneWebDto = new PresenceSousZoneWebDto(1, 1, ruleSetsList, "message 1", "100", "P1", typeDoc, typeThese, "a", true);
-
-        //  Création du mockito
-        RuleSet ruleSet = new RuleSet(1, "libellé");
-        Mockito.when(ruleSetRepository.findRuleSetById(ruleSetWebDto)).thenReturn(ruleSet);
 
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(presenceSousZoneWebDto, ComplexRule.class);
@@ -232,10 +223,6 @@ public class WebDtoMapperTest {
 
         NombreZoneWebDto nombreZoneWebDto = new NombreZoneWebDto(1, 1, ruleSetsList, "message 1", "100", "P1", typeDoc, typeThese, Operateur.EGAL, 1);
 
-        //  Création du mockito
-        RuleSet ruleSet = new RuleSet(1, "libellé");
-        Mockito.when(ruleSetRepository.findRuleSetById(ruleSetWebDto)).thenReturn(ruleSet);
-
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(nombreZoneWebDto, ComplexRule.class);
 
@@ -281,10 +268,6 @@ public class WebDtoMapperTest {
         ruleSetsList.add(ruleSetWebDto);
 
         NombreSousZoneWebDto nombreSousZoneWebDto = new NombreSousZoneWebDto(1, 1, ruleSetsList, "message 1", "100", "P1", typeDoc, typeThese, "a", "100", "a");
-
-        //  Création du mockito
-        RuleSet ruleSet = new RuleSet(1, "libellé");
-        Mockito.when(ruleSetRepository.findRuleSetById(ruleSetWebDto)).thenReturn(ruleSet);
 
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(nombreSousZoneWebDto, ComplexRule.class);
@@ -334,10 +317,6 @@ public class WebDtoMapperTest {
 
         PositionSousZoneWebDto positionSousZoneWebDto = new PositionSousZoneWebDto(1, 1, ruleSetsList, "message 1", "100", "P1", typeDoc, typeThese, "a", 1);
 
-        //  Création du mockito
-        RuleSet ruleSet = new RuleSet(1, "libellé");
-        Mockito.when(ruleSetRepository.findRuleSetById(ruleSetWebDto)).thenReturn(ruleSet);
-
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(positionSousZoneWebDto, ComplexRule.class);
 
@@ -375,11 +354,11 @@ public class WebDtoMapperTest {
         MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule1, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : L'opérateur est interdit lors de la création d'une seule règle", exception.getCause().getMessage());
 
-        PresenceSousZonesMemeZoneWebDto rule2 = new PresenceSousZonesMemeZoneWebDto(1, 1, new ArrayList<>(), null, "200", null, null, null);
+        PresenceSousZonesMemeZoneWebDto rule2 = new PresenceSousZonesMemeZoneWebDto(1, 1, new ArrayList<>(), null, "200", null, null, null, null);
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule2, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
-        PresenceSousZonesMemeZoneWebDto rule3 = new PresenceSousZonesMemeZoneWebDto(1, 1,  new ArrayList<>(), "test", "200", "P1", new ArrayList<>(), new ArrayList<>());
+        PresenceSousZonesMemeZoneWebDto rule3 = new PresenceSousZonesMemeZoneWebDto(1, 1,  new ArrayList<>(), "test", "200", "P1", new ArrayList<>(), new ArrayList<>(), new LinkedList<>());
         rule3.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("a", true, BooleanOperateur.ET));
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule3, ComplexRule.class));
         Assertions.assertEquals("La règle 1 doit avoir au moins deux sous-zones déclarées", exception.getCause().getMessage());
@@ -388,7 +367,7 @@ public class WebDtoMapperTest {
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule3, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : La première sous-zone ne doit pas avoir d'opérateur booléen", exception.getCause().getMessage());
 
-        PresenceSousZonesMemeZoneWebDto rule4 = new PresenceSousZonesMemeZoneWebDto(1, 1,  new ArrayList<>(), "test", "200", "P1", new ArrayList<>(), new ArrayList<>());
+        PresenceSousZonesMemeZoneWebDto rule4 = new PresenceSousZonesMemeZoneWebDto(1, 1,  new ArrayList<>(), "test", "200", "P1", new ArrayList<>(), new ArrayList<>(), new LinkedList<>());
         rule4.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("a", true));
         rule4.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("b", false));
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule4, ComplexRule.class));
@@ -402,13 +381,9 @@ public class WebDtoMapperTest {
         Integer ruleSetWebDto = 1;
         ruleSetsList.add(ruleSetWebDto);
 
-        PresenceSousZonesMemeZoneWebDto rule5 = new PresenceSousZonesMemeZoneWebDto(1, 1, ruleSetsList, "test", "200", "P1", typeDoc, typeThese);
+        PresenceSousZonesMemeZoneWebDto rule5 = new PresenceSousZonesMemeZoneWebDto(1, 1, ruleSetsList, "test", "200", "P1", typeDoc, typeThese, new LinkedList<>());
         rule5.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("a", true));
         rule5.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("b", false, BooleanOperateur.ET));
-
-        //  Création du mockito
-        RuleSet ruleSet = new RuleSet(1, "libellé");
-        Mockito.when(ruleSetRepository.findRuleSetById(ruleSetWebDto)).thenReturn(ruleSet);
 
         ComplexRule complexRule = mapper.map(rule5, ComplexRule.class);
 
@@ -457,10 +432,6 @@ public class WebDtoMapperTest {
 
         IndicateurWebDto rule4 = new IndicateurWebDto(1, 1, ruleSetsList, "test", "200", "P1", typeDoc, typeThese, 1, "#");
 
-        //  Création du mockito
-        RuleSet ruleSet = new RuleSet(1, "libellé");
-        Mockito.when(ruleSetRepository.findRuleSetById(ruleSetWebDto)).thenReturn(ruleSet);
-
         ComplexRule complexRule = mapper.map(rule4, ComplexRule.class);
         Assertions.assertEquals(rule4.getId(), complexRule.getId());
         Assertions.assertEquals(rule4.getMessage(), complexRule.getMessage());
@@ -502,10 +473,6 @@ public class WebDtoMapperTest {
 
         typeCaracteres.add("NUMERIQUE");
         TypeCaractereWebDto rule6 = new TypeCaractereWebDto(1, 1,ruleSetsList, "test", "200", "P1", new ArrayList<>(), new ArrayList<>(), "a", typeCaracteres);
-
-        //  Création du mockito
-        RuleSet ruleSet = new RuleSet(1, "libellé");
-        Mockito.when(ruleSetRepository.findRuleSetById(ruleSetWebDto)).thenReturn(ruleSet);
 
         ComplexRule complexRule = mapper.map(rule6, ComplexRule.class);
         TypeCaractere simpleRule = (TypeCaractere) complexRule.getFirstRule();
@@ -573,9 +540,6 @@ public class WebDtoMapperTest {
         PresenceChaineCaracteresWebDto rule1WebDto = new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, "Erreur", "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENT");
         rule1WebDto.addChaineCaracteres(chaineCaracteresWebDto1);
         rule1WebDto.addChaineCaracteres(chaineCaracteresWebDto2);
-
-        //  Création du Mockito https://en.wikipedia.org/wiki/Mockito
-        Mockito.when(ruleSetRepository.findRuleSetById(1)).thenReturn(new RuleSet(1,"libellé"));
 
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(rule1WebDto, ComplexRule.class);
@@ -646,9 +610,6 @@ public class WebDtoMapperTest {
         complexRuleWebDto.setRuleSetList(ruleSetList);
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(1,"200",null,true));
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(2,"210","ET",false));
-
-        //  Création du Mockito https://en.wikipedia.org/wiki/Mockito
-        Mockito.when(ruleSetRepository.findRuleSetById(1)).thenReturn(new RuleSet(1,"libellé"));
 
         ComplexRule complexRule = mapper.map(complexRuleWebDto, ComplexRule.class);
 

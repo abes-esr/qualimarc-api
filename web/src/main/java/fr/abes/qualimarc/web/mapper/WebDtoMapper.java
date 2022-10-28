@@ -37,8 +37,6 @@ import java.util.*;
 
 @Component
 public class WebDtoMapper {
-    @Autowired
-    private RuleSetRepository repository;
 
     private final UtilsMapper mapper;
 
