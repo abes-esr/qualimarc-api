@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -14,7 +15,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "RULESSET")
-public class RuleSet {
+public class RuleSet implements Serializable {
     @Id
     @Column(name = "RULESET_ID")
     private Integer id;

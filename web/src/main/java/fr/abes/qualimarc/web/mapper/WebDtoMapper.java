@@ -37,8 +37,6 @@ import java.util.*;
 
 @Component
 public class WebDtoMapper {
-    @Autowired
-    private RuleSetRepository repository;
 
     private final UtilsMapper mapper;
 
@@ -357,6 +355,10 @@ public class WebDtoMapper {
             public ComplexRule convert(MappingContext<ComplexRuleWebDto, ComplexRule> context) {
                 ComplexRuleWebDto source = context.getSource();
                 ComplexRule target;
+                //vérification qu'aucune règle simple ne contient de zone générique
+                if (source.getRegles().stream().filter(rule -> rule.getZone().matches("\\dXX")).count() > 0) {
+                    throw new IllegalArgumentException("Une règle complexe ne peut pas contenir de règles simple avec des zones génériques");
+                }
                 Iterator<SimpleRuleWebDto> reglesIt = source.getRegles().listIterator();
                 SimpleRuleWebDto firstRegle = reglesIt.next();
                 int i = 0;
