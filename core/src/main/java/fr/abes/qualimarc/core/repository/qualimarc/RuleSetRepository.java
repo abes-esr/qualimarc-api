@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 @QualimarcConfiguration
 public interface RuleSetRepository extends JpaRepository<RuleSet, Integer> {
+    RuleSet findRuleSetById(Integer id);
 }

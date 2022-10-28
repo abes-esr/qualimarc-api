@@ -24,8 +24,8 @@ public class TypeCaractereWebDto extends SimpleRuleWebDto {
     @JsonProperty("type-caracteres")
     private List<String> typeCaracteres;
 
-    public TypeCaractereWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, List<String> typeCaracteres) {
-        super(id, idExcel, message, zone, priority, typesDoc, typesThese);
+    public TypeCaractereWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, List<String> typeCaracteres) {
+        super(id, idExcel, ruleSetList, message, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
         this.typeCaracteres = typeCaracteres;
 
