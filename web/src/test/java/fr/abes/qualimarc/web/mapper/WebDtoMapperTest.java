@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.TypeCaractere;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.NombreCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.TypeCaractere;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
@@ -16,10 +16,9 @@ import fr.abes.qualimarc.core.utils.*;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +31,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -499,12 +497,21 @@ public class WebDtoMapperTest {
     void converterComplexRuleTest() {
         ComplexRuleWebDto complexRuleWebDto = new ComplexRuleWebDto();
         complexRuleWebDto.setId(1);
+        complexRuleWebDto.setMessage("test");
+        complexRuleWebDto.setPriority("P1");
+        complexRuleWebDto.addRegle(new PresenceZoneWebDto(1, "7XX", "ET", true));
+        ComplexRuleWebDto finalComplexRuleWebDto2 = complexRuleWebDto;
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(finalComplexRuleWebDto2, ComplexRule.class));
+        Assertions.assertEquals("Une règle complexe ne peut pas contenir de règles simple avec des zones génériques", exception.getCause().getMessage());
+
+        complexRuleWebDto = new ComplexRuleWebDto();
+        complexRuleWebDto.setId(1);
         complexRuleWebDto.setMessage("message test");
         complexRuleWebDto.setPriority("P1");
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(1,"200","ET",true));
 
         ComplexRuleWebDto finalComplexRuleWebDto = complexRuleWebDto;
-        MappingException exception = Assertions.assertThrows(MappingException.class, ()->mapper.map(finalComplexRuleWebDto, ComplexRule.class));
+        exception = Assertions.assertThrows(MappingException.class, ()->mapper.map(finalComplexRuleWebDto, ComplexRule.class));
         Assertions.assertEquals("La première règle d'une règle complexe ne doit pas contenir d'opérateur", exception.getCause().getMessage());
 
 
