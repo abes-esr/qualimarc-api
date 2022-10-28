@@ -8,13 +8,17 @@ import fr.abes.qualimarc.core.utils.TypeCaracteres;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -32,14 +36,16 @@ public class TypeCaractere extends SimpleRule implements Serializable {
     private String sousZone;
 
     @ElementCollection(targetClass = TypeCaracteres.class)
-    @JoinTable(name = "TYPE_CARACTERES", joinColumns = @JoinColumn(name = "TYPE_ID"))
+    @Column(name = "TYPE_CARACTERES")
+    @CollectionTable(name = "TYPE_CARACTERES", joinColumns = @JoinColumn(name = "TYPE_ID"))
     @Enumerated(EnumType.STRING)
-    private List<TypeCaracteres> typeCaracteres;
+    @Fetch(FetchMode.JOIN)
+    private Set<TypeCaracteres> typeCaracteres;
 
     public TypeCaractere(Integer id, String zone, String sousZone) {
         super(id, zone);
         this.sousZone = sousZone;
-        this.typeCaracteres = new ArrayList();
+        this.typeCaracteres = new HashSet<>();
     }
 
     public void addTypeCaractere(TypeCaracteres type){

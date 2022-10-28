@@ -461,10 +461,10 @@ public class WebDtoMapper {
             int i = 0;
             for (PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaine : source.getListChaineCaracteres()) {
                 if (chaine.getOperateur() == null || chaine.getOperateur().isEmpty()) {
-                    target.addChaineCaracteres(new ChaineCaracteres(i, chaine.getChaineCaracteres()));
+                    target.addChaineCaracteres(new ChaineCaracteres(i, chaine.getChaineCaracteres(), target));
                     i++;
                 } else if (chaine.getOperateur() != null || !chaine.getOperateur().isEmpty()) {
-                    target.addChaineCaracteres(new ChaineCaracteres(i, getOperateur(chaine.getOperateur()), chaine.getChaineCaracteres()));
+                    target.addChaineCaracteres(new ChaineCaracteres(i, getOperateur(chaine.getOperateur()), chaine.getChaineCaracteres(), target));
                     i++;
                 }
             }
