@@ -38,7 +38,7 @@ public abstract class SimpleRuleWebDto {
     @JsonProperty("id-excel")
     protected Integer idExcel;
 
-    @JsonProperty("rule-set-id")
+    @JsonProperty("jeux-de-regles")
     private List<Integer> ruleSetList;
 
     @JsonProperty("message")
@@ -77,7 +77,7 @@ public abstract class SimpleRuleWebDto {
     @JsonCreator
     public SimpleRuleWebDto(@JsonProperty("id") Integer id,
                             @JsonProperty("id-excel") Integer idExcel,
-                            @JsonProperty("rule-set-id") List<Integer> ruleSetList,
+                            @JsonProperty("jeux-de-regles") List<Integer> ruleSetList,
                             @JsonProperty("message") String message,
                             @JsonProperty("zone") String zone,
                             @JsonProperty("priorite") String priority,

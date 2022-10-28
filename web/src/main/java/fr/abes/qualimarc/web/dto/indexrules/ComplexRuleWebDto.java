@@ -20,7 +20,7 @@ public class ComplexRuleWebDto {
     @JsonProperty("id-excel")
     private Integer idExcel;
 
-    @JsonProperty("rule-set-id")
+    @JsonProperty("jeux-de-regles")
     private List<Integer> ruleSetList;
 
     @JsonProperty("message")
