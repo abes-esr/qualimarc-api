@@ -31,7 +31,7 @@ public class ReferenceService {
         return familleDocumentRepository.findAll();
     }
 
-    public List<RuleSet> getTypesAnalyses() {
+    public List<RuleSet> getRuleSets() {
         return ruleSetRepository.findAllByRulesNotEmpty();
     }
 
