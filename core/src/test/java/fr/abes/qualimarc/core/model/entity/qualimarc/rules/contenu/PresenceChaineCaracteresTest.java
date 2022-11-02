@@ -260,7 +260,7 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("La deuxième occurence de la zone contient STRICTEMENT la chaine de caractères")
     void isValid18() {
-        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Test", null);
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Test des TU", null);
         Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "300", "b", EnumTypeVerification.STRICTEMENT, listChaineCaracteres);
