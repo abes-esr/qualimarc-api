@@ -189,6 +189,29 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                                 }
                             }
                             break;
+                        case NECONTIENTPAS:
+                            if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
+                                List<ChaineCaracteres> sortedList = sortListChaineCaracteres(listChainesCaracteres);
+                                for (ChaineCaracteres chaineCaracteres : sortedList
+                                ) {
+                                    // si il n'y a pas d'opérateur
+                                    if (chaineCaracteres.getBooleanOperateur() == null && !subField.getValue().contains(chaineCaracteres.getChaineCaracteres())) {
+                                        isOk = true;
+//                                        isOk = !subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    }
+                                    // si l'opérateur logique de la chaine de caractères recherchée est ET
+                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET) && !subField.getValue().contains(chaineCaracteres.getChaineCaracteres())) {
+                                        isOk &= true;
+//                                        isOk &= !subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    }
+                                    // si l'opérateur logique de la chaine de caractères recherchée est OU
+                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU) && !subField.getValue().contains(chaineCaracteres.getChaineCaracteres())) {
+                                        isOk |= true;
+//                                        isOk |= !subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    }
+                                }
+                            }
+                            break;
                     }
                 }
             }
