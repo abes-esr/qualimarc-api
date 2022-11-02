@@ -83,11 +83,11 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("contient STRICTEMENT une des chaines de caractères")
     void isValid3() {
-        ChaineCaracteres chaineCaracteres3a = new ChaineCaracteres(1, "Texte", null);
-        ChaineCaracteres chaineCaracteres3b = new ChaineCaracteres(2, BooleanOperateur.OU, "Texte imprimé", null);
+        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Texte", null);
+        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(2, BooleanOperateur.OU, "Texte imprimé", null);
         Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
-        listChainesCaracteres.add(chaineCaracteres3a);
-        listChainesCaracteres.add(chaineCaracteres3b);
+        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.STRICTEMENT, listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
@@ -96,11 +96,11 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("ne contient pas STRICTEMENT une des chaines de caractères")
     void isValid4() {
-        ChaineCaracteres chaineCaracteres4a = new ChaineCaracteres(1, "Texte", null);
-        ChaineCaracteres chaineCaracteres4b = new ChaineCaracteres(2, BooleanOperateur.OU, "Texte imprime", null);
+        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Texte", null);
+        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(2, BooleanOperateur.OU, "Texte imprime", null);
         Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
-        listChainesCaracteres.add(chaineCaracteres4a);
-        listChainesCaracteres.add(chaineCaracteres4b);
+        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.STRICTEMENT, listChainesCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
@@ -129,11 +129,11 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("COMMENCE par une des chaines de caractères")
     void isValid7() {
-        ChaineCaracteres chaineCaracteres7a = new ChaineCaracteres(1, "Convention", null);
-        ChaineCaracteres chaineCaracteres7b = new ChaineCaracteres(2, BooleanOperateur.OU, "Texte", null);
+        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Convention", null);
+        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(2, BooleanOperateur.OU, "Texte", null);
         Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
-        listChainesCaracteres.add(chaineCaracteres7a);
-        listChainesCaracteres.add(chaineCaracteres7b);
+        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.COMMENCE, listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
@@ -142,11 +142,11 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("ne COMMENCE pas par une des chaines de caractères")
     void isValid8() {
-        ChaineCaracteres chaineCaracteres8a = new ChaineCaracteres(1, "Convention", null);
-        ChaineCaracteres chaineCaracteres8b = new ChaineCaracteres(2, BooleanOperateur.OU, "[brochure", null);
+        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Convention", null);
+        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(2, BooleanOperateur.OU, "[brochure", null);
         Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
-        listChainesCaracteres.add(chaineCaracteres8a);
-        listChainesCaracteres.add(chaineCaracteres8b);
+        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.COMMENCE, listChainesCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
@@ -175,11 +175,11 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("TERMINE par une des chaines de caractères")
     void isValid11() {
-        ChaineCaracteres chaineCaracteres11a = new ChaineCaracteres(1, "Convention", null);
-        ChaineCaracteres chaineCaracteres11b = new ChaineCaracteres(2, BooleanOperateur.OU, "imprimé", null);
+        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Convention", null);
+        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(2, BooleanOperateur.OU, "imprimé", null);
         Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
-        listChainesCaracteres.add(chaineCaracteres11a);
-        listChainesCaracteres.add(chaineCaracteres11b);
+        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.TERMINE, listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
@@ -188,11 +188,11 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("ne TERMINE pas par une des chaines de caractères")
     void isValid12() {
-        ChaineCaracteres chaineCaracteres12a = new ChaineCaracteres(1, "Convention", null);
-        ChaineCaracteres chaineCaracteres12b = new ChaineCaracteres(2, BooleanOperateur.OU, "[brochure", null);
+        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Convention", null);
+        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(2, BooleanOperateur.OU, "[brochure", null);
         Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
-        listChainesCaracteres.add(chaineCaracteres12a);
-        listChainesCaracteres.add(chaineCaracteres12b);
+        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.TERMINE, listChainesCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
@@ -221,11 +221,11 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("CONTIENT une des chaines de caractères")
     void isValid15() {
-        ChaineCaracteres chaineCaracteres15a = new ChaineCaracteres(1, "Convention", null);
-        ChaineCaracteres chaineCaracteres15b = new ChaineCaracteres(2, BooleanOperateur.OU, "xte imp", null);
+        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Convention", null);
+        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(2, BooleanOperateur.OU, "xte imp", null);
         Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
-        listChainesCaracteres.add(chaineCaracteres15a);
-        listChainesCaracteres.add(chaineCaracteres15b);
+        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.CONTIENT, listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
@@ -234,11 +234,11 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("CONTIENT toutes les chaines de caractères")
     void isValid16() {
-        ChaineCaracteres chaineCaracteres16a = new ChaineCaracteres(1, "Texte", null);
-        ChaineCaracteres chaineCaracteres16b = new ChaineCaracteres(1, BooleanOperateur.ET, "xte imp", null);
+        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Texte", null);
+        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(1, BooleanOperateur.ET, "xte imp", null);
         Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
-        listChainesCaracteres.add(chaineCaracteres16a);
-        listChainesCaracteres.add(chaineCaracteres16b);
+        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.CONTIENT, listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
@@ -247,11 +247,11 @@ class PresenceChaineCaracteresTest {
     @Test
     @DisplayName("ne CONTIENT pas les chaines de caractères")
     void isValid17() {
-        ChaineCaracteres chaineCaracteres17a = new ChaineCaracteres(1, BooleanOperateur.OU, "Convention", null);
-        ChaineCaracteres chaineCaracteres17b = new ChaineCaracteres(1, BooleanOperateur.OU, "[brochure", null);
+        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, BooleanOperateur.OU, "Convention", null);
+        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(1, BooleanOperateur.OU, "[brochure", null);
         Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
-        listChainesCaracteres.add(chaineCaracteres17a);
-        listChainesCaracteres.add(chaineCaracteres17b);
+        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.CONTIENT, listChainesCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
@@ -280,6 +280,7 @@ class PresenceChaineCaracteresTest {
         Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.NECONTIENTPAS, listChaineCaracteres);
+
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
     }
 
@@ -290,48 +291,61 @@ class PresenceChaineCaracteresTest {
         Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.NECONTIENTPAS, listChaineCaracteres);
+
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
     }
 
-    // TODO continuer à adapter les TU
-//    @Test
-//    @DisplayName("NECONTIENTPAS une des chaines de caractères")
-//    void isValid21() {
-//        ChaineCaracteres chaineCaracteres15a = new ChaineCaracteres(1, "Convention", null);
-//        ChaineCaracteres chaineCaracteres15b = new ChaineCaracteres(2, BooleanOperateur.OU, "collective", null);
-//        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
-//        listChainesCaracteres.add(chaineCaracteres15a);
-//        listChainesCaracteres.add(chaineCaracteres15b);
-//        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.NECONTIENTPAS, listChainesCaracteres);
-//
-//        Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
-//    }
-//
-//    @Test
-//    @DisplayName("NECONTIENTPAS toutes les chaines de caractères")
-//    void isValid22() {
-//        ChaineCaracteres chaineCaracteres16a = new ChaineCaracteres(1, "collective", null);
-//        ChaineCaracteres chaineCaracteres16b = new ChaineCaracteres(1, BooleanOperateur.ET, "Convention", null);
-//        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
-//        listChainesCaracteres.add(chaineCaracteres16a);
-//        listChainesCaracteres.add(chaineCaracteres16b);
-//        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.NECONTIENTPAS, listChainesCaracteres);
-//
-//        Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
-//    }
-//
-//    @Test
-//    @DisplayName("ne CONTIENT pas les chaines de caractères")
-//    void isValid23() {
-//        ChaineCaracteres chaineCaracteres17a = new ChaineCaracteres(1,"Convention", null);
-//        ChaineCaracteres chaineCaracteres17b = new ChaineCaracteres(1, BooleanOperateur.OU, "Texte", null);
-//        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
-//        listChainesCaracteres.add(chaineCaracteres17a);
-//        listChainesCaracteres.add(chaineCaracteres17b);
-//        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.NECONTIENTPAS, listChainesCaracteres);
-//
-//        Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
-//    }
+    @Test
+    @DisplayName("NECONTIENTPAS une des chaines de caractères")
+    void isValid21() {
+        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Texte", null);
+        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(1, BooleanOperateur.OU, "Convention", null);
+        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres2);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.NECONTIENTPAS, listChainesCaracteres);
+
+        Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("ne NECONTIENTPAS pas une des chaines de caractères")
+    void isValid22() {
+        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Texte", null);
+        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(1, BooleanOperateur.OU, "imprimé", null);
+        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres2);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.NECONTIENTPAS, listChainesCaracteres);
+
+        Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("NECONTIENTPAS toutes les chaines de caractères")
+    void isValid23() {
+        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "collective", null);
+        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(1, BooleanOperateur.ET, "Convention", null);
+        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres2);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.NECONTIENTPAS, listChainesCaracteres);
+
+        Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("ne NECONTIENTPAS pas toutes les chaines de caractères")
+    void isValid24() {
+        ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1,"imprimé", null);
+        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(1, BooleanOperateur.ET, "Texte", null);
+        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        listChainesCaracteres.add(chaineCaracteres1);
+        listChainesCaracteres.add(chaineCaracteres2);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.NECONTIENTPAS, listChainesCaracteres);
+
+        Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
+    }
 
 
 
