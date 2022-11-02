@@ -261,17 +261,13 @@ class PresenceChaineCaracteresTest {
     @DisplayName("La deuxième occurence de la zone contient STRICTEMENT la chaine de caractères")
     void isValid18() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Test des TU", null);
+        ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(1, BooleanOperateur.OU, "Test", null);
         Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
         listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "300", "b", EnumTypeVerification.STRICTEMENT, listChaineCaracteres);
+        listChaineCaracteres.add(chaineCaracteres2);
+        PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "990", "b", EnumTypeVerification.STRICTEMENT, listChaineCaracteres);
         Assertions.assertTrue(presenceChaineCaracteres1.isValid(notice));
     }
-
-
-
-
-
-
 
     @Test
     @DisplayName("NECONTIENTPAS la chaine de caractères")
@@ -303,7 +299,7 @@ class PresenceChaineCaracteresTest {
         Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", EnumTypeVerification.NECONTIENTPAS, listChainesCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "990", "b", EnumTypeVerification.NECONTIENTPAS, listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
     }
@@ -346,12 +342,6 @@ class PresenceChaineCaracteresTest {
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
     }
-
-
-
-
-
-
 
     @Test
     @DisplayName("test getZones")
