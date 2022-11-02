@@ -106,11 +106,10 @@
     </datafield>
     <datafield tag="300" ind1=" " ind2=" ">
         <subfield code="a">Notice réd. d&apos;après la couv.</subfield>
-        <subfield code="b">Test</subfield>
     </datafield>
     <datafield tag="300" ind1=" " ind2=" ">
         <subfield code="a">En appendice, choix de documents</subfield>
-        <subfield code="b">Test des TU</subfield>
+        <subfield code="b">En appendice, choix de documents</subfield>
     </datafield>
     <datafield tag="606" ind1=" " ind2=" ">
         <subfield code="3">02787088X</subfield>
@@ -147,5 +146,13 @@
         <subfield code="c">20100324</subfield>
         <subfield code="g">AFNOR</subfield>
         <subfield code="2">intermrc</subfield>
+    </datafield>
+    <datafield tag="990" ind1=" " ind2=" ">
+        <subfield code="a">Notice réd. d&apos;après la couv.</subfield>
+        <subfield code="b">Test</subfield>
+    </datafield>
+    <datafield tag="990" ind1=" " ind2=" ">
+        <subfield code="a">En appendice, choix de documents</subfield>
+        <subfield code="b">Test des TU</subfield>
     </datafield>
 </record>
