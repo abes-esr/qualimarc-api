@@ -365,21 +365,13 @@ public class WebDtoMapper {
                     }
                     if (source.getTypesDoc() != null)
                         target.setFamillesDocuments(getFamilleDocument(source.getTypesDoc()));
-                    if (source.getTypesThese() != null) {
-                        if (source.getTypesThese().stream().filter(tt ->  EnumUtils.isValidEnum(TypeThese.class, tt)).count() == 0) {
-                            StringBuilder message = new StringBuilder("Les types de thèses ne peuvent prendre que les valeurs ");
-                            int j = 0;
-                            for (TypeThese tt : TypeThese.values()) {
-                                message.append(tt.toString());
-                                if (j++ < (TypeThese.values().length - 1))
-                                    message.append("|");
-                            }
-                            throw new IllegalArgumentException(message.toString());
-                        }
+                    checkTypeThese(source.getTypesThese());
+                    if (source.getTypesThese() != null && source.getTypesThese().size() != 0) {
                         target.setTypesThese(getTypeThese(source.getTypesThese()));
                     }
                     while (reglesIt.hasNext()) {
                         SimpleRuleWebDto otherRegle = reglesIt.next();
+                        checkTypeThese(otherRegle.getTypesThese());
                         if (otherRegle.getBooleanOperator() == null) {
                             throw new IllegalArgumentException("Les règles autres que la première d'une règle complexe doivent avoir un opérateur");
                         }
@@ -584,6 +576,22 @@ public class WebDtoMapper {
         }
         if (source.getMessage() == null || source.getPriority() == null) {
             throw new IllegalArgumentException("Règle " + source.getId() + " : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple");
+        }
+        checkTypeThese(source.getTypesThese());
+    }
+
+    private void checkTypeThese(List<String> typesThese) {
+        if (typesThese != null && typesThese.size() != 0) {
+            if (typesThese.stream().filter(tt -> EnumUtils.isValidEnum(TypeThese.class, tt)).count() == 0) {
+                StringBuilder message = new StringBuilder("Les types de thèses ne peuvent prendre que les valeurs ");
+                int j = 0;
+                for (TypeThese tt : TypeThese.values()) {
+                    message.append(tt.toString());
+                    if (j++ < (TypeThese.values().length - 1))
+                        message.append("|");
+                }
+                throw new IllegalArgumentException(message.toString());
+            }
         }
     }
 
