@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Règle liée composée d'une règle simple et d'un opérateur pour pouvoir la conditionner avec la règle précédente d'une liste
+ * L'ordre d'exécution des règles liées est géré par l'attribut position
  */
 @Getter @Setter
 @Entity

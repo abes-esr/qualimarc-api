@@ -8,9 +8,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Reciprocite extends SimpleRule {
-    private String sousZoneSource;
     private String zoneCible;
     private String sousZoneCible;
+
+    public Reciprocite(String zoneCible, String sousZoneCible) {
+        this.zoneCible = zoneCible;
+        this.sousZoneCible = sousZoneCible;
+    }
 
     @Override
     public boolean isValid(NoticeXml... notices) {

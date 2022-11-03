@@ -6,8 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
+/**
+ * Une règle simple n'est jamais utilisée seule, il s'agit d'un objet abstrait qui peut prendre plusieurs type (en fonction du type de l'objet enfant)
+ * Elle est toujours rattachée à une règle complexe
+ */
 @Entity
 @Table(name = "SIMPLE_RULE")
 @NoArgsConstructor

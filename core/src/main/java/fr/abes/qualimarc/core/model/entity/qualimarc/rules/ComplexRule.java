@@ -3,7 +3,6 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.dependance.Reciprocite;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeThese;
 import lombok.Getter;
@@ -19,6 +18,7 @@ import java.util.stream.Collectors;
 
 /**
  * Règle complexe composée à minima d'une règle simple et de n règles liées
+ * dans le cas d'une règle composée uniquement d'une règle simple, n=0
  */
 @Getter @Setter
 @Entity
@@ -152,8 +152,34 @@ public class ComplexRule implements Serializable {
         }
     }
 
+    /**
+     * Méthode permettant de vérifier une règle sur 2 notices. On teste les règles composant la règle simple sur la notice jusqu'à ce qu'on rencontre une règle de dépendance,
+     * qui indique que toutes les règles suivantes s'appliqueront à la notice liée
+     * @param notice notice source sur laquelle porte la notice
+     * @param noticeLiee notice liée à la notice
+     * @return true si la règle est valide, false sinon
+     */
     private boolean isValidTwoNotices(NoticeXml notice, NoticeXml noticeLiee) {
-        return false;
+        boolean isValid = firstRule.isValid(notice);
+        boolean dependencyFound = false;
+        for (LinkedRule linkedRule : otherRules.stream().sorted(Comparator.comparing(LinkedRule::getPosition)).collect(Collectors.toList())) {
+            if (linkedRule instanceof DependencyRule) {
+                //dès qu'on trouve une règle de dépendance dans les linked rule, on informe le programme qu'il doit appliquer les règles suivantes sur la notice liée
+                dependencyFound = true;
+                continue;
+            }
+            switch (linkedRule.getOperateur()) {
+                case ET:
+                    isValid &= linkedRule.getRule().isValid((dependencyFound) ? noticeLiee : notice);
+                    break;
+                case OU:
+                    isValid |= linkedRule.getRule().isValid((dependencyFound) ? noticeLiee : notice);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Operateur booléen invalide");
+            }
+        }
+        return isValid;
     }
 
     private boolean isValidOneNotice(NoticeXml notice) {
@@ -176,29 +202,19 @@ public class ComplexRule implements Serializable {
     }
 
     public List<String> getZonesFromChildren() {
-        List liste = new LinkedList();
+        List<String> liste = new LinkedList<>();
         liste.add(this.getFirstRule().getZones());
-        this.getOtherRules().forEach(rule -> {
-            liste.add(rule.getRule().getZones());
-        });
+        this.getOtherRules().forEach(rule -> liste.add(rule.getRule().getZones()));
         return liste;
     }
 
-    public Map<String, String> getZoneFromDependencyRule() {
-        if (this.getFirstRule() instanceof Reciprocite) {
-            Map<String, String> mapZone = new HashMap<>();
-            mapZone.put(this.getFirstRule().getZone(), ((Reciprocite) this.getFirstRule()).getSousZoneSource());
-            mapZone.put(((Reciprocite) this.getFirstRule()).getZoneCible(), ((Reciprocite) this.getFirstRule()).getSousZoneCible());
-            return mapZone;
-        }
-        for (LinkedRule otherRules : this.getOtherRules()) {
-            if (otherRules.getRule() instanceof Reciprocite) {
-                Map<String, String> mapZone = new HashMap<>();
-                mapZone.put(otherRules.getRule().getZone(), ((Reciprocite) otherRules.getRule()).getSousZoneSource());
-                mapZone.put(((Reciprocite) otherRules.getRule()).getZoneCible(), ((Reciprocite) otherRules.getRule()).getSousZoneCible());
-                return mapZone;
-            }
-        }
-        return null;
+    /**
+     * Méthode permettant de récupérer l'instance d'une linked rule composant la règle complexe de type Dependency
+     * @return la linkedRule correspondante, null si aucune dependency rule ne compose la complex Rule
+     */
+    public DependencyRule getDependencyRule() {
+        Optional<LinkedRule> linkedRule = this.otherRules.stream().filter(lr -> lr instanceof DependencyRule).findAny();
+        return (DependencyRule) linkedRule.orElse(null);
     }
+
 }
