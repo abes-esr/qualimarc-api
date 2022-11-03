@@ -8,11 +8,10 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "SIMPLE_RULE")
 @NoArgsConstructor
-@Getter
-@Setter
+@Getter @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "SIMPLE_RULE")
 public abstract class SimpleRule {
     @Id
     @Column(name = "ID")
@@ -32,4 +31,5 @@ public abstract class SimpleRule {
     public abstract boolean isValid(NoticeXml noticeXml);
 
     public abstract String getZones();
+
 }

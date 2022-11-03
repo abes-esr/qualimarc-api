@@ -92,13 +92,13 @@ public class ComplexRule implements Serializable {
         this.otherRules = otherRules;
     }
 
-    public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, SimpleRule firstRule) {
+    public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, Set<RuleSet> ruleSet, SimpleRule firstRule) {
         this.id = id;
         this.message = message;
         this.priority = priority;
         this.famillesDocuments = famillesDocuments;
         this.typesThese = typesThese;
-        this.ruleSet = new HashSet<>();
+        this.ruleSet = ruleSet;
         this.firstRule = firstRule;
         this.otherRules = new LinkedList<>();
     }
@@ -137,8 +137,8 @@ public class ComplexRule implements Serializable {
 
     /**
      * Retourne true si toutes les règles qui la composent sont valides
-     * @param notice
-     * @return
+     * @param notice notice au format xml
+     * @return boolean
      */
     public boolean isValid(NoticeXml notice) {
         boolean isValid = firstRule.isValid(notice);
@@ -160,11 +160,23 @@ public class ComplexRule implements Serializable {
     }
 
     public List<String> getZonesFromChildren() {
-        List liste = new LinkedList();
+        List<String> liste = new LinkedList<>();
         liste.add(this.getFirstRule().getZones());
-        this.getOtherRules().forEach(rule -> {
-            liste.add(rule.getRule().getZones());
-        });
+        this.getOtherRules().forEach(rule -> liste.add(rule.getRule().getZones()));
         return liste;
+    }
+
+    @Override
+    public int hashCode() {
+        return (this.id != null) ? this.id : Objects.hash(id, message, priority, famillesDocuments, typesThese, ruleSet, firstRule, otherRules);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)){
+            return true;
+        }
+        ComplexRule complexRule = (ComplexRule) obj;
+        return this.getId().equals(complexRule.getId());
     }
 }

@@ -5,5 +5,5 @@ package fr.abes.qualimarc.core.utils;
  * Accepte les paramètres STRICTEMENT, CONTIENT, COMMENCE, TERMINE
  */
 public enum EnumTypeVerification {
-    STRICTEMENT, CONTIENT, COMMENCE, TERMINE
+    STRICTEMENT, CONTIENT, COMMENCE, TERMINE, NECONTIENTPAS
 }

@@ -2,9 +2,12 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.reference;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -12,7 +15,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "RULESSET")
-public class RuleSet {
+public class RuleSet implements Serializable {
     @Id
     @Column(name = "RULESET_ID")
     private Integer id;
@@ -20,12 +23,16 @@ public class RuleSet {
     @Column(name = "LIBELLE")
     private String libelle;
 
-    @ManyToMany(mappedBy = "ruleSet", targetEntity = ComplexRule.class)
+    @ManyToMany(mappedBy = "ruleSet", targetEntity = ComplexRule.class, cascade = CascadeType.ALL)
     @JsonIgnore
     Set<ComplexRule> rules;
 
     public RuleSet(Integer id, String libelle) {
         this.id = id;
         this.libelle = libelle;
+    }
+
+    public RuleSet(Integer id) {
+        this.id = id;
     }
 }

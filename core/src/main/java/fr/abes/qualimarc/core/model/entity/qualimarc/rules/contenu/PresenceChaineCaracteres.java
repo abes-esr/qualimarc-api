@@ -108,14 +108,16 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                                     // si il n'y a pas d'opérateur
                                     if (chaineCaracteres.getBooleanOperateur() == null) {
                                         isOk = subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
-                                    }
-                                    // si l'opérateur logique de la chaine de caractères recherchée est ET
-                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
-                                        isOk &= subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
+                                        if(isOk) {
+                                            return isOk;
+                                        }
                                     }
                                     // si l'opérateur logique de la chaine de caractères recherchée est OU
                                     else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
                                         isOk |= subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
+                                        if(isOk) {
+                                            return isOk;
+                                        }
                                     }
                                 }
                             }
@@ -129,14 +131,16 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                                     // si il n'y a pas d'opérateur
                                     if (chaineCaracteres.getBooleanOperateur() == null) {
                                         isOk = subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres());
-                                    }
-                                    // si l'opérateur logique de la chaine de caractères recherchée est ET
-                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
-                                        isOk &= subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres());
+                                        if(isOk) {
+                                            return isOk;
+                                        }
                                     }
                                     // si l'opérateur logique de la chaine de caractères recherchée est OU
                                     else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
                                         isOk |= subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres());
+                                        if(isOk) {
+                                            return isOk;
+                                        }
                                     }
                                 }
                             }
@@ -150,14 +154,16 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                                     // si il n'y a pas d'opérateur
                                     if (chaineCaracteres.getBooleanOperateur() == null) {
                                         isOk = subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres());
-                                    }
-                                    // si l'opérateur logique de la chaine de caractères recherchée est ET
-                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
-                                        isOk &= subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres());
+                                        if(isOk) {
+                                            return isOk;
+                                        }
                                     }
                                     // si l'opérateur logique de la chaine de caractères recherchée est OU
                                     else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
                                         isOk |= subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres());
+                                        if(isOk) {
+                                            return isOk;
+                                        }
                                     }
                                 }
                             }
@@ -179,6 +185,27 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                                     // si l'opérateur logique de la chaine de caractères recherchée est OU
                                     else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
                                         isOk |= subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    }
+                                }
+                            }
+                            break;
+                        // Si la sous-zone NECONTIENTPAS la/les chaine.s de caractères
+                        case NECONTIENTPAS:
+                            if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
+                                List<ChaineCaracteres> sortedList = sortListChaineCaracteres(listChainesCaracteres);
+                                for (ChaineCaracteres chaineCaracteres : sortedList
+                                ) {
+                                    // si il n'y a pas d'opérateur
+                                    if (chaineCaracteres.getBooleanOperateur() == null) {
+                                        isOk = !subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    }
+                                    // si l'opérateur logique de la chaine de caractères recherchée est ET
+                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
+                                        isOk &= !subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    }
+                                    // si l'opérateur logique de la chaine de caractères recherchée est OU
+                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
+                                        isOk |= !subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
                                     }
                                 }
                             }

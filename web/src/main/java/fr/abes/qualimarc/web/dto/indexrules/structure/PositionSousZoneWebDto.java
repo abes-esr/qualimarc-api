@@ -23,8 +23,8 @@ public class PositionSousZoneWebDto extends SimpleRuleWebDto {
     @NotNull(message = "la position est obligatoire")
     private Integer position;
 
-    public PositionSousZoneWebDto(Integer id, Integer idExcel, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, Integer position) {
-        super(id, idExcel, message, zone, priority, typesDoc, typesThese);
+    public PositionSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, Integer position) {
+        super(id, idExcel, ruleSetList,  message, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
         this.position = position;
     }
