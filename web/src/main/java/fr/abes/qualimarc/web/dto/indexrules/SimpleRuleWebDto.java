@@ -1,8 +1,6 @@
 package fr.abes.qualimarc.web.dto.indexrules;
 
 import com.fasterxml.jackson.annotation.*;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.TypeCaractere;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
@@ -40,6 +38,9 @@ public abstract class SimpleRuleWebDto {
     @JsonProperty("id-excel")
     protected Integer idExcel;
 
+    @JsonProperty("jeux-de-regles")
+    private List<Integer> ruleSetList;
+
     @JsonProperty("message")
     protected String message;
 
@@ -54,7 +55,7 @@ public abstract class SimpleRuleWebDto {
     private List<@Pattern(regexp = "REPRO|SOUTENANCE", message = "Le champ type-these ne peut prendre que les valeurs SOUTENANCE ou REPRO") String> typesThese = new ArrayList<>();
 
     @JsonProperty("zone")
-    @Pattern(regexp = "\\b([A-Z]{0,1}[0-9]{3})\\b", message = "Le champ zone doit contenir : soit trois chiffres, soit une lettre majuscule suivie de trois chiffres.")
+    @Pattern(regexp = "\\b([A-Z]{0,1}[0-9]{3}|4XX|5XX|6XX|7XX)\\b", message = "Le champ zone doit contenir : soit trois chiffres, soit une lettre majuscule suivie de trois chiffres, soit une zone générique (4XX, 5XX, 6XX, ou 7XX).")
     @NotNull(message = "Le champ zone est obligatoire")
     @NotBlank(message = "Le champ zone est obligatoire")
     protected String zone;
@@ -65,16 +66,18 @@ public abstract class SimpleRuleWebDto {
 
     /**
      * constructeur de règle simple
-     * @param id
-     * @param idExcel
-     * @param message
-     * @param zone
-     * @param priority
-     * @param typesDoc
+     * @param id id de la regle simple
+     * @param idExcel id qui permet de faire reference dans le excel
+     * @param ruleSetList list d'id qui permet de savoir si une regle appartien a un jeu de regle
+     * @param message string qui sera affiché lors que la regle est vrai
+     * @param zone string
+     * @param priority priorité de la règle
+     * @param typesDoc type de document sur lequel appliquer la règle
      */
     @JsonCreator
     public SimpleRuleWebDto(@JsonProperty("id") Integer id,
                             @JsonProperty("id-excel") Integer idExcel,
+                            @JsonProperty("jeux-de-regles") List<Integer> ruleSetList,
                             @JsonProperty("message") String message,
                             @JsonProperty("zone") String zone,
                             @JsonProperty("priorite") String priority,
@@ -82,6 +85,7 @@ public abstract class SimpleRuleWebDto {
                             @JsonProperty("type-these") List<String> typesThese) {
         this.id = id;
         this.idExcel = idExcel;
+        this.ruleSetList = ruleSetList;
         this.message = message;
         this.zone = zone;
         this.priority = priority;
@@ -90,7 +94,7 @@ public abstract class SimpleRuleWebDto {
     }
 
     /**
-     * Constructeur de règle complexe
+     * Constructeur de règle complexe (linked Rules)
      */
     @JsonCreator
     public SimpleRuleWebDto(@JsonProperty("id") Integer id,

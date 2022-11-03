@@ -1,11 +1,11 @@
 package fr.abes.qualimarc.core.service;
 
-import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
 import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.RuleSetRepository;
+import fr.abes.qualimarc.core.repository.qualimarc.ZoneGeneriqueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,18 +18,21 @@ public class ReferenceService {
 
     private RuleSetRepository ruleSetRepository;
 
+    private ZoneGeneriqueRepository zoneGeneriqueRepository;
+
     @Autowired
-    public ReferenceService(FamilleDocumentRepository familleDocumentRepository, RuleSetRepository ruleSetRepository) {
+    public ReferenceService(FamilleDocumentRepository familleDocumentRepository, RuleSetRepository ruleSetRepository, ZoneGeneriqueRepository zoneGeneriqueRepository) {
         this.familleDocumentRepository = familleDocumentRepository;
         this.ruleSetRepository = ruleSetRepository;
+        this.zoneGeneriqueRepository = zoneGeneriqueRepository;
     }
 
     public List<FamilleDocument> getTypesDocuments() {
         return familleDocumentRepository.findAll();
     }
 
-    public List<RuleSet> getTypesAnalyses() {
-        return ruleSetRepository.findAll();
+    public List<RuleSet> getRuleSets() {
+        return ruleSetRepository.findAllByRulesNotEmpty();
     }
 
     public FamilleDocument getFamilleDocument(String typeDocument) {
@@ -38,5 +41,9 @@ public class ReferenceService {
             return familleDocument.get();
         }
         throw new IllegalTypeDocumentException("La famille de document n'a pas pu être trouvée.");
+    }
+
+    public List<String> getZonesGeneriques(String zone) {
+        return this.zoneGeneriqueRepository.getZoneGeneriqueZoneByZoneGenerique(zone);
     }
 }

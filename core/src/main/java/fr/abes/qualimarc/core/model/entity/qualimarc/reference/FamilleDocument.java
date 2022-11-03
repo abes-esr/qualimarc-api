@@ -5,6 +5,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -12,7 +13,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "FAMILLEDOCUMENT")
-public class FamilleDocument {
+public class FamilleDocument implements Serializable {
     @Id
     @Column(name = "FAMILLEDOCUMENT_ID")
     private String id;

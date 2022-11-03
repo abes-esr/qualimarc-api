@@ -141,7 +141,7 @@ public class RuleService {
                 return new HashSet<>(complexRulesRepository.findAll());
             case FOCUSED:
                 //cas d'une analyse ciblée, on récupère les règles en fonction des types de documents et des ruleSet
-                if ((familleDocuments == null || familleDocuments.size() == 0) && (ruleSet == null || ruleSet.size() == 0))
+                if ((familleDocuments == null || familleDocuments.isEmpty()) && (ruleSet == null || ruleSet.isEmpty()))
                     throw new IllegalRulesSetException("Impossible de lancer l'analysée ciblée sans paramètres supplémentaires");
                 Set<ComplexRule> result = new HashSet<>();
                 if (familleDocuments != null)

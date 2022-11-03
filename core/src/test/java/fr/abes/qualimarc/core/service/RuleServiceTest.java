@@ -10,7 +10,6 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
-import fr.abes.qualimarc.core.model.resultats.ResultRule;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
@@ -21,7 +20,6 @@ import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +32,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SpringBootTest(classes = {RuleService.class})
 class RuleServiceTest {
@@ -107,7 +106,9 @@ class RuleServiceTest {
 
         Set<TypeThese> typesThese = new HashSet<>();
         typesThese.add(TypeThese.REPRO);
-        listeRegles.add(new ComplexRule(1, "La zone 010 est présente", Priority.P1, familleDoc1, typesThese, new PresenceZone(1, "010", true)));
+        Set<RuleSet> ruleSet = new HashSet<>();
+
+        listeRegles.add(new ComplexRule(1, "La zone 010 est présente", Priority.P1, familleDoc1, typesThese, ruleSet, new PresenceZone(1, "010", true)));
         listeRegles.add(new ComplexRule(2, "La zone 011 est absente", Priority.P1, new PresenceZone(2, "011", false)));
         listeRegles.add(new ComplexRule(3, "La zone 012 est présente", Priority.P1, new PresenceZone(3, "012",  true)));
     }
@@ -236,19 +237,19 @@ class RuleServiceTest {
         setThesesSout.add(TypeThese.SOUTENANCE);
         Set<FamilleDocument> setTypeResContinue = new HashSet<>();
         setTypeResContinue.add(new FamilleDocument("BD", "RessourceContinue"));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, new PresenceZone())));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, new PresenceZone())));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, new PresenceZone())));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesSout, new PresenceZone())));
-        Assertions.assertFalse(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), new PresenceZone())));
-        Assertions.assertFalse(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), new PresenceZone())));
-        Assertions.assertFalse(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, setThesesRepro, new PresenceZone())));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, setThesesSout, new PresenceZone())));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, setThesesSout, new PresenceZone())));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), new PresenceZone())));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesSout, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertFalse(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertFalse(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertFalse(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, setThesesRepro, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, setThesesSout, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, setThesesSout, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
     }
 
 
@@ -310,7 +311,7 @@ class RuleServiceTest {
         Set<FamilleDocument> typesDoc = new HashSet<>();
         typesDoc.add(new FamilleDocument("B", "Audiovisuel"));
         Set<ComplexRule> rules = new HashSet<>();
-        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, typesDoc, null, new PresenceZone(1, "010", true)));
+        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, typesDoc, Sets.newHashSet(), null, new PresenceZone(1, "010", true)));
 
         Mockito.when(complexRulesRepository.findByFamillesDocuments(Mockito.any())).thenReturn(rules);
 
@@ -350,7 +351,7 @@ class RuleServiceTest {
         typesDoc.add(new FamilleDocument("B", "Audiovisuel"));
 
         ComplexRule rule1 = new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010", true));
-        ComplexRule rule2 = new ComplexRule(2, "Zone 200 obligatoire", Priority.P1, typesDoc, null, new PresenceZone(2, "200", true));
+        ComplexRule rule2 = new ComplexRule(2, "Zone 200 obligatoire", Priority.P1, typesDoc, Sets.newHashSet(), null, new PresenceZone(2, "200", true));
 
         //déclaration du set de rule utilisé pour vérifier le résultat de l'appel à la méthode testée
         Set<ComplexRule> rulesIn = new HashSet<>();
@@ -373,6 +374,6 @@ class RuleServiceTest {
 
         Set<ComplexRule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, typesDoc, ruleSets);
 
-        Assertions.assertIterableEquals(Arrays.asList(result.toArray()), Arrays.asList(rulesIn.toArray()));
+        Assertions.assertTrue(result.size() == rulesIn.size() && result.containsAll(rulesIn) && rulesIn.containsAll(result));
     }
 }

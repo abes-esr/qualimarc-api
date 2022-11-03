@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,7 +29,6 @@ public class PresenceZone extends SimpleRule implements Serializable {
         this.isPresent = isPresent;
     }
 
-
     @Override
     public boolean isValid(NoticeXml notice) {
         //cas ou on veut que la zone soit présente dans la notice pour lever le message
@@ -43,4 +43,5 @@ public class PresenceZone extends SimpleRule implements Serializable {
     public String getZones() {
         return this.getZone();
     }
+
 }

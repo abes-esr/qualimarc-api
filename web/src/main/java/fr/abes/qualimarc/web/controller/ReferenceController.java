@@ -18,9 +18,9 @@ public class ReferenceController {
     @Autowired
     private ReferenceService service;
 
-    @GetMapping("/getTypesAnalyses")
-    public List<RuleSet> getTypeAnalyse() {
-        return service.getTypesAnalyses();
+    @GetMapping("/getRuleSets")
+    public List<RuleSet> getRuleSets() {
+        return service.getRuleSets();
     }
 
     @GetMapping("/getFamillesDocuments")
