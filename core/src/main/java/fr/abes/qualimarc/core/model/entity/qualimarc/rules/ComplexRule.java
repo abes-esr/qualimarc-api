@@ -167,7 +167,7 @@ public class ComplexRule implements Serializable {
 
     @Override
     public int hashCode() {
-        return this.id;
+        return (this.id != null) ? this.id : Objects.hash(id, message, priority, famillesDocuments, typesThese, ruleSet, firstRule, otherRules);
     }
 
     @Override
