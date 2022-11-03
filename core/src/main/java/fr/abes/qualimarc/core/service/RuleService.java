@@ -21,7 +21,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class RuleService {
@@ -147,7 +149,7 @@ public class RuleService {
                 if (ruleSet != null)
                     ruleSet.forEach(r -> result.addAll(complexRulesRepository.findByRuleSet(r)));
 
-                return new HashSet<>(result);
+                return result;
             default:
                 throw new IllegalRulesSetException("Jeu de règle inconnu");
         }
