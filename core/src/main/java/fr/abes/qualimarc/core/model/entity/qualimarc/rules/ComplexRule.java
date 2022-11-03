@@ -166,8 +166,16 @@ public class ComplexRule implements Serializable {
     }
 
     @Override
-    public boolean equals(Object rule) {
-        ComplexRule complexRule = (ComplexRule) rule;
+    public int hashCode() {
+        return this.id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)){
+            return true;
+        }
+        ComplexRule complexRule = (ComplexRule) obj;
         return this.getId().equals(complexRule.getId());
     }
 }
