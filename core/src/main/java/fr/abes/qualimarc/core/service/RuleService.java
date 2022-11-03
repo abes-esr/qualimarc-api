@@ -106,10 +106,7 @@ public class RuleService {
         //si pas de type de document renseigné, la règle est appliquée quoi qu'il arrive
         if (rule.getFamillesDocuments().size() == 0) {
             if (rule.getTypesThese().size() != 0) {
-                if (rule.getTypesThese().stream().filter(tt -> tt.equals(notice.getTypeThese())).count() > 0)
-                    return true;
-                else
-                    return false;
+                return rule.getTypesThese().stream().anyMatch(tt -> tt.equals(notice.getTypeThese()));
             }
             return true;
         }
@@ -119,8 +116,7 @@ public class RuleService {
         }
         else {
             if (rule.getTypesThese().size() != 0) {
-                if (rule.getTypesThese().stream().filter(tt -> tt.equals(notice.getTypeThese())).count() > 0)
-                    return true;
+                return rule.getTypesThese().stream().anyMatch(tt -> tt.equals(notice.getTypeThese()));
             }
         }
         return false;

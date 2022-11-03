@@ -69,8 +69,6 @@ public class RuleControllerTest {
     @MockBean
     private UtilsMapper utilsMapper;
 
-    @MockBean
-    private ReferenceService referenceService;
 
     @BeforeEach
     void init() {

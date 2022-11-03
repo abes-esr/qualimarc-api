@@ -139,16 +139,11 @@ class RuleServiceTest {
 
         ResultRules result1 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("111111111")).findFirst().get();
         Assertions.assertEquals("BD", result1.getFamilleDocument().getId());
-        Assertions.assertEquals(TypeThese.REPRO, result1.getTypeThese());
         Assertions.assertEquals(0, result1.getMessages().size());
-        Assertions.assertEquals(2, result1.getDetailErreurs().size());
+        Assertions.assertEquals(1, result1.getDetailErreurs().size());
         result1.getDetailErreurs().sort(Comparator.comparing(o -> o.getZonesUnm().get(0)));
-        Assertions.assertEquals("La zone 011 est absente", result1.getDetailErreurs().get(1).getMessage());
-        Assertions.assertEquals("011",result1.getDetailErreurs().get(1).getZonesUnm().get(0));
-        Assertions.assertEquals(1, result1.getDetailErreurs().get(1).getZonesUnm().size());
-        Assertions.assertEquals(Priority.P1,result1.getDetailErreurs().get(1).getPriority());
-        Assertions.assertEquals("La zone 010 est présente", result1.getDetailErreurs().get(0).getMessage());
-        Assertions.assertEquals("010",result1.getDetailErreurs().get(0).getZonesUnm().get(0));
+        Assertions.assertEquals("La zone 011 est absente", result1.getDetailErreurs().get(0).getMessage());
+        Assertions.assertEquals("011",result1.getDetailErreurs().get(0).getZonesUnm().get(0));
         Assertions.assertEquals(1, result1.getDetailErreurs().get(0).getZonesUnm().size());
         Assertions.assertEquals(Priority.P1,result1.getDetailErreurs().get(0).getPriority());
 
@@ -238,9 +233,9 @@ class RuleServiceTest {
         setTypeResContinue.add(new FamilleDocument("BD", "RessourceContinue"));
         Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertFalse(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, Sets.newHashSet(), new PresenceZone())));
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, Sets.newHashSet(), new PresenceZone())));
-        Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, Sets.newHashSet(), new PresenceZone())));
+        Assertions.assertFalse(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesRepro, Sets.newHashSet(), new PresenceZone())));
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), setThesesSout, Sets.newHashSet(), new PresenceZone())));
         Assertions.assertFalse(service.isRuleAppliedToNotice(theseRepro, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
         Assertions.assertFalse(service.isRuleAppliedToNotice(notice2, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
