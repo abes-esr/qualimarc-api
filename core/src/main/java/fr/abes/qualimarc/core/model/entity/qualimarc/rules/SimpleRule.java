@@ -6,14 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "SIMPLE_RULE")
 @NoArgsConstructor
-@Getter
-@Setter
+@Getter @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "SIMPLE_RULE")
 public abstract class SimpleRule {
     @Id
     @Column(name = "ID")

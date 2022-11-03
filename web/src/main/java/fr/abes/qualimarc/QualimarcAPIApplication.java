@@ -98,7 +98,7 @@ public class QualimarcAPIApplication implements CommandLineRunner {
 //            rules.add(rule18);
 
 
-            complexRulesRepository.saveAll(rules);
+//            complexRulesRepository.saveAll(rules);
         }
         initSpringSecurity();
     }

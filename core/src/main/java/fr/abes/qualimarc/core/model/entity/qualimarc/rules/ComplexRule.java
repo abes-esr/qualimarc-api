@@ -159,11 +159,23 @@ public class ComplexRule implements Serializable {
     }
 
     public List<String> getZonesFromChildren() {
-        List liste = new LinkedList();
+        List<String> liste = new LinkedList<>();
         liste.add(this.getFirstRule().getZones());
-        this.getOtherRules().forEach(rule -> {
-            liste.add(rule.getRule().getZones());
-        });
+        this.getOtherRules().forEach(rule -> liste.add(rule.getRule().getZones()));
         return liste;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)){
+            return true;
+        }
+        ComplexRule complexRule = (ComplexRule) obj;
+        return this.getId().equals(complexRule.getId());
     }
 }

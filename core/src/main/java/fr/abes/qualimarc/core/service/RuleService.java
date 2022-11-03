@@ -148,6 +148,7 @@ public class RuleService {
                     familleDocuments.forEach(t -> result.addAll(complexRulesRepository.findByFamillesDocuments(t)));
                 if (ruleSet != null)
                     ruleSet.forEach(r -> result.addAll(complexRulesRepository.findByRuleSet(r)));
+
                 return result;
             default:
                 throw new IllegalRulesSetException("Jeu de règle inconnu");
