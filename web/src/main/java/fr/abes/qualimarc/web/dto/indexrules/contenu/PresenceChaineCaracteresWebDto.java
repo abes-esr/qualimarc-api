@@ -46,11 +46,11 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
      * @param sousZone sous-zone sur laquelle appliquer la règle
      * @param typeDeVerifications type de vérification à appliquer pour la règle
      */
-    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeDeVerifications) {
+    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeDeVerifications, List<ChaineCaracteresWebDto> listChaineCaracteres) {
         super(id, idExcel, ruleSetList, message, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
         this.typeDeVerification = typeDeVerifications;
-        this.listChaineCaracteres = new LinkedList<>();
+        this.listChaineCaracteres = listChaineCaracteres;
     }
 
     /**
@@ -68,6 +68,22 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
         this.typeDeVerification = typeDeVerification;
         this.listChaineCaracteres = listChaineCaracteres;
     }
+
+    /**
+     * Constructeur avec liste de chaines de caractères
+     * @param id identifiant de la règle
+     * @param zone zone sur laquelle appliquer la règle
+     * @param booleanOperator opérateur logique qui définit l'enchainement des règles
+     * @param sousZone sous-zone sur laquelle appliquer la règle
+     * @param typeDeVerification type de vérification à appliquer pour la règle
+     */
+    public PresenceChaineCaracteresWebDto(Integer id, String zone, String booleanOperator, String sousZone, String typeDeVerification) {
+        super(id, zone, booleanOperator);
+        this.sousZone = sousZone;
+        this.typeDeVerification = typeDeVerification;
+        this.listChaineCaracteres = new LinkedList<>();
+    }
+
 
     /**
      * Méthode qui ajoute une chaine de caractères à la liste de chaines de caractères
