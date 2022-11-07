@@ -510,6 +510,8 @@ public class WebDtoMapper {
                 return EnumTypeVerification.TERMINE;
             case "CONTIENT":
                 return EnumTypeVerification.CONTIENT;
+            case "NECONTIENTPAS":
+                return EnumTypeVerification.NECONTIENTPAS;
             default:
                 return EnumTypeVerification.CONTIENT;
         }
