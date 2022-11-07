@@ -27,7 +27,7 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
     @JsonProperty("souszone")
     private String sousZone;
 
-    @Pattern(regexp = "STRICTEMENT|CONTIENT|COMMENCE|TERMINE", message = "Le champ niveau de verification ne peut contenir que STRICTEMENT, CONTIENT, COMMENCE, TERMINE")
+    @Pattern(regexp = "STRICTEMENT|CONTIENT|COMMENCE|TERMINE|NECONTIENTPAS", message = "Le champ niveau de verification ne peut contenir que STRICTEMENT, CONTIENT, COMMENCE, TERMINE, NECONTIENTPAS")
     @JsonProperty("type-de-verification")
     @NotNull
     private String typeDeVerification;
