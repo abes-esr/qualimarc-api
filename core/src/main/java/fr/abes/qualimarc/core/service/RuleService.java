@@ -173,4 +173,9 @@ public class RuleService {
     public void viderRegles() {
         this.complexRulesRepository.deleteAll();
     }
+
+    public List<ComplexRule> getAllComplexRules() {
+        return this.complexRulesRepository.findAll();
+    }
+
 }
