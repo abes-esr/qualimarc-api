@@ -14,7 +14,6 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,36 +51,33 @@ public class TypeCaractere extends SimpleRule implements Serializable {
     }
 
     @Override
-    public boolean isValid(NoticeXml... notices) {
-        if (notices.length > 0) {
-            NoticeXml notice = Arrays.stream(notices).findFirst().get();
-            List<Datafield> zones = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).collect(Collectors.toList());
+    public boolean isValid(NoticeXml noticeXml) {
+        List<Datafield> zones = noticeXml.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).collect(Collectors.toList());
 
-            for (Datafield datafield : zones) {
-                List<SubField> souszones = datafield.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).collect(Collectors.toList());
-                for (SubField subField : souszones) {
-                    for (TypeCaracteres type : this.typeCaracteres) {
-                        boolean isOk = false;
-                        switch (type) {
-                            case ALPHABETIQUE:
-                                isOk = subField.getValue().matches(".*[a-zA-ZÀ-ÖØ-öø-ÿ].*");
-                                break;
-                            case ALPHABETIQUE_MAJ:
-                                isOk = subField.getValue().matches(".*[A-ZÀ-ÖØ-ß].*");
-                                break;
-                            case ALPHABETIQUE_MIN:
-                                isOk = subField.getValue().matches(".*[a-zà-öø-ÿ].*");
-                                break;
-                            case NUMERIQUE:
-                                isOk = subField.getValue().matches(".*[1-9].*");
-                                break;
-                            case SPECIAL:
-                                isOk = subField.getValue().matches(".*[!-/:-@\\[-`{-~¡-¿÷×].*");
-                                break;
-                        }
-                        if (isOk) {
-                            return true;
-                        }
+        for (Datafield datafield: zones){
+            List<SubField> souszones = datafield.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).collect(Collectors.toList());
+            for (SubField subField: souszones){
+                for (TypeCaracteres type: this.typeCaracteres){
+                    boolean isOk = false;
+                    switch (type) {
+                        case ALPHABETIQUE:
+                            isOk = subField.getValue().matches(".*[a-zA-ZÀ-ÖØ-öø-ÿ].*");
+                            break;
+                        case ALPHABETIQUE_MAJ:
+                            isOk = subField.getValue().matches(".*[A-ZÀ-ÖØ-ß].*");
+                            break;
+                        case ALPHABETIQUE_MIN:
+                            isOk = subField.getValue().matches(".*[a-zà-öø-ÿ].*");
+                            break;
+                        case NUMERIQUE:
+                            isOk = subField.getValue().matches(".*[1-9].*");
+                            break;
+                        case SPECIAL:
+                            isOk = subField.getValue().matches(".*[!-/:-@\\[-`{-~¡-¿÷×].*");
+                            break;
+                    }
+                    if(isOk){
+                        return true;
                     }
                 }
             }

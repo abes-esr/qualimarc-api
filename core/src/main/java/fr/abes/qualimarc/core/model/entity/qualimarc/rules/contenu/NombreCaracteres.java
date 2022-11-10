@@ -11,7 +11,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,33 +39,30 @@ public class NombreCaracteres extends SimpleRule {
     }
 
     @Override
-    public boolean isValid(NoticeXml... notices) {
-        if (notices.length > 0) {
-            NoticeXml notice = Arrays.stream(notices).findFirst().get();
-            List<Datafield> zonesSource = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
-            boolean isOk = false;
-            for (Datafield zone : zonesSource) {
-                for (SubField subField : zone.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZone)).collect(Collectors.toList())) {
-                    switch (this.operateur) {
-                        case EGAL:
-                            isOk = subField.getValue().length() == this.occurrences;
-                            break;
-                        case SUPERIEUR:
-                            isOk = subField.getValue().length() > this.occurrences;
-                            break;
-                        case INFERIEUR:
-                            isOk = subField.getValue().length() < this.occurrences;
-                            break;
-                        case INFERIEUR_EGAL:
-                            isOk = subField.getValue().length() <= this.occurrences;
-                            break;
-                        case SUPERIEUR_EGAL:
-                            isOk = subField.getValue().length() >= this.occurrences;
-                            break;
-                    }
-                    if (isOk) {
-                        return true;
-                    }
+    public boolean isValid(NoticeXml notice) {
+        List<Datafield> zonesSource = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
+        boolean isOk = false;
+        for (Datafield zone : zonesSource) {
+            for (SubField subField : zone.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZone)).collect(Collectors.toList())) {
+                switch (this.operateur) {
+                    case EGAL:
+                        isOk = subField.getValue().length() == this.occurrences;
+                        break;
+                    case SUPERIEUR:
+                        isOk = subField.getValue().length()>this.occurrences;
+                        break;
+                    case INFERIEUR:
+                        isOk = subField.getValue().length()<this.occurrences;
+                        break;
+                    case INFERIEUR_EGAL:
+                        isOk = subField.getValue().length()<=this.occurrences;
+                        break;
+                    case SUPERIEUR_EGAL:
+                        isOk = subField.getValue().length()>=this.occurrences;
+                        break;
+                }
+                if (isOk) {
+                    return true;
                 }
             }
         }

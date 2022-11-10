@@ -17,7 +17,7 @@ public class Reciprocite extends SimpleRule {
     }
 
     @Override
-    public boolean isValid(NoticeXml... notices) {
+    public boolean isValid(NoticeXml notice) {
         return false;
     }
 

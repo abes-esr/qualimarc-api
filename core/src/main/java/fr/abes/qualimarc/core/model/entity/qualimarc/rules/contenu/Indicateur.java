@@ -12,7 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,16 +37,13 @@ public class Indicateur extends SimpleRule implements Serializable {
     }
 
     @Override
-    public boolean isValid(NoticeXml ... notices) {
-        if (notices.length > 0) {
-            NoticeXml notice = Arrays.stream(notices).findFirst().get();
-            List<Datafield> zonesSource = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
-            for (Datafield datafield : zonesSource) {
-                String indicateurCible = this.indicateur == 1 ? datafield.getInd1() : datafield.getInd2();
-                // # est different selon la base XML consulté (ex: # en prod = ' ' en test)
-                if (indicateurCible.equals(this.valeur) || ("#".equals(this.valeur) && indicateurCible.equals(" ")))
-                    return true;
-            }
+    public boolean isValid(NoticeXml notice) {
+        List<Datafield> zonesSource = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
+        for (Datafield datafield : zonesSource){
+            String indicateurCible = this.indicateur == 1 ? datafield.getInd1() : datafield.getInd2();
+            // # est different selon la base XML consulté (ex: # en prod = ' ' en test)
+            if(indicateurCible.equals(this.valeur) || ("#".equals(this.valeur) && indicateurCible.equals(" ")))
+                return true;
         }
         return false;
     }

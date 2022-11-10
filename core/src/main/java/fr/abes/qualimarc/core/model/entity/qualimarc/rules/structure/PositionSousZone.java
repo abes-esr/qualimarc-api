@@ -11,7 +11,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,17 +32,14 @@ public class PositionSousZone extends SimpleRule implements Serializable {
     }
 
     @Override
-    public boolean isValid(NoticeXml... notices) {
-        if (notices.length > 0) {
-            NoticeXml notice = Arrays.stream(notices).findFirst().get();
-            //récupération de toutes les zones définies dans la règle
-            List<Datafield> zones = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).collect(Collectors.toList());
-            //vérification pour chaque zone répétée
-            for (Datafield zone : zones) {
-                //si la position de la sous zone n'est pas la position de la règle, la règle n'est pas valide
-                if (zone.getSubFields().stream().map(sf -> sf.getCode()).collect(Collectors.toList()).indexOf(sousZone) != (position - 1)) {
-                    return true;
-                }
+    public boolean isValid(NoticeXml notice) {
+        //récupération de toutes les zones définies dans la règle
+        List<Datafield> zones = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).collect(Collectors.toList());
+        //vérification pour chaque zone répétée
+        for (Datafield zone : zones) {
+            //si la position de la sous zone n'est pas la position de la règle, la règle n'est pas valide
+            if (zone.getSubFields().stream().map(sf -> sf.getCode()).collect(Collectors.toList()).indexOf(sousZone) != (position -1)) {
+                return true;
             }
         }
         return false;

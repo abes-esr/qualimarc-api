@@ -13,13 +13,13 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "RULE_NOMBRESOUSZONE")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 public class NombreSousZone extends SimpleRule implements Serializable {
     //les sous zones doivent être renseignées sans le $
@@ -43,19 +43,15 @@ public class NombreSousZone extends SimpleRule implements Serializable {
     }
 
     @Override
-    public boolean isValid(NoticeXml ... notices) {
-        if (notices.length > 0) {
-            NoticeXml notice = Arrays.stream(notices).findFirst().get();
-            List<Datafield> zonesSource = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
-            List<Long> nbSousZonesSourcePerZone = new ArrayList<>();
-            zonesSource.stream().mapToLong(z -> z.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZone)).count()).forEach(nbSousZonesSourcePerZone::add);
+    public boolean isValid(NoticeXml notice) {
+        List<Datafield> zonesSource = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
+        List<Long> nbSousZonesSourcePerZone = new ArrayList<>();
+        zonesSource.stream().mapToLong(z -> z.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZone)).count()).forEach(nbSousZonesSourcePerZone::add);
 
-            List<Datafield> zonesCible = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZoneCible())).collect(Collectors.toList());
-            List<Long> nbSousZonesCiblePerZone = new ArrayList<>();
-            zonesCible.stream().mapToLong(z -> z.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZoneCible)).count()).forEach(nbSousZonesCiblePerZone::add);
-            return nbSousZonesSourcePerZone.stream().reduce(0L, Long::sum) != nbSousZonesCiblePerZone.stream().reduce(0L, Long::sum);
-        }
-        return false;
+        List<Datafield> zonesCible = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZoneCible())).collect(Collectors.toList());
+        List<Long> nbSousZonesCiblePerZone = new ArrayList<>();
+        zonesCible.stream().mapToLong(z -> z.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZoneCible)).count()).forEach(nbSousZonesCiblePerZone::add);
+        return nbSousZonesSourcePerZone.stream().reduce(0L, Long::sum) != nbSousZonesCiblePerZone.stream().reduce(0L, Long::sum);
     }
 
     @Override

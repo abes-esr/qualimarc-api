@@ -33,7 +33,7 @@ public abstract class SimpleRule {
         this.zone = zone;
     }
 
-    public abstract boolean isValid(NoticeXml ... notices);
+    public abstract boolean isValid(NoticeXml notices);
 
     public abstract String getZones();
 

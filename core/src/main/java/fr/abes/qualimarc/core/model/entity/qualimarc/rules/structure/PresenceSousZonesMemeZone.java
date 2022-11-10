@@ -11,7 +11,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,34 +40,31 @@ public class PresenceSousZonesMemeZone extends SimpleRule implements Serializabl
     }
 
     @Override
-    public boolean isValid(NoticeXml... notices) {
-        if (notices.length > 0) {
-            NoticeXml notice = Arrays.stream(notices).findFirst().get();
-            List<Datafield> datafields = notice.getDatafields().stream().filter(dataField -> dataField.getTag().equals(this.getZone())).collect(Collectors.toList());
-            boolean isOk;
-            for (Datafield datafield : datafields) {
-                if (this.sousZoneOperators.get(0).isPresent())
-                    isOk = datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(this.sousZoneOperators.get(0).getSousZone()));
-                else
-                    isOk = datafield.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(this.sousZoneOperators.get(0).getSousZone()));
+    public boolean isValid(NoticeXml notice) {
+        List<Datafield> datafields = notice.getDatafields().stream().filter(dataField -> dataField.getTag().equals(this.getZone())).collect(Collectors.toList());
+        boolean isOk;
+        for (Datafield datafield : datafields){
+            if(this.sousZoneOperators.get(0).isPresent())
+                isOk = datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(this.sousZoneOperators.get(0).getSousZone()));
+            else
+                isOk = datafield.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(this.sousZoneOperators.get(0).getSousZone()));
 
-                for (int i = 1; i < this.sousZoneOperators.size(); i++) {
-                    SousZoneOperator sousZoneOperator = this.sousZoneOperators.get(i);
-                    if (sousZoneOperator.getOperateur().equals(BooleanOperateur.OU)) {
-                        if (sousZoneOperator.isPresent())
-                            isOk |= datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
-                        else
-                            isOk |= datafield.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
-                    } else {
-                        if (sousZoneOperator.isPresent())
-                            isOk &= datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
-                        else
-                            isOk &= datafield.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
-                    }
+            for (int i = 1; i < this.sousZoneOperators.size(); i++) {
+                SousZoneOperator sousZoneOperator = this.sousZoneOperators.get(i);
+                if (sousZoneOperator.getOperateur().equals(BooleanOperateur.OU)) {
+                    if(sousZoneOperator.isPresent())
+                        isOk |= datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
+                    else
+                        isOk |= datafield.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
+                } else {
+                    if(sousZoneOperator.isPresent())
+                        isOk &= datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
+                    else
+                        isOk &= datafield.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(sousZoneOperator.getSousZone()));
                 }
-                if (isOk)
-                    return true;
             }
+            if(isOk)
+                return true;
         }
         return false;
     }
