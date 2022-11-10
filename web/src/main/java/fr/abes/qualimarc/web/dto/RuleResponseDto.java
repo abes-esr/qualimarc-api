@@ -1,11 +1,10 @@
 package fr.abes.qualimarc.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.abes.qualimarc.core.utils.Priority;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 public class RuleResponseDto {
@@ -14,7 +13,7 @@ public class RuleResponseDto {
     private Integer id;
 
     @JsonProperty("zones")
-    private List<String> zones;
+    private Set<String> zones;
 
     @JsonProperty("priority")
     private String priority;
@@ -26,7 +25,7 @@ public class RuleResponseDto {
         this.id = id;
         this.priority = priority;
         this.message = message;
-        this.zones = new ArrayList<>();
+        this.zones = new HashSet<>();
     }
 
     public void addZone(String zone) {

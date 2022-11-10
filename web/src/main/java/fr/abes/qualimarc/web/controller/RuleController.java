@@ -10,6 +10,7 @@ import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
+import fr.abes.qualimarc.web.dto.RuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.ListComplexRulesWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.ListRulesWebDto;
@@ -151,5 +152,10 @@ public class RuleController {
     @GetMapping(value = "/emptyRules")
     public void viderRegles() {
         ruleService.viderRegles();
+    }
+
+    @GetMapping(value = "/rules")
+    public List<RuleWebDto> getRules() {
+        return mapper.mapList(ruleService.getAllComplexRules(), RuleWebDto.class);
     }
 }
