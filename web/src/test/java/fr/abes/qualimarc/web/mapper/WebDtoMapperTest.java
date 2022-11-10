@@ -3,6 +3,8 @@ package fr.abes.qualimarc.web.mapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.NombreCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
@@ -16,6 +18,7 @@ import fr.abes.qualimarc.core.utils.*;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
 import fr.abes.qualimarc.web.dto.RuleResponseDto;
+import fr.abes.qualimarc.web.dto.RuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
@@ -689,6 +692,41 @@ public class WebDtoMapperTest {
         resultRules.setTypeThese(TypeThese.REPRO);
         responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
         Assertions.assertEquals("Thèse", responseDto.getResultRules().get(0).getTypeDocument());
+    }
+
+    @Test
+    @DisplayName("test converter ComplexRule vers RuleWebDto")
+    void converterComplexRuleToRuleWebDto() {
+        SimpleRule simpleRule = new PresenceZone(1, "200", true);
+        ComplexRule complexRule = new ComplexRule(1, "message", Priority.P1, simpleRule);
+
+        RuleWebDto ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
+
+        Assertions.assertEquals(1, ruleWebDto.getId());
+        Assertions.assertEquals("Tous", ruleWebDto.getTypeDoc());
+        Assertions.assertEquals("Essentielle", ruleWebDto.getPriority());
+        Assertions.assertEquals("message", ruleWebDto.getMessage());
+        Assertions.assertEquals("200", ruleWebDto.getZoneUnm1());
+        Assertions.assertNull(ruleWebDto.getZoneUnm2());
+
+        //tests génération des types de documents & des thèses
+        complexRule.addTypeDocument(new FamilleDocument("A", "Monographie"));
+
+        ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
+        Assertions.assertEquals("Monographie", ruleWebDto.getTypeDoc());
+
+        complexRule.addTypeDocument(new FamilleDocument("F", "Manuscrit"));
+        ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
+        Assertions.assertEquals("Monographie, Manuscrit", ruleWebDto.getTypeDoc());
+
+        complexRule.addTypeThese(TypeThese.REPRO);
+        ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
+        Assertions.assertEquals("Monographie, Manuscrit, Thèse", ruleWebDto.getTypeDoc());
+
+        //test avec plusieurs zones dans la règle
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "310", true), BooleanOperateur.ET, complexRule, 1));
+        ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
+        Assertions.assertEquals("310", ruleWebDto.getZoneUnm2());
     }
 
 }

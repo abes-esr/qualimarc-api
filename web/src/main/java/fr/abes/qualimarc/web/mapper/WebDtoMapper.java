@@ -17,6 +17,7 @@ import fr.abes.qualimarc.core.utils.*;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
 import fr.abes.qualimarc.web.dto.RuleResponseDto;
+import fr.abes.qualimarc.web.dto.RuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
@@ -440,6 +441,43 @@ public class WebDtoMapper {
                 responseDto.setNbPpnInconnus(source.getPpnInconnus().size());
 
                 return responseDto;
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un modèle ComplexRule en modèle RuleWebDto
+     */
+    @Bean
+    public void converterComplexRuleToRuleWebDto() {
+        Converter<ComplexRule, RuleWebDto> myConverter = new Converter<ComplexRule, RuleWebDto>() {
+            @SneakyThrows
+            public RuleWebDto convert(MappingContext<ComplexRule, RuleWebDto> context) {
+                ComplexRule source = context.getSource();
+
+                RuleWebDto ruleWebDto = new RuleWebDto();
+                ruleWebDto.setId(source.getId());
+                ruleWebDto.setZoneUnm1(source.getZonesFromChildren().get(0));
+                if (source.getZonesFromChildren().size() > 1) {
+                    ruleWebDto.setZoneUnm2(source.getZonesFromChildren().get(1));
+                }
+                ruleWebDto.setMessage(source.getMessage());
+                StringBuilder typesDoc = new StringBuilder();
+                source.getFamillesDocuments().stream().sorted(Comparator.comparing(FamilleDocument::getId)).forEach(f -> {
+                    typesDoc.append(f.getLibelle());
+                    typesDoc.append(", ");
+                });
+                if (!source.getTypesThese().isEmpty()) {
+                    typesDoc.append("Thèse, ");
+                }
+                if (source.getFamillesDocuments().size() == 0 && source.getTypesThese().size() == 0) {
+                    ruleWebDto.setTypeDoc("Tous");
+                } else {
+                    ruleWebDto.setTypeDoc(typesDoc.substring(0, typesDoc.length() - 2));
+                }
+                ruleWebDto.setPriority(source.getPriority().equals(Priority.P1) ? "Essentielle" : "Avancée");
+                return ruleWebDto;
             }
         };
         mapper.addConverter(myConverter);
