@@ -67,11 +67,11 @@ public class ComplexRule implements Serializable {
     private SimpleRule firstRule;
 
     @OneToMany(mappedBy = "complexRule", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<LinkedRule> otherRules;
+    private List<OtherRule> otherRules;
 
     protected ComplexRule(){}
 
-    public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, SimpleRule firstRule, List<LinkedRule> otherRules) {
+    public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, SimpleRule firstRule, List<OtherRule> otherRules) {
         this.id = id;
         this.message = message;
         this.priority = priority;
@@ -82,7 +82,7 @@ public class ComplexRule implements Serializable {
         this.otherRules = otherRules;
     }
 
-    public ComplexRule(Integer id, String message, Priority priority, SimpleRule firstRule, List<LinkedRule> otherRules) {
+    public ComplexRule(Integer id, String message, Priority priority, SimpleRule firstRule, List<OtherRule> otherRules) {
         this.id = id;
         this.message = message;
         this.priority = priority;
@@ -161,19 +161,20 @@ public class ComplexRule implements Serializable {
      */
     private boolean isValidTwoNotices(NoticeXml notice, NoticeXml noticeLiee) {
         boolean isValid = firstRule.isValid(notice);
-        boolean dependencyFound = false;
-        for (LinkedRule linkedRule : otherRules.stream().sorted(Comparator.comparing(LinkedRule::getPosition)).collect(Collectors.toList())) {
-            if (linkedRule instanceof DependencyRule) {
+        boolean isDependencyFound = false;
+        for (OtherRule otherRule : otherRules.stream().sorted(Comparator.comparing(OtherRule::getPosition)).collect(Collectors.toList())) {
+            if (otherRule instanceof DependencyRule) {
                 //dès qu'on trouve une règle de dépendance dans les linked rule, on informe le programme qu'il doit appliquer les règles suivantes sur la notice liée
-                dependencyFound = true;
+                isDependencyFound = true;
                 continue;
             }
+            LinkedRule linkedRule = (LinkedRule) otherRule;
             switch (linkedRule.getOperateur()) {
                 case ET:
-                    isValid &= linkedRule.getRule().isValid((dependencyFound) ? noticeLiee : notice);
+                    isValid &= linkedRule.getRule().isValid((isDependencyFound) ? noticeLiee : notice);
                     break;
                 case OU:
-                    isValid |= linkedRule.getRule().isValid((dependencyFound) ? noticeLiee : notice);
+                    isValid |= linkedRule.getRule().isValid((isDependencyFound) ? noticeLiee : notice);
                     break;
                 default:
                     throw new IllegalArgumentException("Operateur booléen invalide");
@@ -184,7 +185,8 @@ public class ComplexRule implements Serializable {
 
     private boolean isValidOneNotice(NoticeXml notice) {
         boolean isValid = firstRule.isValid(notice);
-        for (LinkedRule linkedRule : otherRules.stream().sorted(Comparator.comparing(LinkedRule::getPosition)).collect(Collectors.toList())) {
+        for (OtherRule otherRule : otherRules.stream().sorted(Comparator.comparing(OtherRule::getPosition)).collect(Collectors.toList())) {
+            LinkedRule linkedRule = (LinkedRule) otherRule;
             switch (linkedRule.getOperateur()) {
                 case ET:
                     //équivalent à isValid && linkedRule.getRule().isValid(notice)
@@ -204,7 +206,7 @@ public class ComplexRule implements Serializable {
     public List<String> getZonesFromChildren() {
         List<String> liste = new LinkedList<>();
         liste.add(this.getFirstRule().getZones());
-        this.getOtherRules().forEach(rule -> liste.add(rule.getRule().getZones()));
+        this.getOtherRules().forEach(rule -> liste.add(rule.getZones()));
         return liste;
     }
 
@@ -213,7 +215,7 @@ public class ComplexRule implements Serializable {
      * @return la linkedRule correspondante, null si aucune dependency rule ne compose la complex Rule
      */
     public DependencyRule getDependencyRule() {
-        Optional<LinkedRule> linkedRule = this.otherRules.stream().filter(lr -> lr instanceof DependencyRule).findAny();
+        Optional<OtherRule> linkedRule = this.otherRules.stream().filter(lr -> lr instanceof DependencyRule).findAny();
         return (DependencyRule) linkedRule.orElse(null);
     }
 

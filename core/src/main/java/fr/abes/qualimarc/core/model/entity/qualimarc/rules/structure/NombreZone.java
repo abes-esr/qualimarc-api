@@ -10,6 +10,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Arrays;
 
 @Entity
 @Getter @Setter
@@ -33,17 +34,21 @@ public class NombreZone extends SimpleRule implements Serializable {
 
 
     @Override
-    public boolean isValid(NoticeXml notice) {
-        switch (this.operateur) {
-            case EGAL:
-                return notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).count() == this.occurrences;
-            case INFERIEUR:
-                return notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).count() < this.occurrences;
-            case SUPERIEUR:
-                return notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).count() > this.occurrences;
-            default:
-                return false;
+    public boolean isValid(NoticeXml... notices) {
+        if (notices.length > 0) {
+            NoticeXml notice = Arrays.stream(notices).findFirst().get();
+            switch (this.operateur) {
+                case EGAL:
+                    return notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).count() == this.occurrences;
+                case INFERIEUR:
+                    return notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).count() < this.occurrences;
+                case SUPERIEUR:
+                    return notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).count() > this.occurrences;
+                default:
+                    return false;
+            }
         }
+        return false;
     }
 
     @Override

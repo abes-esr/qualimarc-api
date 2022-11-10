@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public abstract class DependencyRule extends LinkedRule {
+public abstract class DependencyRule extends OtherRule {
+    private String zoneSource;
     private String sousZoneSource;
 
     public DependencyRule(String sousZoneSource) {
@@ -19,7 +20,7 @@ public abstract class DependencyRule extends LinkedRule {
     }
 
     public String getPpnNoticeLiee(NoticeXml notice) {
-        List<Datafield> datafields = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getRule().getZone())).collect(Collectors.toList());
+        List<Datafield> datafields = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZoneSource())).collect(Collectors.toList());
         for (Datafield datafield : datafields) {
             List<SubField> subFields = datafield.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZoneSource)).collect(Collectors.toList());
             if (!subFields.isEmpty()) {
@@ -29,4 +30,8 @@ public abstract class DependencyRule extends LinkedRule {
         return null;
     }
 
+    @Override
+    public String getZones() {
+        return this.getZoneSource() + "$" + this.getSousZoneSource();
+    }
 }

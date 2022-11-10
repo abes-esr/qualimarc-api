@@ -7,7 +7,7 @@ import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.OtherRule;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRule;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
@@ -51,7 +51,7 @@ public class RuleService {
                     resultAnalyse.addPpnAnalyse(ppn);
                     for (ComplexRule rule : rulesList) {
                         if (isRuleAppliedToNotice(noticeSource, rule)) {
-                            LinkedRule dependencyRule = rule.getDependencyRule();
+                            OtherRule dependencyRule = rule.getDependencyRule();
                             if (dependencyRule != null) {
                                 //il existe une règle de dépendance dans la règle complexe
                                 //récupération de la notice liée

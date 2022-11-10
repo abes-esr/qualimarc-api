@@ -39,13 +39,15 @@ public class Indicateur extends SimpleRule implements Serializable {
 
     @Override
     public boolean isValid(NoticeXml ... notices) {
-        NoticeXml notice = Arrays.stream(notices).findFirst().get();
-        List<Datafield> zonesSource = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
-        for (Datafield datafield : zonesSource){
-            String indicateurCible = this.indicateur == 1 ? datafield.getInd1() : datafield.getInd2();
-            // # est different selon la base XML consulté (ex: # en prod = ' ' en test)
-            if(indicateurCible.equals(this.valeur) || ("#".equals(this.valeur) && indicateurCible.equals(" ")))
-                return true;
+        if (notices.length > 0) {
+            NoticeXml notice = Arrays.stream(notices).findFirst().get();
+            List<Datafield> zonesSource = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
+            for (Datafield datafield : zonesSource) {
+                String indicateurCible = this.indicateur == 1 ? datafield.getInd1() : datafield.getInd2();
+                // # est different selon la base XML consulté (ex: # en prod = ' ' en test)
+                if (indicateurCible.equals(this.valeur) || ("#".equals(this.valeur) && indicateurCible.equals(" ")))
+                    return true;
+            }
         }
         return false;
     }
