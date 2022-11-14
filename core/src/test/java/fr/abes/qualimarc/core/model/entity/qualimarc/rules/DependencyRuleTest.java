@@ -32,14 +32,17 @@ public class DependencyRuleTest {
 
         DependencyRule rule1 = new DependencyRule(1, "606", "3", 1, new ComplexRule());
         Assertions.assertEquals("02787088X", rule1.getPpnsNoticeLiee(notice).get(0));
-        Assertions.assertEquals("02731667X", rule1.getPpnsNoticeLiee(notice).get(1));
-        Assertions.assertEquals("027226794", rule1.getPpnsNoticeLiee(notice).get(2));
 
         DependencyRule rule2 = new DependencyRule(1, "606", "8", 1, new ComplexRule());
         Assertions.assertEquals(0, rule2.getPpnsNoticeLiee(notice).size());
 
-        DependencyRule rule3 = new DependencyRule(1, "607", "3", 1, new ComplexRule());
+        DependencyRule rule3 = new DependencyRule(1, "608", "3", 1, new ComplexRule());
         Assertions.assertEquals(0, rule3.getPpnsNoticeLiee(notice).size());
+
+        DependencyRule rule4 = new DependencyRule(1, "607", "3", 1, new ComplexRule());
+        Assertions.assertEquals(2, rule4.getPpnsNoticeLiee(notice).size());
+        Assertions.assertEquals("123456789", rule4.getPpnsNoticeLiee(notice).get(0));
+        Assertions.assertEquals("987654321", rule4.getPpnsNoticeLiee(notice).get(1));
     }
 
     @Test

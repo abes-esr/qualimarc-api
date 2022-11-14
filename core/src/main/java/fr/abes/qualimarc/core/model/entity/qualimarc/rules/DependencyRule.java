@@ -31,8 +31,8 @@ public class DependencyRule extends OtherRule {
         List<Datafield> datafields = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZoneSource())).collect(Collectors.toList());
         for (Datafield datafield : datafields) {
             List<SubField> subFields = datafield.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZoneSource)).collect(Collectors.toList());
-            for (SubField subField : subFields) {
-                listPpn.add(subField.getValue());
+            if(!subFields.isEmpty()) {
+                listPpn.add(subFields.get(0).getValue());
             }
         }
         return listPpn;
