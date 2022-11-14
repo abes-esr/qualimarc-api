@@ -7,6 +7,10 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+/**
+ * Une règle simple n'est jamais utilisée seule, il s'agit d'un objet abstrait qui peut prendre plusieurs type (en fonction du type de l'objet enfant)
+ * Elle est toujours rattachée à une règle complexe
+ */
 @Entity
 @NoArgsConstructor
 @Getter @Setter
@@ -28,7 +32,7 @@ public abstract class SimpleRule {
         this.zone = zone;
     }
 
-    public abstract boolean isValid(NoticeXml noticeXml);
+    public abstract boolean isValid(NoticeXml notices);
 
     public abstract String getZones();
 

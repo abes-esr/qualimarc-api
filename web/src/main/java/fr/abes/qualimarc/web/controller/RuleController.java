@@ -141,7 +141,8 @@ public class RuleController {
         List<ComplexRule> rulesEntity = new ArrayList<>();
         for (ComplexRuleWebDto complexRuleWebDto : rules.getComplexRules()) {
             if(complexRuleWebDto.getRegles().size() > 1) {
-                rulesEntity.add(mapper.map(complexRuleWebDto, ComplexRule.class));
+                ComplexRule complexRule = mapper.map(complexRuleWebDto, ComplexRule.class);
+                rulesEntity.add(complexRule);
             } else {
                 throw new IllegalArgumentException("Une règle complexe doit contenir au moins deux règles simples");
             }

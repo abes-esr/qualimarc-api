@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "RULE_NOMBRESOUSZONE")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 public class NombreSousZone extends SimpleRule implements Serializable {
     //les sous zones doivent être renseignées sans le $

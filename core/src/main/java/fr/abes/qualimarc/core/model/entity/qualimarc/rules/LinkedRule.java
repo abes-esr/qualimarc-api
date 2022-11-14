@@ -10,15 +10,12 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Règle liée composée d'une règle simple et d'un opérateur pour pouvoir la conditionner avec la règle précédente d'une liste
+ * L'ordre d'exécution des règles liées est géré par l'attribut position
  */
 @Getter @Setter
-@Entity
-@Table(name = "LINKED_RULE")
 @NoArgsConstructor
-public class LinkedRule {
-    @Id
-    @Column(name = "ID_LINKED_RULE")
-    private Integer id;
+@Entity
+public class LinkedRule extends OtherRule {
 
     @OneToOne(cascade = CascadeType.ALL)
     @NotNull
@@ -30,19 +27,14 @@ public class LinkedRule {
     @Column(name = "OPERATOR")
     private BooleanOperateur operateur;
 
-    @Column(name = "POSITION")
-    private Integer position;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ID_COMPLEX_RULE")
-    private ComplexRule complexRule;
-
     public LinkedRule(SimpleRule rule, BooleanOperateur operateur, ComplexRule complexRule, Integer position) {
-        this.id = rule.getId();
+        super(rule.getId(), position, complexRule);
         this.rule = rule;
         this.operateur = operateur;
-        this.complexRule = complexRule;
-        this.position = position;
     }
 
+    @Override
+    public String getZones() {
+        return this.getRule().getZone();
+    }
 }

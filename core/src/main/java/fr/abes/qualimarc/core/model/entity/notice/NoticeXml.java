@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Représente une notice au format d'export UnimarcXML
@@ -222,6 +223,18 @@ public class NoticeXml {
             default:
                 throw new IllegalTypeDocumentException("Type de document inconnu");
         }
+    }
+
+    public String getPpnLieFromZone(String zone, String sousZone) {
+        List<Datafield> datafields = this.getDatafields().stream().filter(datafield -> datafield.getTag().equals(zone)).collect(Collectors.toList());
+        for (Datafield datafield : datafields) {
+            List<SubField> subFields = datafield.getSubFields().stream().filter(subField -> subField.getCode().equals(sousZone)).collect(Collectors.toList());
+            if (subFields.isEmpty())
+                return null;
+            return subFields.get(0).getValue();
+        }
+        //pas de zone/sous zone trouvée
+        return null;
     }
 
     /**
