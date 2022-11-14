@@ -20,7 +20,7 @@ public class DependencyRule extends OtherRule {
     private String zoneSource;
     private String sousZoneSource;
 
-    public DependencyRule(Integer id, Integer position, ComplexRule complexRule, String zoneSource, String sousZoneSource) {
+    public DependencyRule(Integer id, String zoneSource, String sousZoneSource, Integer position, ComplexRule complexRule) {
         super(id, position, complexRule);
         this.zoneSource = zoneSource;
         this.sousZoneSource = sousZoneSource;

@@ -30,22 +30,22 @@ public class DependencyRuleTest {
         XmlMapper mapper = new XmlMapper(module);
         NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
 
-        DependencyRule rule1 = new DependencyRule(1, 1, new ComplexRule(), "606", "3");
-        Assertions.assertEquals("02787088X", rule1.getPpnNoticeLiee(notice));
-//        Assertions.assertEquals("02731667X", rule1.getPpnNoticeLiee(notice));
-//        Assertions.assertEquals("027226794", rule1.getPpnNoticeLiee(notice));
+        DependencyRule rule1 = new DependencyRule(1, "606", "3", 1, new ComplexRule());
+        Assertions.assertEquals("02787088X", rule1.getPpnsNoticeLiee(notice).get(0));
+        Assertions.assertEquals("02731667X", rule1.getPpnsNoticeLiee(notice).get(1));
+        Assertions.assertEquals("027226794", rule1.getPpnsNoticeLiee(notice).get(2));
 
-        DependencyRule rule2 = new DependencyRule(1, 1, new ComplexRule(), "606", "8");
-        Assertions.assertNull(rule2.getPpnNoticeLiee(notice));
+        DependencyRule rule2 = new DependencyRule(1, "606", "8", 1, new ComplexRule());
+        Assertions.assertEquals(0, rule2.getPpnsNoticeLiee(notice).size());
 
-        DependencyRule rule3 = new DependencyRule(1, 1, new ComplexRule(), "607", "3");
-        Assertions.assertNull(rule3.getPpnNoticeLiee(notice));
+        DependencyRule rule3 = new DependencyRule(1, "607", "3", 1, new ComplexRule());
+        Assertions.assertEquals(0, rule3.getPpnsNoticeLiee(notice).size());
     }
 
     @Test
     @DisplayName("Récupération de la zone")
-    void getZone() throws IOException {
-        DependencyRule rule1 = new DependencyRule(1, 1, new ComplexRule(), "606", "3");
+    void getZone() {
+        DependencyRule rule1 = new DependencyRule(1, "607", "3", 1, new ComplexRule());
         Assertions.assertEquals("606$3", rule1.getZones());
     }
 }
