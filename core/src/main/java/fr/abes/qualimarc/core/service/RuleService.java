@@ -29,7 +29,7 @@ import java.util.Set;
 @Service
 public class RuleService {
     @Autowired
-    private NoticeBibioService serviceBibio;
+    private NoticeService noticeService;
 
     @Autowired
     private ReferenceService referenceService;
@@ -44,7 +44,7 @@ public class RuleService {
             boolean isOk = true;
             ResultRules result = new ResultRules(ppn);
             try {
-                NoticeXml noticeSource = serviceBibio.getByPpn(ppn);
+                NoticeXml noticeSource = noticeService.getBiblioByPpn(ppn);
                 if (noticeSource.isDeleted()) {
                     resultAnalyse.addPpnInconnu(ppn);
                 } else {
@@ -56,9 +56,12 @@ public class RuleService {
                                 //il existe une règle de dépendance dans la règle complexe
                                 //récupération de la notice liée
                                 List<String> ppnNoticeLiee = rule.getDependencyRule().getPpnsNoticeLiee(noticeSource);
-                                // TODO triter le cas avec plusieurs notices liées
-                                NoticeXml noticeLiee = serviceBibio.getByPpn(ppnNoticeLiee.get(0));
-                                isOk &= constructResultRuleOnNotice(result, rule, noticeSource, noticeLiee);
+                                for (String ppnLie : ppnNoticeLiee) {
+                                    NoticeXml noticeLiee = noticeService.getAutoriteByPpn(ppnLie);
+                                    if (noticeLiee != null) {
+                                        isOk &= constructResultRuleOnNotice(result, rule, noticeSource, noticeLiee);
+                                    }
+                                }
                             } else {
                                 isOk &= constructResultRuleOnNotice(result, rule, noticeSource);
                             }
@@ -103,27 +106,24 @@ public class RuleService {
         result.setOcn(notice.getOcn());
         result.setDateModification(notice.getDateModification());
         result.setRcr(notice.getRcr());
-        switch (notices.length) {
-            case 1:
-                //si la règle est valide, alors on renvoie le message
-                if (rule.isValid(notice)) {
-                    ResultRule resultRule = new ResultRule(rule.getId(), rule.getPriority(), rule.getMessage());
-                    //on ajoute toutes les zones concernées par la règle au jeu de résultat
-                    rule.getZonesFromChildren().forEach(resultRule::addZone);
-                    result.addDetailErreur(resultRule);
-                    return false;
-                }
-                return true;
-            default:
-                if (rule.isValid(notice, notices[1])) {
-                    ResultRule resultRule = new ResultRule(rule.getId(), rule.getPriority(), rule.getMessage());
-                    //on ajoute toutes les zones concernées par la règle au jeu de résultat
-                    rule.getZonesFromChildren().forEach(resultRule::addZone);
-                    result.addDetailErreur(resultRule);
-                    return false;
-                }
-                return true;
+        if (notices.length == 1) {//si la règle est valide, alors on renvoie le message
+            if (rule.isValid(notice)) {
+                ResultRule resultRule = new ResultRule(rule.getId(), rule.getPriority(), rule.getMessage());
+                //on ajoute toutes les zones concernées par la règle au jeu de résultat
+                rule.getZonesFromChildren().forEach(resultRule::addZone);
+                result.addDetailErreur(resultRule);
+                return false;
+            }
+            return true;
         }
+        if (rule.isValid(notice, notices[1])) {
+            ResultRule resultRule = new ResultRule(rule.getId(), rule.getPriority(), rule.getMessage() + " PPN lié : " + notices[1].getPpn());
+            //on ajoute toutes les zones concernées par la règle au jeu de résultat
+            rule.getZonesFromChildren().forEach(resultRule::addZone);
+            result.addDetailErreur(resultRule);
+            return false;
+        }
+        return true;
     }
 
     public boolean isRuleAppliedToNotice(NoticeXml notice, ComplexRule rule) {

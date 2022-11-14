@@ -4,7 +4,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
 import fr.abes.qualimarc.core.exception.noticexml.AuteurNotFoundException;
-import fr.abes.qualimarc.core.exception.noticexml.IsbnNotFoundException;
 import fr.abes.qualimarc.core.exception.noticexml.TitreNotFoundException;
 import fr.abes.qualimarc.core.exception.noticexml.ZoneNotFoundException;
 import fr.abes.qualimarc.core.utils.TypeThese;
@@ -12,11 +11,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.swing.text.html.Option;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -259,5 +256,10 @@ public class NoticeXml {
             }
         }
         return null;
+    }
+
+    public String getPpn() {
+        Optional<Controlfield> ppn = controlfields.stream().filter(cf -> cf.getTag().equals("001")).findFirst();
+        return ppn.map(Controlfield::getValue).orElse(null);
     }
 }
