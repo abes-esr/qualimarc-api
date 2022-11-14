@@ -132,8 +132,8 @@ public class ComplexRule implements Serializable {
 
     public void addTypeThese(TypeThese typeThese) { this.typesThese.add(typeThese); }
 
-    public void addOtherRule(LinkedRule linkedRule) {
-        this.otherRules.add(linkedRule);
+    public void addOtherRule(OtherRule otherRule) {
+        this.otherRules.add(otherRule);
     }
 
     /**

@@ -27,7 +27,7 @@ public class LinkedRule extends OtherRule {
     @Column(name = "OPERATOR")
     private BooleanOperateur operateur;
 
-    public LinkedRule(SimpleRule rule, BooleanOperateur operateur, ComplexRule complexRule, Integer position) {
+    public LinkedRule(SimpleRule rule, BooleanOperateur operateur, Integer position, ComplexRule complexRule) {
         super(rule.getId(), position, complexRule);
         this.rule = rule;
         this.operateur = operateur;

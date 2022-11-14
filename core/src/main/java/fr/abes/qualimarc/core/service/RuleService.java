@@ -55,8 +55,9 @@ public class RuleService {
                             if (dependencyRule != null) {
                                 //il existe une règle de dépendance dans la règle complexe
                                 //récupération de la notice liée
-                                String ppnNoticeLiee = rule.getDependencyRule().getPpnNoticeLiee(noticeSource);
-                                NoticeXml noticeLiee = serviceBibio.getByPpn(ppnNoticeLiee);
+                                List<String> ppnNoticeLiee = rule.getDependencyRule().getPpnsNoticeLiee(noticeSource);
+                                // TODO triter le cas avec plusieurs notices liées
+                                NoticeXml noticeLiee = serviceBibio.getByPpn(ppnNoticeLiee.get(0));
                                 isOk &= constructResultRuleOnNotice(result, rule, noticeSource, noticeLiee);
                             } else {
                                 isOk &= constructResultRuleOnNotice(result, rule, noticeSource);

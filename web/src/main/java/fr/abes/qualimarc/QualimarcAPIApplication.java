@@ -3,16 +3,13 @@ package fr.abes.qualimarc;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.NombreCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
-import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
+import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
-import fr.abes.qualimarc.core.utils.Operateur;
 import fr.abes.qualimarc.core.utils.Priority;
-import fr.abes.qualimarc.core.utils.TypeThese;
 import fr.abes.qualimarc.web.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,10 +57,10 @@ public class QualimarcAPIApplication implements CommandLineRunner {
             ComplexRule rule3 = new ComplexRule(3, "Zone 101 : l'enregistrement d'un code de langue est obligatoire.", Priority.P2, new PresenceZone(3, "101", false));
 
             ComplexRule rule4 = new ComplexRule(4, "Document électronique : si la ressource possède un DOI et qu'il est présent sur la ressource, le saisir en 107$a", Priority.P2, new PresenceSousZone(4, "101", "a", true));
-            LinkedRule rule5 = new LinkedRule( new NombreSousZone(5, "034", "a", "200", "a"), BooleanOperateur.OU, rule4, 1);
-            LinkedRule rule6 = new LinkedRule( new PresenceZone(6, "011", false), BooleanOperateur.OU, rule4, 2);
-            LinkedRule rule7 = new LinkedRule( new PresenceZone(7, "011", false), BooleanOperateur.OU, rule4, 3);
-            LinkedRule rule8 = new LinkedRule( new PresenceZone(8, "011", false), BooleanOperateur.OU, rule4, 4);
+            LinkedRule rule5 = new LinkedRule( new NombreSousZone(5, "034", "a", "200", "a"), BooleanOperateur.OU, 1, rule4);
+            LinkedRule rule6 = new LinkedRule( new PresenceZone(6, "011", false), BooleanOperateur.OU, 2, rule4);
+            LinkedRule rule7 = new LinkedRule( new PresenceZone(7, "011", false), BooleanOperateur.OU, 3, rule4);
+            LinkedRule rule8 = new LinkedRule( new PresenceZone(8, "011", false), BooleanOperateur.OU, 4, rule4);
 
             rule4.addOtherRule(rule5);
             rule4.addOtherRule(rule6);
