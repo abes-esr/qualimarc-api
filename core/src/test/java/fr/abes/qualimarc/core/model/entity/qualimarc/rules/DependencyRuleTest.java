@@ -32,6 +32,8 @@ public class DependencyRuleTest {
 
         DependencyRule rule1 = new DependencyRule(1, 1, new ComplexRule(), "606", "3");
         Assertions.assertEquals("02787088X", rule1.getPpnNoticeLiee(notice));
+//        Assertions.assertEquals("02731667X", rule1.getPpnNoticeLiee(notice));
+//        Assertions.assertEquals("027226794", rule1.getPpnNoticeLiee(notice));
 
         DependencyRule rule2 = new DependencyRule(1, 1, new ComplexRule(), "606", "8");
         Assertions.assertNull(rule2.getPpnNoticeLiee(notice));
