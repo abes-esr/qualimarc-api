@@ -4,18 +4,24 @@ import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.notice.SubField;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Entity;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public abstract class DependencyRule extends OtherRule {
+@Entity
+@NoArgsConstructor
+public class DependencyRule extends OtherRule {
     private String zoneSource;
     private String sousZoneSource;
 
-    public DependencyRule(String sousZoneSource) {
+    public DependencyRule(Integer id, Integer position, ComplexRule complexRule, String zoneSource, String sousZoneSource) {
+        super(id, position, complexRule);
+        this.zoneSource = zoneSource;
         this.sousZoneSource = sousZoneSource;
     }
 

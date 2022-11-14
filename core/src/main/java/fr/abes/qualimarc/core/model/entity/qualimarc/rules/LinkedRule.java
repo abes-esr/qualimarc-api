@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
  */
 @Getter @Setter
 @NoArgsConstructor
+@Entity
 public class LinkedRule extends OtherRule {
 
     @OneToOne(cascade = CascadeType.ALL)
