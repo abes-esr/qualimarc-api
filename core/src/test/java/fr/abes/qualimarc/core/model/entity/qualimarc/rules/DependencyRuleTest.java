@@ -40,15 +40,16 @@ public class DependencyRuleTest {
         Assertions.assertEquals(0, rule3.getPpnsNoticeLiee(notice).size());
 
         DependencyRule rule4 = new DependencyRule(1, "607", "3", 1, new ComplexRule());
-        Assertions.assertEquals(2, rule4.getPpnsNoticeLiee(notice).size());
-        Assertions.assertEquals("123456789", rule4.getPpnsNoticeLiee(notice).get(0));
+        Assertions.assertEquals(3, rule4.getPpnsNoticeLiee(notice).size());
+        Assertions.assertEquals("02787088X", rule4.getPpnsNoticeLiee(notice).get(0));
         Assertions.assertEquals("987654321", rule4.getPpnsNoticeLiee(notice).get(1));
+        Assertions.assertEquals("02731667X", rule4.getPpnsNoticeLiee(notice).get(2));
     }
 
     @Test
     @DisplayName("Récupération de la zone")
     void getZone() {
         DependencyRule rule1 = new DependencyRule(1, "607", "3", 1, new ComplexRule());
-        Assertions.assertEquals("606$3", rule1.getZones());
+        Assertions.assertEquals("607$3", rule1.getZones());
     }
 }

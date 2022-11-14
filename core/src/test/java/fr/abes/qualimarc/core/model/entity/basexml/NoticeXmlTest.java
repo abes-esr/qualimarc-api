@@ -45,7 +45,7 @@ class NoticeXmlTest {
         Assertions.assertEquals(TypeThese.SOUTENANCE, notice.getTypeThese());
 
         subField.setValue("");
-        Assertions.assertEquals(null, notice.getTypeThese());
+        Assertions.assertNull(notice.getTypeThese());
     }
 
     @Test
@@ -70,7 +70,7 @@ class NoticeXmlTest {
 
 
         subField.setValue("");
-        Assertions.assertEquals(null, notice.getTypeThese());
+        Assertions.assertNull(notice.getTypeThese());
     }
 
     @Test
@@ -254,6 +254,17 @@ class NoticeXmlTest {
         notice.setControlfields(Lists.newArrayList(controlfield));
 
         Assertions.assertEquals("07/04/2022", notice.getDateModification());
+    }
+
+    @Test
+    void getPpn() {
+        NoticeXml notice = new NoticeXml();
+        Controlfield controlfield = new Controlfield();
+        controlfield.setTag("001");
+        controlfield.setValue("143519379");
+        notice.setControlfields(Lists.newArrayList(controlfield));
+
+        Assertions.assertEquals("143519379", notice.getPpn());
     }
 
 }
