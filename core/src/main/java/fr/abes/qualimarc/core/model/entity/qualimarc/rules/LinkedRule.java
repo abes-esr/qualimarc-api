@@ -35,6 +35,6 @@ public class LinkedRule extends OtherRule {
 
     @Override
     public String getZones() {
-        return this.getRule().getZone();
+        return this.getRule().getZones();
     }
 }
