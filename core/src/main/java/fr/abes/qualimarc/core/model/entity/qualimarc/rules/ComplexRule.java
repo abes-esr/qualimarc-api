@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 /**
  * Règle complexe composée à minima d'une règle simple et de n règles liées
+ * dans le cas d'une règle composée uniquement d'une règle simple, n=0
  */
 @Getter @Setter
 @Entity
@@ -66,11 +67,11 @@ public class ComplexRule implements Serializable {
     private SimpleRule firstRule;
 
     @OneToMany(mappedBy = "complexRule", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<LinkedRule> otherRules;
+    private List<OtherRule> otherRules;
 
     protected ComplexRule(){}
 
-    public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, SimpleRule firstRule, List<LinkedRule> otherRules) {
+    public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, SimpleRule firstRule, List<OtherRule> otherRules) {
         this.id = id;
         this.message = message;
         this.priority = priority;
@@ -81,7 +82,7 @@ public class ComplexRule implements Serializable {
         this.otherRules = otherRules;
     }
 
-    public ComplexRule(Integer id, String message, Priority priority, SimpleRule firstRule, List<LinkedRule> otherRules) {
+    public ComplexRule(Integer id, String message, Priority priority, SimpleRule firstRule, List<OtherRule> otherRules) {
         this.id = id;
         this.message = message;
         this.priority = priority;
@@ -131,8 +132,8 @@ public class ComplexRule implements Serializable {
 
     public void addTypeThese(TypeThese typeThese) { this.typesThese.add(typeThese); }
 
-    public void addOtherRule(LinkedRule linkedRule) {
-        this.otherRules.add(linkedRule);
+    public void addOtherRule(OtherRule otherRule) {
+        this.otherRules.add(otherRule);
     }
 
     /**
@@ -140,9 +141,53 @@ public class ComplexRule implements Serializable {
      * @param notice notice au format xml
      * @return boolean
      */
-    public boolean isValid(NoticeXml notice) {
+    public boolean isValid(NoticeXml ... notices) {
+        switch (notices.length) {
+            case 0:
+                return false;
+            case 1 :
+                NoticeXml notice = Arrays.stream(notices).findFirst().get();
+                return isValidOneNotice(notice);
+            default :
+                return isValidTwoNotices(Arrays.stream(notices).findFirst().get(), Arrays.stream(notices).collect(Collectors.toList()).get(1));
+        }
+    }
+
+    /**
+     * Méthode permettant de vérifier une règle sur 2 notices. On teste les règles composant la règle simple sur la notice jusqu'à ce qu'on rencontre une règle de dépendance,
+     * qui indique que toutes les règles suivantes s'appliqueront à la notice liée
+     * @param notice notice source sur laquelle porte la notice
+     * @param noticeLiee notice liée à la notice
+     * @return true si la règle est valide, false sinon
+     */
+    private boolean isValidTwoNotices(NoticeXml notice, NoticeXml noticeLiee) {
         boolean isValid = firstRule.isValid(notice);
-        for (LinkedRule linkedRule : otherRules.stream().sorted(Comparator.comparing(LinkedRule::getPosition)).collect(Collectors.toList())) {
+        boolean isDependencyFound = false;
+        for (OtherRule otherRule : otherRules.stream().sorted(Comparator.comparing(OtherRule::getPosition)).collect(Collectors.toList())) {
+            if (otherRule instanceof DependencyRule) {
+                //dès qu'on trouve une règle de dépendance dans les linked rule, on informe le programme qu'il doit appliquer les règles suivantes sur la notice liée
+                isDependencyFound = true;
+                continue;
+            }
+            LinkedRule linkedRule = (LinkedRule) otherRule;
+            switch (linkedRule.getOperateur()) {
+                case ET:
+                    isValid &= linkedRule.getRule().isValid((isDependencyFound) ? noticeLiee : notice);
+                    break;
+                case OU:
+                    isValid |= linkedRule.getRule().isValid((isDependencyFound) ? noticeLiee : notice);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Operateur booléen invalide");
+            }
+        }
+        return isValid;
+    }
+
+    private boolean isValidOneNotice(NoticeXml notice) {
+        boolean isValid = firstRule.isValid(notice);
+        for (OtherRule otherRule : otherRules.stream().sorted(Comparator.comparing(OtherRule::getPosition)).collect(Collectors.toList())) {
+            LinkedRule linkedRule = (LinkedRule) otherRule;
             switch (linkedRule.getOperateur()) {
                 case ET:
                     //équivalent à isValid && linkedRule.getRule().isValid(notice)
@@ -162,9 +207,19 @@ public class ComplexRule implements Serializable {
     public List<String> getZonesFromChildren() {
         List<String> liste = new LinkedList<>();
         liste.add(this.getFirstRule().getZones());
-        this.getOtherRules().forEach(rule -> liste.add(rule.getRule().getZones()));
-        return liste;
+        this.getOtherRules().forEach(rule -> liste.add(rule.getZones()));
+        return liste.stream().distinct().collect(Collectors.toList());
     }
+
+    /**
+     * Méthode permettant de récupérer l'instance d'une linked rule composant la règle complexe de type Dependency
+     * @return la linkedRule correspondante, null si aucune dependency rule ne compose la complex Rule
+     */
+    public DependencyRule getDependencyRule() {
+        Optional<OtherRule> linkedRule = this.otherRules.stream().filter(lr -> lr instanceof DependencyRule).findAny();
+        return (DependencyRule) linkedRule.orElse(null);
+    }
+
 
     @Override
     public int hashCode() {

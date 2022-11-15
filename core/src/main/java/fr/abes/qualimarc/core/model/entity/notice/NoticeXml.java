@@ -4,7 +4,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
 import fr.abes.qualimarc.core.exception.noticexml.AuteurNotFoundException;
-import fr.abes.qualimarc.core.exception.noticexml.IsbnNotFoundException;
 import fr.abes.qualimarc.core.exception.noticexml.TitreNotFoundException;
 import fr.abes.qualimarc.core.exception.noticexml.ZoneNotFoundException;
 import fr.abes.qualimarc.core.utils.TypeThese;
@@ -12,13 +11,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.swing.text.html.Option;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Représente une notice au format d'export UnimarcXML
@@ -224,6 +222,18 @@ public class NoticeXml {
         }
     }
 
+    public String getPpnLieFromZone(String zone, String sousZone) {
+        List<Datafield> datafields = this.getDatafields().stream().filter(datafield -> datafield.getTag().equals(zone)).collect(Collectors.toList());
+        for (Datafield datafield : datafields) {
+            List<SubField> subFields = datafield.getSubFields().stream().filter(subField -> subField.getCode().equals(sousZone)).collect(Collectors.toList());
+            if (subFields.isEmpty())
+                return null;
+            return subFields.get(0).getValue();
+        }
+        //pas de zone/sous zone trouvée
+        return null;
+    }
+
     /**
      * Teste le type de thèse de la notice
      * @return TypeThese.REPRO si la notice est une thèse de reproduction, TypeThese.SOUTENANCE si la notice est une thèse de soutenance, null si la notice n'est pas une thèse
@@ -246,5 +256,10 @@ public class NoticeXml {
             }
         }
         return null;
+    }
+
+    public String getPpn() {
+        Optional<Controlfield> ppn = controlfields.stream().filter(cf -> cf.getTag().equals("001")).findFirst();
+        return ppn.map(Controlfield::getValue).orElse(null);
     }
 }

@@ -724,9 +724,15 @@ public class WebDtoMapperTest {
         Assertions.assertEquals("Monographie, Manuscrit, Thèse", ruleWebDto.getTypeDoc());
 
         //test avec plusieurs zones dans la règle
-        complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "310", true), BooleanOperateur.ET, complexRule, 1));
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "310", true), BooleanOperateur.ET, 1, complexRule));
         ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
         Assertions.assertEquals("310", ruleWebDto.getZoneUnm2());
+
+        complexRule = new ComplexRule(1, "message", Priority.P1, new PresenceZone(1, "310", true));
+        complexRule.addOtherRule(new LinkedRule(new Indicateur(3, "310", 1, "#"), BooleanOperateur.ET, 2, complexRule));
+        ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
+        Assertions.assertEquals("310", ruleWebDto.getZoneUnm1());
+        Assertions.assertNull(ruleWebDto.getZoneUnm2());
     }
 
 }
