@@ -160,7 +160,9 @@ class RuleServiceTest {
 
         Assertions.assertEquals(2, resultat.size());
 
-        ResultRules result1 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("111111111")).findFirst().get();
+
+        ResultRules result1 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("111111111")).findFirst().orElse(null);
+        Assertions.assertNotNull(result1);
         Assertions.assertEquals("BD", result1.getFamilleDocument().getId());
         Assertions.assertEquals(0, result1.getMessages().size());
         Assertions.assertEquals(1, result1.getDetailErreurs().size());
@@ -170,7 +172,8 @@ class RuleServiceTest {
         Assertions.assertEquals(1, result1.getDetailErreurs().get(0).getZonesUnm().size());
         Assertions.assertEquals(Priority.P1,result1.getDetailErreurs().get(0).getPriority());
 
-        ResultRules result3 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("333333333")).findFirst().get();
+        ResultRules result3 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("333333333")).findFirst().orElse(null);
+        Assertions.assertNotNull(result3);
         Assertions.assertEquals("BD", result3.getFamilleDocument().getId());
         Assertions.assertEquals(0, result3.getMessages().size());
         Assertions.assertEquals(2, result3.getDetailErreurs().size());
@@ -418,7 +421,7 @@ class RuleServiceTest {
         Assertions.assertEquals(0, resultAnalyse.getPpnOk().size());
         Assertions.assertEquals(0, resultAnalyse.getPpnInconnus().size());
         Assertions.assertEquals(2, resultAnalyse.getResultRules().get(0).getDetailErreurs().size());
-        Assertions.assertEquals(rule.getMessage() + " PPN lié : " + "02787088X", resultAnalyse.getResultRules().get(0).getDetailErreurs().get(0).getMessage());
-        Assertions.assertEquals(rule.getMessage() + " PPN lié : " + "02731667X", resultAnalyse.getResultRules().get(0).getDetailErreurs().get(1).getMessage());
+        Assertions.assertTrue(resultAnalyse.getResultRules().get(0).getDetailErreurs().stream().anyMatch(el -> el.getMessage().equals(rule.getMessage() + " PPN lié : " + "02787088X")));
+        Assertions.assertTrue(resultAnalyse.getResultRules().get(0).getDetailErreurs().stream().anyMatch(el -> el.getMessage().equals(rule.getMessage() + " PPN lié : " + "02731667X")));
     }
  }
