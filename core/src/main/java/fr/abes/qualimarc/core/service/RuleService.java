@@ -7,6 +7,7 @@ import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.OtherRule;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRule;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
@@ -28,7 +29,7 @@ import java.util.Set;
 @Service
 public class RuleService {
     @Autowired
-    private NoticeBibioService serviceBibio;
+    private NoticeService noticeService;
 
     @Autowired
     private ReferenceService referenceService;
@@ -43,14 +44,27 @@ public class RuleService {
             boolean isOk = true;
             ResultRules result = new ResultRules(ppn);
             try {
-                NoticeXml notice = serviceBibio.getByPpn(ppn);
-                if (notice.isDeleted()) {
+                NoticeXml noticeSource = noticeService.getBiblioByPpn(ppn);
+                if (noticeSource.isDeleted()) {
                     resultAnalyse.addPpnInconnu(ppn);
                 } else {
                     resultAnalyse.addPpnAnalyse(ppn);
                     for (ComplexRule rule : rulesList) {
-                        if (isRuleAppliedToNotice(notice, rule)) {
-                            isOk &= constructResultRuleOnNotice(result, notice, rule);
+                        if (isRuleAppliedToNotice(noticeSource, rule)) {
+                            OtherRule dependencyRule = rule.getDependencyRule();
+                            if (dependencyRule != null) {
+                                //il existe une règle de dépendance dans la règle complexe
+                                //récupération de la notice liée
+                                Set<String> ppnNoticeLiee = rule.getDependencyRule().getPpnsNoticeLiee(noticeSource);
+                                for (String ppnLie : ppnNoticeLiee) {
+                                    NoticeXml noticeLiee = noticeService.getAutoriteByPpn(ppnLie);
+                                    if (noticeLiee != null) {
+                                        isOk &= constructResultRuleOnNotice(result, rule, noticeSource, noticeLiee);
+                                    }
+                                }
+                            } else {
+                                isOk &= constructResultRuleOnNotice(result, rule, noticeSource);
+                            }
                         }
                     }
                     if (isOk) {
@@ -74,26 +88,36 @@ public class RuleService {
     }
 
     @SneakyThrows
-    private boolean constructResultRuleOnNotice(ResultRules result, NoticeXml notice, ComplexRule rule) {
+    private boolean constructResultRuleOnNotice(ResultRules result, ComplexRule rule, NoticeXml... notices) {
+        NoticeXml notice = notices[0];
         result.setFamilleDocument(referenceService.getFamilleDocument(notice.getFamilleDocument()));
         result.setTypeThese(notice.getTypeThese());
         try {
             result.setTitre(notice.getTitre());
-        } catch ( ZoneNotFoundException e) {
+        } catch (ZoneNotFoundException e) {
             result.setTitre(e.getMessage());
         }
         try {
             result.setAuteur(notice.getAuteur());
-        }catch ( ZoneNotFoundException e){
+        } catch (ZoneNotFoundException e) {
             result.setAuteur(e.getMessage());
         }
         result.setIsbn(notice.getIsbn());
         result.setOcn(notice.getOcn());
         result.setDateModification(notice.getDateModification());
         result.setRcr(notice.getRcr());
-        //si la règle est valide, alors on renvoie le message
-        if (rule.isValid(notice)) {
-            ResultRule resultRule = new ResultRule(rule.getId(), rule.getPriority(),rule.getMessage());
+        if (notices.length == 1) {//si la règle est valide, alors on renvoie le message
+            if (rule.isValid(notice)) {
+                ResultRule resultRule = new ResultRule(rule.getId(), rule.getPriority(), rule.getMessage());
+                //on ajoute toutes les zones concernées par la règle au jeu de résultat
+                rule.getZonesFromChildren().forEach(resultRule::addZone);
+                result.addDetailErreur(resultRule);
+                return false;
+            }
+            return true;
+        }
+        if (rule.isValid(notice, notices[1])) {
+            ResultRule resultRule = new ResultRule(rule.getId(), rule.getPriority(), rule.getMessage() + " PPN lié : " + notices[1].getPpn());
             //on ajoute toutes les zones concernées par la règle au jeu de résultat
             rule.getZonesFromChildren().forEach(resultRule::addZone);
             result.addDetailErreur(resultRule);
@@ -113,8 +137,7 @@ public class RuleService {
         //si l'un des types de doc de la règle matche avec le type de la notice
         if (rule.getFamillesDocuments().stream().anyMatch(type -> notice.getFamilleDocument().equals(type.getId()))) {
             return true;
-        }
-        else {
+        } else {
             if (rule.getTypesThese().size() != 0) {
                 return rule.getTypesThese().stream().anyMatch(tt -> tt.equals(notice.getTypeThese()));
             }

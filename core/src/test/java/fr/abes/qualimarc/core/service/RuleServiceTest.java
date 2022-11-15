@@ -8,10 +8,13 @@ import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.DependencyRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
+import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import fr.abes.qualimarc.core.utils.TypeThese;
@@ -39,13 +42,22 @@ class RuleServiceTest {
     RuleService service;
 
     @MockBean
-    NoticeBibioService noticeBibioService;
+    NoticeService noticeService;
 
     @MockBean
     ComplexRulesRepository complexRulesRepository;
 
     @MockBean
     ReferenceService referenceService;
+
+    @Value("classpath:143519379.xml")
+    Resource xmlFileNoticeBiblio;
+
+    @Value("classpath:02787088X.xml")
+    Resource xmlFileNoticeAutorite1;
+
+    @Value("classpath:02731667X.xml")
+    Resource xmlFileNoticeAutorite2;
 
     @Value("classpath:checkRules1.xml")
     Resource xmlFileNotice1;
@@ -71,7 +83,9 @@ class RuleServiceTest {
     NoticeXml noticeDeleted;
     NoticeXml theseSout;
     NoticeXml theseRepro;
-
+    NoticeXml noticeBiblio;
+    NoticeXml noticeAutorite1;
+    NoticeXml noticeAutorite2;
     Set<ComplexRule> listeRegles;
 
     @BeforeEach
@@ -100,6 +114,15 @@ class RuleServiceTest {
         xml = IOUtils.toString(new FileInputStream(xmlTheseRepro.getFile()), StandardCharsets.UTF_8);
         theseRepro = xmlMapper.readValue(xml, NoticeXml.class);
 
+        xml = IOUtils.toString(new FileInputStream(xmlFileNoticeBiblio.getFile()), StandardCharsets.UTF_8);
+        noticeBiblio = xmlMapper.readValue(xml, NoticeXml.class);
+
+        xml = IOUtils.toString(new FileInputStream(xmlFileNoticeAutorite1.getFile()), StandardCharsets.UTF_8);
+        noticeAutorite1 = xmlMapper.readValue(xml, NoticeXml.class);
+
+        xml = IOUtils.toString(new FileInputStream(xmlFileNoticeAutorite2.getFile()), StandardCharsets.UTF_8);
+        noticeAutorite2 = xmlMapper.readValue(xml, NoticeXml.class);
+
         Set<FamilleDocument> familleDoc1 = new HashSet<>();
         familleDoc1.add(new FamilleDocument("A", "Monographie"));
 
@@ -119,9 +142,9 @@ class RuleServiceTest {
         ppns.add("222222222");
         ppns.add("333333333");
 
-        Mockito.when(noticeBibioService.getByPpn("111111111")).thenReturn(notice1);
-        Mockito.when(noticeBibioService.getByPpn("222222222")).thenReturn(notice2);
-        Mockito.when(noticeBibioService.getByPpn("333333333")).thenReturn(notice3);
+        Mockito.when(noticeService.getBiblioByPpn("111111111")).thenReturn(notice1);
+        Mockito.when(noticeService.getBiblioByPpn("222222222")).thenReturn(notice2);
+        Mockito.when(noticeService.getBiblioByPpn("333333333")).thenReturn(notice3);
         Mockito.when(referenceService.getFamilleDocument("A")).thenReturn(new FamilleDocument("A", "Monographie"));
         Mockito.when(referenceService.getFamilleDocument("O")).thenReturn(new FamilleDocument("O", "Doc Elec"));
         Mockito.when(referenceService.getFamilleDocument("BD")).thenReturn(new FamilleDocument("BD", "Ressource Continue"));
@@ -137,7 +160,9 @@ class RuleServiceTest {
 
         Assertions.assertEquals(2, resultat.size());
 
-        ResultRules result1 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("111111111")).findFirst().get();
+
+        ResultRules result1 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("111111111")).findFirst().orElse(null);
+        Assertions.assertNotNull(result1);
         Assertions.assertEquals("BD", result1.getFamilleDocument().getId());
         Assertions.assertEquals(0, result1.getMessages().size());
         Assertions.assertEquals(1, result1.getDetailErreurs().size());
@@ -147,7 +172,8 @@ class RuleServiceTest {
         Assertions.assertEquals(1, result1.getDetailErreurs().get(0).getZonesUnm().size());
         Assertions.assertEquals(Priority.P1,result1.getDetailErreurs().get(0).getPriority());
 
-        ResultRules result3 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("333333333")).findFirst().get();
+        ResultRules result3 = resultat.stream().filter(resultRules -> resultRules.getPpn().equals("333333333")).findFirst().orElse(null);
+        Assertions.assertNotNull(result3);
         Assertions.assertEquals("BD", result3.getFamilleDocument().getId());
         Assertions.assertEquals(0, result3.getMessages().size());
         Assertions.assertEquals(2, result3.getDetailErreurs().size());
@@ -179,7 +205,7 @@ class RuleServiceTest {
         List<String> ppns = new ArrayList<>();
         ppns.add("111111111");
 
-        Mockito.when(noticeBibioService.getByPpn("111111111")).thenThrow(new IllegalPpnException("le PPN 111111111 n'existe pas"));
+        Mockito.when(noticeService.getBiblioByPpn("111111111")).thenThrow(new IllegalPpnException("le PPN 111111111 n'existe pas"));
 
         ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeRegles);
 
@@ -195,7 +221,7 @@ class RuleServiceTest {
         List<String> ppns = new ArrayList<>();
         ppns.add("111111111");
 
-        Mockito.when(noticeBibioService.getByPpn("111111111")).thenReturn(noticeDeleted);
+        Mockito.when(noticeService.getBiblioByPpn("111111111")).thenReturn(noticeDeleted);
 
         ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeRegles);
 
@@ -207,7 +233,7 @@ class RuleServiceTest {
         List<String> ppns = new ArrayList<>();
         ppns.add("111111111");
 
-        Mockito.when(noticeBibioService.getByPpn("111111111")).thenThrow(new SQLException("Erreur d'accès à la base de données sur PPN : 111111111"));
+        Mockito.when(noticeService.getBiblioByPpn("111111111")).thenThrow(new SQLException("Erreur d'accès à la base de données sur PPN : 111111111"));
 
         ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeRegles);
         Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
@@ -370,4 +396,32 @@ class RuleServiceTest {
 
         Assertions.assertTrue(result.size() == rulesIn.size() && result.containsAll(rulesIn) && rulesIn.containsAll(result));
     }
-}
+
+    @Test
+    void checkRulesOnNoticesDependency() throws SQLException, IOException {
+        List<String> ppns = new ArrayList<>();
+        ppns.add("143519379");
+
+        ComplexRule rule = new ComplexRule(1, "Message", Priority.P1, new PresenceZone(1, "200", true));
+        rule.addOtherRule(new DependencyRule(1, "607", "3", 1, rule));
+        rule.addOtherRule(new LinkedRule(new PresenceZone(2, "152", true), BooleanOperateur.ET, 2, rule));
+        Set<ComplexRule> listeReglesDependency = new HashSet<>();
+        listeReglesDependency.add(rule);
+
+        Mockito.when(noticeService.getBiblioByPpn("143519379")).thenReturn(noticeBiblio);
+        Mockito.when(noticeService.getAutoriteByPpn("02787088X")).thenReturn(noticeAutorite1);
+        Mockito.when(noticeService.getAutoriteByPpn("02731667X")).thenReturn(noticeAutorite2);
+        Mockito.when(noticeService.getAutoriteByPpn("987654321")).thenReturn(null);
+
+        Mockito.when(referenceService.getFamilleDocument("A")).thenReturn(new FamilleDocument("A", "Monographie"));
+
+        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeReglesDependency);
+        Assertions.assertEquals(1, resultAnalyse.getPpnAnalyses().size());
+        Assertions.assertEquals(1, resultAnalyse.getPpnErrones().size());
+        Assertions.assertEquals(0, resultAnalyse.getPpnOk().size());
+        Assertions.assertEquals(0, resultAnalyse.getPpnInconnus().size());
+        Assertions.assertEquals(2, resultAnalyse.getResultRules().get(0).getDetailErreurs().size());
+        Assertions.assertTrue(resultAnalyse.getResultRules().get(0).getDetailErreurs().stream().anyMatch(el -> el.getMessage().equals(rule.getMessage() + " PPN lié : " + "02787088X")));
+        Assertions.assertTrue(resultAnalyse.getResultRules().get(0).getDetailErreurs().stream().anyMatch(el -> el.getMessage().equals(rule.getMessage() + " PPN lié : " + "02731667X")));
+    }
+ }
