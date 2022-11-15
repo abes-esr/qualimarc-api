@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -26,8 +27,8 @@ public class DependencyRule extends OtherRule {
         this.sousZoneSource = sousZoneSource;
     }
 
-    public List<String> getPpnsNoticeLiee(NoticeXml notice) {
-        List<String> listPpn = new ArrayList<>();
+    public Set<String> getPpnsNoticeLiee(NoticeXml notice) {
+        Set<String> listPpn = new HashSet<>();
         List<Datafield> datafields = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZoneSource())).collect(Collectors.toList());
         for (Datafield datafield : datafields) {
             List<SubField> subFields = datafield.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZoneSource)).collect(Collectors.toList());

@@ -3,13 +3,10 @@ package fr.abes.qualimarc;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.DependencyRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
-import fr.abes.qualimarc.core.utils.EnumTypeVerification;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.web.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,13 +93,11 @@ public class QualimarcAPIApplication implements CommandLineRunner {
 
 
 //            complexRulesRepository.saveAll(rules);
-
         }
         else {
             ComplexRule rule = new ComplexRule(1, "Le type de la notice d'autorité liée n'est pas conforme", Priority.P1, new HashSet<>(), new HashSet<>(), new HashSet<>(), new PresenceSousZone(1, "606", "3", true));
             rule.addOtherRule(new DependencyRule(2, "606", "3", 0, rule));
-            PresenceChaineCaracteres presence = new PresenceChaineCaracteres(3, "008", "a", EnumTypeVerification.CONTIENT);
-            presence.addChaineCaracteres(new ChaineCaracteres(1, "Td8", presence));
+            PresenceSousZone presence = new PresenceSousZone(3, "250", "a", true);
             rule.addOtherRule(new LinkedRule(presence, BooleanOperateur.ET, 1, rule));
             complexRulesRepository.save(rule);
         }

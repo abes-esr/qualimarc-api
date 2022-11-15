@@ -14,6 +14,8 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @SpringJUnitConfig(classes = {DependencyRule.class})
 public class DependencyRuleTest {
@@ -31,7 +33,7 @@ public class DependencyRuleTest {
         NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
 
         DependencyRule rule1 = new DependencyRule(1, "606", "3", 1, new ComplexRule());
-        Assertions.assertEquals("02787088X", rule1.getPpnsNoticeLiee(notice).get(0));
+        Assertions.assertEquals("02787088X", rule1.getPpnsNoticeLiee(notice).stream().findFirst().get());
 
         DependencyRule rule2 = new DependencyRule(1, "606", "8", 1, new ComplexRule());
         Assertions.assertEquals(0, rule2.getPpnsNoticeLiee(notice).size());
@@ -40,10 +42,11 @@ public class DependencyRuleTest {
         Assertions.assertEquals(0, rule3.getPpnsNoticeLiee(notice).size());
 
         DependencyRule rule4 = new DependencyRule(1, "607", "3", 1, new ComplexRule());
-        Assertions.assertEquals(3, rule4.getPpnsNoticeLiee(notice).size());
-        Assertions.assertEquals("02787088X", rule4.getPpnsNoticeLiee(notice).get(0));
-        Assertions.assertEquals("987654321", rule4.getPpnsNoticeLiee(notice).get(1));
-        Assertions.assertEquals("02731667X", rule4.getPpnsNoticeLiee(notice).get(2));
+        List<String> listePpn = rule4.getPpnsNoticeLiee(notice).stream().sorted().collect(Collectors.toList());
+        Assertions.assertEquals(3, listePpn.size());
+        Assertions.assertEquals("02731667X", listePpn.get(0));
+        Assertions.assertEquals("02787088X", listePpn.get(1));
+        Assertions.assertEquals("987654321", listePpn.get(2));
     }
 
     @Test

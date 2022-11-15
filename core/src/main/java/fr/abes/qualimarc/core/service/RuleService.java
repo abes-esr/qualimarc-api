@@ -55,7 +55,7 @@ public class RuleService {
                             if (dependencyRule != null) {
                                 //il existe une règle de dépendance dans la règle complexe
                                 //récupération de la notice liée
-                                List<String> ppnNoticeLiee = rule.getDependencyRule().getPpnsNoticeLiee(noticeSource);
+                                Set<String> ppnNoticeLiee = rule.getDependencyRule().getPpnsNoticeLiee(noticeSource);
                                 for (String ppnLie : ppnNoticeLiee) {
                                     NoticeXml noticeLiee = noticeService.getAutoriteByPpn(ppnLie);
                                     if (noticeLiee != null) {
