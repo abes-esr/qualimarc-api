@@ -4,7 +4,7 @@ import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
-import fr.abes.qualimarc.core.service.NoticeBibioService;
+import fr.abes.qualimarc.core.service.NoticeService;
 import fr.abes.qualimarc.core.service.ReferenceService;
 import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
@@ -42,7 +42,7 @@ import java.util.Set;
 @Slf4j
 public class RuleController {
     @Autowired
-    private NoticeBibioService service;
+    private NoticeService service;
 
     @Autowired
     private RuleService ruleService;
@@ -55,7 +55,7 @@ public class RuleController {
 
     @GetMapping("/{ppn}")
     public NoticeXml getPpn(@PathVariable String ppn) throws IOException, SQLException {
-        return service.getByPpn(ppn);
+        return service.getBiblioByPpn(ppn);
     }
 
     @PostMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -141,7 +141,8 @@ public class RuleController {
         List<ComplexRule> rulesEntity = new ArrayList<>();
         for (ComplexRuleWebDto complexRuleWebDto : rules.getComplexRules()) {
             if(complexRuleWebDto.getRegles().size() > 1) {
-                rulesEntity.add(mapper.map(complexRuleWebDto, ComplexRule.class));
+                ComplexRule complexRule = mapper.map(complexRuleWebDto, ComplexRule.class);
+                rulesEntity.add(complexRule);
             } else {
                 throw new IllegalArgumentException("Une règle complexe doit contenir au moins deux règles simples");
             }

@@ -1,7 +1,7 @@
 package fr.abes.qualimarc.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.abes.qualimarc.core.service.NoticeBibioService;
+import fr.abes.qualimarc.core.service.NoticeService;
 import fr.abes.qualimarc.core.service.ReferenceService;
 import fr.abes.qualimarc.core.service.RuleService;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
@@ -61,7 +61,7 @@ public class RuleControllerTest {
     private RuleService ruleService;
 
     @MockBean
-    private NoticeBibioService noticeBibioService;
+    private NoticeService noticeService;
 
     @MockBean
     private ReferenceService referenceService;
