@@ -138,8 +138,8 @@ public class ComplexRule implements Serializable {
 
     /**
      * Retourne true si toutes les règles qui la composent sont valides
-     * @param notices
-     * @return
+     * @param notice notice au format xml
+     * @return boolean
      */
     public boolean isValid(NoticeXml ... notices) {
         switch (notices.length) {
@@ -208,7 +208,7 @@ public class ComplexRule implements Serializable {
         List<String> liste = new LinkedList<>();
         liste.add(this.getFirstRule().getZones());
         this.getOtherRules().forEach(rule -> liste.add(rule.getZones()));
-        return liste;
+        return liste.stream().distinct().collect(Collectors.toList());
     }
 
     /**

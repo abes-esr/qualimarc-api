@@ -121,6 +121,9 @@ public class ComplexRuleTest {
         Assertions.assertEquals(2, complexRule.getZonesFromChildren().size());
         Assertions.assertEquals("300", complexRule.getZonesFromChildren().get(1));
 
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "300", false), BooleanOperateur.OU, null, 1));
+        Assertions.assertEquals(2, complexRule.getZonesFromChildren().size());
+        Assertions.assertEquals("300", complexRule.getZonesFromChildren().get(1));
     }
 
 
