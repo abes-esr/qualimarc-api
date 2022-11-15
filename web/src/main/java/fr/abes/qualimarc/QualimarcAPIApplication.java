@@ -4,6 +4,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.DependencyRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
@@ -97,7 +98,7 @@ public class QualimarcAPIApplication implements CommandLineRunner {
         else {
             ComplexRule rule = new ComplexRule(1, "Le type de la notice d'autorité liée n'est pas conforme", Priority.P1, new HashSet<>(), new HashSet<>(), new HashSet<>(), new PresenceSousZone(1, "606", "3", true));
             rule.addOtherRule(new DependencyRule(2, "606", "3", 0, rule));
-            PresenceSousZone presence = new PresenceSousZone(3, "250", "a", true);
+            PresenceZone presence = new PresenceZone(3, "250", false);
             rule.addOtherRule(new LinkedRule(presence, BooleanOperateur.ET, 1, rule));
             complexRulesRepository.save(rule);
         }
