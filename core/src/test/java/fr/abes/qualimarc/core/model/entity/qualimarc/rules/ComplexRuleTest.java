@@ -117,13 +117,19 @@ public class ComplexRuleTest {
         Assertions.assertEquals(1, complexRule.getZonesFromChildren().size());
         Assertions.assertEquals("200", complexRule.getZonesFromChildren().get(0));
 
-        complexRule.addOtherRule(new LinkedRule(new PresenceZone(1, "300", false), BooleanOperateur.OU, 1, null));
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(1, "300", false), BooleanOperateur.OU, 1, complexRule));
         Assertions.assertEquals(2, complexRule.getZonesFromChildren().size());
         Assertions.assertEquals("300", complexRule.getZonesFromChildren().get(1));
 
-        complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "300", false), BooleanOperateur.OU, null, complexRule));
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "300", false), BooleanOperateur.OU, 2, complexRule));
         Assertions.assertEquals(2, complexRule.getZonesFromChildren().size());
         Assertions.assertEquals("300", complexRule.getZonesFromChildren().get(1));
+
+
+        complexRule.addOtherRule(new DependencyRule(1, "600", "a",3,complexRule));
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(3, "400", false), BooleanOperateur.OU, 4, complexRule));
+        Assertions.assertEquals(3, complexRule.getZonesFromChildren().size());
+        Assertions.assertEquals("600$a", complexRule.getZonesFromChildren().get(2));
     }
 
 
