@@ -207,13 +207,10 @@ public class ComplexRule implements Serializable {
     public List<String> getZonesFromChildren() {
         List<String> liste = new LinkedList<>();
         liste.add(this.getFirstRule().getZones());
-        boolean isRuleBeforeDependance = true;
         for (OtherRule rule : this.getOtherRules()) {
-            if(isRuleBeforeDependance)
-                liste.add(rule.getZones());
-
             if(rule instanceof DependencyRule)
-                isRuleBeforeDependance = false;
+                break;
+            liste.add(rule.getZones());
         }
         return liste.stream().distinct().collect(Collectors.toList());
     }
