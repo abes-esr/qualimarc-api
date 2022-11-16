@@ -14,10 +14,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZon
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
-import fr.abes.qualimarc.core.utils.BooleanOperateur;
-import fr.abes.qualimarc.core.utils.Priority;
-import fr.abes.qualimarc.core.utils.TypeAnalyse;
-import fr.abes.qualimarc.core.utils.TypeThese;
+import fr.abes.qualimarc.core.utils.*;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Assertions;
@@ -403,7 +400,7 @@ class RuleServiceTest {
         ppns.add("143519379");
 
         ComplexRule rule = new ComplexRule(1, "Message", Priority.P1, new PresenceZone(1, "200", true));
-        rule.addOtherRule(new DependencyRule(1, "607", "3", 1, rule));
+        rule.addOtherRule(new DependencyRule(1, "607", "3", TypeNoticeLie.AUTORITE, 1, rule));
         rule.addOtherRule(new LinkedRule(new PresenceZone(2, "152", true), BooleanOperateur.ET, 2, rule));
         Set<ComplexRule> listeReglesDependency = new HashSet<>();
         listeReglesDependency.add(rule);

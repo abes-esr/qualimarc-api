@@ -3,6 +3,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules;
 import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.notice.SubField;
+import fr.abes.qualimarc.core.utils.TypeNoticeLie;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,13 +19,19 @@ import java.util.stream.Collectors;
 @Entity
 @NoArgsConstructor
 public class DependencyRule extends OtherRule {
+
     private String zoneSource;
+
     private String sousZoneSource;
 
-    public DependencyRule(Integer id, String zoneSource, String sousZoneSource, Integer position, ComplexRule complexRule) {
+    private TypeNoticeLie typeNoticeLie;
+
+
+    public DependencyRule(Integer id, String zoneSource, String sousZoneSource, TypeNoticeLie typeNoticeLie, Integer position, ComplexRule complexRule) {
         super(id, position, complexRule);
         this.zoneSource = zoneSource;
         this.sousZoneSource = sousZoneSource;
+        this.typeNoticeLie = typeNoticeLie;
     }
 
     public Set<String> getPpnsNoticeLiee(NoticeXml notice) {

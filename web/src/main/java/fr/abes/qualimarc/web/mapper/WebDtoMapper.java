@@ -538,20 +538,20 @@ public class WebDtoMapper {
         return Priority.P1;
     }
 
-    private EnumTypeVerification getTypeDeVerification(String typeDeVerification) {
+    private TypeVerification getTypeDeVerification(String typeDeVerification) {
         switch (typeDeVerification) {
             case "STRICTEMENT":
-                return EnumTypeVerification.STRICTEMENT;
+                return TypeVerification.STRICTEMENT;
             case "COMMENCE":
-                return EnumTypeVerification.COMMENCE;
+                return TypeVerification.COMMENCE;
             case "TERMINE":
-                return EnumTypeVerification.TERMINE;
+                return TypeVerification.TERMINE;
             case "CONTIENT":
-                return EnumTypeVerification.CONTIENT;
+                return TypeVerification.CONTIENT;
             case "NECONTIENTPAS":
-                return EnumTypeVerification.NECONTIENTPAS;
+                return TypeVerification.NECONTIENTPAS;
             default:
-                return EnumTypeVerification.CONTIENT;
+                return TypeVerification.CONTIENT;
         }
     }
 

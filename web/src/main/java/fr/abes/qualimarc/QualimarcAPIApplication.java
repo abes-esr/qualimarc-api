@@ -9,6 +9,7 @@ import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.core.utils.Priority;
+import fr.abes.qualimarc.core.utils.TypeNoticeLie;
 import fr.abes.qualimarc.web.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -97,7 +98,7 @@ public class QualimarcAPIApplication implements CommandLineRunner {
         }
         else {
             ComplexRule rule = new ComplexRule(1, "Le type de la notice d'autorité liée n'est pas conforme", Priority.P1, new HashSet<>(), new HashSet<>(), new HashSet<>(), new PresenceSousZone(1, "606", "3", true));
-            rule.addOtherRule(new DependencyRule(2, "606", "3", 0, rule));
+            rule.addOtherRule(new DependencyRule(2, "606", "3", TypeNoticeLie.AUTORITE, 0, rule));
             PresenceZone presence = new PresenceZone(3, "250", false);
             rule.addOtherRule(new LinkedRule(presence, BooleanOperateur.ET, 1, rule));
             complexRulesRepository.save(rule);
