@@ -208,9 +208,9 @@ public class ComplexRule implements Serializable {
         List<String> liste = new LinkedList<>();
         liste.add(this.getFirstRule().getZones());
         for (OtherRule rule : this.getOtherRules()) {
+            liste.add(rule.getZones());
             if(rule instanceof DependencyRule)
                 break;
-            liste.add(rule.getZones());
         }
         return liste.stream().distinct().collect(Collectors.toList());
     }
