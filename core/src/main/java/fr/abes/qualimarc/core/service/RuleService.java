@@ -38,7 +38,7 @@ public class RuleService {
     private ComplexRulesRepository complexRulesRepository;
 
 
-    public ResultAnalyse checkRulesOnNotices(List<String> ppns, Set<ComplexRule> rulesList) {
+    public ResultAnalyse checkRulesOnNotices(Set<ComplexRule> rulesList, List<String> ppns) {
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         for (String ppn : ppns) {
             boolean isOk = true;
