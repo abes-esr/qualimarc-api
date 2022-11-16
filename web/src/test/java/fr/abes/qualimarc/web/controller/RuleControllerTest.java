@@ -10,7 +10,9 @@ import fr.abes.qualimarc.web.configuration.WebConfig;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.ResultRulesResponseDto;
+import fr.abes.qualimarc.web.exception.ExceptionControllerHandler;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,38 +38,38 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = {RuleController.class, ObjectMapper.class}) //  Active le Model-View-Controller, nécessaire pour éviter le code d'erreur 415 lors du lancement du test checkPpn
-@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = {RuleController.class}) //  Active le Model-View-Controller, nécessaire pour éviter le code d'erreur 415 lors du lancement du test checkPpn
+@ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = {WebConfig.class})
-public class RuleControllerTest {
+class RuleControllerTest {
     @Autowired
-    private WebApplicationContext context;
+    WebApplicationContext context;
 
     @InjectMocks
-    private RuleController ruleController;
+    RuleController ruleController;
 
     @Autowired
-    private MappingJackson2HttpMessageConverter yamlHttpConverter;
+    MappingJackson2HttpMessageConverter yamlHttpConverter;
 
     @Autowired
-    private MappingJackson2HttpMessageConverter jsonHttpConverter;
+    MappingJackson2HttpMessageConverter jsonHttpConverter;
 
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
     @MockBean
-    private RuleService ruleService;
+    RuleService ruleService;
 
     @MockBean
-    private NoticeService noticeService;
+    NoticeService noticeService;
 
     @MockBean
-    private ReferenceService referenceService;
+    ReferenceService referenceService;
 
     @MockBean
-    private UtilsMapper utilsMapper;
+    UtilsMapper utilsMapper;
 
 
     @BeforeEach
@@ -76,6 +78,7 @@ public class RuleControllerTest {
         this.mockMvc = MockMvcBuilders
                 .standaloneSetup(context.getBean(RuleController.class))
                 .setMessageConverters(this.yamlHttpConverter, this.jsonHttpConverter)
+                .setControllerAdvice(new ExceptionControllerHandler())
                 .build();
     }
 
@@ -126,6 +129,24 @@ public class RuleControllerTest {
                 .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
                 .content(yaml).characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("test création règle simple de type dependance")
+    void testIndexRuleDependency() throws Exception {
+        String yaml =
+                "rules:\n" +
+                        "    - id:          2\n" +
+                        "      id-excel:    2\n" +
+                        "      type:        dependance\n" +
+                        "      zone:        330\n" +
+                        "      souszone:    a";
+
+        this.mockMvc.perform(post("/api/v1/indexRules")
+                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> result.getResponse().getContentAsString().contains("debugMessage: Une règle simple ne peut pas être une règle de dépendance"));
     }
 
     @Test

@@ -11,10 +11,7 @@ import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.RuleWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.ListComplexRulesWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.ListRulesWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.*;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
@@ -87,6 +84,8 @@ public class RuleController {
     private List<ComplexRule> handleRulesWebDto(ListRulesWebDto rules) {
         List<ComplexRule> rulesEntity = new ArrayList<>();
         for (SimpleRuleWebDto rule : rules.getRules()) {
+            if (rule instanceof DependencyWebDto)
+                throw new IllegalArgumentException("Une règle simple ne peut pas être une règle de dépendance");
             List<String> zonesGeneriques = referenceService.getZonesGeneriques(rule.getZone());
             if (zonesGeneriques.size() > 0) {
                 int i = 0;
