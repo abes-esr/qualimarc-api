@@ -400,7 +400,7 @@ class RuleServiceTest {
         ppns.add("143519379");
 
         ComplexRule rule = new ComplexRule(1, "Message", Priority.P1, new PresenceZone(1, "200", true));
-        rule.addOtherRule(new DependencyRule(1, "607", "3", TypeNoticeLie.AUTORITE, 1, rule));
+        rule.addOtherRule(new DependencyRule(1, "607", "3", TypeNoticeLiee.AUTORITE, 1, rule));
         rule.addOtherRule(new LinkedRule(new PresenceZone(2, "152", true), BooleanOperateur.ET, 2, rule));
         Set<ComplexRule> listeReglesDependency = new HashSet<>();
         listeReglesDependency.add(rule);

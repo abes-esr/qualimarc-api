@@ -14,7 +14,7 @@ import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
-import fr.abes.qualimarc.core.utils.TypeNoticeLie;
+import fr.abes.qualimarc.core.utils.TypeNoticeLiee;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
@@ -58,7 +58,7 @@ public class RuleService {
                                 //récupération de la notice liée
                                 Set<String> ppnNoticeLiee = rule.getDependencyRule().getPpnsNoticeLiee(noticeSource);
                                 for (String ppnLie : ppnNoticeLiee) {
-                                    NoticeXml noticeLiee = (rule.getDependencyRule().getTypeNoticeLie() == TypeNoticeLie.AUTORITE) ? noticeService.getAutoriteByPpn(ppnLie) : noticeService.getBiblioByPpn(ppnLie);
+                                    NoticeXml noticeLiee = (rule.getDependencyRule().getTypeNoticeLiee() == TypeNoticeLiee.AUTORITE) ? noticeService.getAutoriteByPpn(ppnLie) : noticeService.getBiblioByPpn(ppnLie);
                                     if (noticeLiee != null) {
                                         isOk &= constructResultRuleOnNotice(result, rule, noticeSource, noticeLiee);
                                     }

@@ -1,5 +1,5 @@
 package fr.abes.qualimarc.core.utils;
 
-public enum TypeNoticeLie {
+public enum TypeNoticeLiee {
     BIBLIO, AUTORITE
 }
