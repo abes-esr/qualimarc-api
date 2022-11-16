@@ -2,11 +2,10 @@ package fr.abes.qualimarc.web.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -15,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,21 +43,31 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public MappingJackson2HttpMessageConverter yamlHttpConverter() {
-        MappingJackson2HttpMessageConverter yamlConverter =
-                new MappingJackson2HttpMessageConverter(new YAMLMapper());
-        yamlConverter.setSupportedMediaTypes(
-                Arrays.asList(MEDIA_TYPE_YML, MEDIA_TYPE_YAML)
-        );
-        return yamlConverter;
+    @Primary
+    public ObjectMapper objectMapper() {
+        Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
+        ObjectMapper objectMapper = builder.build();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
     }
 
     @Bean
     public MappingJackson2HttpMessageConverter jsonHttpConverter() {
         MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
-        Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
-        jsonConverter.setObjectMapper(builder.build());
-
+        jsonConverter.setObjectMapper(objectMapper());
         return jsonConverter;
+    }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter yamlHttpConverter() {
+        YAMLMapper mapper = new YAMLMapper();
+        mapper.registerModule(new JavaTimeModule());
+        MappingJackson2HttpMessageConverter yamlConverter =
+                new MappingJackson2HttpMessageConverter(mapper);
+        yamlConverter.setSupportedMediaTypes(
+                Arrays.asList(MEDIA_TYPE_YML, MEDIA_TYPE_YAML)
+        );
+        yamlConverter.setDefaultCharset(StandardCharsets.UTF_8);
+        return yamlConverter;
     }
 }

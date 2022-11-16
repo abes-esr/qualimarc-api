@@ -1,12 +1,16 @@
 package fr.abes.qualimarc.web.dto.indexrules;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -15,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = PresenceZoneWebDto.class, name = "presencezone"),
@@ -26,11 +31,10 @@ import java.util.List;
         @JsonSubTypes.Type(value = IndicateurWebDto.class, name="indicateur"),
         @JsonSubTypes.Type(value = NombreCaracteresWebDto.class, name = "nombrecaractere"),
         @JsonSubTypes.Type(value = TypeCaractereWebDto.class, name = "typecaractere"),
-        @JsonSubTypes.Type(value = PresenceChaineCaracteresWebDto.class, name="presencechainecaracteres")
+        @JsonSubTypes.Type(value = PresenceChaineCaracteresWebDto.class, name="presencechainecaracteres"),
+        @JsonSubTypes.Type(value = DependencyWebDto.class, name = "dependance")
 })
 public abstract class SimpleRuleWebDto {
-
-
     @JsonProperty("id")
     @NotNull(message = "Le champ id est obligatoire")
     protected Integer id;
@@ -39,7 +43,7 @@ public abstract class SimpleRuleWebDto {
     protected Integer idExcel;
 
     @JsonProperty("jeux-de-regles")
-    private List<Integer> ruleSetList;
+    protected List<Integer> ruleSetList = new ArrayList<>();
 
     @JsonProperty("message")
     protected String message;
@@ -103,6 +107,17 @@ public abstract class SimpleRuleWebDto {
         this.id = id;
         this.zone = zone;
         this.booleanOperator = booleanOperator;
+    }
+
+    /**
+     * Constructeur de règle complexe (dependency rule
+     * @param id
+     * @param zone
+     */
+    public SimpleRuleWebDto(@JsonProperty("id") Integer id,
+                            @JsonProperty("zone") String zone) {
+        this.id = id;
+        this.zone = zone;
     }
 
     public SimpleRuleWebDto() {
