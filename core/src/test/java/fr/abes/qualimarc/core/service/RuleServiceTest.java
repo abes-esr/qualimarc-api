@@ -146,7 +146,7 @@ class RuleServiceTest {
         Mockito.when(referenceService.getFamilleDocument("O")).thenReturn(new FamilleDocument("O", "Doc Elec"));
         Mockito.when(referenceService.getFamilleDocument("BD")).thenReturn(new FamilleDocument("BD", "Ressource Continue"));
 
-        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeRegles);
+        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
 
         Assertions.assertEquals(3, resultAnalyse.getPpnAnalyses().size());
         Assertions.assertEquals(2, resultAnalyse.getPpnErrones().size());
@@ -204,7 +204,7 @@ class RuleServiceTest {
 
         Mockito.when(noticeService.getBiblioByPpn("111111111")).thenThrow(new IllegalPpnException("le PPN 111111111 n'existe pas"));
 
-        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeRegles);
+        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
 
         Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
 
@@ -220,7 +220,7 @@ class RuleServiceTest {
 
         Mockito.when(noticeService.getBiblioByPpn("111111111")).thenReturn(noticeDeleted);
 
-        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeRegles);
+        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
 
         Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
     }
@@ -232,7 +232,7 @@ class RuleServiceTest {
 
         Mockito.when(noticeService.getBiblioByPpn("111111111")).thenThrow(new SQLException("Erreur d'accès à la base de données sur PPN : 111111111"));
 
-        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeRegles);
+        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
         Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
 
         List<ResultRules> resultat = resultAnalyse.getResultRules();
@@ -412,7 +412,7 @@ class RuleServiceTest {
 
         Mockito.when(referenceService.getFamilleDocument("A")).thenReturn(new FamilleDocument("A", "Monographie"));
 
-        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(ppns, listeReglesDependency);
+        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(listeReglesDependency, ppns);
         Assertions.assertEquals(1, resultAnalyse.getPpnAnalyses().size());
         Assertions.assertEquals(1, resultAnalyse.getPpnErrones().size());
         Assertions.assertEquals(0, resultAnalyse.getPpnOk().size());
