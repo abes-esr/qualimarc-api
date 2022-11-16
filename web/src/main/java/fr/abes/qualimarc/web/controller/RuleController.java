@@ -67,7 +67,7 @@ public class RuleController {
         if ((requestBody.getRuleSet() != null) && (!requestBody.getRuleSet().isEmpty())){
             ruleSets = mapper.mapSet(requestBody.getRuleSet(),RuleSet.class);
         }
-        return mapper.map(ruleService.checkRulesOnNotices(requestBody.getPpnList(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, ruleSets)), ResultAnalyseResponseDto.class);
+        return mapper.map(ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, ruleSets), requestBody.getPpnList()), ResultAnalyseResponseDto.class);
     }
 
     @PostMapping(value = "/indexRules", consumes = {"text/yaml", "text/yml"})
