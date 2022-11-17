@@ -32,13 +32,13 @@ public class Reciprocite extends SimpleRule implements Serializable {
     public boolean isValid(NoticeXml ... notices) {
         NoticeXml noticeMere = notices[0];
         NoticeXml noticeLiee = notices[1];
-        boolean ppnFound = true;
+        boolean isPpnFound = true;
         List<Datafield> datafields = noticeLiee.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.zone)).collect(Collectors.toList());
         for (Datafield datafield : datafields) {
             List<SubField> subFields = datafield.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZoneCible)).collect(Collectors.toList());
-            ppnFound = subFields.stream().noneMatch(subField -> subField.getValue().equals(noticeMere.getPpn()));
+            isPpnFound = subFields.stream().noneMatch(subField -> subField.getValue().equals(noticeMere.getPpn()));
         }
-        return ppnFound;
+        return isPpnFound;
     }
 
     @Override
