@@ -11,6 +11,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.NombreCaracte
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.TypeCaractere;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.dependance.Reciprocite;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.souszoneoperator.SousZoneOperator;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
@@ -26,6 +27,7 @@ import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.EnumUtils;
@@ -204,6 +206,7 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
+
     /**
      * Convertion d'un modèle PresenceZoneWebDto en modèle SimpleRule (LinkedRule)
      */
@@ -346,6 +349,20 @@ public class WebDtoMapper {
     }
 
     /**
+     * Convertion d'un modèle ReciprociteWenDto en modèle SimpleRule (LinkedRule)
+     */
+    @Bean
+    public void converterReciprociteToLinkedRule() {
+        Converter<ReciprociteWebDto, SimpleRule> myConverter = new Converter<ReciprociteWebDto, SimpleRule>() {
+            public SimpleRule convert(MappingContext<ReciprociteWebDto, SimpleRule> context) {
+                ReciprociteWebDto source = context.getSource();
+                return new Reciprocite(source.getId(), source.getZone(), source.getSousZone());
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
      * Convertion d'un modèle ComplexRuleWebDto en ComplexRule
      */
     @Bean
@@ -362,6 +379,8 @@ public class WebDtoMapper {
                 SimpleRuleWebDto firstRegle = reglesIt.next();
                 if (firstRegle instanceof DependencyWebDto)
                     throw new IllegalArgumentException("La première règle d'une règle complexe ne peut pas être une règle de dépendance");
+                if (firstRegle instanceof ReciprociteWebDto)
+                    throw new IllegalArgumentException("La première règle d'une règle complexe ne peut pas être une règle de réciprocité");
                 int i = 0;
                 if (null == firstRegle.getBooleanOperator()) {
                     target = new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), mapper.map(firstRegle, SimpleRule.class));
@@ -375,16 +394,18 @@ public class WebDtoMapper {
                         target.setTypesThese(getTypeThese(source.getTypesThese()));
                     }
                     boolean isPreviousRegleDependency = false;
+                    boolean isDependencyRuleCreated = false;
                     while (reglesIt.hasNext()) {
                         SimpleRuleWebDto otherRegle = reglesIt.next();
                         checkTypeThese(otherRegle.getTypesThese());
-                        if (otherRegle.getBooleanOperator() == null && !(otherRegle instanceof DependencyWebDto) && !isPreviousRegleDependency) {
+                        if (otherRegle instanceof ReciprociteWebDto && !isDependencyRuleCreated)
+                            throw new IllegalArgumentException("Une règle de dépendance doit être créée avant de créer une règle de réciprocité");
+                        if (otherRegle.getBooleanOperator() == null && !(otherRegle instanceof DependencyWebDto) && !isPreviousRegleDependency)
                             throw new IllegalArgumentException("Les règles autres que la première d'une règle complexe doivent avoir un opérateur");
-                        }
                         //si la règle précédente est de type dépendance, la règle en cours ne doit pas avoir d'opérateur
-                        if (isPreviousRegleDependency && otherRegle.getBooleanOperator() != null) {
+                        if (isPreviousRegleDependency && otherRegle.getBooleanOperator() != null)
                             throw new IllegalArgumentException("Une règle simple suivant une règle de dépendance ne doit pas avoir d'opérateur");
-                        }
+
                         //Si la règle en cours est une règle de dépendance
                         if (otherRegle instanceof DependencyWebDto) {
                             //si on est en fin de liste de règle, il manque une règle simple
@@ -392,6 +413,7 @@ public class WebDtoMapper {
                                 throw new IllegalArgumentException("Une règle de dépendance doit toujours être suivie d'une règle simple");
                             checkDependencyRule((DependencyWebDto) otherRegle);
                             target.addOtherRule(new DependencyRule(otherRegle.getId(), otherRegle.getZone(), ((DependencyWebDto) otherRegle).getSousZone(), getTypeNoticeLiee(((DependencyWebDto) otherRegle).getTypeNoticeLiee()), i++, target));
+                            isDependencyRuleCreated = true;
                         }
                         else
                             target.addOtherRule(new LinkedRule(mapper.map(otherRegle, SimpleRule.class), isPreviousRegleDependency ? BooleanOperateur.ET : getOperateur(otherRegle.getBooleanOperator()), i++, target));

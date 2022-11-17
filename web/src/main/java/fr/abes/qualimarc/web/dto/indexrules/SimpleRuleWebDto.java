@@ -8,6 +8,7 @@ import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +33,8 @@ import java.util.List;
         @JsonSubTypes.Type(value = NombreCaracteresWebDto.class, name = "nombrecaractere"),
         @JsonSubTypes.Type(value = TypeCaractereWebDto.class, name = "typecaractere"),
         @JsonSubTypes.Type(value = PresenceChaineCaracteresWebDto.class, name="presencechainecaracteres"),
-        @JsonSubTypes.Type(value = DependencyWebDto.class, name = "dependance")
+        @JsonSubTypes.Type(value = DependencyWebDto.class, name = "dependance"),
+        @JsonSubTypes.Type(value = ReciprociteWebDto.class, name = "reciprocite")
 })
 public abstract class SimpleRuleWebDto {
     @JsonProperty("id")
