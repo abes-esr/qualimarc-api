@@ -12,4 +12,4 @@ jobs:
       with:
         java-version: 11
     - name: Build with Maven in batch mode
-      run: ./mvnw -B compile test --file pom.xml
+      run: mvn --batch-mode --update-snapshots verify
