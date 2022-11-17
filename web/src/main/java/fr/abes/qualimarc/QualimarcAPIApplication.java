@@ -12,6 +12,7 @@ import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.core.utils.Operateur;
 import fr.abes.qualimarc.core.utils.Priority;
+import fr.abes.qualimarc.core.utils.TypeNoticeLiee;
 import fr.abes.qualimarc.web.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

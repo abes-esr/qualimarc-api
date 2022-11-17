@@ -17,12 +17,17 @@ public class DependencyWebDto extends SimpleRuleWebDto {
     @NotNull(message = "Le champ souszone est obligatoire")
     private String sousZone;
 
+    @JsonProperty(value = "type-notice-liee")
+    @NotNull(message = "Le champ type-notice-liee est obligatoire")
+    private String typeNoticeLiee;
+
     public DependencyWebDto() {
         super();
     }
 
-    public DependencyWebDto(Integer id, String zone, String sousZone) {
+    public DependencyWebDto(Integer id, String zone, String sousZone, String typeNoticeLiee) {
         super(id, zone);
         this.sousZone = sousZone;
+        this.typeNoticeLiee = typeNoticeLiee;
     }
 }
