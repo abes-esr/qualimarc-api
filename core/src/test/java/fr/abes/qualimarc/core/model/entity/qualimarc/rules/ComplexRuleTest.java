@@ -153,5 +153,11 @@ public class ComplexRuleTest {
     }
 
 
-
+/**
+ * test fail
+ */
+    @Test
+    void testFail() {
+        Assertions.assertTrue(false);
+    }
 }
