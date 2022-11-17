@@ -17,10 +17,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest(classes = {NombreCaracteres.class})
-class NombreCaracteresTest {
+public class NombreCaracteresTest {
     @Value("classpath:143519379.xml")
     private Resource xmlFileNotice1;
 
