@@ -2,6 +2,10 @@
 name: Run TU
 on:
   workflow_dispatch:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
 jobs:
   build-and-test-backend:
     runs-on: ubuntu-latest
