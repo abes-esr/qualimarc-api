@@ -37,6 +37,46 @@ public class ComparaisonDate extends SimpleRule implements Serializable {
 
     private Operateur operateur;
 
+    public ComparaisonDate(Integer id, String zone, String sousZone, Integer positionStart, Integer positionEnd, String zoneCible, String sousZoneCible, Integer positionStartCible, Integer positionEndCible, Operateur operateur) {
+        super(id, zone);
+        this.sousZone = sousZone;
+        this.positionStart = positionStart;
+        this.positionEnd = positionEnd;
+        this.zoneCible = zoneCible;
+        this.sousZoneCible = sousZoneCible;
+        this.positionStartCible = positionStartCible;
+        this.positionEndCible = positionEndCible;
+        this.operateur = operateur;
+    }
+
+    public ComparaisonDate(Integer id, String zone, String sousZone, String zoneCible, String sousZoneCible, Operateur operateur) {
+        super(id, zone);
+        this.sousZone = sousZone;
+        this.zoneCible = zoneCible;
+        this.sousZoneCible = sousZoneCible;
+        this.operateur = operateur;
+    }
+
+    public ComparaisonDate(Integer id, String zone, String sousZone, Integer positionStart, Integer positionEnd, String zoneCible, String sousZoneCible, Operateur operateur) {
+        super(id, zone);
+        this.sousZone = sousZone;
+        this.positionStart = positionStart;
+        this.positionEnd = positionEnd;
+        this.zoneCible = zoneCible;
+        this.sousZoneCible = sousZoneCible;
+        this.operateur = operateur;
+    }
+
+    public ComparaisonDate(Integer id, String zone, String sousZone, String zoneCible, String sousZoneCible, Integer positionStartCible, Integer positionEndCible, Operateur operateur) {
+        super(id, zone);
+        this.sousZone = sousZone;
+        this.zoneCible = zoneCible;
+        this.sousZoneCible = sousZoneCible;
+        this.positionStartCible = positionStartCible;
+        this.positionEndCible = positionEndCible;
+        this.operateur = operateur;
+    }
+
     @Override
     public boolean isValid(NoticeXml... notices) {
         NoticeXml notice = notices[0];
@@ -59,7 +99,13 @@ public class ComparaisonDate extends SimpleRule implements Serializable {
                 if(this.getPositionEndCible() != null && valueCible.length() >= this.getPositionEndCible()){
                     valueCible = valueCible.substring(this.getPositionStartCible(), this.getPositionEndCible());
                 }
-                if(valueSource.length() == 4 && valueCible.length() == 4 && !(valueSource.contains("X") || valueCible.contains("X"))) {
+
+                //split to get juste number
+                valueSource = valueSource.split("\\D+")[0];
+                valueCible = valueCible.split("\\D+")[0];
+
+
+                if(valueSource.length() == 4 && valueCible.length() == 4) {
                     switch (this.getOperateur()) {
                         case EGAL:
                             return valueSource.equals(valueCible);

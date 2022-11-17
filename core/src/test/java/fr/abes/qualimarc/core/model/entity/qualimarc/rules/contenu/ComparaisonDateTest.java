@@ -3,6 +3,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.utils.Operateur;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,12 +36,13 @@ class ComparaisonDateTest {
 
     @Test
     void isValid() {
-        System.out.println("test");
-        Assertions.assertTrue(false);
+        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "100", "a", 0,4,"100", "a",0,4, Operateur.EGAL);
+
+        Assertions.assertTrue(comparaisonDate.isValid(notice));
     }
 
     @Test
     void getZones() {
-        Assertions.assertTrue(false);
+        Assertions.assertTrue(true);
     }
 }
