@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @SpringBootTest(classes = {Indicateur.class})
-class IndicateurTest {
+public class IndicateurTest {
     @Value("classpath:143519379.xml")
     private Resource xmlFileNotice1;
 

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @SpringBootTest(classes = {Reciprocite.class})
-class ReciprociteTest {
+public class ReciprociteTest {
     @Value("classpath:143519379.xml")
     Resource xmlFileNotice;
 
