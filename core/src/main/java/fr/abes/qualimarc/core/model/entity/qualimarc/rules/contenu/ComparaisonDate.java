@@ -40,7 +40,8 @@ public class ComparaisonDate extends SimpleRule implements Serializable {
     private Operateur operateur;
 
     @Override
-    public boolean isValid(NoticeXml notice) {
+    public boolean isValid(NoticeXml... notices) {
+        NoticeXml notice = notices[0];
         List<Datafield> zonesSource = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
         List<Datafield> zonesSourceCible = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZoneCible())).collect(Collectors.toList());
         boolean isOk = false;
