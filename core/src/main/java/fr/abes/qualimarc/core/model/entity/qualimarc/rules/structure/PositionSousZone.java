@@ -32,7 +32,8 @@ public class PositionSousZone extends SimpleRule implements Serializable {
     }
 
     @Override
-    public boolean isValid(NoticeXml notice) {
+    public boolean isValid(NoticeXml ... notices) {
+        NoticeXml notice = notices[0];
         //récupération de toutes les zones définies dans la règle
         List<Datafield> zones = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).collect(Collectors.toList());
         //vérification pour chaque zone répétée

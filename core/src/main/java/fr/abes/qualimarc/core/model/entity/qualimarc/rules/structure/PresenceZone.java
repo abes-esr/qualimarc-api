@@ -31,7 +31,8 @@ public class PresenceZone extends SimpleRule implements Serializable {
     }
 
     @Override
-    public boolean isValid(NoticeXml notice) {
+    public boolean isValid(NoticeXml ... notices) {
+        NoticeXml notice = notices[0];
         //cas ou on veut que la zone soit présente dans la notice pour lever le message
         if(this.isPresent) {
             return notice.getDatafields().stream().anyMatch(dataField -> dataField.getTag().equals(this.getZone()));

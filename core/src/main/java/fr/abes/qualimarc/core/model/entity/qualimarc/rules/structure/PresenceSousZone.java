@@ -36,8 +36,8 @@ public class PresenceSousZone extends SimpleRule implements Serializable {
 
 
     @Override
-    public boolean isValid(NoticeXml notice) {
-
+    public boolean isValid(NoticeXml ... notices) {
+        NoticeXml notice = notices[0];
         List<Datafield> datafields = notice.getDatafields().stream().filter(dataField -> dataField.getTag().equals(this.getZone())).collect(Collectors.toList());
         //cas ou la sous zone doit être présente dans la zone pour lever le message
         if(this.isPresent) {

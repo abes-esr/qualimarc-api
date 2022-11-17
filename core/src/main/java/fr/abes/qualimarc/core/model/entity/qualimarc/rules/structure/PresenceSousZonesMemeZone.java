@@ -40,7 +40,8 @@ public class PresenceSousZonesMemeZone extends SimpleRule implements Serializabl
     }
 
     @Override
-    public boolean isValid(NoticeXml notice) {
+    public boolean isValid(NoticeXml ... notices) {
+        NoticeXml notice = notices[0];
         List<Datafield> datafields = notice.getDatafields().stream().filter(dataField -> dataField.getTag().equals(this.getZone())).collect(Collectors.toList());
         boolean isOk;
         for (Datafield datafield : datafields){

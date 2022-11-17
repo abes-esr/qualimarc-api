@@ -41,6 +41,37 @@
         <subfield code="9">#</subfield>
         <subfield code="a">Personnel de l'informatique</subfield>
     </datafield>
+    <datafield tag="455" ind1=" " ind2=" ">
+        <subfield code="0">143519379</subfield>
+    </datafield>
+    <datafield tag="457" ind1=" " ind2=" ">
+        <subfield code="0">123456789</subfield>
+    </datafield>
+    <datafield tag="457" ind1=" " ind2=" ">
+        <subfield code="0">143519379</subfield>
+    </datafield>
+    <datafield tag="458" ind1=" " ind2=" ">
+        <subfield code="0">123456789</subfield>
+    </datafield>
+    <datafield tag="458" ind1=" " ind2=" ">
+        <subfield code="0">987654321</subfield>
+    </datafield>
+    <datafield tag="459" ind1=" " ind2=" ">
+        <subfield code="0">123456789</subfield>
+    </datafield>
+    <datafield tag="459" ind1=" " ind2=" ">
+        <subfield code="0">987654321</subfield>
+        <subfield code="1">test</subfield>
+        <subfield code="0">143519379</subfield>
+    </datafield>
+    <datafield tag="460" ind1=" " ind2=" ">
+        <subfield code="0">123456789</subfield>
+    </datafield>
+    <datafield tag="460" ind1=" " ind2=" ">
+        <subfield code="0">987654321</subfield>
+        <subfield code="1">test</subfield>
+        <subfield code="0">222222222</subfield>
+    </datafield>
     <datafield tag="550" ind1=" " ind2=" ">
         <subfield code="3">220911487</subfield>
         <subfield code="5">h|xxx</subfield>
