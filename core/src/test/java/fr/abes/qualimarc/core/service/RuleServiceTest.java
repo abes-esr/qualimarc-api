@@ -34,7 +34,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @SpringBootTest(classes = {RuleService.class})
-class RuleServiceTest {
+public class RuleServiceTest {
     @Autowired
     RuleService service;
 

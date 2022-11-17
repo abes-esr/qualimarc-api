@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = {RuleController.class}) //  Active le Model-View-Controller, nécessaire pour éviter le code d'erreur 415 lors du lancement du test checkPpn
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = {WebConfig.class})
-class RuleControllerTest {
+public class RuleControllerTest {
     @Autowired
     WebApplicationContext context;
 

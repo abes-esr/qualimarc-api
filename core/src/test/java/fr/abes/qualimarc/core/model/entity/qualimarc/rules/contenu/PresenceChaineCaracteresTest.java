@@ -2,7 +2,6 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu;
 
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import fr.abes.qualimarc.core.configuration.BaseXMLConfiguration;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.Resource;
 
 import java.io.FileInputStream;
@@ -24,8 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SpringBootTest(classes = {PresenceChaineCaracteres.class})
-@ComponentScan(excludeFilters = @ComponentScan.Filter(BaseXMLConfiguration.class))
-class PresenceChaineCaracteresTest {
+public class PresenceChaineCaracteresTest {
 
     @Value("classpath:143519379.xml")
     private Resource xmlFileNotice;
