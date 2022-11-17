@@ -7,6 +7,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSou
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.core.utils.Priority;
+import fr.abes.qualimarc.core.utils.TypeNoticeLiee;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -99,7 +100,7 @@ public class ComplexRuleTest {
         NoticeXml noticeAutorite = mapper.readValue(xml2, NoticeXml.class);
 
         ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "200", true));
-        complexRule.addOtherRule(new DependencyRule(1, "606", "3", 0, complexRule));
+        complexRule.addOtherRule(new DependencyRule(1, "606", "3", TypeNoticeLiee.AUTORITE, 0, complexRule));
 
         complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(4, "152", "b", true), BooleanOperateur.ET, 1, complexRule));
         Assertions.assertTrue(complexRule.isValid(noticeBiblio, noticeAutorite));
@@ -126,7 +127,7 @@ public class ComplexRuleTest {
         Assertions.assertEquals("300", complexRule.getZonesFromChildren().get(1));
 
 
-        complexRule.addOtherRule(new DependencyRule(1, "600", "a",3,complexRule));
+        complexRule.addOtherRule(new DependencyRule(1, "600", "a", TypeNoticeLiee.AUTORITE,3,complexRule));
         complexRule.addOtherRule(new LinkedRule(new PresenceZone(3, "400", false), BooleanOperateur.OU, 4, complexRule));
         Assertions.assertEquals(3, complexRule.getZonesFromChildren().size());
         Assertions.assertEquals("600$a", complexRule.getZonesFromChildren().get(2));
