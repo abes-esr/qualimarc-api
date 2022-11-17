@@ -192,6 +192,11 @@ public class ComplexRule implements Serializable {
         return isValid;
     }
 
+    /**
+     * Vérifie la validité d'une règle complexe sans règle de dépendance, sur une seule notice
+     * @param notice
+     * @return true si la règle est valide, false sinon
+     */
     private boolean isValidOneNotice(NoticeXml notice) {
         boolean isValid = firstRule.isValid(notice);
         for (OtherRule otherRule : otherRules.stream().sorted(Comparator.comparing(OtherRule::getPosition)).collect(Collectors.toList())) {

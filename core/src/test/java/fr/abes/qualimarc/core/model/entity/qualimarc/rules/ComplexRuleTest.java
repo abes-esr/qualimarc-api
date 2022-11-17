@@ -3,6 +3,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.dependance.Reciprocite;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
@@ -122,11 +123,8 @@ public class ComplexRuleTest {
 
         ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "200", true));
         complexRule.addOtherRule(new DependencyRule(1, "606", "3", 0, complexRule));
+        complexRule.addOtherRule(new LinkedRule(new Reciprocite(4, "459", "0"), BooleanOperateur.ET, 1, complexRule));
 
-        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(4, "152", "b", true), BooleanOperateur.ET, 1, complexRule));
-        Assertions.assertTrue(complexRule.isValid(noticeBiblio, noticeAutorite));
-
-        complexRule.addOtherRule(new LinkedRule(new PresenceZone(5, "153", true), BooleanOperateur.ET, 2, complexRule));
         Assertions.assertFalse(complexRule.isValid(noticeBiblio, noticeAutorite));
     }
 
