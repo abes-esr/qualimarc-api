@@ -95,20 +95,6 @@ public class QualimarcAPIApplication implements CommandLineRunner {
 
 
 //            complexRulesRepository.saveAll(rules);
-        } else {
-            ComplexRule rule = new ComplexRule(1, "Le type de la notice d'autorité liée n'est pas conforme", Priority.P1, new HashSet<>(), new HashSet<>(), new HashSet<>(), new PresenceSousZone(1, "606", "3", true));
-            rule.addOtherRule(new DependencyRule(2, "606", "3", TypeNoticeLiee.AUTORITE, 0, rule));
-            PresenceZone presence = new PresenceZone(3, "250", false);
-            rule.addOtherRule(new LinkedRule(presence, BooleanOperateur.ET, 1, rule));
-
-            ComplexRule rule2 = new ComplexRule(4, "Le type de la notice biblio liée ne doit pas etre une monographie", Priority.P1, new HashSet<>(), new HashSet<>(), new HashSet<>(), new PresenceSousZone(1, "465", "0", true));
-            rule2.addOtherRule(new DependencyRule(5, "465", "0", TypeNoticeLiee.BIBLIO, 0, rule2));
-            PresenceSousZone presenceSousZone = new PresenceSousZone(6,"328","z",false);
-            rule2.addOtherRule(new LinkedRule(presenceSousZone, BooleanOperateur.ET, 1, rule2));
-            List<ComplexRule> listRules = new ArrayList<>();
-            listRules.add(rule);
-            listRules.add(rule2);
-            complexRulesRepository.saveAll(listRules);
         }
         initSpringSecurity();
     }
