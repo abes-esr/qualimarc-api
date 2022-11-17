@@ -37,6 +37,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
 
     @Column(name = "ENUM_TYPE_DE_VERIFICATION")
     @NotNull
+    @Enumerated(EnumType.STRING)
     private TypeVerification enumTypeDeVerification;
 
     @OneToMany(mappedBy = "presenceChaineCaracteres", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
