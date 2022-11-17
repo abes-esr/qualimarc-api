@@ -33,7 +33,8 @@ public class NombreZone extends SimpleRule implements Serializable {
 
 
     @Override
-    public boolean isValid(NoticeXml notice) {
+    public boolean isValid(NoticeXml ... notices) {
+        NoticeXml notice = notices[0];
         switch (this.operateur) {
             case EGAL:
                 return notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).count() == this.occurrences;

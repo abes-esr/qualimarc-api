@@ -150,6 +150,24 @@ class RuleControllerTest {
     }
 
     @Test
+    @DisplayName("test création règle simple de type reciprocite")
+    void testIndexRuleReciprocite() throws Exception {
+        String yaml =
+                "rules:\n" +
+                        "    - id:          2\n" +
+                        "      id-excel:    2\n" +
+                        "      type:        reciprocite\n" +
+                        "      zone:        330\n" +
+                        "      souszone:    a";
+
+        this.mockMvc.perform(post("/api/v1/indexRules")
+                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> result.getResponse().getContentAsString().contains("debugMessage: Une règle simple ne peut pas être de type reciprocite"));
+    }
+
+    @Test
     void testIndexCompleRule() throws Exception {
         String yaml =
                 "---\n" +

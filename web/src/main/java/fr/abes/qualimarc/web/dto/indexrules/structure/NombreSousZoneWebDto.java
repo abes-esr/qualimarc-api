@@ -4,16 +4,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @JsonTypeName("nombresouszone")
+@NoArgsConstructor
 public class NombreSousZoneWebDto extends SimpleRuleWebDto {
 
     @JsonProperty(value = "souszone")
@@ -36,10 +37,6 @@ public class NombreSousZoneWebDto extends SimpleRuleWebDto {
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
-    }
-
-    public NombreSousZoneWebDto() {
-        super();
     }
 
     public NombreSousZoneWebDto(Integer id, String zone, String booleanOperator, String sousZone, String zoneCible, String sousZoneCible) {

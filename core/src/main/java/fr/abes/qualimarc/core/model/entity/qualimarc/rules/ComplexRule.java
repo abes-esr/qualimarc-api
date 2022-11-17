@@ -3,6 +3,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.dependance.Reciprocite;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeThese;
 import lombok.Getter;
@@ -170,12 +171,19 @@ public class ComplexRule implements Serializable {
                 continue;
             }
             LinkedRule linkedRule = (LinkedRule) otherRule;
+            boolean ruleIsValid;
+            //dans le cas d'une règle de réciprocité, on utilise les deux notices pour vérifier la validité de la règle
+            if (linkedRule.getRule() instanceof Reciprocite) {
+                ruleIsValid = linkedRule.getRule().isValid(notice, noticeLiee);
+            } else {
+                ruleIsValid = linkedRule.getRule().isValid((isDependencyFound) ? noticeLiee : notice);
+            }
             switch (linkedRule.getOperateur()) {
                 case ET:
-                    isValid &= linkedRule.getRule().isValid((isDependencyFound) ? noticeLiee : notice);
+                    isValid &= ruleIsValid;
                     break;
                 case OU:
-                    isValid |= linkedRule.getRule().isValid((isDependencyFound) ? noticeLiee : notice);
+                    isValid |= ruleIsValid;
                     break;
                 default:
                     throw new IllegalArgumentException("Operateur booléen invalide");
@@ -184,6 +192,11 @@ public class ComplexRule implements Serializable {
         return isValid;
     }
 
+    /**
+     * Vérifie la validité d'une règle complexe sans règle de dépendance, sur une seule notice
+     * @param notice
+     * @return true si la règle est valide, false sinon
+     */
     private boolean isValidOneNotice(NoticeXml notice) {
         boolean isValid = firstRule.isValid(notice);
         for (OtherRule otherRule : otherRules.stream().sorted(Comparator.comparing(OtherRule::getPosition)).collect(Collectors.toList())) {
