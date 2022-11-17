@@ -123,7 +123,7 @@ public class ComplexRuleTest {
         NoticeXml noticeAutorite = mapper.readValue(xml2, NoticeXml.class);
 
         ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "200", true));
-        complexRule.addOtherRule(new DependencyRule(1, "606", "3", 0, complexRule));
+        complexRule.addOtherRule(new DependencyRule(1, "606", "3", TypeNoticeLiee.BIBLIO, 0, complexRule));
         complexRule.addOtherRule(new LinkedRule(new Reciprocite(4, "459", "0"), BooleanOperateur.ET, 1, complexRule));
 
         Assertions.assertFalse(complexRule.isValid(noticeBiblio, noticeAutorite));
