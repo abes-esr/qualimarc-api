@@ -1,13 +1,16 @@
 package fr.abes.qualimarc;
 
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.DependencyRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.NombreCaracteres;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.NombreSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
+import fr.abes.qualimarc.core.utils.Operateur;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.web.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class QualimarcAPIApplication implements CommandLineRunner {
@@ -49,58 +53,51 @@ public class QualimarcAPIApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if(Arrays.stream(env.getActiveProfiles()).anyMatch(env -> (env.equalsIgnoreCase("localhost")))) {
-//            List<FamilleDocument> familles = familleDocumentRepository.findAll();
-//            ComplexRule rule1 = new ComplexRule(1, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, familles.stream().filter(f -> !f.getId().equals("BD")).collect(Collectors.toSet()), new HashSet<>(), new HashSet<>(), new PresenceZone(1, "011", false));
-//            ComplexRule rule2 = new ComplexRule(2, "Zone 013  : lorsque la ressource de type Enregistrement sonore (G*) est identifiée par un ISMN, sa transcription est obligatoire.", Priority.P2, familles.stream().filter(f -> f.getId().equals("G")).collect(Collectors.toSet()), new HashSet<>(), new HashSet<>(), new PresenceZone(2, "013", false));
-//            ComplexRule rule3 = new ComplexRule(3, "Zone 101 : l'enregistrement d'un code de langue est obligatoire.", Priority.P2, new PresenceZone(3, "101", false));
-//
-//            ComplexRule rule4 = new ComplexRule(4, "Document électronique : si la ressource possède un DOI et qu'il est présent sur la ressource, le saisir en 107$a", Priority.P2, new PresenceSousZone(4, "101", "a", true));
-//            LinkedRule rule5 = new LinkedRule( new NombreSousZone(5, "034", "a", "200", "a"), BooleanOperateur.OU, 1, rule4);
-//            LinkedRule rule6 = new LinkedRule( new PresenceZone(6, "011", false), BooleanOperateur.OU, 2, rule4);
-//            LinkedRule rule7 = new LinkedRule( new PresenceZone(7, "011", false), BooleanOperateur.OU, 3, rule4);
-//            LinkedRule rule8 = new LinkedRule( new PresenceZone(8, "011", false), BooleanOperateur.OU, 4, rule4);
-//
-//            rule4.addOtherRule(rule5);
-//            rule4.addOtherRule(rule6);
-//            rule4.addOtherRule(rule7);
-//            rule4.addOtherRule(rule8);
+            List<FamilleDocument> familles = familleDocumentRepository.findAll();
+            ComplexRule rule1 = new ComplexRule(1, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, familles.stream().filter(f -> !f.getId().equals("BD")).collect(Collectors.toSet()), new HashSet<>(), new HashSet<>(), new PresenceZone(1, "011", false));
+            ComplexRule rule2 = new ComplexRule(2, "Zone 013  : lorsque la ressource de type Enregistrement sonore (G*) est identifiée par un ISMN, sa transcription est obligatoire.", Priority.P2, familles.stream().filter(f -> f.getId().equals("G")).collect(Collectors.toSet()), new HashSet<>(), new HashSet<>(), new PresenceZone(2, "013", false));
+            ComplexRule rule3 = new ComplexRule(3, "Zone 101 : l'enregistrement d'un code de langue est obligatoire.", Priority.P2, new PresenceZone(3, "101", false));
 
-//            ComplexRule rule9 = new ComplexRule(9, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(9, "011", false));
-//            ComplexRule rule10 = new ComplexRule(10, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(10, "011", false));
-//            ComplexRule rule11 = new ComplexRule(11, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(11, "011", false));
-//            ComplexRule rule12 = new ComplexRule(12, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(12, "011", false));
-//            ComplexRule rule13 = new ComplexRule(13, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(13, "011", false));
-//            ComplexRule rule14 = new ComplexRule(14, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(14, "011", false));
-//            ComplexRule rule15 = new ComplexRule(15, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(15, "011", false));
-//            ComplexRule rule16 = new ComplexRule(16, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(16, "011", false));
-//            ComplexRule rule17 = new ComplexRule(17, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(17, "011", false));
-//            ComplexRule rule18 = new ComplexRule(18, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new NombreCaracteres(18, "011", "a", Operateur.INFERIEUR, 2));
+            ComplexRule rule4 = new ComplexRule(4, "Document électronique : si la ressource possède un DOI et qu'il est présent sur la ressource, le saisir en 107$a", Priority.P2, new PresenceSousZone(4, "101", "a", true));
+            LinkedRule rule5 = new LinkedRule( new NombreSousZone(5, "034", "a", "200", "a"), BooleanOperateur.OU, 1, rule4);
+            LinkedRule rule6 = new LinkedRule( new PresenceZone(6, "011", false), BooleanOperateur.OU, 2, rule4);
+            LinkedRule rule7 = new LinkedRule( new PresenceZone(7, "011", false), BooleanOperateur.OU, 3, rule4);
+            LinkedRule rule8 = new LinkedRule( new PresenceZone(8, "011", false), BooleanOperateur.OU, 4, rule4);
 
-//            List<ComplexRule> rules = new ArrayList<>();
-//            rules.add(rule1);
-//            rules.add(rule2);
-//            rules.add(rule3);
-//            rules.add(rule4);
-//            rules.add(rule9);
-//            rules.add(rule10);
-//            rules.add(rule11);
-//            rules.add(rule12);
-//            rules.add(rule13);
-//            rules.add(rule14);
-//            rules.add(rule15);
-//            rules.add(rule16);
-//            rules.add(rule17);
-//            rules.add(rule18);
+            rule4.addOtherRule(rule5);
+            rule4.addOtherRule(rule6);
+            rule4.addOtherRule(rule7);
+            rule4.addOtherRule(rule8);
+
+            ComplexRule rule9 = new ComplexRule(9, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(9, "319", true));
+            ComplexRule rule10 = new ComplexRule(10, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(10, "011", false));
+            ComplexRule rule11 = new ComplexRule(11, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(11, "101", true));
+            ComplexRule rule12 = new ComplexRule(12, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(12, "200", true));
+            ComplexRule rule13 = new ComplexRule(13, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(13, "700", true));
+            ComplexRule rule14 = new ComplexRule(14, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(14, "035", true));
+            ComplexRule rule15 = new ComplexRule(15, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(15, "010", false));
+            ComplexRule rule16 = new ComplexRule(16, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(16, "300", false));
+            ComplexRule rule17 = new ComplexRule(17, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(17, "579", true));
+            ComplexRule rule18 = new ComplexRule(18, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new NombreCaracteres(18, "011", "a", Operateur.INFERIEUR, 2));
+
+            List<ComplexRule> rules = new ArrayList<>();
+            rules.add(rule1);
+            rules.add(rule2);
+            rules.add(rule3);
+            rules.add(rule4);
+            rules.add(rule9);
+            rules.add(rule10);
+            rules.add(rule11);
+            rules.add(rule12);
+            rules.add(rule13);
+            rules.add(rule14);
+            rules.add(rule15);
+            rules.add(rule16);
+            rules.add(rule17);
+            rules.add(rule18);
 
 
-//            complexRulesRepository.saveAll(rules);
-        }
-        else {
-            ComplexRule rule = new ComplexRule(1, "Le type de la notice d'autorité liée n'est pas conforme", Priority.P1, new HashSet<>(), new HashSet<>(), new HashSet<>(), new PresenceSousZone(1, "606", "3", true));
-            rule.addOtherRule(new DependencyRule(2, "606", "3", 0, rule));
-            PresenceZone presence = new PresenceZone(3, "250", false);
-            rule.addOtherRule(new LinkedRule(presence, BooleanOperateur.ET, 1, rule));
-            complexRulesRepository.save(rule);
+            complexRulesRepository.saveAll(rules);
         }
         initSpringSecurity();
     }

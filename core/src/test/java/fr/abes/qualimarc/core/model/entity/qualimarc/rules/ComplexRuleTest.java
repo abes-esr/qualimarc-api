@@ -108,6 +108,27 @@ public class ComplexRuleTest {
         Assertions.assertFalse(complexRule.isValid(noticeBiblio, noticeAutorite));
     }
 
+    @Test
+    @DisplayName("test méthode isValid règle complexe avec plusieurs notices, et avec règle de dépendance et une réciprocité")
+    void isValidTwoNoticesWithDependencyAndReciprocite() throws IOException {
+        String xml = IOUtils.toString(new FileInputStream(xmlFileNoticeBiblio.getFile()), StandardCharsets.UTF_8);
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(false);
+        XmlMapper mapper = new XmlMapper(module);
+        NoticeXml noticeBiblio = mapper.readValue(xml, NoticeXml.class);
+
+        String xml2 = IOUtils.toString(new FileInputStream(xmlFileNoticeAutorite.getFile()), StandardCharsets.UTF_8);
+        NoticeXml noticeAutorite = mapper.readValue(xml2, NoticeXml.class);
+
+        ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "200", true));
+        complexRule.addOtherRule(new DependencyRule(1, "606", "3", 0, complexRule));
+
+        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(4, "152", "b", true), BooleanOperateur.ET, 1, complexRule));
+        Assertions.assertTrue(complexRule.isValid(noticeBiblio, noticeAutorite));
+
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(5, "153", true), BooleanOperateur.ET, 2, complexRule));
+        Assertions.assertFalse(complexRule.isValid(noticeBiblio, noticeAutorite));
+    }
 
     @Test
     @DisplayName("test getZonesFromChildren")

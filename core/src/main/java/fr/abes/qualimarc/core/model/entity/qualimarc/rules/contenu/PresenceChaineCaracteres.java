@@ -81,13 +81,14 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
 
     /**
      * Méthode qui vérifie la présence ou la position d'une ou plusieurs chaine.s de caractères dans une sous-zone d'une notice
-     * @param noticeXml notice sur laquelle va être testé la règle
+     * @param notices notice sur laquelle va être testé la règle
      * @return boolean
      */
     @Override
-    public boolean isValid(NoticeXml noticeXml) {
+    public boolean isValid(NoticeXml ... notices) {
+        NoticeXml notice = notices[0];
         //récupération de toutes les zones définies dans la règle
-        List<Datafield> zones = noticeXml.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).collect(Collectors.toList());
+        List<Datafield> zones = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).collect(Collectors.toList());
 
         // création du boolean de résultat
         boolean isOk = false;
