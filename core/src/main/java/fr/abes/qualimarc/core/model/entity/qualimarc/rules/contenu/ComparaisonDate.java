@@ -25,11 +25,17 @@ public class ComparaisonDate extends SimpleRule implements Serializable {
 
     private String sousZone;
 
+    private Integer positionStart;
+
+    private Integer positionEnd;
+
     private String zoneCible;
 
     private String sousZoneCible;
 
-    private Integer position = 0;
+    private Integer positionStartCible;
+
+    private Integer positionEndCible;
 
     private Operateur operateur;
 
@@ -43,21 +49,35 @@ public class ComparaisonDate extends SimpleRule implements Serializable {
                 for (SubField subField : zoneSource.getSubFields().stream().filter(ss -> ss.getCode().equals(this.getSousZone())).collect(Collectors.toList())) {
                     for (SubField subFieldCible : zoneSourceCible.getSubFields().stream().filter(ss -> ss.getCode().equals(this.getSousZoneCible())).collect(Collectors.toList())) {
                         //Controle de la zone pour verifier le contenu (date avec X ? date avec 4 chiffres ?)
+                        String dateSourceString = subField.getValue();
+                        String dateCibleString = subFieldCible.getValue();
+
+                        if(this.getPositionStart() != null && this.getPositionEnd() != null)
+                             dateSourceString = dateSourceString.substring(this.getPositionStart(), this.getPositionEnd());
+
+                        if(this.getPositionStartCible() != null && this.getPositionEndCible() != null)
+                            dateCibleString = dateCibleString.substring(this.getPositionStartCible(), this.getPositionEndCible());
+
+                        if(dateSourceString.toUpperCase().contains("X") || dateCibleString.toUpperCase().contains("X") || dateSourceString.length() != 4 || dateCibleString.length() != 4)
+                            return false;
+
+                        Integer dateSource = Integer.parseInt(dateSourceString);
+                        Integer dateCible = Integer.parseInt(dateCibleString);
                         switch (this.getOperateur()) {
-                            case EGAL:
-                                isOk = subField.getValue().substring(this.getPosition()).equals(subFieldCible.getValue().substring(this.getPosition()));
-                                break;
                             case SUPERIEUR:
-                                isOk = subField.getValue().substring(this.getPosition()).compareTo(subFieldCible.getValue().substring(this.getPosition())) > 0;
+                                isOk = dateSource > dateCible;
                                 break;
                             case INFERIEUR:
-                                isOk = subField.getValue().substring(this.getPosition()).compareTo(subFieldCible.getValue().substring(this.getPosition())) < 0;
+                                isOk = dateSource < dateCible;
                                 break;
-                            case INFERIEUR_EGAL:
-                                isOk = subField.getValue().substring(this.getPosition()).compareTo(subFieldCible.getValue().substring(this.getPosition())) <= 0;
+                            case EGAL:
+                                isOk = dateSource.equals(dateCible);
                                 break;
                             case SUPERIEUR_EGAL:
-                                isOk = subField.getValue().substring(this.getPosition()).compareTo(subFieldCible.getValue().substring(this.getPosition())) >= 0;
+                                isOk = dateSource >= dateCible;
+                                break;
+                            case INFERIEUR_EGAL:
+                                isOk = dateSource <= dateCible;
                                 break;
                         }
                         if(isOk){
