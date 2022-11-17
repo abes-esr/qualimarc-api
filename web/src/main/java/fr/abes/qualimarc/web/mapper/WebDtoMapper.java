@@ -355,7 +355,7 @@ public class WebDtoMapper {
                 ComplexRuleWebDto source = context.getSource();
                 ComplexRule target;
                 //vérification qu'aucune règle simple ne contient de zone générique
-                if (source.getRegles().stream().filter(rule -> rule.getZone().matches("\\dXX")).count() > 0) {
+                if (source.getRegles().stream().anyMatch(rule -> rule.getZone().matches("\\dXX"))) {
                     throw new IllegalArgumentException("Une règle complexe ne peut pas contenir de règles simple avec des zones génériques");
                 }
                 Iterator<SimpleRuleWebDto> reglesIt = source.getRegles().listIterator();
@@ -391,7 +391,7 @@ public class WebDtoMapper {
                             if (i == (source.getRegles().size() - 2))
                                 throw new IllegalArgumentException("Une règle de dépendance doit toujours être suivie d'une règle simple");
                             checkDependencyRule((DependencyWebDto) otherRegle);
-                            target.addOtherRule(new DependencyRule(otherRegle.getId(), otherRegle.getZone(), ((DependencyWebDto) otherRegle).getSousZone(), i++, target));
+                            target.addOtherRule(new DependencyRule(otherRegle.getId(), otherRegle.getZone(), ((DependencyWebDto) otherRegle).getSousZone(), getTypeNoticeLiee(((DependencyWebDto) otherRegle).getTypeNoticeLiee()), i++, target));
                         }
                         else
                             target.addOtherRule(new LinkedRule(mapper.map(otherRegle, SimpleRule.class), isPreviousRegleDependency ? BooleanOperateur.ET : getOperateur(otherRegle.getBooleanOperator()), i++, target));
@@ -524,13 +524,13 @@ public class WebDtoMapper {
      */
     private PresenceChaineCaracteres constructPresenceChaineCaracteres(PresenceChaineCaracteresWebDto source) {
         PresenceChaineCaracteres target = new PresenceChaineCaracteres(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeDeVerification()));
-        if (source.getListChaineCaracteres() != null || source.getListChaineCaracteres().size() > 0 || !source.getListChaineCaracteres().isEmpty()) {
+        if (source.getListChaineCaracteres() != null && !source.getListChaineCaracteres().isEmpty()) {
             int i = 0;
             for (PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaine : source.getListChaineCaracteres()) {
                 if (chaine.getOperateur() == null || chaine.getOperateur().isEmpty()) {
                     target.addChaineCaracteres(new ChaineCaracteres(i, chaine.getChaineCaracteres(), target));
                     i++;
-                } else if (chaine.getOperateur() != null || !chaine.getOperateur().isEmpty()) {
+                } else if (chaine.getOperateur() != null && !chaine.getOperateur().isEmpty()) {
                     target.addChaineCaracteres(new ChaineCaracteres(i, getOperateur(chaine.getOperateur()), chaine.getChaineCaracteres(), target));
                     i++;
                 }
@@ -572,20 +572,19 @@ public class WebDtoMapper {
         return Priority.P1;
     }
 
-    private EnumTypeVerification getTypeDeVerification(String typeDeVerification) {
+    private TypeVerification getTypeDeVerification(String typeDeVerification) {
         switch (typeDeVerification) {
             case "STRICTEMENT":
-                return EnumTypeVerification.STRICTEMENT;
+                return TypeVerification.STRICTEMENT;
             case "COMMENCE":
-                return EnumTypeVerification.COMMENCE;
+                return TypeVerification.COMMENCE;
             case "TERMINE":
-                return EnumTypeVerification.TERMINE;
-            case "CONTIENT":
-                return EnumTypeVerification.CONTIENT;
+                return TypeVerification.TERMINE;
             case "NECONTIENTPAS":
-                return EnumTypeVerification.NECONTIENTPAS;
+                return TypeVerification.NECONTIENTPAS;
+            case "CONTIENT":
             default:
-                return EnumTypeVerification.CONTIENT;
+                return TypeVerification.CONTIENT;
         }
     }
 
@@ -612,6 +611,16 @@ public class WebDtoMapper {
                 return TypeCaracteres.SPECIAL;
         }
         return TypeCaracteres.ALPHABETIQUE;
+    }
+
+    private TypeNoticeLiee getTypeNoticeLiee(String type){
+        switch (type) {
+            case "AUTORITE":
+                return TypeNoticeLiee.AUTORITE;
+            case "BIBLIO":
+                return TypeNoticeLiee.BIBLIO;
+        }
+        return TypeNoticeLiee.BIBLIO;
     }
 
     private Set<FamilleDocument> getFamilleDocument(List<String> familleDoc) {
@@ -656,7 +665,7 @@ public class WebDtoMapper {
 
     private void checkTypeThese(List<String> typesThese) {
         if (typesThese != null && typesThese.size() != 0) {
-            if (typesThese.stream().filter(tt -> EnumUtils.isValidEnum(TypeThese.class, tt)).count() == 0) {
+            if (typesThese.stream().noneMatch(tt -> EnumUtils.isValidEnum(TypeThese.class, tt))) {
                 StringBuilder message = new StringBuilder("Les types de thèses ne peuvent prendre que les valeurs ");
                 int j = 0;
                 for (TypeThese tt : TypeThese.values()) {

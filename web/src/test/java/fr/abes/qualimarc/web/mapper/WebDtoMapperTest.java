@@ -610,7 +610,7 @@ public class WebDtoMapperTest {
     void converterComplexRuleWithFirstRegleDependance() {
         ComplexRuleWebDto complexRuleWebDto = new ComplexRuleWebDto();
         complexRuleWebDto.setId(1);
-        complexRuleWebDto.addRegle(new DependencyWebDto(1,"200","a"));
+        complexRuleWebDto.addRegle(new DependencyWebDto(1,"200","a", "AUTORITE"));
 
         MappingException exception = Assertions.assertThrows(MappingException.class, ()->mapper.map(complexRuleWebDto, ComplexRule.class));
         Assertions.assertEquals("La première règle d'une règle complexe ne peut pas être une règle de dépendance", exception.getCause().getMessage());
@@ -625,7 +625,7 @@ public class WebDtoMapperTest {
         complexRuleWebDto.setMessage("message test");
         complexRuleWebDto.setPriority("P1");
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(1,"200",null,true));
-        complexRuleWebDto.addRegle(new DependencyWebDto(2,"200","a"));
+        complexRuleWebDto.addRegle(new DependencyWebDto(2,"200","a","AUTORITE"));
 
         MappingException exception = Assertions.assertThrows(MappingException.class, ()->mapper.map(complexRuleWebDto, ComplexRule.class));
         Assertions.assertEquals("Une règle de dépendance doit toujours être suivie d'une règle simple", exception.getCause().getMessage());
@@ -640,7 +640,7 @@ public class WebDtoMapperTest {
         complexRuleWebDto.setMessage("message test");
         complexRuleWebDto.setPriority("P1");
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(1,"200",null,true));
-        complexRuleWebDto.addRegle(new DependencyWebDto(2,"200","a"));
+        complexRuleWebDto.addRegle(new DependencyWebDto(2,"200","a","AUTORITE"));
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(3,"200","ET",true));
 
         MappingException exception = Assertions.assertThrows(MappingException.class, ()->mapper.map(complexRuleWebDto, ComplexRule.class));
@@ -667,7 +667,7 @@ public class WebDtoMapperTest {
         ruleSetList.add(1);
         complexRuleWebDto.setRuleSetList(ruleSetList);
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(1,"200",null,true));
-        complexRuleWebDto.addRegle(new DependencyWebDto(2,"200","a"));
+        complexRuleWebDto.addRegle(new DependencyWebDto(2,"200","a","AUTORITE"));
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(3,"210",null,false));
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(4,"220","ET",false));
 
@@ -703,7 +703,7 @@ public class WebDtoMapperTest {
         complexRuleWebDto.setMessage("message test");
         complexRuleWebDto.setPriority("P1");
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(1,"200",null,true));
-        DependencyWebDto dependencyWebDto = new DependencyWebDto(2,"200","a");
+        DependencyWebDto dependencyWebDto = new DependencyWebDto(2,"200","a","AUTORITE");
         complexRuleWebDto.addRegle(dependencyWebDto);
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(3,"200",null,true));
 
@@ -878,5 +878,4 @@ public class WebDtoMapperTest {
         Assertions.assertEquals("310", ruleWebDto.getZoneUnm1());
         Assertions.assertNull(ruleWebDto.getZoneUnm2());
     }
-
 }

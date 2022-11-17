@@ -6,7 +6,7 @@ import fr.abes.qualimarc.core.model.entity.notice.SubField;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
-import fr.abes.qualimarc.core.utils.EnumTypeVerification;
+import fr.abes.qualimarc.core.utils.TypeVerification;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,7 +37,8 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
 
     @Column(name = "ENUM_TYPE_DE_VERIFICATION")
     @NotNull
-    private EnumTypeVerification enumTypeDeVerification;
+    @Enumerated(EnumType.STRING)
+    private TypeVerification enumTypeDeVerification;
 
     @OneToMany(mappedBy = "presenceChaineCaracteres", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<ChaineCaracteres> listChainesCaracteres;
@@ -49,7 +50,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
      * @param sousZone sous-zone sur laquelle appliquer la recherhe
      * @param enumTypeDeVerification type de vérification à appliquer pour la règle
      */
-    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumTypeVerification enumTypeDeVerification) {
+    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, TypeVerification enumTypeDeVerification) {
         super(id, zone);
         this.sousZone = sousZone;
         this.enumTypeDeVerification = enumTypeDeVerification;
@@ -64,7 +65,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
      * @param enumTypeDeVerification type de vérification à appliquer pour la règle
      * @param listChainesCaracteres liste de chaines de caractères à rechercher
      */
-    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, EnumTypeVerification enumTypeDeVerification, Set<ChaineCaracteres> listChainesCaracteres) {
+    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, TypeVerification enumTypeDeVerification, Set<ChaineCaracteres> listChainesCaracteres) {
         super(id, zone);
         this.sousZone = sousZone;
         this.enumTypeDeVerification = enumTypeDeVerification;
