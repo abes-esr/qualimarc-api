@@ -533,8 +533,8 @@ public class WebDtoMapperTest {
     }
 
     @Test
-    @DisplayName("Test Mapper converterPresenceChaineCaracteresTest")
-    void converterPresenceChaineCaracteres() {
+    @DisplayName("Test Mapper converterPresenceChaineCaracteres")
+    void converterPresenceChaineCaracteresTest() {
         //  Préparation d'un objet PresenceChaineCaracteresWebDto
         ArrayList<String> typeDoc = new ArrayList<>();
         typeDoc.add("A");
@@ -578,6 +578,12 @@ public class WebDtoMapperTest {
         //  Test avec message null
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, null, "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENT", chaineCaracteresWebDtoList), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+    }
+
+    @Test
+    @DisplayName("Test mapper converter")
+    void converterComparaisonContenuSousZoneTest(){
+        // TODO tester le mapper
     }
 
     @Test
