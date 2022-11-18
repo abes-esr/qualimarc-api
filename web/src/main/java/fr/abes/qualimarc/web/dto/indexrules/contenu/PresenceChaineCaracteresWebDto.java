@@ -131,6 +131,14 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
 // SIMPLE
 ### Présence d'une chaine de caractères
 
+Liste des champs propres au type de règle présence chaine caractères:
+* souszone : **obligatoire** - de type caractère. La sous-zone à vérifier. ATTENTION : le $ du format Unimarc de catalogage ne doit pas être renseigné
+* type-de-verification : **obligatoire** - ne peut être que `STRICTEMENT` ou `COMMENCE` ou `TERMINE` ou `CONTIENT` ou `NECONTIENTPAS`
+* chaines-caracteres : **obligatoire** - de type liste d'objets. La liste des chaine-caracteres à vérifier. Les champs d'un objet de la liste sont les suivants :
+    * operateur : de type opérateur logique. ne peut être que `ET` ou `OU`.
+    * chaine-caracteres :  la chaine de caractères à vérifier
+
+Liste des valeurs possibles en fonction du type de vérification :
 * La vérification `STRICTEMENT` peut comporter :
     * soit une `chaine-caracteres` sans `operateur`,
     * soit une `chaine-caracteres` sans `operateur` et plusieurs `chaine-caracteres` avec `operateur` `OU`.
@@ -143,8 +151,12 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
 * La vérification `CONTIENT` peut comporter :
     * soit une `chaine-caracteres` sans `operateur`,
     * soit une `chaine-caracteres` sans `operateur` et plusieurs `chaine-caracteres` avec `opérateur` `ET` ou `OU`,
+* La vérification `NECONTIENTPAS` peut comporter :
+    * soit une `chaine-caracteres` sans `operateur`,
+    * soit une `chaine-caracteres` sans `operateur` et plusieurs `chaine-caracteres` avec `opérateur` `ET` ou `OU`,
 
 ``` YAML
+---
 rules:
     - id:                       1
       id-excel:                 1
@@ -152,30 +164,34 @@ rules:
       message:                  message de retour
       zone:                     200
       priorite:                 P1
+      type-these:
+          - REPRO
       souszone:                 a
       type-de-verification:     STRICTEMENT
       chaines-caracteres:
         - chaine-caracteres:    chaine de caractères à chercher
-
     - id:                       2
       id-excel:                 2
       type:                     presencechainecaracteres
       message:                  message de retour
       zone:                     200
       priorite:                 P1
+      type-these:
+          - SOUTENANCE
       souszone:                 a
       type-de-verification:     STRICTEMENT
       chaines-caracteres:
         - chaine-caracteres:    texte à chercher
         - operateur:            OU
           chaine-caracteres:    deuxième chaine de caractères à chercher
-
     - id:                       3
       id-excel:                 3
       type:                     presencechainecaracteres
       message:                  message de retour
       zone:                     200
       priorite:                 P1
+      type-these:
+          - REPRO
       souszone:                 a
       type-de-verification:     CONTIENT
       chaines-caracteres:
@@ -184,6 +200,7 @@ rules:
           chaine-caracteres:    deuxième chaine de caractères à chercher
         - operateur:            OU
           chaine-caracteres:    deuxième chaine de caractères à chercher
+```
 */
 
 
