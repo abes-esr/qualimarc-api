@@ -86,10 +86,10 @@ public class WebDtoMapper {
             public ComplexRule convert(MappingContext<NombreZoneWebDto, ComplexRule> context) {
                 NombreZoneWebDto source = context.getSource();
                 checkSimpleRule(source);
-                if (!Operateur.EGAL.equals(source.getOperateur()) && !Operateur.SUPERIEUR.equals(source.getOperateur()) && !Operateur.INFERIEUR.equals(source.getOperateur())) {
+                if (!ComparaisonOperateur.EGAL.equals(source.getComparaisonOperateur()) && !ComparaisonOperateur.SUPERIEUR.equals(source.getComparaisonOperateur()) && !ComparaisonOperateur.INFERIEUR.equals(source.getComparaisonOperateur())) {
                     throw new IllegalArgumentException("Règle " + source.getId() + " : Seuls les opérateurs INFERIEUR, SUPERIEUR ou EGAL sont autorisés sur ce type de règle");
                 }
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new NombreZone(source.getId(), source.getZone(), source.getOperateur(), source.getOccurrences()));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new NombreZone(source.getId(), source.getZone(), source.getComparaisonOperateur(), source.getOccurrences()));
             }
         };
         mapper.addConverter(myConverter);
@@ -169,7 +169,7 @@ public class WebDtoMapper {
             public ComplexRule convert(MappingContext<NombreCaracteresWebDto, ComplexRule> context) {
                 NombreCaracteresWebDto source = context.getSource();
                 checkSimpleRule(source);
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new NombreCaracteres(source.getId(), source.getZone(), source.getSousZone(), source.getOperateur(), source.getOccurrences()));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new NombreCaracteres(source.getId(), source.getZone(), source.getSousZone(), source.getComparaisonOperateur(), source.getOccurrences()));
             }
         };
         mapper.addConverter(myConverter);
@@ -243,10 +243,10 @@ public class WebDtoMapper {
         Converter<NombreZoneWebDto, SimpleRule> myConverter = new Converter<NombreZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<NombreZoneWebDto, SimpleRule> context) {
                 NombreZoneWebDto source = context.getSource();
-                if (!Operateur.EGAL.equals(source.getOperateur()) && !Operateur.SUPERIEUR.equals(source.getOperateur()) && !Operateur.INFERIEUR.equals(source.getOperateur())) {
+                if (!ComparaisonOperateur.EGAL.equals(source.getComparaisonOperateur()) && !ComparaisonOperateur.SUPERIEUR.equals(source.getComparaisonOperateur()) && !ComparaisonOperateur.INFERIEUR.equals(source.getComparaisonOperateur())) {
                     throw new IllegalArgumentException("Règle " + source.getId() + " : Seuls les opérateurs INFERIEUR, SUPERIEUR ou EGAL sont autorisés sur ce type de règle");
                 }
-                return new NombreZone(source.getId(), source.getZone(), source.getOperateur(), source.getOccurrences());
+                return new NombreZone(source.getId(), source.getZone(), source.getComparaisonOperateur(), source.getOccurrences());
             }
         };
         mapper.addConverter(myConverter);
@@ -342,7 +342,7 @@ public class WebDtoMapper {
         Converter<NombreCaracteresWebDto, SimpleRule> myConverter = new Converter<NombreCaracteresWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<NombreCaracteresWebDto, SimpleRule> context) {
                 NombreCaracteresWebDto source = context.getSource();
-                return new NombreCaracteres(source.getId(), source.getZone(), source.getSousZone(), source.getOperateur(), source.getOccurrences());
+                return new NombreCaracteres(source.getId(), source.getZone(), source.getSousZone(), source.getComparaisonOperateur(), source.getOccurrences());
             }
         };
         mapper.addConverter(myConverter);

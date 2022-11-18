@@ -4,7 +4,7 @@ import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.notice.SubField;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
-import fr.abes.qualimarc.core.utils.Operateur;
+import fr.abes.qualimarc.core.utils.ComparaisonOperateur;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -49,9 +49,9 @@ public class ComparaisonDate extends SimpleRule implements Serializable {
 
     @Column(name = "OPERRATEUR")
     @NotNull
-    private Operateur operateur;
+    private ComparaisonOperateur comparateur;
 
-    public ComparaisonDate(Integer id, String zone, String sousZone, Integer positionStart, Integer positionEnd, String zoneCible, String sousZoneCible, Integer positionStartCible, Integer positionEndCible, Operateur operateur) {
+    public ComparaisonDate(Integer id, String zone, String sousZone, Integer positionStart, Integer positionEnd, String zoneCible, String sousZoneCible, Integer positionStartCible, Integer positionEndCible, ComparaisonOperateur comparateur) {
         super(id, zone);
         this.sousZone = sousZone;
         this.positionStart = positionStart;
@@ -60,35 +60,35 @@ public class ComparaisonDate extends SimpleRule implements Serializable {
         this.sousZoneCible = sousZoneCible;
         this.positionStartCible = positionStartCible;
         this.positionEndCible = positionEndCible;
-        this.operateur = operateur;
+        this.comparateur = comparateur;
     }
 
-    public ComparaisonDate(Integer id, String zone, String sousZone, String zoneCible, String sousZoneCible, Operateur operateur) {
+    public ComparaisonDate(Integer id, String zone, String sousZone, String zoneCible, String sousZoneCible, ComparaisonOperateur comparateur) {
         super(id, zone);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
-        this.operateur = operateur;
+        this.comparateur = comparateur;
     }
 
-    public ComparaisonDate(Integer id, String zone, String sousZone, Integer positionStart, Integer positionEnd, String zoneCible, String sousZoneCible, Operateur operateur) {
+    public ComparaisonDate(Integer id, String zone, String sousZone, Integer positionStart, Integer positionEnd, String zoneCible, String sousZoneCible, ComparaisonOperateur comparateur) {
         super(id, zone);
         this.sousZone = sousZone;
         this.positionStart = positionStart;
         this.positionEnd = positionEnd;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
-        this.operateur = operateur;
+        this.comparateur = comparateur;
     }
 
-    public ComparaisonDate(Integer id, String zone, String sousZone, String zoneCible, String sousZoneCible, Integer positionStartCible, Integer positionEndCible, Operateur operateur) {
+    public ComparaisonDate(Integer id, String zone, String sousZone, String zoneCible, String sousZoneCible, Integer positionStartCible, Integer positionEndCible, ComparaisonOperateur comparateur) {
         super(id, zone);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
         this.positionStartCible = positionStartCible;
         this.positionEndCible = positionEndCible;
-        this.operateur = operateur;
+        this.comparateur = comparateur;
     }
 
     @Override
@@ -120,7 +120,7 @@ public class ComparaisonDate extends SimpleRule implements Serializable {
 
 
                 if((valueSource != null && valueCible != null) && (valueSource.length() == 4 && valueCible.length() == 4)) {
-                    switch (this.getOperateur()) {
+                    switch (this.getComparateur()) {
                         case EGAL:
                             return valueSource.equals(valueCible);
                         case INFERIEUR:
