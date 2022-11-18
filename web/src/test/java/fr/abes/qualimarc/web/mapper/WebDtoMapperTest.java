@@ -6,10 +6,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.DependencyRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.NombreCaracteres;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.TypeCaractere;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.*;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.dependance.Reciprocite;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
@@ -23,10 +20,7 @@ import fr.abes.qualimarc.web.dto.RuleResponseDto;
 import fr.abes.qualimarc.web.dto.RuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.ComplexRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.DependencyWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.*;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import org.assertj.core.util.Lists;
@@ -540,36 +534,35 @@ public class WebDtoMapperTest {
         typeDoc.add("A");
 
         List<Integer> ruleSetsList = new ArrayList<>();
-        Integer ruleSetWebDto = 1;
-        ruleSetsList.add(ruleSetWebDto);
+        ruleSetsList.add(1);
 
         PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaineCaracteresWebDto1 = new PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto("Texte");
         PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaineCaracteresWebDto2 = new PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto("OU", "Texte");
         List<PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto> chaineCaracteresWebDtoList = new ArrayList<>();
         chaineCaracteresWebDtoList.add(chaineCaracteresWebDto1);
         chaineCaracteresWebDtoList.add(chaineCaracteresWebDto2);
-        PresenceChaineCaracteresWebDto rule1WebDto = new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, "Erreur", "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENT", chaineCaracteresWebDtoList);
+        PresenceChaineCaracteresWebDto presenceChaineCaracteresWebDto = new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, "Erreur", "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENT", chaineCaracteresWebDtoList);
 
 
         //  Appel du mapper
-        ComplexRule complexRule = mapper.map(rule1WebDto, ComplexRule.class);
+        ComplexRule complexRule = mapper.map(presenceChaineCaracteresWebDto, ComplexRule.class);
 
         //  Contrôle de la bonne conformité des résultats
         PresenceChaineCaracteres simpleRule = (PresenceChaineCaracteres) complexRule.getFirstRule();
         List<ChaineCaracteres> sortedList = simpleRule.getListChainesCaracteres().stream().sorted(Comparator.comparing(ChaineCaracteres::getPosition)).collect(Collectors.toList());
-        Assertions.assertEquals(rule1WebDto.getId(), complexRule.getId());
-        Assertions.assertEquals(rule1WebDto.getRuleSetList().get(0), new ArrayList<>(complexRule.getRuleSet()).get(0).getId());
-        Assertions.assertEquals(rule1WebDto.getMessage(), complexRule.getMessage());
-        Assertions.assertEquals((rule1WebDto.getZone() + "$" + rule1WebDto.getSousZone()), complexRule.getZonesFromChildren().get(0));
-        Assertions.assertEquals(rule1WebDto.getPriority(), complexRule.getPriority().toString());
-        Assertions.assertTrue(complexRule.getFamillesDocuments().stream().anyMatch(familleDocument -> familleDocument.getId().equals(rule1WebDto.getTypesDoc().get(0))));
-        Assertions.assertEquals(rule1WebDto.getSousZone(), simpleRule.getSousZone());
-        Assertions.assertEquals(rule1WebDto.getTypeDeVerification(), simpleRule.getEnumTypeDeVerification().toString());
-        Assertions.assertEquals(rule1WebDto.getListChaineCaracteres().get(0).getChaineCaracteres(), sortedList.get(0).getChaineCaracteres());
+        Assertions.assertEquals(presenceChaineCaracteresWebDto.getId(), complexRule.getId());
+        Assertions.assertEquals(presenceChaineCaracteresWebDto.getRuleSetList().get(0), new ArrayList<>(complexRule.getRuleSet()).get(0).getId());
+        Assertions.assertEquals(presenceChaineCaracteresWebDto.getMessage(), complexRule.getMessage());
+        Assertions.assertEquals((presenceChaineCaracteresWebDto.getZone() + "$" + presenceChaineCaracteresWebDto.getSousZone()), complexRule.getZonesFromChildren().get(0));
+        Assertions.assertEquals(presenceChaineCaracteresWebDto.getPriority(), complexRule.getPriority().toString());
+        Assertions.assertTrue(complexRule.getFamillesDocuments().stream().anyMatch(familleDocument -> familleDocument.getId().equals(presenceChaineCaracteresWebDto.getTypesDoc().get(0))));
+        Assertions.assertEquals(presenceChaineCaracteresWebDto.getSousZone(), simpleRule.getSousZone());
+        Assertions.assertEquals(presenceChaineCaracteresWebDto.getTypeDeVerification(), simpleRule.getEnumTypeDeVerification().toString());
+        Assertions.assertEquals(presenceChaineCaracteresWebDto.getListChaineCaracteres().get(0).getChaineCaracteres(), sortedList.get(0).getChaineCaracteres());
         Assertions.assertEquals(0, sortedList.get(0).getPosition());
-        Assertions.assertEquals(rule1WebDto.getListChaineCaracteres().get(1).getOperateur(), sortedList.get(1).getBooleanOperateur().toString());
+        Assertions.assertEquals(presenceChaineCaracteresWebDto.getListChaineCaracteres().get(1).getOperateur(), sortedList.get(1).getBooleanOperateur().toString());
         Assertions.assertEquals(1, sortedList.get(1).getPosition());
-        Assertions.assertEquals(rule1WebDto.getListChaineCaracteres().get(1).getChaineCaracteres(), sortedList.get(1).getChaineCaracteres());
+        Assertions.assertEquals(presenceChaineCaracteresWebDto.getListChaineCaracteres().get(1).getChaineCaracteres(), sortedList.get(1).getChaineCaracteres());
 
         //  Test avec priorité nulle
         MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, "Erreur", "200", null, typeDoc, new ArrayList<>(), "a", "STRICTEMENT", chaineCaracteresWebDtoList), ComplexRule.class));
@@ -578,6 +571,31 @@ public class WebDtoMapperTest {
         //  Test avec message null
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, null, "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENT", chaineCaracteresWebDtoList), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+    }
+
+    @Test
+    @DisplayName("Test Mapper converterComparaisonDateTest")
+    void converterComparaisonDate(){
+        ArrayList<String> typeDoc = new ArrayList<>();
+        typeDoc.add("A");
+
+        List<Integer> ruleSetsList = new ArrayList<>();
+        ruleSetsList.add(1);
+
+        ComparaisonDateWebDto comparaisonDateWebDto = new ComparaisonDateWebDto(1,1,ruleSetsList,"MESSAGE","200","1",typeDoc, null,"a",0,4,"400","a",0,4,"EGAL");
+        ComplexRule complexRule = mapper.map(comparaisonDateWebDto, ComplexRule.class);
+
+        ComparaisonDate comparaisonDate = (ComparaisonDate) complexRule.getFirstRule();
+
+        Assertions.assertEquals(comparaisonDateWebDto.getId(), complexRule.getId());
+        Assertions.assertEquals(comparaisonDateWebDto.getRuleSetList().get(0), new ArrayList<>(complexRule.getRuleSet()).get(0).getId());
+        Assertions.assertEquals(comparaisonDateWebDto.getMessage(), complexRule.getMessage());
+        Assertions.assertEquals((comparaisonDateWebDto.getZone() + "$" + comparaisonDateWebDto.getSousZone()), complexRule.getZonesFromChildren().get(0));
+        Assertions.assertEquals(comparaisonDateWebDto.getPriority(), complexRule.getPriority().toString());
+        Assertions.assertTrue(complexRule.getFamillesDocuments().stream().anyMatch(familleDocument -> familleDocument.getId().equals(comparaisonDateWebDto.getTypesDoc().get(0))));
+        Assertions.assertEquals(comparaisonDateWebDto.getSousZone(), comparaisonDate.getSousZone());
+        Assertions.assertEquals(comparaisonDateWebDto.getZone(), comparaisonDate.getZone());
+
     }
 
     @Test
