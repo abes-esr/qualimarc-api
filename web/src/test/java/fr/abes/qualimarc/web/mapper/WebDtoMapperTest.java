@@ -564,7 +564,7 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(rule1WebDto.getPriority(), complexRule.getPriority().toString());
         Assertions.assertTrue(complexRule.getFamillesDocuments().stream().anyMatch(familleDocument -> familleDocument.getId().equals(rule1WebDto.getTypesDoc().get(0))));
         Assertions.assertEquals(rule1WebDto.getSousZone(), simpleRule.getSousZone());
-        Assertions.assertEquals(rule1WebDto.getTypeDeVerification(), simpleRule.getEnumTypeDeVerification().toString());
+        Assertions.assertEquals(rule1WebDto.getTypeDeVerification(), simpleRule.getTypeDeVerification().toString());
         Assertions.assertEquals(rule1WebDto.getListChaineCaracteres().get(0).getChaineCaracteres(), sortedList.get(0).getChaineCaracteres());
         Assertions.assertEquals(0, sortedList.get(0).getPosition());
         Assertions.assertEquals(rule1WebDto.getListChaineCaracteres().get(1).getOperateur(), sortedList.get(1).getBooleanOperateur().toString());

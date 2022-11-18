@@ -4,7 +4,7 @@ import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.notice.SubField;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
-import fr.abes.qualimarc.core.utils.EnumTypeVerification;
+import fr.abes.qualimarc.core.utils.TypeVerification;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -42,7 +42,7 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
     @Column(name ="ENUM_TYPE_DE_VERIFICATION")
     @Enumerated(EnumType.STRING)
     @NotNull
-    private EnumTypeVerification enumTypeVerification;
+    private TypeVerification typeVerification;
 
     /**
      * Constructeur sans liste de chaine de caractères avec zoneCible
@@ -50,37 +50,39 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
      * @param zone zone sur laquelle appliquer la recherche
      * @param sousZone première sous-zone pour effectuer la comparaison
      * @param sousZoneCible deuxième sous-zone pour effectuer la comparaison
-     * @param enumTypeVerification type de vérficiation à appliquer pour la règle
+     * @param typeVerification type de vérficiation à appliquer pour la règle
      */
-    public ComparaisonContenuSousZone(Integer id, String zone, String sousZone, String zoneCible, String sousZoneCible, EnumTypeVerification enumTypeVerification){
+    public ComparaisonContenuSousZone(Integer id, String zone, String sousZone, String zoneCible, String sousZoneCible, TypeVerification typeVerification){
         super(id, zone);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
-        this.enumTypeVerification = enumTypeVerification;
+        this.typeVerification = typeVerification;
     }
 
     /**
      * Méthode qui teste la présence d'une zone et sous-zone et qui compare
      * la position ou la conformité d'une ou plusieurs chaine de caractères
      * de deux sous-zone
-     * @param noticeXml notice sur laquelle va être testé la règle
+     * @param notices notice sur laquelle va être testé la règle
      * @return boolean
      */
     @Override
-    public boolean isValid(NoticeXml noticeXml){
+    public boolean isValid(NoticeXml ... notices){
+        //  Sélection de la première notice de la liste de notices
+        NoticeXml notice = notices[0];
 
         //  Création du boolean de résultat
         boolean isComparisonValid = false;
 
         //  Trouver la première occurence de zoneSource
-        Datafield datafieldSource = noticeXml.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).findFirst().get();
+        Datafield datafieldSource = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).findFirst().get();
 
         // Trouver la valeur de la première occurence sousZoneSource de la première occurence de la zoneSource
         String sousZoneSourceValue =  datafieldSource.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).findFirst().get().getValue();
 
         //  Récupérer les zonesCible excepté la première occurence
-        List<Datafield> zoneCibleList = noticeXml.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.zoneCible)).collect(Collectors.toList());
+        List<Datafield> zoneCibleList = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.zoneCible)).collect(Collectors.toList());
 
         //  Si la zoneSource est identique à la zoneCible et que la sousZoneSource est identique à la sousZoneCible, alors on supprime la première occurence DataField
         if(this.getZone().equals(this.zoneCible) && this.sousZone.equals(this.sousZoneCible)) {
@@ -94,7 +96,7 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
 
             //  Sur toutes les occurences de sousZoneCible
             for (SubField sousZoneCible : zoneCible.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZoneCible)).collect(Collectors.toList())) {
-                switch (enumTypeVerification) {
+                switch (typeVerification) {
                     case STRICTEMENT:
                         isComparisonValid = sousZoneSourceValue.equals(sousZoneCible.getValue());
                         if (isComparisonValid) {
