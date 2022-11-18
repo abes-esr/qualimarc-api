@@ -1,8 +1,9 @@
 package fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu;
 
+import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.notice.SubField;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.utils.EnumTypeVerification;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +12,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Classe qui définie une règle permettant de tester la présence d'une zone et sous-zone ainsi
@@ -30,56 +31,33 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
     @NotNull
     private String sousZone;
 
+    @Column(name ="ZONE_CIBLE")
+    @NotNull
+    private String zoneCible;
+
     @Column(name ="SOUS_ZONE_CIBLE")
     @NotNull
     private String sousZoneCible;
 
     @Column(name ="ENUM_TYPE_DE_VERIFICATION")
+    @Enumerated(EnumType.STRING)
     @NotNull
     private EnumTypeVerification enumTypeVerification;
 
-    @OneToMany(mappedBy = "ComparaisonContenuSousZone", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<ChaineCaracteres> listChaineCaracteres;
-
     /**
-     * Constructeur sans liste de chaine de caractères
+     * Constructeur sans liste de chaine de caractères avec zoneCible
      * @param id identifiant de la règle
      * @param zone zone sur laquelle appliquer la recherche
      * @param sousZone première sous-zone pour effectuer la comparaison
      * @param sousZoneCible deuxième sous-zone pour effectuer la comparaison
      * @param enumTypeVerification type de vérficiation à appliquer pour la règle
      */
-    public ComparaisonContenuSousZone(Integer id, String zone, String sousZone, String sousZoneCible, EnumTypeVerification enumTypeVerification){
+    public ComparaisonContenuSousZone(Integer id, String zone, String sousZone, String zoneCible, String sousZoneCible, EnumTypeVerification enumTypeVerification){
         super(id, zone);
         this.sousZone = sousZone;
+        this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
         this.enumTypeVerification = enumTypeVerification;
-        this.listChaineCaracteres = new HashSet<>();
-    }
-
-    /**
-     * Constructeur avec liste de chaines de caractères
-     * @param id identifiant de la règle
-     * @param zone zone sur laquelle appliquer la recherche
-     * @param sousZone première sous-zone pour effectuer la comparaison
-     * @param sousZoneCible deuxième sous-zone pour effectuer la comparaison
-     * @param enumTypeVerification type de vérficiation à appliquer pour la règle
-     * @param listChaineCaracteres liste de chaines de caractères à rechercher
-     */
-    public ComparaisonContenuSousZone(Integer id, String zone, String sousZone, String sousZoneCible, EnumTypeVerification enumTypeVerification, Set<ChaineCaracteres> listChaineCaracteres){
-        super(id, zone);
-        this.sousZone = sousZone;
-        this.sousZoneCible = sousZoneCible;
-        this.enumTypeVerification = enumTypeVerification;
-        this.listChaineCaracteres = listChaineCaracteres;
-    }
-
-    /**
-     * Méthode qui ajoute une chaine de caractères à la liste de chaine de caractères
-     * @param chaine chaine de caractères à rechercher
-     */
-    public void addChaineCaracteres(ChaineCaracteres chaine) {
-        this.listChaineCaracteres.add(chaine);
     }
 
     /**
@@ -93,9 +71,64 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
     public boolean isValid(NoticeXml noticeXml){
 
         //  Création du boolean de résultat
-        boolean isOk = false;
+        boolean isComparisonValid = false;
 
-        return isOk;
+        //  Trouver la première occurence de zoneSource
+        Datafield datafieldSource = noticeXml.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).findFirst().get();
+
+        // Trouver la valeur de la première occurence sousZoneSource de la première occurence de la zoneSource
+        String sousZoneSourceValue =  datafieldSource.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).findFirst().get().getValue();
+
+        //  Récupérer les zonesCible excepté la première occurence
+        List<Datafield> zoneCibleList = noticeXml.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.zoneCible)).collect(Collectors.toList());
+
+        //  Si la zoneSource est identique à la zoneCible et que la sousZoneSource est identique à la sousZoneCible, alors on supprime la première occurence DataField
+        if(this.getZone().equals(this.zoneCible) && this.sousZone.equals(this.sousZoneCible)) {
+            if (!zoneCibleList.isEmpty()) {
+                zoneCibleList.remove(0);
+            }
+        }
+
+        //  Pour chaque occurence de la zone cible
+        for (Datafield zoneCible : zoneCibleList) {
+
+            //  Sur toutes les occurences de sousZoneCible
+            for (SubField sousZoneCible : zoneCible.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZoneCible)).collect(Collectors.toList())) {
+                switch (enumTypeVerification) {
+                    case STRICTEMENT:
+                        isComparisonValid = sousZoneSourceValue.equals(sousZoneCible.getValue());
+                        if (isComparisonValid) {
+                            return isComparisonValid;
+                        }
+                        break;
+                    case CONTIENT:
+                        isComparisonValid = sousZoneSourceValue.contains(sousZoneCible.getValue());
+                        if (isComparisonValid) {
+                            return isComparisonValid;
+                        }
+                        break;
+                    case NECONTIENTPAS:
+                        isComparisonValid = !sousZoneSourceValue.contains(sousZoneCible.getValue());
+                        if (isComparisonValid) {
+                            return isComparisonValid;
+                        }
+                        break;
+                    case COMMENCE:
+                        isComparisonValid = sousZoneSourceValue.startsWith(sousZoneCible.getValue());
+                        if (isComparisonValid) {
+                            return isComparisonValid;
+                        }
+                        break;
+                    case TERMINE:
+                        isComparisonValid = sousZoneSourceValue.endsWith(sousZoneCible.getValue());
+                        if (isComparisonValid) {
+                            return isComparisonValid;
+                        }
+                        break;
+                }
+            }
+        }
+        return isComparisonValid;
     }
 
     /**
@@ -104,7 +137,7 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
      */
     @Override
     public String getZones() {
-        return this.getZone() + "$" + this.getSousZone();
+        return this.getZone() + "$" + this.sousZone + " - " + this.zoneCible + "$" + this.sousZoneCible;
     }
 
 }

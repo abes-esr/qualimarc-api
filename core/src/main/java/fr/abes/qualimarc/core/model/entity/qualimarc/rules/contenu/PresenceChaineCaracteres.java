@@ -36,6 +36,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     private String sousZone;
 
     @Column(name = "ENUM_TYPE_DE_VERIFICATION")
+    @Enumerated(EnumType.STRING)
     @NotNull
     private EnumTypeVerification enumTypeDeVerification;
 
