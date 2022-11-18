@@ -7,6 +7,7 @@ import fr.abes.qualimarc.core.utils.Operateur;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,14 +36,122 @@ class ComparaisonDateTest {
     }
 
     @Test
-    void isValid() {
+    @DisplayName("Test sur la meme zone")
+    void isValidOnSameZone() {
         ComparaisonDate comparaisonDate= new ComparaisonDate(1, "100", "a", 0,4,"100", "a",0,4, Operateur.EGAL);
+        Assertions.assertTrue(comparaisonDate.isValid(notice));
 
+        comparaisonDate.setOperateur(Operateur.INFERIEUR);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.SUPERIEUR);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.SUPERIEUR_EGAL);
+        Assertions.assertTrue(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.INFERIEUR_EGAL);
         Assertions.assertTrue(comparaisonDate.isValid(notice));
     }
 
     @Test
+    @DisplayName("Test sur des zones differentes 100$a est INFERIEUR a 035$d")
+    void isValidOnZone1InferieurZone2() {
+        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "100", "a", 0,4,"035", "d",0,4, Operateur.EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.INFERIEUR);
+        Assertions.assertTrue(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.SUPERIEUR);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.SUPERIEUR_EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.INFERIEUR_EGAL);
+        Assertions.assertTrue(comparaisonDate.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Test sur des zones differentes 100$a est SUPERIEUR a 035$d")
+    void isValidOnZone1SuperieurZone2() {
+        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "035", "d", 0,4,"100", "a",0,4, Operateur.EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.INFERIEUR);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.SUPERIEUR);
+        Assertions.assertTrue(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.SUPERIEUR_EGAL);
+        Assertions.assertTrue(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.INFERIEUR_EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Test sur des zones differentes 210$d est INFERIEUR à 214$d sans les positiosn (214&d ne contient pas de date)")
+    void isValidOnZone1InferieurZone2SansPosition() {
+        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "210", "d", "214", "d", Operateur.EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.INFERIEUR);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.SUPERIEUR);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.SUPERIEUR_EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.INFERIEUR_EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Test sur des zones differentes mais 801$c est avec un X")
+    void isValidOnZoneAvecX() {
+        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "801", "c", 0, 4, "210", "d", Operateur.EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.INFERIEUR);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.SUPERIEUR);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.SUPERIEUR_EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.INFERIEUR_EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Test sur une zone qui n'existe pas")
+    void isValidOnZoneInexistante() {
+        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "211", "a", "210", "d", Operateur.EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.INFERIEUR);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.SUPERIEUR);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.SUPERIEUR_EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setOperateur(Operateur.INFERIEUR_EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+    }
+
+    @Test
     void getZones() {
-        Assertions.assertTrue(true);
+        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "100", "a", "210", "d", Operateur.EGAL);
+        Assertions.assertEquals("100$a/210$d",comparaisonDate.getZones());
     }
 }

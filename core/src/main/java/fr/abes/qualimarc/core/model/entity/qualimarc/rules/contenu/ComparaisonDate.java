@@ -9,8 +9,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 
@@ -21,20 +23,32 @@ import java.io.Serializable;
 @Table(name = "RULE_COMPARAISONDATE")
 public class ComparaisonDate extends SimpleRule implements Serializable {
 
+    @Column(name = "SOUSZONE")
+    @NotNull
     private String sousZone;
 
+    @Column(name = "POSITIONSTART")
     private Integer positionStart;
 
+    @Column(name = "POSITIONEND")
     private Integer positionEnd;
 
+    @Column(name = "ZONECIBLE")
+    @NotNull
     private String zoneCible;
 
+    @Column(name = "SOUSZONECIBLE")
+    @NotNull
     private String sousZoneCible;
 
+    @Column(name = "POSITIONSTARTCIBLE")
     private Integer positionStartCible;
 
+    @Column(name = "POSITIONENDCIBLE")
     private Integer positionEndCible;
 
+    @Column(name = "OPERRATEUR")
+    @NotNull
     private Operateur operateur;
 
     public ComparaisonDate(Integer id, String zone, String sousZone, Integer positionStart, Integer positionEnd, String zoneCible, String sousZoneCible, Integer positionStartCible, Integer positionEndCible, Operateur operateur) {
@@ -101,11 +115,11 @@ public class ComparaisonDate extends SimpleRule implements Serializable {
                 }
 
                 //split to get juste number
-                valueSource = valueSource.split("\\D+")[0];
-                valueCible = valueCible.split("\\D+")[0];
+                valueSource = (valueSource.split("\\D+").length > 0) ? valueSource.split("\\D+")[0] : null;
+                valueCible = (valueCible.split("\\D+").length > 0) ? valueCible.split("\\D+")[0] : null;
 
 
-                if(valueSource.length() == 4 && valueCible.length() == 4) {
+                if((valueSource != null && valueCible != null) && (valueSource.length() == 4 && valueCible.length() == 4)) {
                     switch (this.getOperateur()) {
                         case EGAL:
                             return valueSource.equals(valueCible);

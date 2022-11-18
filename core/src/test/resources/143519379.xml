@@ -165,13 +165,13 @@
     <datafield tag="801" ind1=" " ind2="3">
         <subfield code="a">FR</subfield>
         <subfield code="b">Abes</subfield>
-        <subfield code="c">20180830</subfield>
+        <subfield code="c">201X0830</subfield>
         <subfield code="g">AFNOR</subfield>
     </datafield>
     <datafield tag="801" ind1=" " ind2="0">
         <subfield code="a">FR</subfield>
         <subfield code="b">BNF</subfield>
-        <subfield code="c">20100324</subfield>
+        <subfield code="c">20180324</subfield>
         <subfield code="g">AFNOR</subfield>
         <subfield code="2">intermrc</subfield>
     </datafield>
