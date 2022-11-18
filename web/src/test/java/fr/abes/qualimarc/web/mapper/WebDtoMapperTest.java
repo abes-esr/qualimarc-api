@@ -11,6 +11,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.NombreCaracte
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.TypeCaractere;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.dependance.Reciprocite;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultRule;
@@ -26,6 +27,7 @@ import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
@@ -610,7 +612,7 @@ public class WebDtoMapperTest {
     void converterComplexRuleWithFirstRegleDependance() {
         ComplexRuleWebDto complexRuleWebDto = new ComplexRuleWebDto();
         complexRuleWebDto.setId(1);
-        complexRuleWebDto.addRegle(new DependencyWebDto(1,"200","a"));
+        complexRuleWebDto.addRegle(new DependencyWebDto(1,"200","a", "AUTORITE"));
 
         MappingException exception = Assertions.assertThrows(MappingException.class, ()->mapper.map(complexRuleWebDto, ComplexRule.class));
         Assertions.assertEquals("La première règle d'une règle complexe ne peut pas être une règle de dépendance", exception.getCause().getMessage());
@@ -625,7 +627,7 @@ public class WebDtoMapperTest {
         complexRuleWebDto.setMessage("message test");
         complexRuleWebDto.setPriority("P1");
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(1,"200",null,true));
-        complexRuleWebDto.addRegle(new DependencyWebDto(2,"200","a"));
+        complexRuleWebDto.addRegle(new DependencyWebDto(2,"200","a","AUTORITE"));
 
         MappingException exception = Assertions.assertThrows(MappingException.class, ()->mapper.map(complexRuleWebDto, ComplexRule.class));
         Assertions.assertEquals("Une règle de dépendance doit toujours être suivie d'une règle simple", exception.getCause().getMessage());
@@ -640,7 +642,7 @@ public class WebDtoMapperTest {
         complexRuleWebDto.setMessage("message test");
         complexRuleWebDto.setPriority("P1");
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(1,"200",null,true));
-        complexRuleWebDto.addRegle(new DependencyWebDto(2,"200","a"));
+        complexRuleWebDto.addRegle(new DependencyWebDto(2,"200","a","AUTORITE"));
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(3,"200","ET",true));
 
         MappingException exception = Assertions.assertThrows(MappingException.class, ()->mapper.map(complexRuleWebDto, ComplexRule.class));
@@ -667,7 +669,7 @@ public class WebDtoMapperTest {
         ruleSetList.add(1);
         complexRuleWebDto.setRuleSetList(ruleSetList);
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(1,"200",null,true));
-        complexRuleWebDto.addRegle(new DependencyWebDto(2,"200","a"));
+        complexRuleWebDto.addRegle(new DependencyWebDto(2,"200","a","AUTORITE"));
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(3,"210",null,false));
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(4,"220","ET",false));
 
@@ -695,6 +697,105 @@ public class WebDtoMapperTest {
     }
 
     @Test
+    @DisplayName("Règle complexe : cas où une règle de réciprocité est placée avant une règle de dépendance")
+    void converterComplexRuleWithDependencyAndReciprociteBefore() {
+        ComplexRuleWebDto complexRuleWebDto = new ComplexRuleWebDto();
+        complexRuleWebDto.setId(1);
+        complexRuleWebDto.setIdExcel(1);
+        complexRuleWebDto.setMessage("message test");
+        complexRuleWebDto.setPriority("P1");
+        complexRuleWebDto.addRegle(new PresenceZoneWebDto(1, "800", true));
+        complexRuleWebDto.addRegle(new ReciprociteWebDto(1, "200", "ET", "a"));
+        complexRuleWebDto.addRegle(new DependencyWebDto(2,"200","a","AUTORITE"));
+        complexRuleWebDto.addRegle(new PresenceZoneWebDto(3,"200","ET",true));
+
+        MappingException exception = Assertions.assertThrows(MappingException.class, ()->mapper.map(complexRuleWebDto, ComplexRule.class));
+        Assertions.assertEquals("Une règle de dépendance doit être créée avant de créer une règle de réciprocité", exception.getCause().getMessage());
+    }
+
+    @Test
+    @DisplayName("Règle complexe : cas où une règle de réciprocité est créée seule")
+    void converterComplexRuleReciprociteAlone() {
+        ComplexRuleWebDto complexRuleWebDto = new ComplexRuleWebDto();
+        complexRuleWebDto.setId(1);
+        complexRuleWebDto.setIdExcel(1);
+        complexRuleWebDto.setMessage("message test");
+        complexRuleWebDto.setPriority("P1");
+        complexRuleWebDto.addRegle(new ReciprociteWebDto(1, "200", "a"));
+
+        MappingException exception = Assertions.assertThrows(MappingException.class, ()->mapper.map(complexRuleWebDto, ComplexRule.class));
+        Assertions.assertEquals("La première règle d'une règle complexe ne peut pas être une règle de réciprocité", exception.getCause().getMessage());
+    }
+
+    @Test
+    @DisplayName("Règle complexe : cas où une règle de réciprocité est créée sans règle de dépendance")
+    void converterComplexRuleReciprociteWithoutDependency() {
+        ComplexRuleWebDto complexRuleWebDto = new ComplexRuleWebDto();
+        complexRuleWebDto.setId(1);
+        complexRuleWebDto.setIdExcel(1);
+        complexRuleWebDto.setMessage("message test");
+        complexRuleWebDto.setPriority("P1");
+        complexRuleWebDto.addRegle(new PresenceZoneWebDto(1, "230", null, true));
+        complexRuleWebDto.addRegle(new ReciprociteWebDto(2, "200", "a"));
+
+        MappingException exception = Assertions.assertThrows(MappingException.class, ()->mapper.map(complexRuleWebDto, ComplexRule.class));
+        Assertions.assertEquals("Une règle de dépendance doit être créée avant de créer une règle de réciprocité", exception.getCause().getMessage());
+    }
+
+    @Test
+    @DisplayName("Test Mapper règle complexe avec règle de dépendance et règle de réciprocité")
+    void converterComplexRuleWithDependencyRuleAndReciprocite() {
+        ComplexRuleWebDto complexRuleWebDto = new ComplexRuleWebDto();
+        complexRuleWebDto.setId(1);
+        complexRuleWebDto.setIdExcel(1);
+        complexRuleWebDto.setMessage("message test");
+        complexRuleWebDto.setPriority("P1");
+        List<String> listTypeDoc = new ArrayList<>();
+        listTypeDoc.add("BD");
+        listTypeDoc.add("A");
+        listTypeDoc.add("B");
+        complexRuleWebDto.setTypesDoc(listTypeDoc);
+        List<String> listTypeThese = new ArrayList<>();
+        listTypeThese.add("REPRO");
+        complexRuleWebDto.setTypesThese(listTypeThese);
+        List<Integer> ruleSetList= new ArrayList<>();
+        ruleSetList.add(1);
+        complexRuleWebDto.setRuleSetList(ruleSetList);
+        complexRuleWebDto.addRegle(new PresenceZoneWebDto(1, "300", null, true));
+        complexRuleWebDto.addRegle(new DependencyWebDto(2,"200","a","AUTORITE"));
+        complexRuleWebDto.addRegle(new PresenceZoneWebDto(3,"210",null,false));
+        complexRuleWebDto.addRegle(new ReciprociteWebDto(4, "200", "ET","a"));
+
+        ComplexRule complexRule = mapper.map(complexRuleWebDto, ComplexRule.class);
+
+        Assertions.assertEquals(complexRuleWebDto.getId(),complexRule.getId());
+        Assertions.assertEquals(complexRuleWebDto.getMessage(),complexRule.getMessage());
+        Assertions.assertEquals(complexRuleWebDto.getRuleSetList().get(0), new ArrayList<>(complexRule.getRuleSet()).get(0).getId());
+        Assertions.assertEquals(complexRuleWebDto.getPriority(),complexRule.getPriority().toString());
+        Assertions.assertEquals(complexRuleWebDto.getTypesDoc().size(),complexRule.getFamillesDocuments().size());
+        Assertions.assertEquals(complexRuleWebDto.getTypesThese().size(), complexRule.getTypesThese().size());
+        Assertions.assertEquals(complexRuleWebDto.getRegles().size(),complexRule.getOtherRules().size() + 1);
+
+        Assertions.assertEquals(complexRuleWebDto.getRegles().get(0).getId(), complexRule.getFirstRule().getId());
+        Assertions.assertEquals(complexRuleWebDto.getRegles().get(0).getZone(), complexRule.getFirstRule().getZone());
+
+        Assertions.assertTrue(complexRule.getOtherRules().get(0) instanceof DependencyRule);
+        Assertions.assertEquals(complexRuleWebDto.getRegles().get(1).getId(), complexRule.getOtherRules().get(0).getId());
+        Assertions.assertEquals(complexRuleWebDto.getRegles().get(1).getZone(), ((DependencyRule) complexRule.getOtherRules().get(0)).getZoneSource());
+        Assertions.assertEquals("a", ((DependencyRule) complexRule.getOtherRules().get(0)).getSousZoneSource());
+        Assertions.assertEquals(0, complexRule.getOtherRules().get(0).getPosition());
+
+        Assertions.assertEquals(complexRuleWebDto.getRegles().get(2).getId(), complexRule.getOtherRules().get(1).getId());
+        Assertions.assertEquals(1, complexRule.getOtherRules().get(1).getPosition());
+
+
+        Assertions.assertEquals(complexRuleWebDto.getRegles().get(3).getId(), complexRule.getOtherRules().get(2).getId());
+        Assertions.assertEquals(2, complexRule.getOtherRules().get(2).getPosition());
+        LinkedRule linkedRule = (LinkedRule) complexRule.getOtherRules().get(2);
+        Assertions.assertTrue(linkedRule.getRule() instanceof Reciprocite);
+    }
+
+    @Test
     @DisplayName("Règle complexe : teste les champs d'une règle de dépendance")
     void converterComplexRuleWithDependencyCheck() {
         ComplexRuleWebDto complexRuleWebDto = new ComplexRuleWebDto();
@@ -703,7 +804,7 @@ public class WebDtoMapperTest {
         complexRuleWebDto.setMessage("message test");
         complexRuleWebDto.setPriority("P1");
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(1,"200",null,true));
-        DependencyWebDto dependencyWebDto = new DependencyWebDto(2,"200","a");
+        DependencyWebDto dependencyWebDto = new DependencyWebDto(2,"200","a","AUTORITE");
         complexRuleWebDto.addRegle(dependencyWebDto);
         complexRuleWebDto.addRegle(new PresenceZoneWebDto(3,"200",null,true));
 
@@ -878,5 +979,4 @@ public class WebDtoMapperTest {
         Assertions.assertEquals("310", ruleWebDto.getZoneUnm1());
         Assertions.assertNull(ruleWebDto.getZoneUnm2());
     }
-
 }

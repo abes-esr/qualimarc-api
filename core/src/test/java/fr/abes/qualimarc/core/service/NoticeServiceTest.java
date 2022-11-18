@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {NoticeService.class})
-class NoticeServiceTest {
+public class NoticeServiceTest {
     @Autowired
     private NoticeService service;
 

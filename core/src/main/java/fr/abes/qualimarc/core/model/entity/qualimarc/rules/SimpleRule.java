@@ -19,9 +19,9 @@ import javax.persistence.*;
 public abstract class SimpleRule {
     @Id
     @Column(name = "ID")
-    private Integer id;
+    protected Integer id;
     @Column(name = "ZONE")
-    private String zone;
+    protected String zone;
     @OneToOne(mappedBy = "firstRule")
     private ComplexRule complexRule;
     @OneToOne(mappedBy = "rule")
@@ -32,7 +32,7 @@ public abstract class SimpleRule {
         this.zone = zone;
     }
 
-    public abstract boolean isValid(NoticeXml notices);
+    public abstract boolean isValid(NoticeXml ... notices);
 
     public abstract String getZones();
 

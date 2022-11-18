@@ -16,6 +16,7 @@ import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -86,6 +87,8 @@ public class RuleController {
         for (SimpleRuleWebDto rule : rules.getRules()) {
             if (rule instanceof DependencyWebDto)
                 throw new IllegalArgumentException("Une règle simple ne peut pas être une règle de dépendance");
+            if (rule instanceof ReciprociteWebDto)
+                throw new IllegalArgumentException("Une règle simple ne peut pas être de type reciprocite");
             List<String> zonesGeneriques = referenceService.getZonesGeneriques(rule.getZone());
             if (zonesGeneriques.size() > 0) {
                 int i = 0;

@@ -51,8 +51,9 @@ public class TypeCaractere extends SimpleRule implements Serializable {
     }
 
     @Override
-    public boolean isValid(NoticeXml noticeXml) {
-        List<Datafield> zones = noticeXml.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).collect(Collectors.toList());
+    public boolean isValid(NoticeXml ... notices) {
+        NoticeXml notice = notices[0];
+        List<Datafield> zones = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).collect(Collectors.toList());
 
         for (Datafield datafield: zones){
             List<SubField> souszones = datafield.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).collect(Collectors.toList());

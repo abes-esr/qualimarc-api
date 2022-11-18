@@ -16,7 +16,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-class NoticeXmlTest {
+public class NoticeXmlTest {
 
     @Test
     void getTypeDocument() {

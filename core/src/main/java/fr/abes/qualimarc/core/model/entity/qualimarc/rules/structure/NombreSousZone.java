@@ -43,7 +43,8 @@ public class NombreSousZone extends SimpleRule implements Serializable {
     }
 
     @Override
-    public boolean isValid(NoticeXml notice) {
+    public boolean isValid(NoticeXml ... notices) {
+        NoticeXml notice = notices[0];
         List<Datafield> zonesSource = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
         List<Long> nbSousZonesSourcePerZone = new ArrayList<>();
         zonesSource.stream().mapToLong(z -> z.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZone)).count()).forEach(nbSousZonesSourcePerZone::add);

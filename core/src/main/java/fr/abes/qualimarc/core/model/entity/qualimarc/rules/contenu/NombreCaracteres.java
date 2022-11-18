@@ -39,7 +39,8 @@ public class NombreCaracteres extends SimpleRule {
     }
 
     @Override
-    public boolean isValid(NoticeXml notice) {
+    public boolean isValid(NoticeXml ... notices) {
+        NoticeXml notice = notices[0];
         List<Datafield> zonesSource = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
         boolean isOk = false;
         for (Datafield zone : zonesSource) {
