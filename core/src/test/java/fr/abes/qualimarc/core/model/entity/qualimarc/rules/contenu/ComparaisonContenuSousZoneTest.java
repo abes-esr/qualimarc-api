@@ -257,6 +257,50 @@ class ComparaisonContenuSousZoneTest {
         Assertions.assertFalse(rule2.isValid(notice));
     }
 
+    //  -----------------------------------
+    //  test de l'enum STRICTEMENTDIFFERENT
+    //  -----------------------------------
+
+    @Test
+    @DisplayName("STRICTEMENTDIFFERENT (zones différentes, sous-zone identiques) - True/False")
+    void isValid21() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(1, "020", "a", "021", "a", TypeVerification.STRICTEMENTDIFFERENT);
+        Assertions.assertFalse(rule1.isValid(notice));
+
+        ComparaisonContenuSousZone rule2 = new ComparaisonContenuSousZone(1, "102", "a", "106", "a", TypeVerification.STRICTEMENTDIFFERENT);
+        Assertions.assertTrue(rule2.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("STRICTEMENTDIFFERENT (zones différentes, sous-zone différentes) - True/False")
+    void isValid22() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(1, "686", "a", "712", "4", TypeVerification.STRICTEMENTDIFFERENT);
+        Assertions.assertFalse(rule1.isValid(notice));
+
+        ComparaisonContenuSousZone rule2 = new ComparaisonContenuSousZone(1, "200", "e",  "210", "a", TypeVerification.STRICTEMENTDIFFERENT);
+        Assertions.assertTrue(rule2.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("STRICTEMENTDIFFERENT (zones identiques, sous-zone identiques) - True/False")
+    void isValid23() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(1, "182", "6", "182",  "6", TypeVerification.STRICTEMENTDIFFERENT);
+        Assertions.assertFalse(rule1.isValid(notice));
+
+        ComparaisonContenuSousZone rule2 = new ComparaisonContenuSousZone(1, "300", "a", "300",  "a", TypeVerification.STRICTEMENTDIFFERENT);
+        Assertions.assertTrue(rule2.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("STRICTEMENTDIFFERENT (zones identiques, sous-zone différentes) - True/False")
+    void isValid24() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(1, "182", "c", "182", "a", TypeVerification.STRICTEMENTDIFFERENT);
+        Assertions.assertFalse(rule1.isValid(notice));
+
+        ComparaisonContenuSousZone rule2 = new ComparaisonContenuSousZone(1, "182", "6", "182",  "a", TypeVerification.STRICTEMENTDIFFERENT);
+        Assertions.assertTrue(rule2.isValid(notice));
+    }
+
     @Test
     @DisplayName("Test de la récupération des zones")
     void getZones() {
