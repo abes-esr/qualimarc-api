@@ -51,7 +51,7 @@ public class NoticeXml {
         if(zone200.isPresent()){
             Optional<SubField> sousZone_a = zone200.get().getSubFields().stream().filter(subField -> subField.getCode().equals("a")).findFirst();
             if(sousZone_a.isPresent()){
-                return sousZone_a.get().getValue();
+                return sousZone_a.get().getValue().replaceAll("\\p{C}", "");
             }
         }
         throw new TitreNotFoundException("Titre non renseigné");
