@@ -715,6 +715,8 @@ public class WebDtoMapper {
 
     private Set<TypeThese> getTypeThese(List<String> types) {
         Set<TypeThese> typeTheseSet = new HashSet<>();
+        if(types == null)
+            return null;
         for (String type : types) {
             if (("REPRO").equals(type))
                 typeTheseSet.add(TypeThese.REPRO);

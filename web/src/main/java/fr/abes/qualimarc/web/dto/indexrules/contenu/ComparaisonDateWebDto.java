@@ -78,54 +78,53 @@ public class ComparaisonDateWebDto extends SimpleRuleWebDto {
  * Exemple SIMPLE YAML
  * ---
  * rules:
- *    - id: 1
- *      idExcel: 1
- *      jeuxDeRegles:
- *          - 1
- *          - 2
- *      message: "La date de publication doit être antérieure à la date de soutenance."
- *      zone: "260"
- *      sousZone: "c"
- *      positionStart: 7
- *      positionEnd: 16
- *      zoneCible: "269"
- *      sousZoneCible: "c"
- *      positionStartCible: 7
- *      positionEndCible: 16
- *      operateur-booleen: "SUPERIEUR"
- *      priorite: "1"
+ *  - id: 1
+ *    id-excel: 1
+ *    type: comparaisondate
+ *    message: "La date de publication doit être antérieure à la date de soutenance."
+ *    zone: "260"
+ *    souszone: "c"
+ *    positionstart: 1
+ *    positionend: 4
+ *    zonecible: "269"
+ *    souszonecible: "c"
+ *    positionstartcible: 1
+ *    positionendcible: 4
+ *    comparateur: "SUPERIEUR"
+ *    priorite: "P1"
  *
  * Exemple COMPLEXE YAML
- * ---
- * rules:
- *    - id: 1
- *      idExcel: 1
- *      jeuxDeRegles:
- *          - 1
- *          - 2
- *      message: "La date de publication doit être antérieure à la date de soutenance."
- *      regles:
- *        - id: 1
- *          zone: "260"
- *          sousZone: "c"
- *          positionStart: 7
- *          positionEnd: 16
- *          zoneCible: "269"
- *          sousZoneCible: "c"
- *          positionStartCible: 7
- *          positionEndCible: 16
- *          comparateur: "SUPERIEUR"
- *        - id: 2
- *          zone: "260"
- *          sousZone: "c"
- *          positionStart: 7
- *          positionEnd: 16
- *          zoneCible: "269"
- *          sousZoneCible: "c"
- *          positionStartCible: 7
- *          positionEndCible: 16
- *          comparateur: "INFERIEUR"
- *          operateur-booleen: "ET"
- *          priorite: "1"
- *
+ *---
+ *rules:
+ *   - id: 4
+ *     id-excel: 1
+ *     jeux-de-regles:
+ *         - 1
+ *         - 2
+ *     message: "La date de publication doit être antérieure à la date de soutenance."
+ *     priorite: "P1"
+ *     regles:
+ *       - id: 5
+ *         type: comparaisondate
+ *         zone: "260"
+ *         souszone: "c"
+ *         positionstart: 7
+ *         positionend: 16
+ *         zonecible: "269"
+ *         souszonecible: "c"
+ *         positionstartcible: 7
+ *         positionendcible: 16
+ *         comparateur: "SUPERIEUR"
+ *       - id: 6
+ *         type: comparaisondate
+ *         zone: "260"
+ *         souszone: "c"
+ *         positionstart: 7
+ *         positionend: 16
+ *         zonecible: "269"
+ *         souszonecible: "c"
+ *         positionstartcible: 7
+ *         positionendcible: 16
+ *         comparateur: "INFERIEUR"
+ *         operateur-booleen: "ET"
  */
