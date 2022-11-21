@@ -38,7 +38,7 @@ class ComparaisonDateTest {
     @Test
     @DisplayName("Test sur la meme zone")
     void isValidOnSameZone() {
-        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "100", "a", 0,4,"100", "a",0,4, ComparaisonOperateur.EGAL);
+        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "100", "a", 0,3,"100", "a",0,3, ComparaisonOperateur.EGAL);
         Assertions.assertTrue(comparaisonDate.isValid(notice));
 
         comparaisonDate.setComparateur(ComparaisonOperateur.INFERIEUR);
