@@ -60,7 +60,7 @@ class ComparaisonDateTest {
     @Test
     @DisplayName("Test sur des zones differentes 100$a est INFERIEUR a 035$d")
     void isValidOnZone1InferieurZone2() {
-        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "100", "a", 0,4,"035", "d",0,4, ComparaisonOperateur.EGAL);
+        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "100", "a", 0,3,"035", "d",0,3, ComparaisonOperateur.EGAL);
         Assertions.assertFalse(comparaisonDate.isValid(notice));
 
         comparaisonDate.setComparateur(ComparaisonOperateur.INFERIEUR);
@@ -82,7 +82,7 @@ class ComparaisonDateTest {
     @Test
     @DisplayName("Test sur des zones differentes 100$a est SUPERIEUR a 035$d")
     void isValidOnZone1SuperieurZone2() {
-        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "035", "d", 0,4,"100", "a",0,4, ComparaisonOperateur.EGAL);
+        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "035", "d", 0,3,"100", "a",0,3, ComparaisonOperateur.EGAL);
         Assertions.assertFalse(comparaisonDate.isValid(notice));
 
         comparaisonDate.setComparateur(ComparaisonOperateur.INFERIEUR);
@@ -126,7 +126,7 @@ class ComparaisonDateTest {
     @Test
     @DisplayName("Test sur des zones differentes mais 801$c est avec un X")
     void isValidOnZoneAvecX() {
-        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "801", "c", 0, 4, "210", "d", ComparaisonOperateur.EGAL);
+        ComparaisonDate comparaisonDate= new ComparaisonDate(1, "801", "c", 0, 3, "210", "d", ComparaisonOperateur.EGAL);
         Assertions.assertFalse(comparaisonDate.isValid(notice));
 
         comparaisonDate.setComparateur(ComparaisonOperateur.INFERIEUR);
