@@ -5,6 +5,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.dependance.Reciprocite;
 import fr.abes.qualimarc.core.utils.Priority;
+import fr.abes.qualimarc.core.utils.TypeNoticeLiee;
 import fr.abes.qualimarc.core.utils.TypeThese;
 import lombok.Getter;
 import lombok.Setter;
@@ -222,7 +223,7 @@ public class ComplexRule implements Serializable {
         liste.add(this.getFirstRule().getZones());
         for (OtherRule rule : this.getOtherRules()) {
             liste.add(rule.getZones());
-            if(rule instanceof DependencyRule)
+            if(rule instanceof DependencyRule && ((DependencyRule) rule).getTypeNoticeLiee().equals(TypeNoticeLiee.AUTORITE))
                 break;
         }
         return liste.stream().distinct().collect(Collectors.toList());
