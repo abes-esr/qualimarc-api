@@ -210,8 +210,12 @@ public class WebDtoMapper {
             @Override
             public ComplexRule convert(MappingContext<ComparaisonContenuSousZoneWebDto, ComplexRule> context) {
                 ComparaisonContenuSousZoneWebDto source = context.getSource();
+                Integer nombreCaracteres = null;
+                if (source.getNombreCaracteres() != null) {
+                    nombreCaracteres = convertNombreCaracteres(source.getNombreCaracteres());
+                }
                 checkSimpleRule(source);
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getZoneCible(), source.getSousZoneCible(), getTypeDeVerification(source.getTypeVerification())));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeVerification()), nombreCaracteres, source.getZoneCible(), source.getSousZoneCible()));
             }
         };
         mapper.addConverter(myConverter);
@@ -336,7 +340,11 @@ public class WebDtoMapper {
         Converter<ComparaisonContenuSousZoneWebDto, SimpleRule> myConverter = new Converter<ComparaisonContenuSousZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<ComparaisonContenuSousZoneWebDto, SimpleRule> context) {
                 ComparaisonContenuSousZoneWebDto source = context.getSource();
-                return new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getZoneCible(), source.getSousZoneCible(), getTypeDeVerification(source.getTypeVerification()));
+                Integer nombreCaracteres = null;
+                if (source.getNombreCaracteres() != null) {
+                    nombreCaracteres = convertNombreCaracteres(source.getNombreCaracteres());
+                }
+                return new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeVerification()), nombreCaracteres, source.getZoneCible(), source.getSousZoneCible());
             }
         };
         mapper.addConverter(myConverter);
@@ -749,5 +757,9 @@ public class WebDtoMapper {
             target.addTypeCaractere(getTypeCaracteres(typeCaracteresString));
         }
         return target;
+    }
+
+    private Integer convertNombreCaracteres(String nombreCarateres) {
+        return Integer.valueOf(nombreCarateres);
     }
 }

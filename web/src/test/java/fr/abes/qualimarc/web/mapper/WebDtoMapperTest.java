@@ -586,7 +586,7 @@ public class WebDtoMapperTest {
         Integer ruleSetWebDto = 1;
         ruleSetsList.add(ruleSetWebDto);
 
-        ComparaisonContenuSousZoneWebDto rule1WebDto = new ComparaisonContenuSousZoneWebDto(1, 1, ruleSetsList, "Erreur", "200", "P1", typeDoc, new ArrayList<>(), "a", "300", "b", "STRICTEMENTDIFFERENT");
+        ComparaisonContenuSousZoneWebDto rule1WebDto = new ComparaisonContenuSousZoneWebDto(1, 1, ruleSetsList, "Erreur", "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENTDIFFERENT", "1", "300", "b");
 
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(rule1WebDto, ComplexRule.class);
@@ -602,9 +602,10 @@ public class WebDtoMapperTest {
         Assertions.assertTrue(complexRule.getFamillesDocuments().stream().anyMatch(familleDocument -> familleDocument.getId().equals(rule1WebDto.getTypesDoc().get(0))));
         Assertions.assertEquals(rule1WebDto.getZone(), complexRule.getFirstRule().getZone());
         Assertions.assertEquals(rule1WebDto.getSousZone(), simpleRule.getSousZone());
+        Assertions.assertEquals(rule1WebDto.getTypeVerification(), ((ComparaisonContenuSousZone) complexRule.getFirstRule()).getTypeVerification().toString());
+        Assertions.assertEquals(rule1WebDto.getNombreCaracteres(), ((ComparaisonContenuSousZone) complexRule.getFirstRule()).getNombreCaracteres().toString());
         Assertions.assertEquals(rule1WebDto.getZoneCible(), ((ComparaisonContenuSousZone) complexRule.getFirstRule()).getZoneCible());
         Assertions.assertEquals(rule1WebDto.getSousZoneCible(), ((ComparaisonContenuSousZone) complexRule.getFirstRule()).getSousZoneCible());
-        Assertions.assertEquals(rule1WebDto.getTypeVerification(), ((ComparaisonContenuSousZone) complexRule.getFirstRule()).getTypeVerification().toString());
 
         //  Test avec priorité nulle
         MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new ComparaisonContenuSousZoneWebDto(1, 1, ruleSetsList, "Erreur", "200", null, typeDoc, new ArrayList<>(), "a", "300", "b", "STRICTEMENTDIFFERENT"), ComplexRule.class));

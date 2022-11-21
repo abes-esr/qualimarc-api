@@ -31,6 +31,14 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
     @NotNull
     private String sousZone;
 
+    @Column(name ="ENUM_TYPE_DE_VERIFICATION")
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private TypeVerification typeVerification;
+
+    @Column(name ="NOMBRE_CARACTERE")
+    private Integer nombreCaracteres;
+
     @Column(name ="ZONE_CIBLE")
     @NotNull
     private String zoneCible;
@@ -38,11 +46,6 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
     @Column(name ="SOUS_ZONE_CIBLE")
     @NotNull
     private String sousZoneCible;
-
-    @Column(name ="ENUM_TYPE_DE_VERIFICATION")
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private TypeVerification typeVerification;
 
     /**
      * Constructeur sans liste de chaine de caractères avec zoneCible
@@ -52,12 +55,29 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
      * @param sousZoneCible deuxième sous-zone pour effectuer la comparaison
      * @param typeVerification type de vérficiation à appliquer pour la règle
      */
-    public ComparaisonContenuSousZone(Integer id, String zone, String sousZone, String zoneCible, String sousZoneCible, TypeVerification typeVerification){
+    public ComparaisonContenuSousZone(Integer id, String zone, String sousZone, TypeVerification typeVerification, String zoneCible, String sousZoneCible){
         super(id, zone);
         this.sousZone = sousZone;
+        this.typeVerification = typeVerification;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
+    }
+
+    /**
+     * Constructeur sans liste de chaine de caractères avec zoneCible
+     * @param id identifiant de la règle
+     * @param zone zone sur laquelle appliquer la recherche
+     * @param sousZone première sous-zone pour effectuer la comparaison
+     * @param sousZoneCible deuxième sous-zone pour effectuer la comparaison
+     * @param nombreCaracteres nombre de caractères à contrôler
+     */
+    public ComparaisonContenuSousZone(Integer id, String zone, String sousZone, TypeVerification typeVerification, Integer nombreCaracteres, String zoneCible, String sousZoneCible){
+        super(id, zone);
+        this.sousZone = sousZone;
         this.typeVerification = typeVerification;
+        this.nombreCaracteres = nombreCaracteres;
+        this.zoneCible = zoneCible;
+        this.sousZoneCible = sousZoneCible;
     }
 
     /**
@@ -122,7 +142,11 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
                         }
                         break;
                     case COMMENCE:
-                        isComparisonValid = sousZoneSourceValue.startsWith(sousZoneCible.getValue());
+                        String caractereSearch = sousZoneCible.getValue();
+                        if(nombreCaracteres != null && nombreCaracteres !=0){
+                            caractereSearch = sousZoneCible.getValue().substring(0, nombreCaracteres);
+                        }
+                        isComparisonValid = sousZoneSourceValue.startsWith(caractereSearch);
                         if (isComparisonValid) {
                             return isComparisonValid;
                         }

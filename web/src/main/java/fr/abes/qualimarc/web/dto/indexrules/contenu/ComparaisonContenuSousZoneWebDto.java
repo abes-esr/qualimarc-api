@@ -28,6 +28,15 @@ public class ComparaisonContenuSousZoneWebDto extends SimpleRuleWebDto {
     @JsonProperty("souszone")
     private String sousZone;
 
+    @Pattern(regexp = "STRICTEMENT|CONTIENT|COMMENCE|TERMINE|NECONTIENTPAS|STRICTEMENTDIFFERENT", message = "Le champ niveau de verification ne peut contenir que STRICTEMENT, CONTIENT, COMMENCE, TERMINE, NECONTIENTPAS, STRICTEMENTDIFFERENT")
+    @JsonProperty("type-de-verification")
+    @NotNull
+    private String typeVerification;
+
+    @Pattern(regexp = "(\\b([0-9]{0,2})\\b)", message = "Le champ nombreCaracteres ne peut contenir que des chiffres.")
+    @JsonProperty("nombreCaracteres")
+    private String nombreCaracteres;
+
     @Pattern(regexp = "\\b([0-9]{3})\\b", message = "Le champ zonecible doit contenir : soit trois chiffres, soit une lettre majuscule suivie de trois chiffres.")
     @NotNull(message = "Le champ zonecible est obligatoire")
     @NotBlank(message = "Le champ zonecible est obligatoire")
@@ -38,11 +47,6 @@ public class ComparaisonContenuSousZoneWebDto extends SimpleRuleWebDto {
     @NotNull(message = "Le champ souszonecible est obligatoire")
     @JsonProperty("souszonecible")
     private String sousZoneCible;
-
-    @Pattern(regexp = "STRICTEMENT|CONTIENT|COMMENCE|TERMINE|NECONTIENTPAS|STRICTEMENTDIFFERENT", message = "Le champ niveau de verification ne peut contenir que STRICTEMENT, CONTIENT, COMMENCE, TERMINE, NECONTIENTPAS, STRICTEMENTDIFFERENT")
-    @JsonProperty("type-de-verification")
-    @NotNull
-    private String typeVerification;
 
     /**
      *
@@ -59,12 +63,36 @@ public class ComparaisonContenuSousZoneWebDto extends SimpleRuleWebDto {
      * @param sousZoneCible sous-zone cible pour la vérification
      * @param typeVerification type de vérification à appliquer à la règle
      */
-    public ComparaisonContenuSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String zoneCible, String sousZoneCible, String typeVerification) {
+    public ComparaisonContenuSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeVerification, String zoneCible, String sousZoneCible) {
         super(id, idExcel, ruleSetList, message, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
+        this.typeVerification = typeVerification;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
+    }
+
+    /**
+     *
+     * @param id identifiant de la règle
+     * @param idExcel identifiant excel de la règle
+     * @param ruleSetList list de règles
+     * @param message message
+     * @param zone zone sur laquelle appliquer la règle
+     * @param priority priorité de la règle
+     * @param typesDoc type de document de la notice sur laquelle appliquer la règle
+     * @param typesThese type de thèse de la notice sur laquelle appliquer la règle
+     * @param sousZone sous-zone sur laquelle appliquer la règle
+     * @param zoneCible zone cible pour la vérification
+     * @param sousZoneCible sous-zone cible pour la vérification
+     * @param typeVerification type de vérification à appliquer à la règle
+     */
+    public ComparaisonContenuSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeVerification, String nombreCaracteres, String zoneCible, String sousZoneCible) {
+        super(id, idExcel, ruleSetList, message, zone, priority, typesDoc, typesThese);
+        this.sousZone = sousZone;
         this.typeVerification = typeVerification;
+        this.nombreCaracteres = nombreCaracteres;
+        this.zoneCible = zoneCible;
+        this.sousZoneCible = sousZoneCible;
     }
 }
 
@@ -91,6 +119,7 @@ rules:
           - REPRO
       souszone:                 b
       type-de-verification:     CONTIENT
+      nombreCaracteres:         6
       zonecible:                600
       souszonecible:            a
 ```
