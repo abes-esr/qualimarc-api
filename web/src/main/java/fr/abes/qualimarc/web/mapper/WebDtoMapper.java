@@ -29,6 +29,7 @@ import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebD
 import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
+import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.EnumUtils;
 import org.modelmapper.Converter;
@@ -534,6 +535,21 @@ public class WebDtoMapper {
                 }
                 ruleWebDto.setPriority(source.getPriority().equals(Priority.P1) ? "Essentielle" : "Avancée");
                 return ruleWebDto;
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un object FamilleDocument en FamilleDocumentWebDto
+     */
+    @Bean
+    public void converterFamilleDocument() {
+        Converter<FamilleDocument, FamilleDocumentWebDto> myConverter = new Converter<FamilleDocument, FamilleDocumentWebDto>() {
+            public FamilleDocumentWebDto convert(MappingContext<FamilleDocument, FamilleDocumentWebDto> context) {
+                FamilleDocument source = context.getSource();
+                FamilleDocumentWebDto famille = new FamilleDocumentWebDto(source.getId(), source.getLibelle());
+                return famille;
             }
         };
         mapper.addConverter(myConverter);

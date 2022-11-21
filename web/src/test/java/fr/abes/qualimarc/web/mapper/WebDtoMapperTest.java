@@ -29,6 +29,7 @@ import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebD
 import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
+import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -978,5 +979,14 @@ public class WebDtoMapperTest {
         ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
         Assertions.assertEquals("310", ruleWebDto.getZoneUnm1());
         Assertions.assertNull(ruleWebDto.getZoneUnm2());
+    }
+
+    @Test
+    @DisplayName("test mapper familleDocument")
+    void converterFamilleDocument() {
+        FamilleDocument familleDocument = new FamilleDocument("A", "Monographie");
+        FamilleDocumentWebDto dto = mapper.map(familleDocument, FamilleDocumentWebDto.class);
+        Assertions.assertEquals(dto.getId(), familleDocument.getId());
+        Assertions.assertEquals(dto.getLibelle(), familleDocument.getLibelle());
     }
 }
