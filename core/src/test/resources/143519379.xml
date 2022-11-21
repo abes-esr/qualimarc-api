@@ -111,6 +111,16 @@
         <subfield code="a">En appendice, choix de documents</subfield>
         <subfield code="b">En appendice, choix de documents</subfield>
     </datafield>
+    <datafield tag="338" ind1="#" ind2="#">
+        <subfield code="b">blabla</subfield>
+        <subfield code="c">blabla</subfield>
+    </datafield>
+    <datafield tag="600" ind1="#" ind2="#">
+        <subfield code="a">cracra</subfield>
+    </datafield>
+    <datafield tag="600" ind1="#" ind2="#">
+        <subfield code="a">blabla</subfield>
+    </datafield>
     <datafield tag="606" ind1=" " ind2=" ">
         <subfield code="3">02787088X</subfield>
         <subfield code="a">Informatique</subfield>
