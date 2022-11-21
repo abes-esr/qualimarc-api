@@ -5,6 +5,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.utils.Priority;
+import fr.abes.qualimarc.core.utils.TypeThese;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,5 +19,7 @@ public interface ComplexRulesRepository extends JpaRepository<ComplexRule, Integ
     Set<ComplexRule> findByFamillesDocuments(FamilleDocument familleDocument);
 
     Set<ComplexRule> findByRuleSet(RuleSet ruleSet);
+
+    Set<ComplexRule> findByTypesThese(TypeThese typeThese);
 
 }
