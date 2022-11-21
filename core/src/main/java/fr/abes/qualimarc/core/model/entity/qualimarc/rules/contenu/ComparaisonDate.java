@@ -107,10 +107,10 @@ public class ComparaisonDate extends SimpleRule implements Serializable {
                 String valueSource = subFieldSource.getValue();
                 String valueCible = subFieldCible.getValue();
                 if (this.getPositionEnd() != null && valueSource.length() >= this.getPositionEnd()) {
-                    valueSource = valueSource.substring(this.getPositionStart(), this.getPositionEnd());
+                    valueSource = valueSource.substring(this.getPositionStart(), this.getPositionEnd()+1);
                 }
                 if(this.getPositionEndCible() != null && valueCible.length() >= this.getPositionEndCible()){
-                    valueCible = valueCible.substring(this.getPositionStartCible(), this.getPositionEndCible());
+                    valueCible = valueCible.substring(this.getPositionStartCible(), this.getPositionEndCible()+1);
                 }
 
                 //split to get juste number
