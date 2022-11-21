@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -67,7 +68,7 @@ public class RuleController {
 
         if ((requestBody.getFamilleDocumentSet()!= null) && (!requestBody.getFamilleDocumentSet().isEmpty())) {
             for (TypeThese enumTypeThese : EnumUtils.getEnumList(TypeThese.class)) {
-                if (requestBody.getFamilleDocumentSet().contains(enumTypeThese.name())) {
+                if (requestBody.getFamilleDocumentSet().stream().map(f -> f.getId()).collect(Collectors.toList()).contains(enumTypeThese.name())) {
                     typeThese.add(enumTypeThese);
                     //suppression du type these de la requête pour ne pas altérer la récupération de familles de documents dans la base
                     requestBody.getFamilleDocumentSet().removeIf(f -> f.getId().equals(enumTypeThese.name()));
