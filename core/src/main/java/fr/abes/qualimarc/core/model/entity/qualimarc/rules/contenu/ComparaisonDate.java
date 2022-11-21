@@ -130,6 +130,8 @@ public class ComparaisonDate extends SimpleRule implements Serializable {
                             return valueSource.compareTo(valueCible) <= 0;
                         case SUPERIEUR_EGAL:
                             return valueSource.compareTo(valueCible) >= 0;
+                        case DIFFERENT:
+                            return !valueSource.equals(valueCible) ;
                         default:
                             return false;
                     }

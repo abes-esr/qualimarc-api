@@ -656,6 +656,8 @@ public class WebDtoMapper {
 
     private ComparaisonOperateur getComparaisonOperateur(String comparaisonOperateur){
         switch (comparaisonOperateur) {
+            case "DIFFERENT":
+                return ComparaisonOperateur.DIFFERENT;
             case "SUPERIEUR":
                 return ComparaisonOperateur.SUPERIEUR;
             case "SUPERIEUR_EGAL":

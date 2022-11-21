@@ -52,6 +52,9 @@ class ComparaisonDateTest {
 
         comparaisonDate.setComparateur(ComparaisonOperateur.INFERIEUR_EGAL);
         Assertions.assertTrue(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setComparateur(ComparaisonOperateur.DIFFERENT);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
     }
 
     @Test
@@ -70,6 +73,9 @@ class ComparaisonDateTest {
         Assertions.assertFalse(comparaisonDate.isValid(notice));
 
         comparaisonDate.setComparateur(ComparaisonOperateur.INFERIEUR_EGAL);
+        Assertions.assertTrue(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setComparateur(ComparaisonOperateur.DIFFERENT);
         Assertions.assertTrue(comparaisonDate.isValid(notice));
     }
 
@@ -90,6 +96,9 @@ class ComparaisonDateTest {
 
         comparaisonDate.setComparateur(ComparaisonOperateur.INFERIEUR_EGAL);
         Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setComparateur(ComparaisonOperateur.DIFFERENT);
+        Assertions.assertTrue(comparaisonDate.isValid(notice));
     }
 
     @Test
@@ -108,6 +117,9 @@ class ComparaisonDateTest {
         Assertions.assertFalse(comparaisonDate.isValid(notice));
 
         comparaisonDate.setComparateur(ComparaisonOperateur.INFERIEUR_EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setComparateur(ComparaisonOperateur.DIFFERENT);
         Assertions.assertFalse(comparaisonDate.isValid(notice));
     }
 
@@ -128,6 +140,9 @@ class ComparaisonDateTest {
 
         comparaisonDate.setComparateur(ComparaisonOperateur.INFERIEUR_EGAL);
         Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setComparateur(ComparaisonOperateur.DIFFERENT);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
     }
 
     @Test
@@ -146,6 +161,9 @@ class ComparaisonDateTest {
         Assertions.assertFalse(comparaisonDate.isValid(notice));
 
         comparaisonDate.setComparateur(ComparaisonOperateur.INFERIEUR_EGAL);
+        Assertions.assertFalse(comparaisonDate.isValid(notice));
+
+        comparaisonDate.setComparateur(ComparaisonOperateur.DIFFERENT);
         Assertions.assertFalse(comparaisonDate.isValid(notice));
     }
 
