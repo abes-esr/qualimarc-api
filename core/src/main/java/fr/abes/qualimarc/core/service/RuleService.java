@@ -15,6 +15,7 @@ import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import fr.abes.qualimarc.core.utils.TypeNoticeLiee;
+import fr.abes.qualimarc.core.utils.TypeThese;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
@@ -159,7 +160,7 @@ public class RuleService {
      * @param ruleSet          set of rules to look for in rules
      * @return list of rules according to given parameters
      */
-    public Set<ComplexRule> getResultRulesList(TypeAnalyse typeAnalyse, Set<FamilleDocument> familleDocuments, Set<RuleSet> ruleSet) {
+    public Set<ComplexRule> getResultRulesList(TypeAnalyse typeAnalyse, Set<FamilleDocument> familleDocuments, Set<TypeThese> typeThese, Set<RuleSet> ruleSet) {
         //cas analyse rapide ou experte
         switch (typeAnalyse) {
             case QUICK:
@@ -168,11 +169,13 @@ public class RuleService {
                 return new HashSet<>(complexRulesRepository.findAll());
             case FOCUSED:
                 //cas d'une analyse ciblée, on récupère les règles en fonction des types de documents et des ruleSet
-                if ((familleDocuments == null || familleDocuments.isEmpty()) && (ruleSet == null || ruleSet.isEmpty()))
+                if ((familleDocuments == null || familleDocuments.isEmpty()) && (typeThese == null || typeThese.isEmpty()) && (ruleSet == null || ruleSet.isEmpty()))
                     throw new IllegalRulesSetException("Impossible de lancer l'analysée ciblée sans paramètres supplémentaires");
                 Set<ComplexRule> result = new HashSet<>();
                 if (familleDocuments != null)
                     familleDocuments.forEach(t -> result.addAll(complexRulesRepository.findByFamillesDocuments(t)));
+                if (typeThese != null)
+                    typeThese.forEach(t -> result.addAll(complexRulesRepository.findByTypesThese(t)));
                 if (ruleSet != null)
                     ruleSet.forEach(r -> result.addAll(complexRulesRepository.findByRuleSet(r)));
 
