@@ -7,18 +7,17 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.service.NoticeService;
 import fr.abes.qualimarc.core.service.ReferenceService;
 import fr.abes.qualimarc.core.service.RuleService;
+import fr.abes.qualimarc.core.utils.TypeThese;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.dto.PpnWithRuleSetsRequestDto;
 import fr.abes.qualimarc.web.dto.ResultAnalyseResponseDto;
 import fr.abes.qualimarc.web.dto.RuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.*;
-import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.*;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -61,14 +61,22 @@ public class RuleController {
 
         Set<RuleSet> ruleSets = new HashSet<>();
         Set<FamilleDocument> familleDocuments =  new HashSet<>();
+        Set<TypeThese> typeThese = new HashSet<>();
 
         if ((requestBody.getFamilleDocumentSet()!= null) && (!requestBody.getFamilleDocumentSet().isEmpty())) {
+            for (TypeThese enumTypeThese : EnumUtils.getEnumList(TypeThese.class)) {
+                if (requestBody.getFamilleDocumentSet().stream().map(f -> f.getId()).collect(Collectors.toList()).contains(enumTypeThese.name())) {
+                    typeThese.add(enumTypeThese);
+                    //suppression du type these de la requête pour ne pas altérer la récupération de familles de documents dans la base
+                    requestBody.getFamilleDocumentSet().removeIf(f -> f.getId().equals(enumTypeThese.name()));
+                }
+            }
             familleDocuments = mapper.mapSet(requestBody.getFamilleDocumentSet(),FamilleDocument.class);
         }
         if ((requestBody.getRuleSet() != null) && (!requestBody.getRuleSet().isEmpty())){
             ruleSets = mapper.mapSet(requestBody.getRuleSet(),RuleSet.class);
         }
-        return mapper.map(ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, ruleSets), requestBody.getPpnList()), ResultAnalyseResponseDto.class);
+        return mapper.map(ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList()), ResultAnalyseResponseDto.class);
     }
 
     @PostMapping(value = "/indexRules", consumes = {"text/yaml", "text/yml"})
@@ -113,6 +121,12 @@ public class RuleController {
                         rulesEntity.add(mapper.map(new NombreCaracteresWebDto(generateNewId(rule.getId(), i), rule.getIdExcel(), rule.getRuleSetList(), rule.getMessage(), zoneGenerique, ((NombreCaracteresWebDto) rule).getSousZone(), rule.getPriority(), rule.getTypesDoc(), rule.getTypesThese(), ((NombreCaracteresWebDto) rule).getComparaisonOperateur(), ((NombreCaracteresWebDto) rule).getOccurrences()), ComplexRule.class));
                     if (rule instanceof IndicateurWebDto)
                         rulesEntity.add(mapper.map(new IndicateurWebDto(generateNewId(rule.getId(), i), rule.getIdExcel(), rule.getRuleSetList(), rule.getMessage(), zoneGenerique, rule.getPriority(), rule.getTypesDoc(), rule.getTypesThese(), ((IndicateurWebDto) rule).getIndicateur(), ((IndicateurWebDto) rule).getValeur()), ComplexRule.class));
+                    if (rule instanceof ComparaisonContenuSousZoneWebDto)
+                        if (((ComparaisonContenuSousZoneWebDto) rule).getNombreCaracteres() != null) {
+                            rulesEntity.add(mapper.map(new ComparaisonContenuSousZoneWebDto(generateNewId(rule.getId(), i), rule.getIdExcel(), rule.getRuleSetList(), rule.getMessage(), zoneGenerique, rule.getPriority(), rule.getTypesDoc(), rule.getTypesThese(), ((ComparaisonContenuSousZoneWebDto) rule).getSousZone(), ((ComparaisonContenuSousZoneWebDto) rule).getTypeVerification(), ((ComparaisonContenuSousZoneWebDto) rule).getNombreCaracteres(), ((ComparaisonContenuSousZoneWebDto) rule).getZoneCible(), ((ComparaisonContenuSousZoneWebDto) rule).getSousZoneCible()), ComplexRule.class));
+                        } else {
+                            rulesEntity.add(mapper.map(new ComparaisonContenuSousZoneWebDto(generateNewId(rule.getId(), i), rule.getIdExcel(), rule.getRuleSetList(), rule.getMessage(), zoneGenerique, rule.getPriority(), rule.getTypesDoc(), rule.getTypesThese(), ((ComparaisonContenuSousZoneWebDto) rule).getSousZone(), ((ComparaisonContenuSousZoneWebDto) rule).getTypeVerification(), ((ComparaisonContenuSousZoneWebDto) rule).getZoneCible(), ((ComparaisonContenuSousZoneWebDto) rule).getSousZoneCible()), ComplexRule.class));
+                        }
                     i++;
                 }
             } else {

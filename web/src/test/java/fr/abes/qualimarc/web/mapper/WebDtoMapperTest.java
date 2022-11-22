@@ -23,6 +23,7 @@ import fr.abes.qualimarc.web.dto.indexrules.DependencyWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.*;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
+import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -527,8 +528,8 @@ public class WebDtoMapperTest {
     }
 
     @Test
-    @DisplayName("Test Mapper converterPresenceChaineCaracteresTest")
-    void converterPresenceChaineCaracteres() {
+    @DisplayName("Test Mapper converterPresenceChaineCaracteres")
+    void converterPresenceChaineCaracteresTest() {
         //  Préparation d'un objet PresenceChaineCaracteresWebDto
         ArrayList<String> typeDoc = new ArrayList<>();
         typeDoc.add("A");
@@ -570,6 +571,47 @@ public class WebDtoMapperTest {
 
         //  Test avec message null
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, null, "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENT", chaineCaracteresWebDtoList), ComplexRule.class));
+        Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+    }
+
+    @Test
+    @DisplayName("Test mapper converterComparaisonContenuSousZone")
+    void converterComparaisonContenuSousZoneTest(){
+        //  Préparation d'un objet ComparaisonContenuSousZone
+        ArrayList<String> typeDoc = new ArrayList<>();
+        typeDoc.add("A");
+
+        List<Integer> ruleSetsList = new ArrayList<>();
+        Integer ruleSetWebDto = 1;
+        ruleSetsList.add(ruleSetWebDto);
+
+        ComparaisonContenuSousZoneWebDto rule1WebDto = new ComparaisonContenuSousZoneWebDto(1, 1, ruleSetsList, "Erreur", "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENTDIFFERENT", "1", "300", "b");
+
+        //  Appel du mapper
+        ComplexRule complexRule = mapper.map(rule1WebDto, ComplexRule.class);
+
+        //  Contrôle de la bonne conformité des résultats
+        ComparaisonContenuSousZone simpleRule = (ComparaisonContenuSousZone) complexRule.getFirstRule();
+
+        Assertions.assertEquals(rule1WebDto.getId(), complexRule.getId());
+        Assertions.assertEquals(rule1WebDto.getRuleSetList().get(0), new ArrayList<>(complexRule.getRuleSet()).get(0).getId());
+        Assertions.assertEquals(rule1WebDto.getMessage(), complexRule.getMessage());
+        Assertions.assertEquals((rule1WebDto.getZone() + "$" + rule1WebDto.getSousZone()) + " - " + rule1WebDto.getZoneCible() + "$" + rule1WebDto.getSousZoneCible(), complexRule.getZonesFromChildren().get(0));
+        Assertions.assertEquals(rule1WebDto.getPriority(), complexRule.getPriority().toString());
+        Assertions.assertTrue(complexRule.getFamillesDocuments().stream().anyMatch(familleDocument -> familleDocument.getId().equals(rule1WebDto.getTypesDoc().get(0))));
+        Assertions.assertEquals(rule1WebDto.getZone(), complexRule.getFirstRule().getZone());
+        Assertions.assertEquals(rule1WebDto.getSousZone(), simpleRule.getSousZone());
+        Assertions.assertEquals(rule1WebDto.getTypeVerification(), ((ComparaisonContenuSousZone) complexRule.getFirstRule()).getTypeVerification().toString());
+        Assertions.assertEquals(rule1WebDto.getNombreCaracteres(), ((ComparaisonContenuSousZone) complexRule.getFirstRule()).getNombreCaracteres().toString());
+        Assertions.assertEquals(rule1WebDto.getZoneCible(), ((ComparaisonContenuSousZone) complexRule.getFirstRule()).getZoneCible());
+        Assertions.assertEquals(rule1WebDto.getSousZoneCible(), ((ComparaisonContenuSousZone) complexRule.getFirstRule()).getSousZoneCible());
+
+        //  Test avec priorité nulle
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new ComparaisonContenuSousZoneWebDto(1, 1, ruleSetsList, "Erreur", "200", null, typeDoc, new ArrayList<>(), "a", "300", "b", "STRICTEMENTDIFFERENT"), ComplexRule.class));
+        Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
+
+        //  Test avec message null
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new ComparaisonContenuSousZoneWebDto(1, 1, ruleSetsList, null, "200", "P1", typeDoc, new ArrayList<>(), "a", "300", "b", "STRICTEMENTDIFFERENT"), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
     }
 
@@ -996,5 +1038,14 @@ public class WebDtoMapperTest {
         ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
         Assertions.assertEquals("310", ruleWebDto.getZoneUnm1());
         Assertions.assertNull(ruleWebDto.getZoneUnm2());
+    }
+
+    @Test
+    @DisplayName("test mapper familleDocument")
+    void converterFamilleDocument() {
+        FamilleDocument familleDocument = new FamilleDocument("A", "Monographie");
+        FamilleDocumentWebDto dto = mapper.map(familleDocument, FamilleDocumentWebDto.class);
+        Assertions.assertEquals(dto.getId(), familleDocument.getId());
+        Assertions.assertEquals(dto.getLibelle(), familleDocument.getLibelle());
     }
 }

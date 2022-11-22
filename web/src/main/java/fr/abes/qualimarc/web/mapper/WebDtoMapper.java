@@ -23,6 +23,7 @@ import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.*;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
+import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.EnumUtils;
 import org.modelmapper.Converter;
@@ -185,7 +186,7 @@ public class WebDtoMapper {
     }
 
     /**
-     * Convertion d'un modèle PresenceChaineCaracteresWebDto en modèle ComplexRule
+     * Conversion d'un modèle PresenceChaineCaracteresWebDto en modèle ComplexRule
      */
     @Bean
     public void converterPresenceChaineCaracteresToComplexRule() {
@@ -211,6 +212,25 @@ public class WebDtoMapper {
                 checkOtherRule(source);
                 ComparaisonDate target = constructComparaisonDate(source);
                 return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), target);
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+    /**
+     * Conversion d'un modèle ComparaisonContenuSousZoneWebDto en modèle ComplexRule
+     */
+    @Bean
+    public void converterComparaisonContenuSousZoneToComplexRule() {
+        Converter<ComparaisonContenuSousZoneWebDto, ComplexRule> myConverter = new Converter<ComparaisonContenuSousZoneWebDto, ComplexRule>() {
+            @Override
+            public ComplexRule convert(MappingContext<ComparaisonContenuSousZoneWebDto, ComplexRule> context) {
+                ComparaisonContenuSousZoneWebDto source = context.getSource();
+                Integer nombreCaracteres = null;
+                if (source.getNombreCaracteres() != null) {
+                    nombreCaracteres = convertNombreCaracteres(source.getNombreCaracteres());
+                }
+                checkOtherRule(source);
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeVerification()), nombreCaracteres, source.getZoneCible(), source.getSousZoneCible()));
             }
         };
         mapper.addConverter(myConverter);
@@ -327,6 +347,23 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
+    /**
+     * Conversion d'un modèle ComparaisonContenuSousZoneWebDto en modèle ComparaisonContenuSousZone (linkedRule)
+     */
+    @Bean
+    public void converterComparaisonContenuSousZoneToLinkedRule() {
+        Converter<ComparaisonContenuSousZoneWebDto, SimpleRule> myConverter = new Converter<ComparaisonContenuSousZoneWebDto, SimpleRule>() {
+            public SimpleRule convert(MappingContext<ComparaisonContenuSousZoneWebDto, SimpleRule> context) {
+                ComparaisonContenuSousZoneWebDto source = context.getSource();
+                Integer nombreCaracteres = null;
+                if (source.getNombreCaracteres() != null) {
+                    nombreCaracteres = convertNombreCaracteres(source.getNombreCaracteres());
+                }
+                return new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeVerification()), nombreCaracteres, source.getZoneCible(), source.getSousZoneCible());
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
 
     /**
      * Convertion d'un modèle IndicateurWebDto en modèle SimpleRule (LinkedRule)
@@ -562,6 +599,20 @@ public class WebDtoMapper {
     }
 
     /**
+     * Convertion d'un object FamilleDocument en FamilleDocumentWebDto
+     */
+    @Bean
+    public void converterFamilleDocument() {
+        Converter<FamilleDocument, FamilleDocumentWebDto> myConverter = new Converter<FamilleDocument, FamilleDocumentWebDto>() {
+            public FamilleDocumentWebDto convert(MappingContext<FamilleDocument, FamilleDocumentWebDto> context) {
+                FamilleDocument source = context.getSource();
+                return new FamilleDocumentWebDto(source.getId(), source.getLibelle());
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
      * Création d'un objet PresenceChaineCaracteres à partir des données issues d'un objet PresenceChaineCaracteresWebDto
      * @param source PresenceChaineCaracteresWebDto
      * @return PresenceChaineCaracteres
@@ -648,6 +699,8 @@ public class WebDtoMapper {
                 return TypeVerification.TERMINE;
             case "NECONTIENTPAS":
                 return TypeVerification.NECONTIENTPAS;
+            case "STRICTEMENTDIFFERENT":
+                return TypeVerification.STRICTEMENTDIFFERENT;
             case "CONTIENT":
             default:
                 return TypeVerification.CONTIENT;
@@ -773,5 +826,9 @@ public class WebDtoMapper {
             target.addTypeCaractere(getTypeCaracteres(typeCaracteresString));
         }
         return target;
+    }
+
+    private Integer convertNombreCaracteres(String nombreCarateres) {
+        return Integer.valueOf(nombreCarateres);
     }
 }

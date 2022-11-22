@@ -38,7 +38,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     @Column(name = "ENUM_TYPE_DE_VERIFICATION")
     @NotNull
     @Enumerated(EnumType.STRING)
-    private TypeVerification enumTypeDeVerification;
+    private TypeVerification typeDeVerification;
 
     @OneToMany(mappedBy = "presenceChaineCaracteres", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<ChaineCaracteres> listChainesCaracteres;
@@ -48,12 +48,12 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
      * @param id identifiant de la règle
      * @param zone zone sur laquelle appliquer la recherche
      * @param sousZone sous-zone sur laquelle appliquer la recherhe
-     * @param enumTypeDeVerification type de vérification à appliquer pour la règle
+     * @param typeDeVerification type de vérification à appliquer pour la règle
      */
-    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, TypeVerification enumTypeDeVerification) {
+    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, TypeVerification typeDeVerification) {
         super(id, zone);
         this.sousZone = sousZone;
-        this.enumTypeDeVerification = enumTypeDeVerification;
+        this.typeDeVerification = typeDeVerification;
         this.listChainesCaracteres = new HashSet<>();
     }
 
@@ -62,13 +62,13 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
      * @param id identifiant de la règle
      * @param zone zone sur laquelle appliquer la recherche
      * @param sousZone sous-zone sur laquelle appliquer la recherhe
-     * @param enumTypeDeVerification type de vérification à appliquer pour la règle
+     * @param typeDeVerification type de vérification à appliquer pour la règle
      * @param listChainesCaracteres liste de chaines de caractères à rechercher
      */
-    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, TypeVerification enumTypeDeVerification, Set<ChaineCaracteres> listChainesCaracteres) {
+    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, TypeVerification typeDeVerification, Set<ChaineCaracteres> listChainesCaracteres) {
         super(id, zone);
         this.sousZone = sousZone;
-        this.enumTypeDeVerification = enumTypeDeVerification;
+        this.typeDeVerification = typeDeVerification;
         this.listChainesCaracteres = listChainesCaracteres;
     }
 
@@ -103,7 +103,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                 // si la sous-zone est celle recherchée
                 if (subField.getCode().equals(sousZone)) {
                     // détermination du type de recherche
-                    switch (enumTypeDeVerification) {
+                    switch (typeDeVerification) {
                         // Si la sous-zone contient STRICTEMENT la/les chaine.s de caractères
                         case STRICTEMENT:
                             if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
