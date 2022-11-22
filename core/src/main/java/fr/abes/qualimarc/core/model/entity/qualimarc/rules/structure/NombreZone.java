@@ -2,7 +2,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure;
 
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
-import fr.abes.qualimarc.core.utils.Operateur;
+import fr.abes.qualimarc.core.utils.ComparaisonOperateur;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,15 +19,15 @@ public class NombreZone extends SimpleRule implements Serializable {
     @Column(name = "OPERATEUR")
     @NotNull
     @Enumerated(EnumType.STRING)
-    private Operateur operateur;
+    private ComparaisonOperateur comparaisonOperateur;
 
     @Column(name = "OCCURRENCES")
     @NotNull
     private Integer occurrences;
 
-    public NombreZone(Integer id, String zone, Operateur operateur, Integer occurrences) {
+    public NombreZone(Integer id, String zone, ComparaisonOperateur comparaisonOperateur, Integer occurrences) {
         super(id, zone);
-        this.operateur = operateur;
+        this.comparaisonOperateur = comparaisonOperateur;
         this.occurrences = occurrences;
     }
 
@@ -35,7 +35,7 @@ public class NombreZone extends SimpleRule implements Serializable {
     @Override
     public boolean isValid(NoticeXml ... notices) {
         NoticeXml notice = notices[0];
-        switch (this.operateur) {
+        switch (this.comparaisonOperateur) {
             case EGAL:
                 return notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).count() == this.occurrences;
             case INFERIEUR:

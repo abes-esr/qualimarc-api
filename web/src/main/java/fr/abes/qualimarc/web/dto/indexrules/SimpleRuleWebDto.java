@@ -32,6 +32,8 @@ import java.util.List;
         @JsonSubTypes.Type(value = PresenceChaineCaracteresWebDto.class, name="presencechainecaracteres"),
         @JsonSubTypes.Type(value = DependencyWebDto.class, name = "dependance"),
         @JsonSubTypes.Type(value = ReciprociteWebDto.class, name = "reciprocite"),
+        @JsonSubTypes.Type(value = ComparaisonDateWebDto.class, name = "comparaisondate"),
+        @JsonSubTypes.Type(value = ReciprociteWebDto.class, name = "reciprocite"),
         @JsonSubTypes.Type(value = ComparaisonContenuSousZoneWebDto.class, name = "comparaisoncontenusouszone")
 })
 public abstract class SimpleRuleWebDto {
