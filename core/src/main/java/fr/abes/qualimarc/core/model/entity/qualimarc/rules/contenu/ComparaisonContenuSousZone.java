@@ -96,10 +96,23 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
         boolean isComparisonValid = false;
 
         //  Trouver la première occurence de zoneSource
-        Datafield datafieldSource = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).findFirst().get();
+        Datafield datafieldSource = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).findFirst().orElse(null);
+        if( datafieldSource == null ){
+            return false;
+        }
 
         // Trouver la valeur de la première occurence sousZoneSource de la première occurence de la zoneSource
-        String sousZoneSourceValue =  datafieldSource.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).findFirst().get().getValue();
+        String sousZoneSourceValue;
+        if(datafieldSource.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(this.sousZone))){
+            return false;
+        }else {
+            SubField subFieldSource = datafieldSource.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).findFirst().orElse(null);
+            if(subFieldSource == null){
+                return false;
+            }
+            sousZoneSourceValue = subFieldSource.getValue();
+        }
+
 
         //  Récupérer les zonesCible excepté la première occurence
         List<Datafield> zoneCibleList = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.zoneCible)).collect(Collectors.toList());
@@ -120,25 +133,25 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
                     case STRICTEMENT:
                         isComparisonValid = sousZoneSourceValue.equals(sousZoneCible.getValue());
                         if (isComparisonValid) {
-                            return isComparisonValid;
+                            return true;
                         }
                         break;
                     case STRICTEMENTDIFFERENT:
                         isComparisonValid = !sousZoneSourceValue.equals(sousZoneCible.getValue());
                         if (isComparisonValid) {
-                            return isComparisonValid;
+                            return true;
                         }
                         break;
                     case CONTIENT:
                         isComparisonValid = sousZoneSourceValue.contains(sousZoneCible.getValue());
                         if (isComparisonValid) {
-                            return isComparisonValid;
+                            return true;
                         }
                         break;
                     case NECONTIENTPAS:
                         isComparisonValid = !sousZoneSourceValue.contains(sousZoneCible.getValue());
                         if (isComparisonValid) {
-                            return isComparisonValid;
+                            return true;
                         }
                         break;
                     case COMMENCE:
@@ -148,19 +161,19 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
                         }
                         isComparisonValid = sousZoneSourceValue.startsWith(caractereSearch);
                         if (isComparisonValid) {
-                            return isComparisonValid;
+                            return true;
                         }
                         break;
                     case TERMINE:
                         isComparisonValid = sousZoneSourceValue.endsWith(sousZoneCible.getValue());
                         if (isComparisonValid) {
-                            return isComparisonValid;
+                            return true;
                         }
                         break;
                 }
             }
         }
-        return isComparisonValid;
+        return false;
     }
 
     /**
