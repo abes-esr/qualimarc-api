@@ -10,7 +10,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZon
 import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
-import fr.abes.qualimarc.core.utils.Operateur;
+import fr.abes.qualimarc.core.utils.ComparaisonOperateur;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.web.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +78,7 @@ public class QualimarcAPIApplication implements CommandLineRunner {
             ComplexRule rule15 = new ComplexRule(15, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(15, "010", false));
             ComplexRule rule16 = new ComplexRule(16, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(16, "300", false));
             ComplexRule rule17 = new ComplexRule(17, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new PresenceZone(17, "579", true));
-            ComplexRule rule18 = new ComplexRule(18, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new NombreCaracteres(18, "011", "a", Operateur.INFERIEUR, 2));
+            ComplexRule rule18 = new ComplexRule(18, "Zone 011 : à supprimer car un numéro ISSN ne peut apparaître que dans une notice de ressource continue.", Priority.P1, new NombreCaracteres(18, "011", "a", ComparaisonOperateur.INFERIEUR, 2));
 
             List<ComplexRule> rules = new ArrayList<>();
             rules.add(rule1);

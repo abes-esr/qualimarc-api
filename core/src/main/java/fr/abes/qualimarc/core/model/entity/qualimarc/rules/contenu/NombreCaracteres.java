@@ -4,7 +4,7 @@ import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.notice.SubField;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
-import fr.abes.qualimarc.core.utils.Operateur;
+import fr.abes.qualimarc.core.utils.ComparaisonOperateur;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,15 +26,15 @@ public class NombreCaracteres extends SimpleRule {
     @NotNull
     @Column(name = "OPERATEUR")
     @Enumerated(EnumType.STRING)
-    private Operateur operateur;
+    private ComparaisonOperateur comparaisonOperateur;
     @NotNull
     @Column(name = "OCCURRENCES")
     private Integer occurrences;
 
-    public NombreCaracteres(Integer id, String zone, @NotNull String sousZone, @NotNull Operateur operateur, @NotNull Integer occurrences) {
+    public NombreCaracteres(Integer id, String zone, @NotNull String sousZone, @NotNull ComparaisonOperateur comparaisonOperateur, @NotNull Integer occurrences) {
         super(id, zone);
         this.sousZone = sousZone;
-        this.operateur = operateur;
+        this.comparaisonOperateur = comparaisonOperateur;
         this.occurrences = occurrences;
     }
 
@@ -45,7 +45,7 @@ public class NombreCaracteres extends SimpleRule {
         boolean isOk = false;
         for (Datafield zone : zonesSource) {
             for (SubField subField : zone.getSubFields().stream().filter(ss -> ss.getCode().equals(this.sousZone)).collect(Collectors.toList())) {
-                switch (this.operateur) {
+                switch (this.comparaisonOperateur) {
                     case EGAL:
                         isOk = subField.getValue().length() == this.occurrences;
                         break;

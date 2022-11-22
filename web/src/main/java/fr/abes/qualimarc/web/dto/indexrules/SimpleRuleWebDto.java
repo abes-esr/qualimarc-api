@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import fr.abes.qualimarc.web.dto.indexrules.contenu.IndicateurWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.contenu.NombreCaracteresWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.contenu.PresenceChaineCaracteresWebDto;
-import fr.abes.qualimarc.web.dto.indexrules.contenu.TypeCaractereWebDto;
+import fr.abes.qualimarc.web.dto.indexrules.contenu.*;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.Getter;
@@ -34,7 +31,10 @@ import java.util.List;
         @JsonSubTypes.Type(value = TypeCaractereWebDto.class, name = "typecaractere"),
         @JsonSubTypes.Type(value = PresenceChaineCaracteresWebDto.class, name="presencechainecaracteres"),
         @JsonSubTypes.Type(value = DependencyWebDto.class, name = "dependance"),
-        @JsonSubTypes.Type(value = ReciprociteWebDto.class, name = "reciprocite")
+        @JsonSubTypes.Type(value = ReciprociteWebDto.class, name = "reciprocite"),
+        @JsonSubTypes.Type(value = ComparaisonDateWebDto.class, name = "comparaisondate"),
+        @JsonSubTypes.Type(value = ReciprociteWebDto.class, name = "reciprocite"),
+        @JsonSubTypes.Type(value = ComparaisonContenuSousZoneWebDto.class, name = "comparaisoncontenusouszone")
 })
 public abstract class SimpleRuleWebDto {
     @JsonProperty("id")
@@ -113,8 +113,8 @@ public abstract class SimpleRuleWebDto {
 
     /**
      * Constructeur de règle complexe (dependency rule
-     * @param id
-     * @param zone
+     * @param id id
+     * @param zone zone
      */
     public SimpleRuleWebDto(@JsonProperty("id") Integer id,
                             @JsonProperty("zone") String zone) {
