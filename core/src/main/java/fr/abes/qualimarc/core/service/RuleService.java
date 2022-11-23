@@ -2,6 +2,7 @@ package fr.abes.qualimarc.core.service;
 
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
+import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
 import fr.abes.qualimarc.core.exception.noticexml.ZoneNotFoundException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
@@ -76,7 +77,7 @@ public class RuleService {
                         resultAnalyse.addResultRule(result);
                     }
                 }
-            } catch (SQLException | IOException ex) {
+            } catch (SQLException | IOException | IllegalTypeDocumentException ex) {
                 result.addMessage("Erreur d'accès à la base de données sur PPN : " + ppn);
                 resultAnalyse.addPpnInconnu(ppn);
                 resultAnalyse.addResultRule(result);
