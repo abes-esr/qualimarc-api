@@ -16,6 +16,7 @@ import fr.abes.qualimarc.core.model.resultats.ResultRules;
 import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.utils.*;
 import org.apache.commons.io.IOUtils;
+import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -338,6 +339,25 @@ public class RuleServiceTest {
 
         Set<ComplexRule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, typesDoc, null,null);
         Assertions.assertIterableEquals(result, rules);
+    }
+
+    /**
+     * Teste le cas d'une analyse sur notice avec famille de document inconnue
+     */
+    @Test
+    void checkRulesOnNoticesWithUnknownFamilleDoc() throws IOException, SQLException {
+        Set<FamilleDocument> typeDoc = new HashSet<>();
+        typeDoc.add(new FamilleDocument("A", "Monographie"));
+        Set<ComplexRule> rules = new HashSet<>();
+        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, typeDoc, Sets.newHashSet(), null, new PresenceZone(1, "010", true)));
+
+        Mockito.when(noticeService.getBiblioByPpn("123456789")).thenReturn(noticeAutorite1);
+
+        ResultAnalyse result = service.checkRulesOnNotices(rules, Lists.newArrayList("123456789"));
+        Assertions.assertEquals("123456789", result.getPpnInconnus().iterator().next());
+        Assertions.assertEquals(0, result.getPpnOk().size());
+        Assertions.assertEquals(0, result.getPpnErrones().size());
+        Assertions.assertEquals("123456789", result.getPpnAnalyses().iterator().next());
     }
 
     /**
