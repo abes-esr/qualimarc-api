@@ -2,6 +2,7 @@ package fr.abes.qualimarc.core.service;
 
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
+import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
 import fr.abes.qualimarc.core.exception.noticexml.ZoneNotFoundException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
@@ -27,6 +28,7 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class RuleService {
@@ -76,7 +78,7 @@ public class RuleService {
                         resultAnalyse.addResultRule(result);
                     }
                 }
-            } catch (SQLException | IOException ex) {
+            } catch (SQLException | IOException | IllegalTypeDocumentException ex) {
                 result.addMessage("Erreur d'accès à la base de données sur PPN : " + ppn);
                 resultAnalyse.addPpnInconnu(ppn);
                 resultAnalyse.addResultRule(result);
@@ -171,15 +173,23 @@ public class RuleService {
                 //cas d'une analyse ciblée, on récupère les règles en fonction des types de documents et des ruleSet
                 if ((familleDocuments == null || familleDocuments.isEmpty()) && (typeThese == null || typeThese.isEmpty()) && (ruleSet == null || ruleSet.isEmpty()))
                     throw new IllegalRulesSetException("Impossible de lancer l'analysée ciblée sans paramètres supplémentaires");
-                Set<ComplexRule> result = new HashSet<>();
+                Set<ComplexRule> rulesTypes = new HashSet<>();
+                Set<ComplexRule> rulesRuleSet = new HashSet<>();
                 if (familleDocuments != null)
-                    familleDocuments.forEach(t -> result.addAll(complexRulesRepository.findByFamillesDocuments(t)));
+                    familleDocuments.forEach(t -> rulesTypes.addAll(complexRulesRepository.findByFamillesDocuments(t)));
                 if (typeThese != null)
-                    typeThese.forEach(t -> result.addAll(complexRulesRepository.findByTypesThese(t)));
+                    typeThese.forEach(t -> rulesTypes.addAll(complexRulesRepository.findByTypesThese(t)));
                 if (ruleSet != null)
-                    ruleSet.forEach(r -> result.addAll(complexRulesRepository.findByRuleSet(r)));
+                    ruleSet.forEach(r -> rulesRuleSet.addAll(complexRulesRepository.findByRuleSet(r)));
 
-                return result;
+                if (!rulesRuleSet.isEmpty() && !rulesTypes.isEmpty()) {
+                    //on retourne l'intersection entre la liste contenant les règles par familles de doc et celle par jeux de règles personnalisés
+                    return rulesTypes.stream().filter(rulesRuleSet::contains).collect(Collectors.toSet());
+                }
+                if(!rulesRuleSet.isEmpty())
+                    return rulesRuleSet;
+
+                return rulesTypes;
             default:
                 throw new IllegalRulesSetException("Jeu de règle inconnu");
         }

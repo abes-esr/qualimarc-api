@@ -52,6 +52,9 @@ class ComparaisonContenuSousZoneTest {
 
         ComparaisonContenuSousZone rule3 = new ComparaisonContenuSousZone(1, "200", "y", TypeVerification.COMMENCE, 1, "205", "a");
         Assertions.assertTrue(rule3.isValid(notice));
+
+        ComparaisonContenuSousZone rule4 = new ComparaisonContenuSousZone(1, "200", "f", TypeVerification.TERMINE, 4, "712", "a");
+        Assertions.assertTrue(rule4.isValid(notice));
     }
 
     @Test
@@ -318,6 +321,6 @@ class ComparaisonContenuSousZoneTest {
     @DisplayName("Test de la récupération des zones")
     void getZones() {
         ComparaisonContenuSousZone rule2 =  new ComparaisonContenuSousZone(1, "300", "a", TypeVerification.STRICTEMENT, "400", "b");
-        Assertions.assertEquals("300$a - 400$b", rule2.getZones());
+        Assertions.assertEquals("300$a / 400$b", rule2.getZones());
     }
 }

@@ -596,7 +596,7 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(rule1WebDto.getId(), complexRule.getId());
         Assertions.assertEquals(rule1WebDto.getRuleSetList().get(0), new ArrayList<>(complexRule.getRuleSet()).get(0).getId());
         Assertions.assertEquals(rule1WebDto.getMessage(), complexRule.getMessage());
-        Assertions.assertEquals((rule1WebDto.getZone() + "$" + rule1WebDto.getSousZone()) + " - " + rule1WebDto.getZoneCible() + "$" + rule1WebDto.getSousZoneCible(), complexRule.getZonesFromChildren().get(0));
+        Assertions.assertEquals((rule1WebDto.getZone() + "$" + rule1WebDto.getSousZone()) + " / " + rule1WebDto.getZoneCible() + "$" + rule1WebDto.getSousZoneCible(), complexRule.getZonesFromChildren().get(0));
         Assertions.assertEquals(rule1WebDto.getPriority(), complexRule.getPriority().toString());
         Assertions.assertTrue(complexRule.getFamillesDocuments().stream().anyMatch(familleDocument -> familleDocument.getId().equals(rule1WebDto.getTypesDoc().get(0))));
         Assertions.assertEquals(rule1WebDto.getZone(), complexRule.getFirstRule().getZone());

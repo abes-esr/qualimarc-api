@@ -681,83 +681,27 @@ public class WebDtoMapper {
 
 
     private Priority getPriority(String priority) {
-        if (priority.equals("P1")) {
-            return Priority.P1;
-        } else if (priority.equals("P2")) {
-            return Priority.P2;
-        }
-        return Priority.P1;
+        return EnumUtils.getEnum(Priority.class, priority);
     }
 
     private TypeVerification getTypeDeVerification(String typeDeVerification) {
-        switch (typeDeVerification) {
-            case "STRICTEMENT":
-                return TypeVerification.STRICTEMENT;
-            case "COMMENCE":
-                return TypeVerification.COMMENCE;
-            case "TERMINE":
-                return TypeVerification.TERMINE;
-            case "NECONTIENTPAS":
-                return TypeVerification.NECONTIENTPAS;
-            case "STRICTEMENTDIFFERENT":
-                return TypeVerification.STRICTEMENTDIFFERENT;
-            case "CONTIENT":
-            default:
-                return TypeVerification.CONTIENT;
-        }
+        return EnumUtils.getEnum(TypeVerification.class, typeDeVerification);
     }
 
     private ComparaisonOperateur getComparaisonOperateur(String comparaisonOperateur){
-        switch (comparaisonOperateur) {
-            case "DIFFERENT":
-                return ComparaisonOperateur.DIFFERENT;
-            case "SUPERIEUR":
-                return ComparaisonOperateur.SUPERIEUR;
-            case "SUPERIEUR_EGAL":
-                return ComparaisonOperateur.SUPERIEUR_EGAL;
-            case "INFERIEUR":
-                return ComparaisonOperateur.INFERIEUR;
-            case "INFERIEUR_EGAL":
-                return ComparaisonOperateur.INFERIEUR_EGAL;
-            case "EGAL":
-            default:
-                return ComparaisonOperateur.EGAL;
-        }
+        return EnumUtils.getEnum(ComparaisonOperateur.class, comparaisonOperateur);
     }
 
     private BooleanOperateur getOperateur(String operateur) {
-        if (operateur.equals("ET")) {
-            return BooleanOperateur.ET;
-        } else if (operateur.equals("OU")) {
-            return BooleanOperateur.OU;
-        }
-        return BooleanOperateur.ET;
+        return EnumUtils.getEnum(BooleanOperateur.class, operateur);
     }
 
     private TypeCaracteres getTypeCaracteres(String type){
-        switch (type) {
-            case "ALPHABETIQUE":
-                return TypeCaracteres.ALPHABETIQUE;
-            case "ALPHABETIQUE_MAJ":
-                return TypeCaracteres.ALPHABETIQUE_MAJ;
-            case "ALPHABETIQUE_MIN":
-                return TypeCaracteres.ALPHABETIQUE_MIN;
-            case "NUMERIQUE":
-                return TypeCaracteres.NUMERIQUE;
-            case "SPECIAL":
-                return TypeCaracteres.SPECIAL;
-        }
-        return TypeCaracteres.ALPHABETIQUE;
+        return EnumUtils.getEnum(TypeCaracteres.class, type);
     }
 
     private TypeNoticeLiee getTypeNoticeLiee(String type){
-        switch (type) {
-            case "AUTORITE":
-                return TypeNoticeLiee.AUTORITE;
-            case "BIBLIO":
-                return TypeNoticeLiee.BIBLIO;
-        }
-        return TypeNoticeLiee.BIBLIO;
+        return EnumUtils.getEnum(TypeNoticeLiee.class, type);
     }
 
     private Set<FamilleDocument> getFamilleDocument(List<String> familleDoc) {
@@ -773,10 +717,7 @@ public class WebDtoMapper {
         if(types == null)
             return null;
         for (String type : types) {
-            if (("REPRO").equals(type))
-                typeTheseSet.add(TypeThese.REPRO);
-            if (("SOUTENANCE").equals(type))
-                typeTheseSet.add(TypeThese.SOUTENANCE);
+            typeTheseSet.add(EnumUtils.getEnum(TypeThese.class, type));
         }
         return typeTheseSet;
     }
