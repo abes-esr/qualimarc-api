@@ -185,7 +185,7 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
      */
     @Override
     public String getZones() {
-        return this.getZone() + "$" + this.sousZone + " - " + this.zoneCible + "$" + this.sousZoneCible;
+        return this.getZone() + "$" + this.sousZone + " / " + this.zoneCible + "$" + this.sousZoneCible;
     }
 
 }
