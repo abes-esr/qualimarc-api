@@ -181,14 +181,14 @@ public class RuleService {
                 if (ruleSet != null)
                     ruleSet.forEach(r -> rulesRuleSet.addAll(complexRulesRepository.findByRuleSet(r)));
 
-                if (!rulesRuleSet.isEmpty())
-                    if (rulesTypes.isEmpty())
-                        return rulesRuleSet;
-                    else
-                        //on retourne l'intersection entre la liste contenant les règles par familles de doc et celle par jeux de règles personnalisés
-                        return rulesTypes.stream().filter(rulesRuleSet::contains).collect(Collectors.toSet());
-                else
-                    return rulesTypes;
+                if (!rulesRuleSet.isEmpty() && !rulesTypes.isEmpty()) {
+                    //on retourne l'intersection entre la liste contenant les règles par familles de doc et celle par jeux de règles personnalisés
+                    return rulesTypes.stream().filter(rulesRuleSet::contains).collect(Collectors.toSet());
+                }
+                if(!rulesRuleSet.isEmpty())
+                    return rulesRuleSet;
+
+                return rulesTypes;
             default:
                 throw new IllegalRulesSetException("Jeu de règle inconnu");
         }
