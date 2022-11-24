@@ -2,6 +2,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure;
 
 import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,15 +35,25 @@ public class PresenceSousZone extends SimpleRule implements Serializable {
         this.isPresent = isPresent;
     }
 
+    public PresenceSousZone(Integer id, String zone, String sousZone, boolean isPresent, ComplexRule complexRule) {
+        super(id, zone, complexRule);
+        this.sousZone = sousZone;
+        this.isPresent = isPresent;
+    }
 
     @Override
     public boolean isValid(NoticeXml ... notices) {
         NoticeXml notice = notices[0];
+
         List<Datafield> datafields = notice.getDatafields().stream().filter(dataField -> dataField.getTag().equals(this.getZone())).collect(Collectors.toList());
         //cas ou la sous zone doit être présente dans la zone pour lever le message
         if(this.isPresent) {
             for (Datafield datafield : datafields) {
                 if (datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(this.getSousZone()))) {
+                    if (this.getComplexRule().isMemeZone()) {
+                        this.getComplexRule().setSavedZone(datafields.stream().filter(df -> df.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(this.getSousZone()))).collect(Collectors.toList()));
+                        return !this.getComplexRule().getSavedZone().isEmpty();
+                    }
                     return true;
                 }
             }

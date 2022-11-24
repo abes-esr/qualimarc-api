@@ -155,7 +155,7 @@
     <datafield tag="607" ind1=" " ind2=" ">
         <subfield code="4">02731667X</subfield>
         <subfield code="a">Informatique</subfield>
-        <subfield code="x">Personnel</subfield>
+        <subfield code="b">Personnel</subfield>
         <subfield code="4">987654321</subfield>
         <subfield code="x">Conventions collectives</subfield>
     </datafield>

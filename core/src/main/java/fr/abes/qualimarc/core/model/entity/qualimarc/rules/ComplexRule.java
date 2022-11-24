@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.core.model.entity.qualimarc.rules;
 
+import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
@@ -71,6 +72,11 @@ public class ComplexRule implements Serializable {
     @OneToMany(mappedBy = "complexRule", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<OtherRule> otherRules;
 
+    private boolean isMemeZone;
+
+    @Transient
+    private List<Datafield> savedZone;
+
     protected ComplexRule(){}
 
     public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, SimpleRule firstRule, List<OtherRule> otherRules) {
@@ -115,6 +121,8 @@ public class ComplexRule implements Serializable {
         this.ruleSet = new HashSet<>();
         this.firstRule = firstRule;
         this.otherRules = new LinkedList<>();
+        this.firstRule.setComplexRule(this);
+        this.savedZone = new ArrayList<>();
     }
 
     public ComplexRule(SimpleRule rule) {
@@ -138,6 +146,13 @@ public class ComplexRule implements Serializable {
         this.otherRules.add(otherRule);
     }
 
+    public void setSavedZone(List<Datafield> datafields) {
+        if (this.savedZone.isEmpty()) {
+            this.savedZone = datafields;
+        } else {
+            this.savedZone = this.savedZone.stream().filter(datafields::contains).collect(Collectors.toList());
+        }
+    }
     /**
      * Retourne true si toutes les règles qui la composent sont valides
      * @param notices notices au format xml

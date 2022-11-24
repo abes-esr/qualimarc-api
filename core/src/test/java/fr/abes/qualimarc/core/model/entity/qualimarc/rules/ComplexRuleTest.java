@@ -130,6 +130,29 @@ public class ComplexRuleTest {
     }
 
     @Test
+    @DisplayName("test poc même instance de zone")
+    void testIsValidOneNoticeMemeZone() throws IOException {
+
+        String xml = IOUtils.toString(new FileInputStream(xmlFileNoticeBiblio.getFile()), StandardCharsets.UTF_8);
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(false);
+        XmlMapper mapper = new XmlMapper(module);
+        NoticeXml noticeBiblio = mapper.readValue(xml, NoticeXml.class);
+
+        ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceSousZone(1, "607", "3", true));
+        complexRule.setMemeZone(true);
+        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "4", true), BooleanOperateur.ET, 0, complexRule));
+
+        Assertions.assertTrue(complexRule.isValid(noticeBiblio));
+
+        ComplexRule complexRule2 = new ComplexRule(1, "test", Priority.P1, new PresenceSousZone(1, "607", "3", true));
+        complexRule2.setMemeZone(true);
+        complexRule2.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "b", true), BooleanOperateur.ET, 0, complexRule2));
+
+        Assertions.assertFalse(complexRule2.isValid(noticeBiblio));
+    }
+
+    @Test
     @DisplayName("test getZonesFromChildren")
     void testGetZonesFromChildren() {
         ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "200", true));
