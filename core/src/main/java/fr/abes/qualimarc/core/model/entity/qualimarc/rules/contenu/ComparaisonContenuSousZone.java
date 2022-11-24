@@ -132,25 +132,25 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
                 String caractereSearch = sousZoneCible.getValue();
                 switch (typeVerification) {
                     case STRICTEMENT:
-                        isComparisonValid = sousZoneSourceValue.equals(sousZoneCible.getValue());
+                        isComparisonValid = sousZoneSourceValue.equals(caractereSearch);
                         if (isComparisonValid) {
                             return true;
                         }
                         break;
                     case STRICTEMENTDIFFERENT:
-                        isComparisonValid = !sousZoneSourceValue.equals(sousZoneCible.getValue());
+                        isComparisonValid = !sousZoneSourceValue.equals(caractereSearch);
                         if (isComparisonValid) {
                             return true;
                         }
                         break;
                     case CONTIENT:
-                        isComparisonValid = sousZoneSourceValue.contains(sousZoneCible.getValue());
+                        isComparisonValid = sousZoneSourceValue.contains(caractereSearch);
                         if (isComparisonValid) {
                             return true;
                         }
                         break;
                     case NECONTIENTPAS:
-                        isComparisonValid = !sousZoneSourceValue.contains(sousZoneCible.getValue());
+                        isComparisonValid = !sousZoneSourceValue.contains(caractereSearch);
                         if (isComparisonValid) {
                             return true;
                         }
