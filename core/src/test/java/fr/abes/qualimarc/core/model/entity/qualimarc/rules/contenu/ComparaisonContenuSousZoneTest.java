@@ -52,6 +52,9 @@ class ComparaisonContenuSousZoneTest {
 
         ComparaisonContenuSousZone rule3 = new ComparaisonContenuSousZone(1, "200", "y", TypeVerification.COMMENCE, 1, "205", "a");
         Assertions.assertTrue(rule3.isValid(notice));
+
+        ComparaisonContenuSousZone rule4 = new ComparaisonContenuSousZone(1, "200", "f", TypeVerification.TERMINE, 4, "712", "a");
+        Assertions.assertTrue(rule4.isValid(notice));
     }
 
     @Test
