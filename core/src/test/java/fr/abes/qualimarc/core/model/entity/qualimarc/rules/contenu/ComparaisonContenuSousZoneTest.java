@@ -321,6 +321,6 @@ class ComparaisonContenuSousZoneTest {
     @DisplayName("Test de la récupération des zones")
     void getZones() {
         ComparaisonContenuSousZone rule2 =  new ComparaisonContenuSousZone(1, "300", "a", TypeVerification.STRICTEMENT, "400", "b");
-        Assertions.assertEquals("300$a - 400$b", rule2.getZones());
+        Assertions.assertEquals("300$a / 400$b", rule2.getZones());
     }
 }
