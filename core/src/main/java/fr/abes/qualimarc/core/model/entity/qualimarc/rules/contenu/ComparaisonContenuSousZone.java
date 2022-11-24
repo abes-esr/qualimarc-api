@@ -129,33 +129,33 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
 
             //  Sur toutes les occurences de sousZoneCible
             for (SubField sousZoneCible : zoneCible.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZoneCible)).collect(Collectors.toList())) {
+                String caractereSearch = sousZoneCible.getValue();
                 switch (typeVerification) {
                     case STRICTEMENT:
-                        isComparisonValid = sousZoneSourceValue.equals(sousZoneCible.getValue());
+                        isComparisonValid = sousZoneSourceValue.equals(caractereSearch);
                         if (isComparisonValid) {
                             return true;
                         }
                         break;
                     case STRICTEMENTDIFFERENT:
-                        isComparisonValid = !sousZoneSourceValue.equals(sousZoneCible.getValue());
+                        isComparisonValid = !sousZoneSourceValue.equals(caractereSearch);
                         if (isComparisonValid) {
                             return true;
                         }
                         break;
                     case CONTIENT:
-                        isComparisonValid = sousZoneSourceValue.contains(sousZoneCible.getValue());
+                        isComparisonValid = sousZoneSourceValue.contains(caractereSearch);
                         if (isComparisonValid) {
                             return true;
                         }
                         break;
                     case NECONTIENTPAS:
-                        isComparisonValid = !sousZoneSourceValue.contains(sousZoneCible.getValue());
+                        isComparisonValid = !sousZoneSourceValue.contains(caractereSearch);
                         if (isComparisonValid) {
                             return true;
                         }
                         break;
                     case COMMENCE:
-                        String caractereSearch = sousZoneCible.getValue();
                         if(nombreCaracteres != null && nombreCaracteres !=0){
                             caractereSearch = sousZoneCible.getValue().substring(0, nombreCaracteres);
                         }
@@ -165,7 +165,10 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
                         }
                         break;
                     case TERMINE:
-                        isComparisonValid = sousZoneSourceValue.endsWith(sousZoneCible.getValue());
+                        if(nombreCaracteres != null && nombreCaracteres !=0){
+                            caractereSearch = sousZoneCible.getValue().substring((sousZoneCible.getValue().length() - nombreCaracteres), sousZoneCible.getValue().length());
+                        }
+                        isComparisonValid = sousZoneSourceValue.endsWith(caractereSearch);
                         if (isComparisonValid) {
                             return true;
                         }
@@ -182,7 +185,7 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
      */
     @Override
     public String getZones() {
-        return this.getZone() + "$" + this.sousZone + " - " + this.zoneCible + "$" + this.sousZoneCible;
+        return this.getZone() + "$" + this.sousZone + " / " + this.zoneCible + "$" + this.sousZoneCible;
     }
 
 }
