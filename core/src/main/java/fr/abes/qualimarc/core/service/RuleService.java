@@ -18,8 +18,11 @@ import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import fr.abes.qualimarc.core.utils.TypeNoticeLiee;
 import fr.abes.qualimarc.core.utils.TypeThese;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,9 +31,13 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class RuleService {
     @Autowired
     private NoticeService noticeService;
@@ -41,9 +48,19 @@ public class RuleService {
     @Autowired
     private ComplexRulesRepository complexRulesRepository;
 
+    @Autowired
+    @Qualifier("asyncExecutor")
+    private Executor asyncExecutor;
 
-    public ResultAnalyse checkRulesOnNotices(Set<ComplexRule> rulesList, List<String> ppns) {
+    private AtomicInteger cn = new AtomicInteger(0);
+
+    private int totalPpns;
+
+    @Async("asyncExecutor")
+    public CompletableFuture<ResultAnalyse> checkRulesOnNotices(Set<ComplexRule> rulesList, List<String> ppns) {
         ResultAnalyse resultAnalyse = new ResultAnalyse();
+        this.totalPpns = ppns.size();
+        log.debug("Handling list of " + this.totalPpns + " ppn");
         for (String ppn : ppns) {
             boolean isOk = true;
             ResultRules result = new ResultRules(ppn);
@@ -52,9 +69,9 @@ public class RuleService {
                 if (noticeSource.isDeleted()) {
                     resultAnalyse.addPpnInconnu(ppn);
                 } else {
-                    resultAnalyse.addPpnAnalyse(ppn);
                     for (ComplexRule rule : rulesList) {
                         if (isRuleAppliedToNotice(noticeSource, rule)) {
+                            resultAnalyse.addPpnAnalyse(ppn);
                             OtherRule dependencyRule = rule.getDependencyRule();
                             if (dependencyRule != null) {
                                 //il existe une règle de dépendance dans la règle complexe
@@ -87,8 +104,9 @@ public class RuleService {
                 result.addMessage(ex.getMessage());
                 resultAnalyse.addResultRule(result);
             }
+            this.cn.addAndGet(1);
         }
-        return resultAnalyse;
+        return CompletableFuture.completedFuture(resultAnalyse);
     }
 
     @SneakyThrows
@@ -209,6 +227,12 @@ public class RuleService {
 
     public void viderRegles() {
         this.complexRulesRepository.deleteAll();
+    }
+
+    public double getCn() {
+        if (this.totalPpns != 0)
+            return ((double) this.cn.get() / (double) this.totalPpns) * 100;
+        return 0;
     }
 
     public List<ComplexRule> getAllComplexRules() {
