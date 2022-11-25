@@ -357,7 +357,7 @@ public class RuleServiceTest {
         Assertions.assertEquals("123456789", result.getPpnInconnus().iterator().next());
         Assertions.assertEquals(0, result.getPpnOk().size());
         Assertions.assertEquals(0, result.getPpnErrones().size());
-        Assertions.assertEquals("123456789", result.getPpnAnalyses().iterator().next());
+        Assertions.assertEquals(0, result.getPpnAnalyses().size());
     }
 
     /**
