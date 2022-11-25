@@ -69,9 +69,9 @@ public class RuleService {
                 if (noticeSource.isDeleted()) {
                     resultAnalyse.addPpnInconnu(ppn);
                 } else {
-                    resultAnalyse.addPpnAnalyse(ppn);
                     for (ComplexRule rule : rulesList) {
                         if (isRuleAppliedToNotice(noticeSource, rule)) {
+                            resultAnalyse.addPpnAnalyse(ppn);
                             OtherRule dependencyRule = rule.getDependencyRule();
                             if (dependencyRule != null) {
                                 //il existe une règle de dépendance dans la règle complexe
