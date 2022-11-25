@@ -1,7 +1,6 @@
 package fr.abes.qualimarc.core.model.resultats;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -26,6 +25,15 @@ public class ResultAnalyse {
         this.ppnInconnus = new HashSet<>();
     }
 
+    public ResultAnalyse(ResultAnalyse resultAnalyse) {
+        this.resultRules = resultAnalyse.getResultRules();
+        this.ppnOk = resultAnalyse.getPpnOk();
+        this.ppnInconnus = resultAnalyse.getPpnInconnus();
+        this.ppnErrones = resultAnalyse.getPpnErrones();
+        this.ppnAnalyses = resultAnalyse.getPpnAnalyses();
+    }
+
+
     public void addResultRule(ResultRules rule) {
         this.resultRules.add(rule);
     }
@@ -44,5 +52,13 @@ public class ResultAnalyse {
 
     public void addPpnInconnu(String ppn) {
         this.ppnInconnus.add(ppn);
+    }
+
+    public void merge(ResultAnalyse resultAnalyse) {
+        this.resultRules.addAll(resultAnalyse.getResultRules());
+        this.ppnAnalyses.addAll(resultAnalyse.getPpnAnalyses());
+        this.ppnOk.addAll(resultAnalyse.getPpnOk());
+        this.ppnInconnus.addAll(resultAnalyse.getPpnInconnus());
+        this.ppnErrones.addAll(resultAnalyse.getPpnErrones());
     }
 }

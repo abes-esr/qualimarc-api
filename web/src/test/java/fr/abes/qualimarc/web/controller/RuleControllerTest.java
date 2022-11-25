@@ -1,6 +1,7 @@
 package fr.abes.qualimarc.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.abes.qualimarc.core.configuration.AsyncConfiguration;
 import fr.abes.qualimarc.core.service.NoticeService;
 import fr.abes.qualimarc.core.service.ReferenceService;
 import fr.abes.qualimarc.core.service.RuleService;
@@ -40,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = {RuleController.class}) //  Active le Model-View-Controller, nécessaire pour éviter le code d'erreur 415 lors du lancement du test checkPpn
 @ExtendWith({SpringExtension.class})
-@ContextConfiguration(classes = {WebConfig.class})
+@ContextConfiguration(classes = {WebConfig.class,AsyncConfiguration.class})
 public class RuleControllerTest {
     @Autowired
     WebApplicationContext context;
@@ -55,6 +56,9 @@ public class RuleControllerTest {
     MappingJackson2HttpMessageConverter jsonHttpConverter;
 
     MockMvc mockMvc;
+
+    @Autowired
+    AsyncConfiguration asyncExecutor;
 
     @Autowired
     ObjectMapper objectMapper;
