@@ -25,15 +25,6 @@ public class ResultAnalyse {
         this.ppnInconnus = new HashSet<>();
     }
 
-    public ResultAnalyse(ResultAnalyse resultAnalyse) {
-        this.resultRules = resultAnalyse.getResultRules();
-        this.ppnOk = resultAnalyse.getPpnOk();
-        this.ppnInconnus = resultAnalyse.getPpnInconnus();
-        this.ppnErrones = resultAnalyse.getPpnErrones();
-        this.ppnAnalyses = resultAnalyse.getPpnAnalyses();
-    }
-
-
     public void addResultRule(ResultRules rule) {
         this.resultRules.add(rule);
     }

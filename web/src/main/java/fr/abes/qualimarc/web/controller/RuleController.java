@@ -95,26 +95,24 @@ public class RuleController {
         List<List<String>> splittedList = Lists.partition(requestBody.getPpnList(), requestBody.getPpnList().size() / nbThread + 1);
         List<CompletableFuture<ResultAnalyse>> resultList = new ArrayList<>();
 
-        ResultAnalyseResponseDto responseDto;
+        ResultAnalyse resultAnalyse;
         if(splittedList.size() > 1) {
             for (List<String> ppnList : splittedList)
                 resultList.add(ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), ppnList));
 
             //biFunction permet de prendre le résultat de 2 traitements en parallèle et de les fusionner en un troisième qui est retourné
             BiFunction<ResultAnalyse, ResultAnalyse, ResultAnalyse> biFunction = (res1, res2) -> {
-                ResultAnalyse resultAnalyse = new ResultAnalyse(res1);
-                resultAnalyse.merge(res2);
-                return resultAnalyse;
+                res1.merge(res2);
+                return res1;
             };
 
             //on récupère chaque traitement lancé en parallèle et on le combine au précédent en fusionnant les résultats
-            ResultAnalyse allResult = resultList.stream().reduce((res1, res2) -> res1.thenCombineAsync(res2, biFunction, asyncExecutor)).orElse(CompletableFuture.completedFuture(new ResultAnalyse())).join();
-            responseDto = mapper.map(allResult, ResultAnalyseResponseDto.class);
+            resultAnalyse = resultList.stream().reduce((res1, res2) -> res1.thenCombineAsync(res2, biFunction, asyncExecutor)).orElse(CompletableFuture.completedFuture(new ResultAnalyse())).join();
         } else {
-            ResultAnalyse resultAnalyse = ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList()).join();
-            responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
+            resultAnalyse = ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList()).join();
         }
 
+        ResultAnalyseResponseDto responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
         long end = System.currentTimeMillis();
         log.debug("Temps de traitement : " + (end - start));
         return responseDto;
