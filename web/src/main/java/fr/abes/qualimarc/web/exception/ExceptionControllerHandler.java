@@ -27,6 +27,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletionException;
 
 /**
  * Gestionnaire des exceptions de l'API.
@@ -177,5 +178,11 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
             errorMessage = "Une contrainte de validation n'est pas respectée";
         }
         return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, errorMessage, ex));
+    }
+
+    @ExceptionHandler(CompletionException.class)
+    public ResponseEntity handle(CompletionException ex) {
+        String errorMessage = "Erreur lors de l'exécution du traitement veuillez contacter l'assistance (AbesSTP)";
+        return buildResponseEntity(new ApiReturnError(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, ex));
     }
 }
