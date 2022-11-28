@@ -21,6 +21,14 @@ insert into RULESSET(RULESET_ID, LIBELLE) values (6, 'Dates');
 insert into RULESSET(RULESET_ID, LIBELLE) values (7, 'Responsabilités (7XX)');
 insert into RULESSET(RULESET_ID, LIBELLE) values (8, 'Nouvelles implémentations Unimarc');
 
+
+insert into ZONE_GENERIQUE(ZONE_GENERIQUE, ZONE) values('2XX', '200');
+insert into ZONE_GENERIQUE(ZONE_GENERIQUE, ZONE) values('2XX', '205');
+insert into ZONE_GENERIQUE(ZONE_GENERIQUE, ZONE) values('2XX', '206');
+insert into ZONE_GENERIQUE(ZONE_GENERIQUE, ZONE) values('2XX', '207');
+insert into ZONE_GENERIQUE(ZONE_GENERIQUE, ZONE) values('2XX', '208');
+insert into ZONE_GENERIQUE(ZONE_GENERIQUE, ZONE) values('2XX', '214');
+insert into ZONE_GENERIQUE(ZONE_GENERIQUE, ZONE) values('2XX', '225');
 insert into ZONE_GENERIQUE(ZONE_GENERIQUE, ZONE) values('4XX', '413');
 insert into ZONE_GENERIQUE(ZONE_GENERIQUE, ZONE) values('4XX', '421');
 insert into ZONE_GENERIQUE(ZONE_GENERIQUE, ZONE) values('4XX', '422');
