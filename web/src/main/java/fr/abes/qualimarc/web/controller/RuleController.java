@@ -180,7 +180,7 @@ public class RuleController {
     }
 
     private Integer generateNewId(Integer id, int i) {
-        return id + 50000 + i;
+        return id * 100 + i;
     }
 
     @PostMapping(value = "/indexComplexRules", consumes = {"text/yaml", "text/yml"})
