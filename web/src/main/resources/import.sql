@@ -20,6 +20,7 @@ insert into RULESSET(RULESET_ID, LIBELLE) values (5, 'Translittération ($6/$7)'
 insert into RULESSET(RULESET_ID, LIBELLE) values (6, 'Dates');
 insert into RULESSET(RULESET_ID, LIBELLE) values (7, 'Responsabilités (7XX)');
 insert into RULESSET(RULESET_ID, LIBELLE) values (8, 'Nouvelles implémentations Unimarc');
+insert into RULESSET(RULESET_ID, LIBELLE) values (9, 'Identification (0XX)');
 
 
 insert into ZONE_GENERIQUE(ZONE_GENERIQUE, ZONE) values('2XX', '200');
