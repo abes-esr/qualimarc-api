@@ -111,9 +111,8 @@ public class RuleController {
         } else {
             resultAnalyse = ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList()).join();
         }
-        log.debug("Controller avant mapper : " + resultAnalyse.getPpnAnalyses().size());
+
         ResultAnalyseResponseDto responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
-        log.debug("Controller après mapper : " + responseDto.getPpnAnalyses().size());
         long end = System.currentTimeMillis();
         log.debug("Temps de traitement : " + (end - start));
         return responseDto;

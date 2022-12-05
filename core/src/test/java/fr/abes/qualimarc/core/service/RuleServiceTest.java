@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.configuration.AsyncConfiguration;
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
+import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
@@ -78,6 +79,9 @@ public class RuleServiceTest {
     @Value("classpath:theseRepro.xml")
     Resource xmlTheseRepro;
 
+    @Value("classpath:noticeSansFamille.xml")
+    Resource xmlNoticeSansFamille;
+
     @Autowired
     AsyncConfiguration asyncExecutor;
 
@@ -90,6 +94,7 @@ public class RuleServiceTest {
     NoticeXml noticeBiblio;
     NoticeXml noticeAutorite1;
     NoticeXml noticeAutorite2;
+    NoticeXml noticeSansFamille;
     Set<ComplexRule> listeRegles;
 
     @BeforeEach
@@ -126,6 +131,9 @@ public class RuleServiceTest {
 
         xml = IOUtils.toString(new FileInputStream(xmlFileNoticeAutorite2.getFile()), StandardCharsets.UTF_8);
         noticeAutorite2 = xmlMapper.readValue(xml, NoticeXml.class);
+
+        xml = IOUtils.toString(new FileInputStream(xmlNoticeSansFamille.getFile()), StandardCharsets.UTF_8);
+        noticeSansFamille = xmlMapper.readValue(xml, NoticeXml.class);
 
         Set<FamilleDocument> familleDoc1 = new HashSet<>();
         familleDoc1.add(new FamilleDocument("A", "Monographie"));
@@ -274,6 +282,8 @@ public class RuleServiceTest {
         Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, setThesesSout, Sets.newHashSet(), new PresenceZone())));
         Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
+
+        Assertions.assertThrows(IllegalTypeDocumentException.class, () -> service.isRuleAppliedToNotice(noticeSansFamille, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
     }
 
 
