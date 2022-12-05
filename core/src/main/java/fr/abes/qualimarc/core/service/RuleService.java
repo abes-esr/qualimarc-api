@@ -95,11 +95,11 @@ public class RuleService {
                         resultAnalyse.addResultRule(result);
                     }
                 }
-            } catch (SQLException | IOException | IllegalTypeDocumentException ex) {
+            } catch (SQLException | IOException ex) {
                 result.addMessage("Erreur d'accès à la base de données sur PPN : " + ppn);
                 resultAnalyse.addPpnInconnu(ppn);
                 resultAnalyse.addResultRule(result);
-            } catch (IllegalPpnException ex) {
+            } catch (IllegalPpnException | IllegalTypeDocumentException ex) {
                 resultAnalyse.addPpnInconnu(ppn);
                 result.addMessage(ex.getMessage());
                 resultAnalyse.addResultRule(result);
@@ -151,7 +151,8 @@ public class RuleService {
     public boolean isRuleAppliedToNotice(NoticeXml notice, ComplexRule rule) {
         //si pas de type de document renseigné, la règle est appliquée quoi qu'il arrive
         if (rule.getFamillesDocuments().size() == 0) {
-            if (rule.getTypesThese().size() != 0) {
+            //on force la vérification sur la famille de document pour lever une exception le cas échéant
+            if (notice.getFamilleDocument() != "" && rule.getTypesThese().size() != 0) {
                 return rule.getTypesThese().stream().anyMatch(tt -> tt.equals(notice.getTypeThese()));
             }
             return true;
