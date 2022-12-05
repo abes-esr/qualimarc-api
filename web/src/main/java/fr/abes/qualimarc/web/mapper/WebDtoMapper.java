@@ -25,7 +25,6 @@ import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
@@ -35,7 +34,6 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-@Slf4j
 public class WebDtoMapper {
 
     private final UtilsMapper mapper;
@@ -515,7 +513,7 @@ public class WebDtoMapper {
             @SneakyThrows
             public ResultAnalyseResponseDto convert(MappingContext<ResultAnalyse, ResultAnalyseResponseDto> context) {
                 ResultAnalyse source = context.getSource();
-                log.debug("Mapper : Nb PPN analyses : " + source.getPpnAnalyses().size());
+
                 ResultAnalyseResponseDto responseDto = new ResultAnalyseResponseDto();
 
                 source.getResultRules().forEach(resultRules -> {
