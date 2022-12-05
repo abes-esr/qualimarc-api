@@ -71,6 +71,7 @@ public class RuleService {
                 } else {
                     for (ComplexRule rule : rulesList) {
                         if (isRuleAppliedToNotice(noticeSource, rule)) {
+                            log.debug("Passage règle " + rule.getId() + " sur notice " + ppn);
                             resultAnalyse.addPpnAnalyse(ppn);
                             OtherRule dependencyRule = rule.getDependencyRule();
                             if (dependencyRule != null) {

@@ -2,6 +2,7 @@ package fr.abes.qualimarc.core.model.resultats;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import java.util.Set;
 
 @Getter
 @Setter
+@Slf4j
 public class ResultAnalyse {
     private List<ResultRules> resultRules;
     private Set<String> ppnAnalyses;
@@ -30,6 +32,7 @@ public class ResultAnalyse {
     }
 
     public void addPpnAnalyse(String ppn) {
+        log.debug("Ajout PPN " + ppn + " dans ppnAnalyses");
         this.ppnAnalyses.add(ppn);
     }
 
@@ -46,6 +49,7 @@ public class ResultAnalyse {
     }
 
     public void merge(ResultAnalyse resultAnalyse) {
+        log.debug("passage dans merge : nb PPn analyses " + this.ppnAnalyses.size());
         this.resultRules.addAll(resultAnalyse.getResultRules());
         this.ppnAnalyses.addAll(resultAnalyse.getPpnAnalyses());
         this.ppnOk.addAll(resultAnalyse.getPpnOk());
