@@ -550,11 +550,6 @@ public class WebDtoMapper {
                 responseDto.setPpnOk(new ArrayList<>(source.getPpnOk()));
                 responseDto.setPpnInconnus(new ArrayList<>(source.getPpnInconnus()));
 
-                responseDto.setNbPpnAnalyses(source.getPpnAnalyses().size());
-                responseDto.setNbPpnErrones(source.getPpnErrones().size());
-                responseDto.setNbPpnOk(source.getPpnOk().size());
-                responseDto.setNbPpnInconnus(source.getPpnInconnus().size());
-
                 return responseDto;
             }
         };

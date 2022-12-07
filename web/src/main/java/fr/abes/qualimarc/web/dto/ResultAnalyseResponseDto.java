@@ -20,14 +20,6 @@ public class ResultAnalyseResponseDto {
     private List<String> ppnOk;
     @JsonProperty("ppnInconnus")
     private List<String> ppnInconnus;
-    @JsonProperty("nbPpnAnalyses")
-    private Integer nbPpnAnalyses;
-    @JsonProperty("nbPpnErrones")
-    private Integer nbPpnErrones;
-    @JsonProperty("nbPpnOk")
-    private Integer nbPpnOk;
-    @JsonProperty("nbPpnInconnus")
-    private Integer nbPpnInconnus;
 
     public ResultAnalyseResponseDto() {
         this.resultRules = new ArrayList<>();
@@ -35,10 +27,6 @@ public class ResultAnalyseResponseDto {
         this.ppnErrones = new ArrayList<>();
         this.ppnOk = new ArrayList<>();
         this.ppnInconnus = new ArrayList<>();
-        this.nbPpnAnalyses = 0;
-        this.nbPpnErrones = 0;
-        this.nbPpnOk = 0;
-        this.nbPpnInconnus = 0;
     }
 
     public void addResultRule(ResultRulesResponseDto result) {
