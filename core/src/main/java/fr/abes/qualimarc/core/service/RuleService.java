@@ -54,13 +54,10 @@ public class RuleService {
 
     private AtomicInteger cn = new AtomicInteger(0);
 
-    private int totalPpns;
-
     @Async("asyncExecutor")
     public CompletableFuture<ResultAnalyse> checkRulesOnNotices(Set<ComplexRule> rulesList, List<String> ppns) {
         ResultAnalyse resultAnalyse = new ResultAnalyse();
-        this.totalPpns = ppns.size();
-        log.debug("Handling list of " + this.totalPpns + " ppn");
+        log.debug("Handling list of " + ppns.size() + " ppn");
         for (String ppn : ppns) {
             boolean isOk = true;
             ResultRules result = new ResultRules(ppn);
@@ -230,10 +227,14 @@ public class RuleService {
         this.complexRulesRepository.deleteAll();
     }
 
-    public double getCn() {
-        if (this.totalPpns != 0)
-            return ((double) this.cn.get() / (double) this.totalPpns) * 100;
+    public double getCn(int nbTotal) {
+        if (nbTotal != 0)
+            return ((double) this.cn.get() / (double) (nbTotal) * 100);
         return 0;
+    }
+
+    public void resetCn() {
+        this.cn = new AtomicInteger();
     }
 
     public List<ComplexRule> getAllComplexRules() {
