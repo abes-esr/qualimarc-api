@@ -233,6 +233,10 @@ public class RuleService {
         return 0;
     }
 
+    public void resetCn() {
+        this.cn = new AtomicInteger();
+    }
+
     public List<ComplexRule> getAllComplexRules() {
         return this.complexRulesRepository.findAll();
     }

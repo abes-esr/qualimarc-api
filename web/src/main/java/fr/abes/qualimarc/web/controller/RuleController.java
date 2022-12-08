@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RuleController {
     @Autowired
-    private NoticeService service;
+    private NoticeService noticeService;
 
     @Autowired
     private RuleService ruleService;
@@ -69,13 +69,13 @@ public class RuleController {
 
     @GetMapping("/{ppn}")
     public NoticeXml getPpn(@PathVariable String ppn) throws IOException, SQLException {
-        return service.getBiblioByPpn(ppn);
+        return noticeService.getBiblioByPpn(ppn);
     }
 
     @PostMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResultAnalyseResponseDto checkPpn(@Valid @RequestBody PpnWithRuleSetsRequestDto requestBody) {
         Long start = System.currentTimeMillis();
-
+        ruleService.resetCn();
         Set<RuleSet> ruleSets = new HashSet<>();
         Set<FamilleDocument> familleDocuments =  new HashSet<>();
         Set<TypeThese> typeThese = new HashSet<>();
