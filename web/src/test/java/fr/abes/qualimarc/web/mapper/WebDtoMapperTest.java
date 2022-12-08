@@ -99,10 +99,6 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(2, first1.get().getMessages().size());
         Assertions.assertEquals(3, first2.get().getMessages().size());
         Assertions.assertEquals(1, first3.get().getMessages().size());
-        Assertions.assertEquals(3, responseDto.getNbPpnErrones());
-        Assertions.assertEquals(8, responseDto.getNbPpnAnalyses());
-        Assertions.assertEquals(3, responseDto.getNbPpnInconnus());
-        Assertions.assertEquals(2, responseDto.getNbPpnOk());
         Assertions.assertEquals(8, responseDto.getPpnAnalyses().size());
         Assertions.assertEquals(3, responseDto.getPpnErrones().size());
         Assertions.assertEquals(3, responseDto.getPpnInconnus().size());
@@ -969,10 +965,6 @@ public class WebDtoMapperTest {
         //  Contrôle de la bonne conformité des résultats
         Assertions.assertEquals(resultAnalyse.getResultRules().get(0).getPpn(), responseDto.getResultRules().get(0).getPpn());
         Assertions.assertEquals(resultAnalyse.getResultRules().get(0).getFamilleDocument().getLibelle(), responseDto.getResultRules().get(0).getTypeDocument());
-        Assertions.assertEquals(resultAnalyse.getPpnAnalyses().size(), responseDto.getNbPpnAnalyses());
-        Assertions.assertEquals(resultAnalyse.getPpnErrones().size(), responseDto.getNbPpnErrones());
-        Assertions.assertEquals(resultAnalyse.getPpnOk().size(), responseDto.getNbPpnOk());
-        Assertions.assertEquals(resultAnalyse.getPpnInconnus().size(), responseDto.getNbPpnInconnus());
 
         Assertions.assertEquals(resultRules.getTitre(), responseDto.getResultRules().get(0).getTitre());
         Assertions.assertEquals(resultRules.getAuteur(), responseDto.getResultRules().get(0).getAuteur());
