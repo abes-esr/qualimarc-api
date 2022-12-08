@@ -65,6 +65,8 @@ public class RuleController {
     @Value("${spring.task.execution.pool.core-size}")
     private Integer nbThread;
 
+    private int nbTotalPpn;
+
     @GetMapping("/{ppn}")
     public NoticeXml getPpn(@PathVariable String ppn) throws IOException, SQLException {
         return service.getBiblioByPpn(ppn);
@@ -91,7 +93,7 @@ public class RuleController {
         if ((requestBody.getRuleSet() != null) && (!requestBody.getRuleSet().isEmpty())){
             ruleSets = mapper.mapSet(requestBody.getRuleSet(),RuleSet.class);
         }
-
+        this.nbTotalPpn = requestBody.getPpnList().size();
         List<List<String>> splittedList = Lists.partition(requestBody.getPpnList(), requestBody.getPpnList().size() / nbThread + 1);
         List<CompletableFuture<ResultAnalyse>> resultList = new ArrayList<>();
 
@@ -225,6 +227,6 @@ public class RuleController {
      */
     @GetMapping("/getStatus")
     public String getStatus() {
-        return String.format("%.0f%%", ruleService.getCn());
+        return String.format("%.0f%%", ruleService.getCn(this.nbTotalPpn));
     }
 }
