@@ -49,14 +49,13 @@ public class TypeDocument extends SimpleRule implements Serializable {
         for (Controlfield zone : zones) {
             switch (this.typeDeVerification) {
                 case STRICTEMENT:
-                    return zone.getValue().substring(this.position - 1, this.position).equals(this.valeur);
+                    return zone.getValue().substring(this.position - 1, this.position).equalsIgnoreCase(this.valeur);
                 case STRICTEMENTDIFFERENT:
-                    return !zone.getValue().substring(this.position - 1, this.position).equals(this.valeur);
+                    return !zone.getValue().substring(this.position - 1, this.position).equalsIgnoreCase(this.valeur);
                 default:
                     throw new IllegalArgumentException("Opérateur non autorisé sur cette règle");
             }
         }
-
         return false;
     }
 

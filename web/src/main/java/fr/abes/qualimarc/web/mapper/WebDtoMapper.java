@@ -216,6 +216,23 @@ public class WebDtoMapper {
         };
         mapper.addConverter(myConverter);
     }
+
+    /**
+     * Convertion d'un modèle TypeDocumentWebDto en modèle ComplexRule
+     */
+    @Bean
+    public void converterTypeDocumentToComplexRule() {
+        Converter<TypeDocumentWebDto, ComplexRule> myConverter = new Converter<TypeDocumentWebDto, ComplexRule>() {
+            public ComplexRule convert(MappingContext<TypeDocumentWebDto, ComplexRule> context) {
+                TypeDocumentWebDto source = context.getSource();
+                checkOtherRule(source);
+                TypeDocument target = constructTypeDocument(source);
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), target);
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
     /**
      * Conversion d'un modèle ComparaisonContenuSousZoneWebDto en modèle ComplexRule
      */
@@ -235,6 +252,8 @@ public class WebDtoMapper {
         };
         mapper.addConverter(myConverter);
     }
+
+
 
     /**
      * Convertion d'un modèle PresenceZoneWebDto en modèle SimpleRule (LinkedRule)
@@ -395,7 +414,7 @@ public class WebDtoMapper {
     }
 
     /**
-     * Convertion d'un modèle ReciprociteWenDto en modèle SimpleRule (LinkedRule)
+     * Convertion d'un modèle ReciprociteWebDto en modèle SimpleRule (LinkedRule)
      */
     @Bean
     public void converterReciprociteToLinkedRule() {
@@ -409,13 +428,27 @@ public class WebDtoMapper {
     }
 
     /**
-     * Convertion d'un modèle ComparaisonDate en modèle SimpleRule (LinkedRule)
+     * Convertion d'un modèle ComparaisonDateWebDto en modèle SimpleRule (LinkedRule)
      */
     @Bean
     public void converterComparaisonDateToLinkedRule() {
         Converter<ComparaisonDateWebDto, SimpleRule> myConverter = new Converter<ComparaisonDateWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<ComparaisonDateWebDto, SimpleRule> context) {
                 return constructComparaisonDate(context.getSource());
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un modèle TypeDocumentWebdto en modèle SimpleRule (LinkedRule)
+     */
+    @Bean
+    public void converterTypeDocumentToLinkedRule() {
+        Converter<TypeDocumentWebDto, SimpleRule> myConverter = new Converter<TypeDocumentWebDto, SimpleRule>() {
+            public SimpleRule convert(MappingContext<TypeDocumentWebDto, SimpleRule> context) {
+                TypeDocumentWebDto source = context.getSource();
+                return new TypeDocument(source.getId(), getTypeDeVerification(source.getTypeDeVerification()), source.getPosition(), source.getValeur());
             }
         };
         mapper.addConverter(myConverter);
@@ -675,6 +708,29 @@ public class WebDtoMapper {
     }
 
 
+    private TypeCaractere constructTypeCaractere(TypeCaractereWebDto source) {
+        if(source.getTypeCaracteres().isEmpty()){
+            throw new IllegalArgumentException("Règle " + source.getId() + " : Le champ type-caracteres est obligatoire");
+        }
+        TypeCaractere target = new TypeCaractere(source.getId(), source.getZone(), source.getSousZone());
+        for(String typeCaracteresString : source.getTypeCaracteres()){
+            target.addTypeCaractere(getTypeCaracteres(typeCaracteresString));
+        }
+        return target;
+    }
+
+    private TypeDocument constructTypeDocument(TypeDocumentWebDto source) {
+        if (source.getValeur() == null || source.getValeur().isEmpty())
+            throw new IllegalArgumentException("Règle " + source.getId() + " : le champ valeur est obligatoire");
+        if (source.getTypeDeVerification() == null || source.getTypeDeVerification().isEmpty())
+            throw new IllegalArgumentException("Règle " + source.getId() + " : le champ type-de-verification est obligatoire");
+        if (source.getPosition() == null)
+            throw new IllegalArgumentException("Règle " + source.getId() + " : le champ position est obligatoire");
+        if (source.getPosition() != null && (source.getPosition() == 0 || source.getPosition() > 4))
+            throw new IllegalArgumentException("Règle " + source.getId() + " : le champ position ne peut être compris qu'entre 1 et 4");
+        return new TypeDocument(source.getId(), getTypeDeVerification(source.getTypeDeVerification()), source.getPosition(), source.getValeur());
+    }
+
     private Priority getPriority(String priority) {
         return EnumUtils.getEnum(Priority.class, priority);
     }
@@ -751,17 +807,6 @@ public class WebDtoMapper {
                 throw new IllegalArgumentException(message.toString());
             }
         }
-    }
-
-    private TypeCaractere constructTypeCaractere(TypeCaractereWebDto source) {
-        if(source.getTypeCaracteres().isEmpty()){
-            throw new IllegalArgumentException("Règle " + source.getId() + " : Le champ type-caracteres est obligatoire");
-        }
-        TypeCaractere target = new TypeCaractere(source.getId(), source.getZone(), source.getSousZone());
-        for(String typeCaracteresString : source.getTypeCaracteres()){
-            target.addTypeCaractere(getTypeCaracteres(typeCaracteresString));
-        }
-        return target;
     }
 
     private Integer convertNombreCaracteres(String nombreCarateres) {

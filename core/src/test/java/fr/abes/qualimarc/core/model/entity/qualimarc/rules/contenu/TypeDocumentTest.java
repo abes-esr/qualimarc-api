@@ -7,6 +7,7 @@ import fr.abes.qualimarc.core.utils.TypeVerification;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,6 +34,7 @@ class TypeDocumentTest {
     }
 
     @Test
+    @DisplayName("test typeDocument : cas général")
     void isValid() {
         TypeDocument typeDocument = new TypeDocument(1, TypeVerification.STRICTEMENT, 2, "a");
         Assertions.assertTrue(typeDocument.isValid(this.notice));
@@ -48,6 +50,7 @@ class TypeDocumentTest {
     }
 
     @Test
+    @DisplayName("test typeDocument : cas d'un operateur non géré par cette règle")
     void isValidWithWrongOperateur() {
         TypeDocument typeDocument = new TypeDocument(1, TypeVerification.COMMENCE, 1, "a");
         Assertions.assertThrows(IllegalArgumentException.class, () -> typeDocument.isValid(notice));
