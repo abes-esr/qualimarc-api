@@ -579,7 +579,7 @@ public class WebDtoMapper {
                     typesDoc.append(", ");
                 });
                 if (!source.getTypesThese().isEmpty()) {
-                    typesDoc.append("Thèse, ");
+                    source.getTypesThese().stream().forEach(tt -> typesDoc.append((tt.equals(TypeThese.REPRO) ? "Thèse de reproduction, " : "Thèse de soutenance, ")));
                 }
                 if (source.getFamillesDocuments().size() == 0 && source.getTypesThese().size() == 0) {
                     ruleWebDto.setTypeDoc("Tous");
