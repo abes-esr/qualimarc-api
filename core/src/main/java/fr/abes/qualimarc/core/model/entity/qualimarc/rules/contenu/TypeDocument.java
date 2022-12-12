@@ -47,6 +47,8 @@ public class TypeDocument extends SimpleRule implements Serializable {
         List<Controlfield> zones = notice.getControlfields().stream().filter(controlfield -> controlfield.getTag().equals(this.getZone())).collect(Collectors.toList());
 
         for (Controlfield zone : zones) {
+            if (zone.getValue().length() <= position)
+                return true;
             switch (this.typeDeVerification) {
                 case STRICTEMENT:
                     return zone.getValue().substring(this.position - 1, this.position).equalsIgnoreCase(this.valeur);
