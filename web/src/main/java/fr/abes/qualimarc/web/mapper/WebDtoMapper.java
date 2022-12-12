@@ -448,7 +448,7 @@ public class WebDtoMapper {
         Converter<TypeDocumentWebDto, SimpleRule> myConverter = new Converter<TypeDocumentWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<TypeDocumentWebDto, SimpleRule> context) {
                 TypeDocumentWebDto source = context.getSource();
-                return new TypeDocument(source.getId(), getTypeDeVerification(source.getTypeDeVerification()), source.getPosition(), source.getValeur());
+                return constructTypeDocument(context.getSource());
             }
         };
         mapper.addConverter(myConverter);
