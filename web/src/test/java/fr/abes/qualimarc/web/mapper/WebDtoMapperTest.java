@@ -1031,7 +1031,7 @@ public class WebDtoMapperTest {
         //test où la notice est une thèse
         resultRules.setTypeThese(TypeThese.REPRO);
         responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
-        Assertions.assertEquals("Thèse", responseDto.getResultRules().get(0).getTypeDocument());
+        Assertions.assertEquals("Thèse de reproduction", responseDto.getResultRules().get(0).getTypeDocument());
     }
 
     @Test
@@ -1061,7 +1061,7 @@ public class WebDtoMapperTest {
 
         complexRule.addTypeThese(TypeThese.REPRO);
         ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
-        Assertions.assertEquals("Monographie, Manuscrit, Thèse", ruleWebDto.getTypeDoc());
+        Assertions.assertEquals("Monographie, Manuscrit, Thèse de reproduction", ruleWebDto.getTypeDoc());
 
         //test avec plusieurs zones dans la règle
         complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "310", true), BooleanOperateur.ET, 1, complexRule));

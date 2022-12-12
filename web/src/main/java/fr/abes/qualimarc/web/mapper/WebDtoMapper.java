@@ -553,7 +553,7 @@ public class WebDtoMapper {
                     ResultRulesResponseDto resultRulesResponseDto;
                     if (resultRules.getFamilleDocument() != null) {
                         if (resultRules.getTypeThese() != null) {
-                            resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), "Thèse", resultRules.getMessages());
+                            resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), (resultRules.getTypeThese().equals(TypeThese.REPRO) ? "Thèse de reproduction" : "Thèse de soutenance"), resultRules.getMessages());
                         }
                         else {
                             resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());
@@ -612,7 +612,7 @@ public class WebDtoMapper {
                     typesDoc.append(", ");
                 });
                 if (!source.getTypesThese().isEmpty()) {
-                    typesDoc.append("Thèse, ");
+                    source.getTypesThese().stream().forEach(tt -> typesDoc.append((tt.equals(TypeThese.REPRO) ? "Thèse de reproduction, " : "Thèse de soutenance, ")));
                 }
                 if (source.getFamillesDocuments().size() == 0 && source.getTypesThese().size() == 0) {
                     ruleWebDto.setTypeDoc("Tous");
