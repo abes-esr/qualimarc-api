@@ -520,7 +520,7 @@ public class WebDtoMapper {
                     ResultRulesResponseDto resultRulesResponseDto;
                     if (resultRules.getFamilleDocument() != null) {
                         if (resultRules.getTypeThese() != null) {
-                            resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), "Thèse", resultRules.getMessages());
+                            resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), (resultRules.getTypeThese().equals(TypeThese.REPRO) ? "Thèse de reproduction" : "Thèse de soutenance"), resultRules.getMessages());
                         }
                         else {
                             resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());

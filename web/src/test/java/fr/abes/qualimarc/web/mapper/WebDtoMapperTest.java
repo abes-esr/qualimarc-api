@@ -988,7 +988,7 @@ public class WebDtoMapperTest {
         //test où la notice est une thèse
         resultRules.setTypeThese(TypeThese.REPRO);
         responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
-        Assertions.assertEquals("Thèse", responseDto.getResultRules().get(0).getTypeDocument());
+        Assertions.assertEquals("Thèse de reproduction", responseDto.getResultRules().get(0).getTypeDocument());
     }
 
     @Test
