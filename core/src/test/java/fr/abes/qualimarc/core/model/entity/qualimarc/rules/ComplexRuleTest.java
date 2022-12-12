@@ -130,7 +130,7 @@ public class ComplexRuleTest {
     }
 
     @Test
-    @DisplayName("test poc même instance de zone")
+    @DisplayName("test isValid même instance de zone")
     void testIsValidOneNoticeMemeZone() throws IOException {
 
         String xml = IOUtils.toString(new FileInputStream(xmlFileNoticeBiblio.getFile()), StandardCharsets.UTF_8);
@@ -150,6 +150,24 @@ public class ComplexRuleTest {
         complexRule2.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "b", true), BooleanOperateur.ET, 0, complexRule2));
 
         Assertions.assertFalse(complexRule2.isValid(noticeBiblio));
+
+        ComplexRule complexRule3 = new ComplexRule(1, "test", Priority.P1, new PresenceSousZone(1, "607", "3", true));
+        complexRule3.setMemeZone(true);
+        complexRule3.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "b", false), BooleanOperateur.ET, 0, complexRule3));
+
+        Assertions.assertTrue(complexRule3.isValid(noticeBiblio));
+
+        ComplexRule complexRule4 = new ComplexRule(1, "test", Priority.P1, new PresenceSousZone(1, "607", "b", false));
+        complexRule4.setMemeZone(true);
+        complexRule4.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "3", false), BooleanOperateur.ET, 0, complexRule4));
+
+        Assertions.assertFalse(complexRule4.isValid(noticeBiblio));
+
+        ComplexRule complexRule5 = new ComplexRule(1, "test", Priority.P1, new PresenceSousZone(1, "607", "b", false));
+        complexRule5.setMemeZone(false);
+        complexRule5.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "3", false), BooleanOperateur.ET, 0, complexRule5));
+
+        Assertions.assertFalse(complexRule5.isValid(noticeBiblio));
     }
 
     @Test

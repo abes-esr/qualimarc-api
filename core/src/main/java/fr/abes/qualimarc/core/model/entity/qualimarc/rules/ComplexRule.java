@@ -146,6 +146,12 @@ public class ComplexRule implements Serializable {
         this.otherRules.add(otherRule);
     }
 
+    /**
+     * Méthode qui créer la savedZone si est ne l'a pas déjà été.
+     * Méthode qui fait une intersection entre la liste de dataFields en paramètre de la méthode
+     * et les datafields contenus dans savedZone, si la savedZone a déjà été créée
+     * @param datafields liste de datafields à collecter
+     */
     public void setSavedZone(List<Datafield> datafields) {
         if (this.savedZone.isEmpty()) {
             this.savedZone = datafields;
@@ -153,6 +159,16 @@ public class ComplexRule implements Serializable {
             this.savedZone = this.savedZone.stream().filter(datafields::contains).collect(Collectors.toList());
         }
     }
+
+    /**
+     * Renvoie true si la savedZone n'est pas vide
+     * Renvoie false si la savedZone est vide
+     * @return boolean
+     */
+    public boolean isSavedZoneIsNotEmpty() {
+        return !savedZone.isEmpty();
+    }
+
     /**
      * Retourne true si toutes les règles qui la composent sont valides
      * @param notices notices au format xml
@@ -210,7 +226,7 @@ public class ComplexRule implements Serializable {
 
     /**
      * Vérifie la validité d'une règle complexe sans règle de dépendance, sur une seule notice
-     * @param notice
+     * @param notice la notice sur laquelle appliquer la méthode
      * @return true si la règle est valide, false sinon
      */
     private boolean isValidOneNotice(NoticeXml notice) {
