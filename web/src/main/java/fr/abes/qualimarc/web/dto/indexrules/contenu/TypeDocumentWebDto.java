@@ -34,7 +34,6 @@ public class TypeDocumentWebDto extends SimpleRuleWebDto {
      * @param id identifiant de la règle
      * @param idExcel identifiant excel de la règle
      * @param message message à renvoyer si la règle est vérifiée
-     * @param zone zone sur laquelle appliquer la règle
      * @param priority priorité de la règle
      * @param typesDoc type de document de la notice sur laquelle appliquer la règle
      * @param typeDeVerifications type de vérification à appliquer pour la règle
