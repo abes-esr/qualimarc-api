@@ -99,10 +99,6 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(2, first1.get().getMessages().size());
         Assertions.assertEquals(3, first2.get().getMessages().size());
         Assertions.assertEquals(1, first3.get().getMessages().size());
-        Assertions.assertEquals(3, responseDto.getNbPpnErrones());
-        Assertions.assertEquals(8, responseDto.getNbPpnAnalyses());
-        Assertions.assertEquals(3, responseDto.getNbPpnInconnus());
-        Assertions.assertEquals(2, responseDto.getNbPpnOk());
         Assertions.assertEquals(8, responseDto.getPpnAnalyses().size());
         Assertions.assertEquals(3, responseDto.getPpnErrones().size());
         Assertions.assertEquals(3, responseDto.getPpnInconnus().size());
@@ -637,7 +633,50 @@ public class WebDtoMapperTest {
         Assertions.assertTrue(complexRule.getFamillesDocuments().stream().anyMatch(familleDocument -> familleDocument.getId().equals(comparaisonDateWebDto.getTypesDoc().get(0))));
         Assertions.assertEquals(comparaisonDateWebDto.getSousZone(), comparaisonDate.getSousZone());
         Assertions.assertEquals(comparaisonDateWebDto.getZone(), comparaisonDate.getZone());
+    }
 
+    @Test
+    @DisplayName("Test Mapper converterTypeDocumentTest")
+    void converterTypeDocument(){
+        ArrayList<String> typeDoc = new ArrayList<>();
+        typeDoc.add("A");
+
+        List<Integer> ruleSetsList = new ArrayList<>();
+        ruleSetsList.add(1);
+
+        TypeDocumentWebDto typeDocumentWebDto = new TypeDocumentWebDto(1,1,ruleSetsList,"MESSAGE","P1",typeDoc, null,"STRICTEMENT",1,"A");
+        ComplexRule complexRule = mapper.map(typeDocumentWebDto, ComplexRule.class);
+
+        TypeDocument typeDocument = (TypeDocument) complexRule.getFirstRule();
+
+        Assertions.assertEquals(typeDocumentWebDto.getId(), complexRule.getId());
+        Assertions.assertEquals(typeDocumentWebDto.getRuleSetList().get(0), new ArrayList<>(complexRule.getRuleSet()).get(0).getId());
+        Assertions.assertEquals(typeDocumentWebDto.getMessage(), complexRule.getMessage());
+        Assertions.assertEquals(typeDocumentWebDto.getZone(), complexRule.getZonesFromChildren().get(0));
+        Assertions.assertEquals(typeDocumentWebDto.getPriority(), complexRule.getPriority().toString());
+        Assertions.assertTrue(complexRule.getFamillesDocuments().stream().anyMatch(familleDocument -> familleDocument.getId().equals(typeDocumentWebDto.getTypesDoc().get(0))));
+        Assertions.assertEquals(typeDocumentWebDto.getPosition(), typeDocument.getPosition());
+        Assertions.assertEquals(typeDocumentWebDto.getTypeDeVerification(), typeDocument.getTypeDeVerification().toString());
+        Assertions.assertEquals(typeDocumentWebDto.getValeur(), typeDocument.getValeur());
+        Assertions.assertEquals(typeDocumentWebDto.getZone(), typeDocument.getZone());
+
+        typeDocumentWebDto.setPosition(null);
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(typeDocumentWebDto, ComplexRule.class));
+        Assertions.assertEquals("Règle 1 : le champ position est obligatoire", exception.getCause().getMessage());
+
+        typeDocumentWebDto.setPosition(0);
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(typeDocumentWebDto, ComplexRule.class));
+        Assertions.assertEquals("Règle 1 : le champ position ne peut être compris qu'entre 1 et 4", exception.getCause().getMessage());
+
+        typeDocumentWebDto.setPosition(1);
+        typeDocumentWebDto.setTypeDeVerification("");
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(typeDocumentWebDto, ComplexRule.class));
+        Assertions.assertEquals("Règle 1 : le champ type-de-verification est obligatoire", exception.getCause().getMessage());
+
+        typeDocumentWebDto.setTypeDeVerification("");
+        typeDocumentWebDto.setValeur("");
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(typeDocumentWebDto, ComplexRule.class));
+        Assertions.assertEquals("Règle 1 : le champ valeur est obligatoire", exception.getCause().getMessage());
     }
 
     @Test
@@ -969,10 +1008,6 @@ public class WebDtoMapperTest {
         //  Contrôle de la bonne conformité des résultats
         Assertions.assertEquals(resultAnalyse.getResultRules().get(0).getPpn(), responseDto.getResultRules().get(0).getPpn());
         Assertions.assertEquals(resultAnalyse.getResultRules().get(0).getFamilleDocument().getLibelle(), responseDto.getResultRules().get(0).getTypeDocument());
-        Assertions.assertEquals(resultAnalyse.getPpnAnalyses().size(), responseDto.getNbPpnAnalyses());
-        Assertions.assertEquals(resultAnalyse.getPpnErrones().size(), responseDto.getNbPpnErrones());
-        Assertions.assertEquals(resultAnalyse.getPpnOk().size(), responseDto.getNbPpnOk());
-        Assertions.assertEquals(resultAnalyse.getPpnInconnus().size(), responseDto.getNbPpnInconnus());
 
         Assertions.assertEquals(resultRules.getTitre(), responseDto.getResultRules().get(0).getTitre());
         Assertions.assertEquals(resultRules.getAuteur(), responseDto.getResultRules().get(0).getAuteur());
