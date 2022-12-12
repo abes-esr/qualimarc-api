@@ -1,9 +1,11 @@
 package fr.abes.qualimarc.web.controller;
 
+import com.google.common.collect.Lists;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
+import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.service.NoticeService;
 import fr.abes.qualimarc.core.service.ReferenceService;
 import fr.abes.qualimarc.core.service.RuleService;
@@ -21,6 +23,8 @@ import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +36,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 @RestController
@@ -40,7 +47,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RuleController {
     @Autowired
-    private NoticeService service;
+    private NoticeService noticeService;
 
     @Autowired
     private RuleService ruleService;
@@ -51,14 +58,24 @@ public class RuleController {
     @Autowired
     private UtilsMapper mapper;
 
+    @Autowired
+    @Qualifier("asyncExecutor")
+    private Executor asyncExecutor;
+
+    @Value("${spring.task.execution.pool.core-size}")
+    private Integer nbThread;
+
+    private int nbTotalPpn;
+
     @GetMapping("/{ppn}")
     public NoticeXml getPpn(@PathVariable String ppn) throws IOException, SQLException {
-        return service.getBiblioByPpn(ppn);
+        return noticeService.getBiblioByPpn(ppn);
     }
 
     @PostMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResultAnalyseResponseDto checkPpn(@Valid @RequestBody PpnWithRuleSetsRequestDto requestBody) {
-
+        Long start = System.currentTimeMillis();
+        ruleService.resetCn();
         Set<RuleSet> ruleSets = new HashSet<>();
         Set<FamilleDocument> familleDocuments =  new HashSet<>();
         Set<TypeThese> typeThese = new HashSet<>();
@@ -76,7 +93,31 @@ public class RuleController {
         if ((requestBody.getRuleSet() != null) && (!requestBody.getRuleSet().isEmpty())){
             ruleSets = mapper.mapSet(requestBody.getRuleSet(),RuleSet.class);
         }
-        return mapper.map(ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList()), ResultAnalyseResponseDto.class);
+        this.nbTotalPpn = requestBody.getPpnList().size();
+        List<List<String>> splittedList = Lists.partition(requestBody.getPpnList(), requestBody.getPpnList().size() / nbThread + 1);
+        List<CompletableFuture<ResultAnalyse>> resultList = new ArrayList<>();
+
+        ResultAnalyse resultAnalyse;
+        if(splittedList.size() > 1) {
+            for (List<String> ppnList : splittedList)
+                resultList.add(ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), ppnList));
+
+            //biFunction permet de prendre le résultat de 2 traitements en parallèle et de les fusionner en un troisième qui est retourné
+            BiFunction<ResultAnalyse, ResultAnalyse, ResultAnalyse> biFunction = (res1, res2) -> {
+                res1.merge(res2);
+                return res1;
+            };
+
+            //on récupère chaque traitement lancé en parallèle et on le combine au précédent en fusionnant les résultats
+            resultAnalyse = resultList.stream().reduce((res1, res2) -> res1.thenCombineAsync(res2, biFunction, asyncExecutor)).orElse(CompletableFuture.completedFuture(new ResultAnalyse())).join();
+        } else {
+            resultAnalyse = ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList()).join();
+        }
+
+        ResultAnalyseResponseDto responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
+        long end = System.currentTimeMillis();
+        log.debug("Temps de traitement : " + (end - start));
+        return responseDto;
     }
 
     @PostMapping(value = "/indexRules", consumes = {"text/yaml", "text/yml"})
@@ -141,7 +182,7 @@ public class RuleController {
     }
 
     private Integer generateNewId(Integer id, int i) {
-        return id + 50000 + i;
+        return id * 100 + i;
     }
 
     @PostMapping(value = "/indexComplexRules", consumes = {"text/yaml", "text/yml"})
@@ -178,5 +219,14 @@ public class RuleController {
     @GetMapping(value = "/rules")
     public List<RuleWebDto> getRules() {
         return mapper.mapList(ruleService.getAllComplexRules(), RuleWebDto.class);
+    }
+
+    /**
+     * Methode pour la bar de progress
+     * @return
+     */
+    @GetMapping("/getStatus")
+    public String getStatus() {
+        return String.format("%.0f%%", ruleService.getCn(this.nbTotalPpn));
     }
 }

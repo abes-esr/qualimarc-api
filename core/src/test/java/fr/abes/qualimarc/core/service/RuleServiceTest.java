@@ -2,8 +2,10 @@ package fr.abes.qualimarc.core.service;
 
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import fr.abes.qualimarc.core.configuration.AsyncConfiguration;
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.exception.IllegalRulesSetException;
+import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
@@ -33,8 +35,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
-@SpringBootTest(classes = {RuleService.class})
+@SpringBootTest(classes = {RuleService.class, AsyncConfiguration.class})
 public class RuleServiceTest {
     @Autowired
     RuleService service;
@@ -75,6 +79,12 @@ public class RuleServiceTest {
     @Value("classpath:theseRepro.xml")
     Resource xmlTheseRepro;
 
+    @Value("classpath:noticeSansFamille.xml")
+    Resource xmlNoticeSansFamille;
+
+    @Autowired
+    AsyncConfiguration asyncExecutor;
+
     NoticeXml notice1;
     NoticeXml notice2;
     NoticeXml notice3;
@@ -84,6 +94,7 @@ public class RuleServiceTest {
     NoticeXml noticeBiblio;
     NoticeXml noticeAutorite1;
     NoticeXml noticeAutorite2;
+    NoticeXml noticeSansFamille;
     Set<ComplexRule> listeRegles;
 
     @BeforeEach
@@ -121,6 +132,9 @@ public class RuleServiceTest {
         xml = IOUtils.toString(new FileInputStream(xmlFileNoticeAutorite2.getFile()), StandardCharsets.UTF_8);
         noticeAutorite2 = xmlMapper.readValue(xml, NoticeXml.class);
 
+        xml = IOUtils.toString(new FileInputStream(xmlNoticeSansFamille.getFile()), StandardCharsets.UTF_8);
+        noticeSansFamille = xmlMapper.readValue(xml, NoticeXml.class);
+
         Set<FamilleDocument> familleDoc1 = new HashSet<>();
         familleDoc1.add(new FamilleDocument("A", "Monographie"));
 
@@ -134,7 +148,7 @@ public class RuleServiceTest {
     }
 
     @Test
-    void checkRulesOnNoticesAllOk() throws IOException, SQLException{
+    void checkRulesOnNoticesAllOk() throws IOException, SQLException, ExecutionException, InterruptedException {
         List<String> ppns = new ArrayList<>();
         ppns.add("111111111");
         ppns.add("222222222");
@@ -147,14 +161,14 @@ public class RuleServiceTest {
         Mockito.when(referenceService.getFamilleDocument("O")).thenReturn(new FamilleDocument("O", "Doc Elec"));
         Mockito.when(referenceService.getFamilleDocument("BD")).thenReturn(new FamilleDocument("BD", "Ressource Continue"));
 
-        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
+        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
 
-        Assertions.assertEquals(3, resultAnalyse.getPpnAnalyses().size());
-        Assertions.assertEquals(2, resultAnalyse.getPpnErrones().size());
-        Assertions.assertEquals(1, resultAnalyse.getPpnOk().size());
-        Assertions.assertEquals(0, resultAnalyse.getPpnInconnus().size());
+        Assertions.assertEquals(3, resultAnalyse.get().getPpnAnalyses().size());
+        Assertions.assertEquals(2, resultAnalyse.get().getPpnErrones().size());
+        Assertions.assertEquals(1, resultAnalyse.get().getPpnOk().size());
+        Assertions.assertEquals(0, resultAnalyse.get().getPpnInconnus().size());
 
-        List<ResultRules> resultat = resultAnalyse.getResultRules();
+        List<ResultRules> resultat = resultAnalyse.get().getResultRules();
 
         Assertions.assertEquals(2, resultat.size());
 
@@ -199,47 +213,47 @@ public class RuleServiceTest {
     }
 
     @Test
-    void checkRulesOnNoticesUnknownPpn() throws IOException, SQLException {
+    void checkRulesOnNoticesUnknownPpn() throws IOException, SQLException, ExecutionException, InterruptedException {
         List<String> ppns = new ArrayList<>();
         ppns.add("111111111");
 
         Mockito.when(noticeService.getBiblioByPpn("111111111")).thenThrow(new IllegalPpnException("le PPN 111111111 n'existe pas"));
 
-        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
+        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
 
-        Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
+        Assertions.assertEquals(1, resultAnalyse.get().getPpnInconnus().size());
 
-        List<ResultRules> resultat = resultAnalyse.getResultRules();
+        List<ResultRules> resultat = resultAnalyse.get().getResultRules();
         Assertions.assertEquals(1, resultat.size());
-        Assertions.assertEquals("le PPN 111111111 n'existe pas", resultAnalyse.getResultRules().get(0).getMessages().get(0));
+        Assertions.assertEquals("le PPN 111111111 n'existe pas", resultAnalyse.get().getResultRules().get(0).getMessages().get(0));
     }
 
     @Test
-    void checkRulesOnNoticesDeletedPpn() throws IOException, SQLException {
+    void checkRulesOnNoticesDeletedPpn() throws IOException, SQLException, ExecutionException, InterruptedException {
         List<String> ppns = new ArrayList<>();
         ppns.add("111111111");
 
         Mockito.when(noticeService.getBiblioByPpn("111111111")).thenReturn(noticeDeleted);
 
-        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
+        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
 
-        Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
+        Assertions.assertEquals(1, resultAnalyse.get().getPpnInconnus().size());
     }
 
     @Test
-    void checkRulesOnNoticesSqlError() throws IOException, SQLException {
+    void checkRulesOnNoticesSqlError() throws IOException, SQLException, ExecutionException, InterruptedException {
         List<String> ppns = new ArrayList<>();
         ppns.add("111111111");
 
         Mockito.when(noticeService.getBiblioByPpn("111111111")).thenThrow(new SQLException("Erreur d'accès à la base de données sur PPN : 111111111"));
 
-        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
-        Assertions.assertEquals(1, resultAnalyse.getPpnInconnus().size());
+        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
+        Assertions.assertEquals(1, resultAnalyse.get().getPpnInconnus().size());
 
-        List<ResultRules> resultat = resultAnalyse.getResultRules();
+        List<ResultRules> resultat = resultAnalyse.get().getResultRules();
         Assertions.assertEquals(1, resultat.size());
 
-        Assertions.assertEquals("Erreur d'accès à la base de données sur PPN : 111111111", resultAnalyse.getResultRules().get(0).getMessages().get(0));
+        Assertions.assertEquals("Erreur d'accès à la base de données sur PPN : 111111111", resultAnalyse.get().getResultRules().get(0).getMessages().get(0));
 
     }
 
@@ -268,6 +282,8 @@ public class RuleServiceTest {
         Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, setThesesSout, Sets.newHashSet(), new PresenceZone())));
         Assertions.assertTrue(service.isRuleAppliedToNotice(notice1, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
         Assertions.assertTrue(service.isRuleAppliedToNotice(theseSout, new ComplexRule(1, "test", Priority.P1, setTypeResContinue, Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
+
+        Assertions.assertThrows(IllegalTypeDocumentException.class, () -> service.isRuleAppliedToNotice(noticeSansFamille, new ComplexRule(1, "test", Priority.P1, Sets.newHashSet(), Sets.newHashSet(), Sets.newHashSet(), new PresenceZone())));
     }
 
 
@@ -345,7 +361,7 @@ public class RuleServiceTest {
      * Teste le cas d'une analyse sur notice avec famille de document inconnue
      */
     @Test
-    void checkRulesOnNoticesWithUnknownFamilleDoc() throws IOException, SQLException {
+    void checkRulesOnNoticesWithUnknownFamilleDoc() throws IOException, SQLException, ExecutionException, InterruptedException {
         Set<FamilleDocument> typeDoc = new HashSet<>();
         typeDoc.add(new FamilleDocument("A", "Monographie"));
         Set<ComplexRule> rules = new HashSet<>();
@@ -353,11 +369,11 @@ public class RuleServiceTest {
 
         Mockito.when(noticeService.getBiblioByPpn("123456789")).thenReturn(noticeAutorite1);
 
-        ResultAnalyse result = service.checkRulesOnNotices(rules, Lists.newArrayList("123456789"));
-        Assertions.assertEquals("123456789", result.getPpnInconnus().iterator().next());
-        Assertions.assertEquals(0, result.getPpnOk().size());
-        Assertions.assertEquals(0, result.getPpnErrones().size());
-        Assertions.assertEquals("123456789", result.getPpnAnalyses().iterator().next());
+        CompletableFuture<ResultAnalyse> result = service.checkRulesOnNotices(rules, Lists.newArrayList("123456789"));
+        Assertions.assertEquals("123456789", result.get().getPpnInconnus().iterator().next());
+        Assertions.assertEquals(0, result.get().getPpnOk().size());
+        Assertions.assertEquals(0, result.get().getPpnErrones().size());
+        Assertions.assertEquals(0, result.get().getPpnAnalyses().size());
     }
 
     /**
@@ -478,7 +494,7 @@ public class RuleServiceTest {
     }
 
     @Test
-    void checkRulesOnNoticesDependency() throws SQLException, IOException {
+    void checkRulesOnNoticesDependency() throws SQLException, IOException, ExecutionException, InterruptedException {
         List<String> ppns = new ArrayList<>();
         ppns.add("143519379");
 
@@ -495,13 +511,13 @@ public class RuleServiceTest {
 
         Mockito.when(referenceService.getFamilleDocument("A")).thenReturn(new FamilleDocument("A", "Monographie"));
 
-        ResultAnalyse resultAnalyse = service.checkRulesOnNotices(listeReglesDependency, ppns);
-        Assertions.assertEquals(1, resultAnalyse.getPpnAnalyses().size());
-        Assertions.assertEquals(1, resultAnalyse.getPpnErrones().size());
-        Assertions.assertEquals(0, resultAnalyse.getPpnOk().size());
-        Assertions.assertEquals(0, resultAnalyse.getPpnInconnus().size());
-        Assertions.assertEquals(2, resultAnalyse.getResultRules().get(0).getDetailErreurs().size());
-        Assertions.assertTrue(resultAnalyse.getResultRules().get(0).getDetailErreurs().stream().anyMatch(el -> el.getMessage().equals(rule.getMessage() + " PPN lié : " + "02787088X")));
-        Assertions.assertTrue(resultAnalyse.getResultRules().get(0).getDetailErreurs().stream().anyMatch(el -> el.getMessage().equals(rule.getMessage() + " PPN lié : " + "02731667X")));
+        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeReglesDependency, ppns);
+        Assertions.assertEquals(1, resultAnalyse.get().getPpnAnalyses().size());
+        Assertions.assertEquals(1, resultAnalyse.get().getPpnErrones().size());
+        Assertions.assertEquals(0, resultAnalyse.get().getPpnOk().size());
+        Assertions.assertEquals(0, resultAnalyse.get().getPpnInconnus().size());
+        Assertions.assertEquals(2, resultAnalyse.get().getResultRules().get(0).getDetailErreurs().size());
+        Assertions.assertTrue(resultAnalyse.get().getResultRules().get(0).getDetailErreurs().stream().anyMatch(el -> el.getMessage().equals(rule.getMessage() + " PPN lié : " + "02787088X")));
+        Assertions.assertTrue(resultAnalyse.get().getResultRules().get(0).getDetailErreurs().stream().anyMatch(el -> el.getMessage().equals(rule.getMessage() + " PPN lié : " + "02731667X")));
     }
  }

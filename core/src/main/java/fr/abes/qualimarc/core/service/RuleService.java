@@ -18,8 +18,11 @@ import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import fr.abes.qualimarc.core.utils.TypeNoticeLiee;
 import fr.abes.qualimarc.core.utils.TypeThese;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,9 +31,13 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class RuleService {
     @Autowired
     private NoticeService noticeService;
@@ -41,9 +48,16 @@ public class RuleService {
     @Autowired
     private ComplexRulesRepository complexRulesRepository;
 
+    @Autowired
+    @Qualifier("asyncExecutor")
+    private Executor asyncExecutor;
 
-    public ResultAnalyse checkRulesOnNotices(Set<ComplexRule> rulesList, List<String> ppns) {
+    private AtomicInteger cn = new AtomicInteger(0);
+
+    @Async("asyncExecutor")
+    public CompletableFuture<ResultAnalyse> checkRulesOnNotices(Set<ComplexRule> rulesList, List<String> ppns) {
         ResultAnalyse resultAnalyse = new ResultAnalyse();
+        log.debug("Handling list of " + ppns.size() + " ppn");
         for (String ppn : ppns) {
             boolean isOk = true;
             ResultRules result = new ResultRules(ppn);
@@ -52,9 +66,9 @@ public class RuleService {
                 if (noticeSource.isDeleted()) {
                     resultAnalyse.addPpnInconnu(ppn);
                 } else {
-                    resultAnalyse.addPpnAnalyse(ppn);
                     for (ComplexRule rule : rulesList) {
                         if (isRuleAppliedToNotice(noticeSource, rule)) {
+                            resultAnalyse.addPpnAnalyse(ppn);
                             OtherRule dependencyRule = rule.getDependencyRule();
                             if (dependencyRule != null) {
                                 //il existe une règle de dépendance dans la règle complexe
@@ -78,17 +92,18 @@ public class RuleService {
                         resultAnalyse.addResultRule(result);
                     }
                 }
-            } catch (SQLException | IOException | IllegalTypeDocumentException ex) {
+            } catch (SQLException | IOException ex) {
                 result.addMessage("Erreur d'accès à la base de données sur PPN : " + ppn);
                 resultAnalyse.addPpnInconnu(ppn);
                 resultAnalyse.addResultRule(result);
-            } catch (IllegalPpnException ex) {
+            } catch (IllegalPpnException | IllegalTypeDocumentException ex) {
                 resultAnalyse.addPpnInconnu(ppn);
                 result.addMessage(ex.getMessage());
                 resultAnalyse.addResultRule(result);
             }
+            this.cn.addAndGet(1);
         }
-        return resultAnalyse;
+        return CompletableFuture.completedFuture(resultAnalyse);
     }
 
     @SneakyThrows
@@ -133,7 +148,8 @@ public class RuleService {
     public boolean isRuleAppliedToNotice(NoticeXml notice, ComplexRule rule) {
         //si pas de type de document renseigné, la règle est appliquée quoi qu'il arrive
         if (rule.getFamillesDocuments().size() == 0) {
-            if (rule.getTypesThese().size() != 0) {
+            //on force la vérification sur la famille de document pour lever une exception le cas échéant
+            if (notice.getFamilleDocument() != "" && rule.getTypesThese().size() != 0) {
                 return rule.getTypesThese().stream().anyMatch(tt -> tt.equals(notice.getTypeThese()));
             }
             return true;
@@ -209,6 +225,16 @@ public class RuleService {
 
     public void viderRegles() {
         this.complexRulesRepository.deleteAll();
+    }
+
+    public double getCn(int nbTotal) {
+        if (nbTotal != 0)
+            return ((double) this.cn.get() / (double) (nbTotal) * 100);
+        return 0;
+    }
+
+    public void resetCn() {
+        this.cn = new AtomicInteger();
     }
 
     public List<ComplexRule> getAllComplexRules() {
