@@ -171,6 +171,46 @@ public class ComplexRuleTest {
     }
 
     @Test
+    @DisplayName("Test même zone PresenceZone")
+    void testMemeZonePresenceZone() throws IOException {
+        String xml = IOUtils.toString(new FileInputStream(xmlFileNoticeBiblio.getFile()), StandardCharsets.UTF_8);
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(false);
+        XmlMapper mapper = new XmlMapper(module);
+        NoticeXml noticeBiblio = mapper.readValue(xml, NoticeXml.class);
+
+        ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule.setMemeZone(true);
+        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "3", false), BooleanOperateur.ET, 0, complexRule));
+
+        Assertions.assertTrue(complexRule.isValid(noticeBiblio));
+
+        ComplexRule complexRule1 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "608", false));
+        complexRule1.setMemeZone(true);
+        complexRule1.addOtherRule(new LinkedRule(new PresenceSousZone(3, "608", "3", false), BooleanOperateur.ET, 0, complexRule1));
+
+        Assertions.assertFalse(complexRule1.isValid(noticeBiblio));
+
+        ComplexRule complexRule2 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule2.setMemeZone(true);
+        complexRule2.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "y", true), BooleanOperateur.ET, 0, complexRule2));
+
+        Assertions.assertFalse(complexRule2.isValid(noticeBiblio));
+
+        ComplexRule complexRule3 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "608", false));
+        complexRule3.setMemeZone(false);
+        complexRule3.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "b", true), BooleanOperateur.ET, 0, complexRule3));
+
+        Assertions.assertTrue(complexRule3.isValid(noticeBiblio));
+
+        ComplexRule complexRule4 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule4.setMemeZone(true);
+        complexRule4.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "b", false), BooleanOperateur.ET, 0, complexRule4));
+
+        Assertions.assertTrue(complexRule4.isValid(noticeBiblio));
+    }
+
+    @Test
     @DisplayName("test getZonesFromChildren")
     void testGetZonesFromChildren() {
         ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "200", true));
