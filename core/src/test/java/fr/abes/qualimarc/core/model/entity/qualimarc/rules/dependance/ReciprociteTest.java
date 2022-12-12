@@ -69,6 +69,7 @@ public class ReciprociteTest {
     @Test
     void getZones() {
         Reciprocite rule = new Reciprocite(1, "200", "a");
-        Assertions.assertEquals("200$a", rule.getZones());
+        Assertions.assertEquals(1, rule.getZones().size());
+        Assertions.assertEquals("200$a", rule.getZones().get(0));
     }
 }

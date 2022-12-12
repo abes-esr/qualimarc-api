@@ -11,6 +11,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +61,9 @@ public class TypeDocument extends SimpleRule implements Serializable {
     }
 
     @Override
-    public String getZones() {
-        return this.getZone();
+    public List<String> getZones() {
+        List<String> listZones = new ArrayList<>();
+        listZones.add(this.zone);
+        return listZones;
     }
 }

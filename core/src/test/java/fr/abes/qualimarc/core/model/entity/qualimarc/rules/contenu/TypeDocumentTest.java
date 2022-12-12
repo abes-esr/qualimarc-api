@@ -68,7 +68,8 @@ class TypeDocumentTest {
     @Test
     void getZone() {
         TypeDocument typeDocument = new TypeDocument(1, TypeVerification.STRICTEMENTDIFFERENT, 1, "a");
-        Assertions.assertEquals("008", typeDocument.getZones());
+        Assertions.assertEquals(1, typeDocument.getZones().size());
+        Assertions.assertEquals("008", typeDocument.getZones().get(0));
     }
 
 }

@@ -220,9 +220,9 @@ public class ComplexRule implements Serializable {
 
     public List<String> getZonesFromChildren() {
         List<String> liste = new LinkedList<>();
-        liste.add(this.getFirstRule().getZones());
+        liste.addAll(this.getFirstRule().getZones());
         for (OtherRule rule : this.getOtherRules()) {
-            liste.add(rule.getZones());
+            liste.addAll(rule.getZones());
             if(rule instanceof DependencyRule && ((DependencyRule) rule).getTypeNoticeLiee().equals(TypeNoticeLiee.AUTORITE))
                 break;
         }

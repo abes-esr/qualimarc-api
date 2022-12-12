@@ -103,6 +103,7 @@ public class NombreCaracteresTest {
     @Test
     void getZones() {
         NombreCaracteres rule = new NombreCaracteres(1, "200", "a", ComparaisonOperateur.SUPERIEUR, 1);
-        Assertions.assertEquals("200$a", rule.getZones());
+        Assertions.assertEquals(1, rule.getZones().size());
+        Assertions.assertEquals("200$a", rule.getZones().get(0));
     }
 }

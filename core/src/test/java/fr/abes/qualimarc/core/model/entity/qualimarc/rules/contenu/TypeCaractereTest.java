@@ -3,7 +3,6 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
-import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.utils.TypeCaracteres;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
@@ -34,15 +33,6 @@ public class TypeCaractereTest {
         module.setDefaultUseWrapper(false);
         XmlMapper mapper = new XmlMapper(module);
         this.notice = mapper.readValue(xml, NoticeXml.class);
-    }
-
-
-    @Test
-    @DisplayName("on verifi qu'il renvoi bien 200$a dans le getZones")
-    void getZones() {
-        SimpleRule rule = new TypeCaractere(1,"200","a");
-
-        Assertions.assertEquals("200$a",rule.getZones());
     }
 
     @Test
@@ -220,5 +210,12 @@ public class TypeCaractereTest {
         rule1.addTypeCaractere(TypeCaracteres.ALPHABETIQUE_MAJ);
 
         Assertions.assertEquals(rule.isValid(notice),rule1.isValid(notice));
+    }
+
+    @Test
+    void testGetZones() {
+        TypeCaractere rule = new TypeCaractere(1, "100", "a");
+        Assertions.assertEquals(1, rule.getZones().size());
+        Assertions.assertEquals("100$a", rule.getZones().get(0));
     }
 }

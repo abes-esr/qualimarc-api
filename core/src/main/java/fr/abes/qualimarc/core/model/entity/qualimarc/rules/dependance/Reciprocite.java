@@ -11,6 +11,7 @@ import lombok.Setter;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +43,9 @@ public class Reciprocite extends SimpleRule implements Serializable {
     }
 
     @Override
-    public String getZones() {
-        return this.zone + "$" + this.sousZoneCible;
+    public List<String> getZones() {
+        List<String> listZones = new ArrayList<>();
+        listZones.add(this.zone + "$" + this.sousZoneCible);
+        return listZones;
     }
 }
