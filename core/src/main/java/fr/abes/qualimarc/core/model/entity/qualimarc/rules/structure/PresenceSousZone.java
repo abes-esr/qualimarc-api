@@ -46,9 +46,12 @@ public class PresenceSousZone extends SimpleRule implements Serializable {
         NoticeXml notice = notices[0];
 
         List<Datafield> datafields = notice.getDatafields().stream().filter(dataField -> dataField.getTag().equals(this.getZone())).collect(Collectors.toList());
+        if (datafields.isEmpty()) {
+            return false;
+        }
         //cas ou la sous zone doit être présente dans la zone pour lever le message
         if(this.isPresent) {
-            if (this.getComplexRule().isMemeZone()) {
+            if (this.getComplexRule() != null && this.getComplexRule().isMemeZone()) {
                 this.getComplexRule().setSavedZone(
                     //  Collecte dans une liste toutes les zones qui comportent des sousZones qui MATCHENT avec la sousZone cible
                     datafields.stream().filter(df -> df.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(this.getSousZone()))).collect(Collectors.toList())
@@ -59,7 +62,7 @@ public class PresenceSousZone extends SimpleRule implements Serializable {
             }
         } else {
             //cas ou la sous zone doit être absente pour lever le message
-            if (this.getComplexRule().isMemeZone()) {
+            if (this.getComplexRule() != null && this.getComplexRule().isMemeZone()) {
                 this.getComplexRule().setSavedZone(
                     //  Collecte dans une liste toutes les zones qui comportent des sousZones qui NE MATCHENT PAS avec la sousZone cible
                     datafields.stream().filter(df -> df.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(this.getSousZone()))).collect(Collectors.toList())

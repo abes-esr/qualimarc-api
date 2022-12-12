@@ -53,14 +53,14 @@ public class ComplexRuleTest {
         NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
 
         ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "200", true));
-        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(2, "020", "a", true), BooleanOperateur.ET, 1, null));
+        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(2, "020", "a", true), BooleanOperateur.ET, 1, complexRule));
 
         Assertions.assertTrue(complexRule.isValid(notice));
 
-        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(3, "021", "b", true), BooleanOperateur.ET, 1, null));
+        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(3, "021", "b", true), BooleanOperateur.ET, 1, complexRule));
         Assertions.assertFalse(complexRule.isValid(notice));
 
-        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(4, "033", "a", true), BooleanOperateur.OU, 1, null));
+        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(4, "033", "a", true), BooleanOperateur.OU, 1, complexRule));
         Assertions.assertTrue(complexRule.isValid(notice));
     }
 
@@ -77,14 +77,14 @@ public class ComplexRuleTest {
         NoticeXml noticeAutorite = mapper.readValue(xml2, NoticeXml.class);
 
         ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "200", true));
-        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(2, "020", "a", true), BooleanOperateur.ET, 1, null));
+        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(2, "020", "a", true), BooleanOperateur.ET, 1, complexRule));
 
         Assertions.assertTrue(complexRule.isValid(noticeBiblio, noticeAutorite));
 
-        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(3, "021", "b", true), BooleanOperateur.ET, 1, null));
+        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(3, "021", "b", true), BooleanOperateur.ET, 1, complexRule));
         Assertions.assertFalse(complexRule.isValid(noticeBiblio, noticeAutorite));
 
-        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(4, "033", "a", true), BooleanOperateur.OU, 1, null));
+        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(4, "033", "a", true), BooleanOperateur.OU, 1, complexRule));
         Assertions.assertTrue(complexRule.isValid(noticeBiblio, noticeAutorite));
     }
 
