@@ -3,6 +3,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.dependance.Reciprocite;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
@@ -208,6 +209,47 @@ public class ComplexRuleTest {
         complexRule4.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "b", false), BooleanOperateur.ET, 0, complexRule4));
 
         Assertions.assertTrue(complexRule4.isValid(noticeBiblio));
+    }
+
+    @Test
+    @DisplayName("Test même zone Indicateur")
+    void testMemeZoneIndicateur() throws IOException {
+        String xml = IOUtils.toString(new FileInputStream(xmlFileNoticeBiblio.getFile()), StandardCharsets.UTF_8);
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(false);
+        XmlMapper mapper = new XmlMapper(module);
+        NoticeXml noticeBiblio = mapper.readValue(xml, NoticeXml.class);
+
+        // 214 présente ET 214 ind 1 qui contient "0" ET 214 ind2 qui contient "#" ET une 214$d ct pour rigolé
+        ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "214", true));
+        complexRule.setMemeZone(true);
+        complexRule.addOtherRule(new LinkedRule(new Indicateur(3, "214", 1, "0"), BooleanOperateur.ET, 0, complexRule));
+        complexRule.addOtherRule(new LinkedRule(new Indicateur(4, "214", 2, "#"), BooleanOperateur.ET, 1, complexRule));
+        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(5, "214", "d", true), BooleanOperateur.ET, 2, complexRule));
+
+        Assertions.assertTrue(complexRule.isValid(noticeBiblio));
+
+        // 607 présente ET 607 ind 2 qui contient "1"
+        ComplexRule complexRule1 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule1.setMemeZone(true);
+        complexRule1.addOtherRule(new LinkedRule(new Indicateur(3, "607", 2, "1"), BooleanOperateur.ET, 0, complexRule1));
+
+        Assertions.assertTrue(complexRule1.isValid(noticeBiblio));
+
+        // 608 présente ET 608 ind 2 qui contient "1"
+        ComplexRule complexRule2 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "608", true));
+        complexRule2.setMemeZone(true);
+        complexRule2.addOtherRule(new LinkedRule(new Indicateur(3, "608", 2, "1"), BooleanOperateur.ET, 0, complexRule2));
+
+        Assertions.assertFalse(complexRule2.isValid(noticeBiblio));
+
+        // 607 présente ET 607 ind 2 qui contient "1" ET 607 ind 1 qui contient "0"
+        ComplexRule complexRule3 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule3.setMemeZone(true);
+        complexRule3.addOtherRule(new LinkedRule(new Indicateur(3, "607", 2, "1"), BooleanOperateur.ET, 0, complexRule3));
+        complexRule3.addOtherRule(new LinkedRule(new Indicateur(4, "607", 1, "0"), BooleanOperateur.ET, 1, complexRule3));
+
+        Assertions.assertFalse(complexRule3.isValid(noticeBiblio));
     }
 
     @Test
