@@ -4,6 +4,8 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.dependance.Reciprocite;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PositionSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
@@ -11,6 +13,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZon
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.core.utils.Priority;
 import fr.abes.qualimarc.core.utils.TypeNoticeLiee;
+import fr.abes.qualimarc.core.utils.TypeVerification;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +25,8 @@ import org.springframework.core.io.Resource;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootTest(classes = {ComplexRule.class})
 public class ComplexRuleTest {
@@ -251,6 +256,324 @@ public class ComplexRuleTest {
         complexRule3.addOtherRule(new LinkedRule(new Indicateur(4, "607", 1, "0"), BooleanOperateur.ET, 1, complexRule3));
 
         Assertions.assertFalse(complexRule3.isValid(noticeBiblio));
+    }
+
+    @Test
+    @DisplayName("Test même zone PresenceChaineCaracteres")
+    void testMemeZonePresenceChaineCaracteres() throws IOException {
+        String xml = IOUtils.toString(new FileInputStream(xmlFileNoticeBiblio.getFile()), StandardCharsets.UTF_8);
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(false);
+        XmlMapper mapper = new XmlMapper(module);
+        NoticeXml noticeBiblio = mapper.readValue(xml, NoticeXml.class);
+
+        //  -------------------------------------------------------------------------------
+        //  -------------------------------------------------------------------------------
+        //  --------------------------     STRICTEMENT     --------------------------------
+        //  -------------------------------------------------------------------------------
+        //  -------------------------------------------------------------------------------
+
+        //  STRICTEMENT / PAS DE BOOLEAN / RESULT TRUE
+        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        listChaineCaracteres.add(new ChaineCaracteres(1, "Informatique", null));
+
+        ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule.setMemeZone(true);
+        complexRule.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.STRICTEMENT, listChaineCaracteres), BooleanOperateur.ET, 1, complexRule));
+        complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule));
+
+        Assertions.assertTrue(complexRule.isValid(noticeBiblio));
+
+        //  STRICTEMENT / PAS DE BOOLEAN / RESULT FALSE
+        Set<ChaineCaracteres> listChaineCaracteres1 = new HashSet<>();
+        listChaineCaracteres1.add(new ChaineCaracteres(1, "Informatiqu", null));
+
+        ComplexRule complexRule1 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule1.setMemeZone(true);
+        complexRule1.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.STRICTEMENT, listChaineCaracteres1), BooleanOperateur.ET, 1, complexRule1));
+        complexRule1.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule1));
+
+        Assertions.assertFalse(complexRule1.isValid(noticeBiblio));
+
+        //  STRICTEMENT / OU / RESULT TRUE
+        Set<ChaineCaracteres> listChaineCaracteres2 = new HashSet<>();
+        listChaineCaracteres2.add(new ChaineCaracteres(1, "Inform", null));
+        listChaineCaracteres2.add(new ChaineCaracteres(2, BooleanOperateur.OU, "Informatique", null));
+
+        ComplexRule complexRule2 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule2.setMemeZone(true);
+        complexRule2.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.STRICTEMENT, listChaineCaracteres2), BooleanOperateur.ET, 1, complexRule2));
+        complexRule2.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule2));
+
+        Assertions.assertTrue(complexRule2.isValid(noticeBiblio));
+
+        //  STRICTEMENT / OU / RESULT FALSE
+        Set<ChaineCaracteres> listChaineCaracteres2b = new HashSet<>();
+        listChaineCaracteres2b.add(new ChaineCaracteres(1, "Inform", null));
+        listChaineCaracteres2b.add(new ChaineCaracteres(2, BooleanOperateur.OU, "atique", null));
+
+        ComplexRule complexRule2b = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule2b.setMemeZone(true);
+        complexRule2b.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.STRICTEMENT, listChaineCaracteres2b), BooleanOperateur.ET, 1, complexRule2b));
+        complexRule2b.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule2b));
+
+        Assertions.assertFalse(complexRule2b.isValid(noticeBiblio));
+
+        //  -------------------------------------------------------------------------------
+        //  -------------------------------------------------------------------------------
+        //  ----------------------------     COMMENCE     ---------------------------------
+        //  -------------------------------------------------------------------------------
+        //  -------------------------------------------------------------------------------
+
+        //  COMMENCE / PAS DE BOOLEAN / RESULT TRUE
+        Set<ChaineCaracteres> listChaineCaracteres3 = new HashSet<>();
+        listChaineCaracteres3.add(new ChaineCaracteres(1, "Info", null));
+
+        ComplexRule complexRule3 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule3.setMemeZone(true);
+        complexRule3.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.COMMENCE, listChaineCaracteres3), BooleanOperateur.ET, 1, complexRule3));
+        complexRule3.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule3));
+
+        Assertions.assertTrue(complexRule3.isValid(noticeBiblio));
+
+        //  COMMENCE / PAS DE BOOLEAN / RESULT FALSE
+        Set<ChaineCaracteres> listChaineCaracteres4 = new HashSet<>();
+        listChaineCaracteres4.add(new ChaineCaracteres(1, "nfo", null));
+
+        ComplexRule complexRule4 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule4.setMemeZone(true);
+        complexRule4.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.COMMENCE, listChaineCaracteres4), BooleanOperateur.ET, 1, complexRule4));
+        complexRule4.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule4));
+
+        Assertions.assertFalse(complexRule4.isValid(noticeBiblio));
+
+        //  COMMENCE / OU / RESULT TRUE
+        Set<ChaineCaracteres> listChaineCaracteres5 = new HashSet<>();
+        listChaineCaracteres5.add(new ChaineCaracteres(1, "nfo", null));
+        listChaineCaracteres5.add(new ChaineCaracteres(2, BooleanOperateur.OU, "Info", null));
+
+        ComplexRule complexRule5 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule5.setMemeZone(true);
+        complexRule5.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.COMMENCE, listChaineCaracteres5), BooleanOperateur.ET, 1, complexRule5));
+        complexRule5.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule5));
+
+        Assertions.assertTrue(complexRule5.isValid(noticeBiblio));
+
+        //  COMMENCE / OU / RESULT FALSE
+        Set<ChaineCaracteres> listChaineCaracteres5b = new HashSet<>();
+        listChaineCaracteres5b.add(new ChaineCaracteres(1, "nfo", null));
+        listChaineCaracteres5b.add(new ChaineCaracteres(2, BooleanOperateur.OU, "for", null));
+
+        ComplexRule complexRule5b = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule5b.setMemeZone(true);
+        complexRule5b.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.COMMENCE, listChaineCaracteres5b), BooleanOperateur.ET, 1, complexRule5b));
+        complexRule5b.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule5b));
+
+        Assertions.assertFalse(complexRule5b.isValid(noticeBiblio));
+
+        //  -------------------------------------------------------------------------------
+        //  -------------------------------------------------------------------------------
+        //  -----------------------------     TERMINE     ---------------------------------
+        //  -------------------------------------------------------------------------------
+        //  -------------------------------------------------------------------------------
+
+        //  TERMINE / PAS DE BOOLEAN / RESULT TRUE
+        Set<ChaineCaracteres> listChaineCaracteres6 = new HashSet<>();
+        listChaineCaracteres6.add(new ChaineCaracteres(1, "matique", null));
+
+        ComplexRule complexRule6 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule6.setMemeZone(true);
+        complexRule6.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.TERMINE, listChaineCaracteres6), BooleanOperateur.ET, 1, complexRule6));
+        complexRule6.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule6));
+
+        Assertions.assertTrue(complexRule6.isValid(noticeBiblio));
+
+        //  TERMINE / PAS DE BOOLEAN / RESULT FALSE
+        Set<ChaineCaracteres> listChaineCaracteres6b = new HashSet<>();
+        listChaineCaracteres6b.add(new ChaineCaracteres(1, "mat", null));
+
+        ComplexRule complexRule6b = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule6b.setMemeZone(true);
+        complexRule6b.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.TERMINE, listChaineCaracteres6b), BooleanOperateur.ET, 1, complexRule6b));
+        complexRule6b.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule6b));
+
+        Assertions.assertFalse(complexRule6b.isValid(noticeBiblio));
+
+        //  TERMINE / OU / RESULT TRUE
+        Set<ChaineCaracteres> listChaineCaracteres7 = new HashSet<>();
+        listChaineCaracteres7.add(new ChaineCaracteres(1, "mat", null));
+        listChaineCaracteres7.add(new ChaineCaracteres(2, BooleanOperateur.OU, "matique", null));
+
+        ComplexRule complexRule7 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule7.setMemeZone(true);
+        complexRule7.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.TERMINE, listChaineCaracteres7), BooleanOperateur.ET, 1, complexRule7));
+        complexRule7.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule7));
+
+        Assertions.assertTrue(complexRule7.isValid(noticeBiblio));
+
+        //  TERMINE / OU / RESULT FALSE
+        Set<ChaineCaracteres> listChaineCaracteres7b = new HashSet<>();
+        listChaineCaracteres7b.add(new ChaineCaracteres(1, "mat", null));
+        listChaineCaracteres7b.add(new ChaineCaracteres(2, BooleanOperateur.OU, "Info", null));
+
+        ComplexRule complexRule7b = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule7b.setMemeZone(true);
+        complexRule7b.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.TERMINE, listChaineCaracteres7b), BooleanOperateur.ET, 1, complexRule7b));
+        complexRule7b.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule7b));
+
+        Assertions.assertFalse(complexRule7b.isValid(noticeBiblio));
+
+        //  -------------------------------------------------------------------------------
+        //  -------------------------------------------------------------------------------
+        //  -----------------------------     CONTIENT     --------------------------------
+        //  -------------------------------------------------------------------------------
+        //  -------------------------------------------------------------------------------
+
+        //  CONTIENT / PAS DE BOOLEAN / RESULT TRUE
+        Set<ChaineCaracteres> listChaineCaracteres8 = new HashSet<>();
+        listChaineCaracteres8.add(new ChaineCaracteres(1, "format", null));
+
+        ComplexRule complexRule8 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule8.setMemeZone(true);
+        complexRule8.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.CONTIENT, listChaineCaracteres8), BooleanOperateur.ET, 1, complexRule8));
+        complexRule8.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule8));
+
+        Assertions.assertTrue(complexRule8.isValid(noticeBiblio));
+
+        //  CONTIENT / PAS DE BOOLEAN / RESULT FALSE
+        Set<ChaineCaracteres> listChaineCaracteres8b = new HashSet<>();
+        listChaineCaracteres8b.add(new ChaineCaracteres(1, "formation", null));
+
+        ComplexRule complexRule8b = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule8b.setMemeZone(true);
+        complexRule8b.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.CONTIENT, listChaineCaracteres8b), BooleanOperateur.ET, 1, complexRule8b));
+        complexRule8b.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule8b));
+
+        Assertions.assertFalse(complexRule8b.isValid(noticeBiblio));
+
+        //  CONTIENT / OU / RESULT TRUE
+        Set<ChaineCaracteres> listChaineCaracteres9 = new HashSet<>();
+        listChaineCaracteres9.add(new ChaineCaracteres(1, "formation", null));
+        listChaineCaracteres9.add(new ChaineCaracteres(2, BooleanOperateur.OU, "format", null));
+
+        ComplexRule complexRule9 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule9.setMemeZone(true);
+        complexRule9.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.CONTIENT, listChaineCaracteres9), BooleanOperateur.ET, 1, complexRule9));
+        complexRule9.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule9));
+
+        Assertions.assertTrue(complexRule7.isValid(noticeBiblio));
+
+        //  CONTIENT / OU / RESULT FALSE
+        Set<ChaineCaracteres> listChaineCaracteres9b = new HashSet<>();
+        listChaineCaracteres9b.add(new ChaineCaracteres(1, "formation", null));
+        listChaineCaracteres9b.add(new ChaineCaracteres(2, BooleanOperateur.OU, "formant", null));
+
+        ComplexRule complexRule9b = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule9b.setMemeZone(true);
+        complexRule9b.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.CONTIENT, listChaineCaracteres9b), BooleanOperateur.ET, 1, complexRule9b));
+        complexRule9b.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule9b));
+
+        Assertions.assertFalse(complexRule9b.isValid(noticeBiblio));
+
+        //  CONTIENT / ET / RESULT TRUE
+        Set<ChaineCaracteres> listChaineCaracteres10 = new HashSet<>();
+        listChaineCaracteres10.add(new ChaineCaracteres(1, "Infor", null));
+        listChaineCaracteres10.add(new ChaineCaracteres(2, BooleanOperateur.ET, "matique", null));
+
+        ComplexRule complexRule10 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule10.setMemeZone(true);
+        complexRule10.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.CONTIENT, listChaineCaracteres10), BooleanOperateur.ET, 1, complexRule10));
+        complexRule10.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule10));
+
+        Assertions.assertTrue(complexRule10.isValid(noticeBiblio));
+
+        //  CONTIENT / ET / RESULT FALSE
+        Set<ChaineCaracteres> listChaineCaracteres10b = new HashSet<>();
+        listChaineCaracteres10b.add(new ChaineCaracteres(1, "Infaur", null));
+        listChaineCaracteres10b.add(new ChaineCaracteres(2, BooleanOperateur.ET, "matik", null));
+
+        ComplexRule complexRule10b = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule10b.setMemeZone(true);
+        complexRule10b.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.CONTIENT, listChaineCaracteres10b), BooleanOperateur.ET, 1, complexRule10b));
+        complexRule10b.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule10b));
+
+        Assertions.assertFalse(complexRule10b.isValid(noticeBiblio));
+
+        //  -------------------------------------------------------------------------------
+        //  -------------------------------------------------------------------------------
+        //  ---------------------------     NECONTIENTPAS     -----------------------------
+        //  -------------------------------------------------------------------------------
+        //  -------------------------------------------------------------------------------
+
+        //  NECONTIENTPAS / PAS DE BOOLEAN / RESULT TRUE
+        Set<ChaineCaracteres> listChaineCaracteres11 = new HashSet<>();
+        listChaineCaracteres11.add(new ChaineCaracteres(1, "NotFound", null));
+
+        ComplexRule complexRule11 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule11.setMemeZone(true);
+        complexRule11.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.NECONTIENTPAS, listChaineCaracteres11), BooleanOperateur.ET, 1, complexRule11));
+        complexRule11.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule11));
+
+        Assertions.assertTrue(complexRule11.isValid(noticeBiblio));
+
+        //  NECONTIENTPAS / PAS DE BOOLEAN / RESULT FALSE
+        Set<ChaineCaracteres> listChaineCaracteres11b = new HashSet<>();
+        listChaineCaracteres11b.add(new ChaineCaracteres(1, "Informatique", null));
+
+        ComplexRule complexRule11b = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule11b.setMemeZone(true);
+        complexRule11b.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.NECONTIENTPAS, listChaineCaracteres11b), BooleanOperateur.ET, 1, complexRule11b));
+        complexRule11b.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule11b));
+
+        Assertions.assertFalse(complexRule11b.isValid(noticeBiblio));
+
+        //  NECONTIENTPAS / OU / RESULT TRUE
+        Set<ChaineCaracteres> listChaineCaracteres12 = new HashSet<>();
+        listChaineCaracteres12.add(new ChaineCaracteres(1, "NotFound", null));
+        listChaineCaracteres12.add(new ChaineCaracteres(2, BooleanOperateur.OU, "NotFound2", null));
+
+        ComplexRule complexRule12 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule12.setMemeZone(true);
+        complexRule12.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.NECONTIENTPAS, listChaineCaracteres12), BooleanOperateur.ET, 1, complexRule12));
+        complexRule12.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule12));
+
+        Assertions.assertTrue(complexRule12.isValid(noticeBiblio));
+
+        //  NECONTIENTPAS / OU / RESULT FALSE
+        Set<ChaineCaracteres> listChaineCaracteres12b = new HashSet<>();
+        listChaineCaracteres12b.add(new ChaineCaracteres(1, "Infor", null));
+        listChaineCaracteres12b.add(new ChaineCaracteres(2, BooleanOperateur.OU, "matique", null));
+
+        ComplexRule complexRule12b = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule12b.setMemeZone(true);
+        complexRule12b.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.NECONTIENTPAS, listChaineCaracteres12b), BooleanOperateur.ET, 1, complexRule12b));
+        complexRule12b.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule12b));
+
+        Assertions.assertFalse(complexRule12b.isValid(noticeBiblio));
+
+        //  NECONTIENTPAS / ET / RESULT TRUE
+        Set<ChaineCaracteres> listChaineCaracteres13 = new HashSet<>();
+        listChaineCaracteres13.add(new ChaineCaracteres(1, "Not", null));
+        listChaineCaracteres13.add(new ChaineCaracteres(2, BooleanOperateur.ET, "Found", null));
+
+        ComplexRule complexRule13 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule13.setMemeZone(true);
+        complexRule13.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.NECONTIENTPAS, listChaineCaracteres13), BooleanOperateur.ET, 1, complexRule13));
+        complexRule13.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule13));
+
+        Assertions.assertTrue(complexRule13.isValid(noticeBiblio));
+
+        //  NECONTIENTPAS / ET / RESULT FALSE
+        Set<ChaineCaracteres> listChaineCaracteres13b = new HashSet<>();
+        listChaineCaracteres13b.add(new ChaineCaracteres(1, "Infor", null));
+        listChaineCaracteres13b.add(new ChaineCaracteres(2, BooleanOperateur.ET, "matique", null));
+
+        ComplexRule complexRule13b = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
+        complexRule13b.setMemeZone(true);
+        complexRule13b.addOtherRule(new LinkedRule(new PresenceChaineCaracteres(1, "607", "a", TypeVerification.NECONTIENTPAS, listChaineCaracteres13b), BooleanOperateur.ET, 1, complexRule13b));
+        complexRule13b.addOtherRule(new LinkedRule(new PresenceSousZone(3, "607", "5", false), BooleanOperateur.ET, 0, complexRule13b));
+
+        Assertions.assertFalse(complexRule13b.isValid(noticeBiblio));
     }
 
     @Test
