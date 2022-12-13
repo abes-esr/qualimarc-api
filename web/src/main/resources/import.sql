@@ -12,17 +12,6 @@ insert into FAMILLEDOCUMENT(FAMILLEDOCUMENT_ID, LIBELLE) values ('BD', 'Ressourc
 insert into FAMILLEDOCUMENT(FAMILLEDOCUMENT_ID, LIBELLE) values ('A', 'Monographie');
 insert into FAMILLEDOCUMENT(FAMILLEDOCUMENT_ID, LIBELLE) values ('PC', 'Partie composante');
 
-insert into RULESSET(RULESET_ID, LIBELLE) values (1, 'Données codées (1XX)');
-insert into RULESSET(RULESET_ID, LIBELLE) values (2, 'Indexation-matière (6XX)');
-insert into RULESSET(RULESET_ID, LIBELLE) values (3, 'Liens ($0/$3)');
-insert into RULESSET(RULESET_ID, LIBELLE) values (4, 'Informations descriptives (2XX)');
-insert into RULESSET(RULESET_ID, LIBELLE) values (5, 'Translittération ($6/$7)');
-insert into RULESSET(RULESET_ID, LIBELLE) values (6, 'Dates');
-insert into RULESSET(RULESET_ID, LIBELLE) values (7, 'Responsabilités (7XX)');
-insert into RULESSET(RULESET_ID, LIBELLE) values (8, 'Nouvelles implémentations Unimarc');
-insert into RULESSET(RULESET_ID, LIBELLE) values (9, 'Identification (0XX)');
-
-
 insert into ZONE_GENERIQUE(ZONE_GENERIQUE, ZONE) values('2XX', '200');
 insert into ZONE_GENERIQUE(ZONE_GENERIQUE, ZONE) values('2XX', '205');
 insert into ZONE_GENERIQUE(ZONE_GENERIQUE, ZONE) values('2XX', '206');
