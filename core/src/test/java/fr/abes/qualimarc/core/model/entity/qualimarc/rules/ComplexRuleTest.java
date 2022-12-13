@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.dependance.Reciprocite;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PositionSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
@@ -253,6 +254,37 @@ public class ComplexRuleTest {
     }
 
     @Test
+    @DisplayName("Test même zone Indicateur")
+    void testMemeZonePositionSousZone() throws IOException {
+        String xml = IOUtils.toString(new FileInputStream(xmlFileNoticeBiblio.getFile()), StandardCharsets.UTF_8);
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(false);
+        XmlMapper mapper = new XmlMapper(module);
+        NoticeXml noticeBiblio = mapper.readValue(xml, NoticeXml.class);
+
+        // la zone 607 avec la sous zone 4 en position 1 ET la sous zone b en position 3
+        ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PositionSousZone(1, "607", "4", 1));
+        complexRule.setMemeZone(true);
+        complexRule.addOtherRule(new LinkedRule(new PositionSousZone(3, "607", "b", 3), BooleanOperateur.ET, 0, complexRule));
+
+        Assertions.assertTrue(complexRule.isValid(noticeBiblio));
+
+        // la zone 607 avec la sous zone 4 en position 2 ET la sous zone b en position 3
+        ComplexRule complexRule1 = new ComplexRule(1, "test", Priority.P1, new PositionSousZone(1, "607", "4", 2));
+        complexRule1.setMemeZone(true);
+        complexRule1.addOtherRule(new LinkedRule(new PositionSousZone(3, "607", "b", 3), BooleanOperateur.ET, 0, complexRule1));
+
+        Assertions.assertFalse(complexRule1.isValid(noticeBiblio));
+
+        // la zone 607 avec la sous zone 4 en position 4 ET la sous zone 3 en position 1
+        ComplexRule complexRule2 = new ComplexRule(1, "test", Priority.P1, new PositionSousZone(1, "607", "4", 4));
+        complexRule2.setMemeZone(true);
+        complexRule2.addOtherRule(new LinkedRule(new PositionSousZone(3, "607", "3", 1), BooleanOperateur.ET, 0, complexRule2));
+
+        Assertions.assertTrue(complexRule2.isValid(noticeBiblio));
+    }
+
+        @Test
     @DisplayName("test getZonesFromChildren")
     void testGetZonesFromChildren() {
         ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "200", true));

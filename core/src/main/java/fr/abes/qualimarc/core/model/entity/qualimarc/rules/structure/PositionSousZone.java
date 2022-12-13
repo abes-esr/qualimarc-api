@@ -2,6 +2,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure;
 
 import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.notice.SubField;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,15 +36,23 @@ public class PositionSousZone extends SimpleRule implements Serializable {
     public boolean isValid(NoticeXml ... notices) {
         NoticeXml notice = notices[0];
         //récupération de toutes les zones définies dans la règle
-        List<Datafield> zones = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZone())).collect(Collectors.toList());
-        //vérification pour chaque zone répétée
-        for (Datafield zone : zones) {
-            //si la position de la sous zone n'est pas la position de la règle, la règle n'est pas valide
-            if (zone.getSubFields().stream().map(sf -> sf.getCode()).collect(Collectors.toList()).indexOf(sousZone) != (position -1)) {
-                return true;
-            }
+        List<Datafield> datafieldList = notice.getDatafields().stream().filter(
+                datafield -> datafield.getTag().equals(this.getZone())
+        ).collect(Collectors.toList());
+
+        if(datafieldList.isEmpty())
+            return false;
+
+        //récupération des zones qui ont la sous-zone a la bonne position
+        List<Datafield> datafieldsValid = datafieldList.stream().filter(
+                df -> df.getSubFields().stream().map(SubField::getCode).collect(Collectors.toList()).indexOf(sousZone) == (position -1)
+        ).collect(Collectors.toList());
+
+        if(this.getComplexRule() != null && this.getComplexRule().isMemeZone()){
+            this.getComplexRule().setSavedZone(datafieldsValid);
+            return this.getComplexRule().isSavedZoneIsNotEmpty();
         }
-        return false;
+        return datafieldsValid.size() > 0;
     }
 
     @Override
