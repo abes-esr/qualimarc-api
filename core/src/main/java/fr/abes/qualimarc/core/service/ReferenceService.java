@@ -35,6 +35,10 @@ public class ReferenceService {
         return ruleSetRepository.findAllByRulesNotEmpty();
     }
 
+    public void viderRulesSet() {
+        ruleSetRepository.deleteAll();
+    }
+
     public FamilleDocument getFamilleDocument(String typeDocument) {
         Optional<FamilleDocument> familleDocument = familleDocumentRepository.findById(typeDocument);
         if (familleDocument.isPresent()) {

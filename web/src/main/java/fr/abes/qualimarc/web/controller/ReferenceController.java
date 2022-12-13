@@ -41,6 +41,11 @@ public class ReferenceController {
         }
     }
 
+    @GetMapping("/emptyRuleSets")
+    public void viderRuleSets() {
+        service.viderRulesSet();
+    }
+
     @GetMapping(value = "/getFamillesDocuments", produces = {"application/json"})
     public List<FamilleDocumentWebDto> getFamillesDocuments() {
         List<FamilleDocumentWebDto> listToReturn = mapper.mapList(service.getTypesDocuments(), FamilleDocumentWebDto.class);
