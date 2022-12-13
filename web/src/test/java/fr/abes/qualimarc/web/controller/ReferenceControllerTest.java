@@ -99,7 +99,7 @@ public class ReferenceControllerTest {
     @Test
     void testIndexRulesSet() throws Exception {
         String yaml =
-                "rulesets:\n" +
+                "jeux-de-regles:\n" +
                 "    - id:          1\n" +
                 "      libelle:     test\n" +
                 "      description: descriptiontest\n" +
@@ -119,7 +119,7 @@ public class ReferenceControllerTest {
     @Test
     void testIndexRulesSetDataViolationIntegrity() throws Exception {
         String yaml =
-                "rulesets:\n" +
+                "jeux-de-regles:\n" +
                         "    - id:          1\n" +
                         "      libelle:     test\n" +
                         "      description: descriptiontest\n" +

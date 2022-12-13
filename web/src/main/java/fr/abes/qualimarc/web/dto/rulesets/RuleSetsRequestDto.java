@@ -7,6 +7,6 @@ import java.util.List;
 
 @Data
 public class RuleSetsRequestDto {
-    @JsonProperty("rulesets")
+    @JsonProperty("jeux-de-regles")
     private List<RuleSetWebDto> ruleSetWebDtos;
 }
