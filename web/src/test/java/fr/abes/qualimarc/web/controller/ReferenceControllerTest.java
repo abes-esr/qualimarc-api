@@ -6,6 +6,7 @@ import fr.abes.qualimarc.core.service.ReferenceService;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.configuration.WebConfig;
 import fr.abes.qualimarc.web.exception.ExceptionControllerHandler;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
@@ -112,5 +114,27 @@ public class ReferenceControllerTest {
         this.mockMvc.perform(post("/api/v1/indexRuleSet")
                 .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
                 .content(yaml).characterEncoding(StandardCharsets.UTF_8)).andExpect(status().isOk());
+    }
+
+    @Test
+    void testIndexRulesSetDataViolationIntegrity() throws Exception {
+        String yaml =
+                "rulesets:\n" +
+                        "    - id:          1\n" +
+                        "      libelle:     test\n" +
+                        "      description: descriptiontest\n" +
+                        "      position:    0\n" +
+                        "    - id:          2\n" +
+                        "      libelle:     test1\n" +
+                        "      description: descriptiontest1\n" +
+                        "      position:    1\n";
+
+        Mockito.doThrow(DataIntegrityViolationException.class).when(referenceService).saveAllRuleSets(Mockito.any());
+
+        this.mockMvc.perform(post("/api/v1/indexRuleSet")
+                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isBadRequest())
+                .andExpect(result1 -> result1.getResponse().getContentAsString().contains("debugMessage: Un jeu de règles avec l'identifiant null existe déjà"));
     }
 }

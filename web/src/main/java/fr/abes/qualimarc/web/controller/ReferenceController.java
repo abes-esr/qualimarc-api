@@ -37,7 +37,7 @@ public class ReferenceController {
         try {
             service.saveAllRuleSets(ruleSetList);
         }catch (DataIntegrityViolationException ex){
-            throw new IllegalArgumentException("Un jeu de règles avec l'identifiant" + StringUtils.substringBetween(ex.getMessage(), "#", "]") + " existe déjà");
+            throw new IllegalArgumentException("Un jeu de règles avec l'identifiant " + StringUtils.substringBetween(ex.getMessage(), "#", "]") + " existe déjà");
         }
     }
 
