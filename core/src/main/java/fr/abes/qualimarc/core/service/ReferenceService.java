@@ -46,4 +46,8 @@ public class ReferenceService {
     public List<String> getZonesGeneriques(String zone) {
         return this.zoneGeneriqueRepository.getZoneGeneriqueZoneByZoneGenerique(zone);
     }
+
+    public void saveAllRuleSets(List<RuleSet> ruleSetList){
+        this.ruleSetRepository.saveAll(ruleSetList);
+    }
 }

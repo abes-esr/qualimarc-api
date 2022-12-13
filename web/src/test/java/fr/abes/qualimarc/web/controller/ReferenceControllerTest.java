@@ -1,9 +1,11 @@
 package fr.abes.qualimarc.web.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.service.ReferenceService;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.configuration.WebConfig;
+import fr.abes.qualimarc.web.exception.ExceptionControllerHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,14 +24,17 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.nio.charset.StandardCharsets;
+import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = {ReferenceController.class, UtilsMapper.class})
+@SpringBootTest(classes = {ReferenceController.class})
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = {WebConfig.class})
 public class ReferenceControllerTest {
@@ -42,12 +47,18 @@ public class ReferenceControllerTest {
     @Autowired
     MappingJackson2HttpMessageConverter jsonHttpConverter;
 
+    @Autowired
+    MappingJackson2HttpMessageConverter yamlHttpConverter;
+
     MockMvc mockMvc;
 
     @MockBean
     ReferenceService referenceService;
 
     @Autowired
+    ObjectMapper objectMapper;
+
+    @MockBean
     UtilsMapper utilsMapper;
 
     @BeforeEach
@@ -55,7 +66,8 @@ public class ReferenceControllerTest {
         MockitoAnnotations.openMocks(this);
         this.mockMvc = MockMvcBuilders
                 .standaloneSetup(context.getBean(ReferenceController.class))
-                .setMessageConverters(this.jsonHttpConverter)
+                .setMessageConverters(this.yamlHttpConverter, this.jsonHttpConverter)
+                .setControllerAdvice(new ExceptionControllerHandler())
                 .build();
     }
 
@@ -80,5 +92,24 @@ public class ReferenceControllerTest {
                 .andExpect(jsonPath("$.[3].id").value("SOUT"))
                 .andExpect(jsonPath("$.[3].libelle").value("Thèse de soutenance"))
                 .andReturn();
+    }
+
+    @Test
+    void testIndexRulesSet() throws Exception {
+        String yaml =
+                "rulesets:\n" +
+                        "    - id:          1\n" +
+                        "      libelle:     test\n" +
+                        "      description: descriptiontest\n" +
+                        "      position:    0\n" +
+                        "    - id:          2\n" +
+                        "      libelle:     test1\n" +
+                        "      description: descriptiontest1\n" +
+                        "      position:    1\n";
+
+        this.mockMvc.perform(post("/api/v1/indexRuleSet")
+                        .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                        .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk());
     }
 }

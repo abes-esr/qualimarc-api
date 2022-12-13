@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Data
-@JsonRootName(value="rules")
+@JsonRootName(value="rulesets")
 public class RuleSetsRequestDto {
     List<RuleSetWebDto> ruleSetWebDtos;
 }
