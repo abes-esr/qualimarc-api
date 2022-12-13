@@ -22,12 +22,10 @@ class TypeDocumentTest {
     @Value("classpath:143519379.xml")
     private Resource xmlFileNotice;
 
+    @Value("classpath:wrong008.xml")
+    private Resource xmlFileWrong008;
+
     private NoticeXml notice;
-
-    @Value("classpath:143519379.xml")
-    private Resource xmlFileNotice2;
-
-    private NoticeXml noticeWrongSize008;
 
     @BeforeEach
     void init() throws IOException {
@@ -52,6 +50,9 @@ class TypeDocumentTest {
 
         TypeDocument typeDocument3 = new TypeDocument(4, TypeVerification.STRICTEMENTDIFFERENT, 3, "x");
         Assertions.assertFalse(typeDocument3.isValid(notice));
+
+        TypeDocument typeDocument4 = new TypeDocument(5, TypeVerification.STRICTEMENTDIFFERENT, 4, "3");
+        Assertions.assertFalse(typeDocument4.isValid(notice));
     }
 
     @Test
@@ -73,14 +74,14 @@ class TypeDocumentTest {
     @Test
     @DisplayName("test typeDocument : cas d'une valeur de 008 de moins de 4 caractères")
     void isValidWithWrongSize() throws IOException {
-        String xml = IOUtils.toString(new FileInputStream(xmlFileNotice2.getFile()), StandardCharsets.UTF_8);
+        String xml = IOUtils.toString(new FileInputStream(xmlFileWrong008.getFile()), StandardCharsets.UTF_8);
         JacksonXmlModule module = new JacksonXmlModule();
         module.setDefaultUseWrapper(false);
         XmlMapper mapper = new XmlMapper(module);
-        NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
+        NoticeXml notice2 = mapper.readValue(xml, NoticeXml.class);
 
         TypeDocument typeDocument = new TypeDocument(1, TypeVerification.STRICTEMENT, 4, "a");
-        Assertions.assertTrue(typeDocument.isValid(notice));
+        Assertions.assertTrue(typeDocument.isValid(notice2));
     }
 
     @Test
