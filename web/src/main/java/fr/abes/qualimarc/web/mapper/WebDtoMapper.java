@@ -24,6 +24,7 @@ import fr.abes.qualimarc.web.dto.indexrules.contenu.*;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
+import fr.abes.qualimarc.web.dto.rulesets.RuleSetWebDto;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.EnumUtils;
 import org.modelmapper.Converter;
@@ -635,6 +636,29 @@ public class WebDtoMapper {
             public FamilleDocumentWebDto convert(MappingContext<FamilleDocument, FamilleDocumentWebDto> context) {
                 FamilleDocument source = context.getSource();
                 return new FamilleDocumentWebDto(source.getId(), source.getLibelle());
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un objet RuleSetWebDto en RuleSet
+     */
+    @Bean
+    public void converterRuleSetWebDtoToRuleSet() {
+        Converter<RuleSetWebDto, RuleSet> myConverter = new Converter<RuleSetWebDto, RuleSet>() {
+            public RuleSet convert(MappingContext<RuleSetWebDto, RuleSet> context) {
+                RuleSetWebDto source = context.getSource();
+                if(source.getId() == null){
+                    throw new IllegalArgumentException("L'identifiant du jeu de règles est obligatoire");
+                }
+                if(source.getLibelle() == null){
+                    throw new IllegalArgumentException("Le libellé du jeu de règles est obligatoire");
+                }
+                if(source.getPosition() == null){
+                    throw new IllegalArgumentException("La position du jeu de règles est obligatoire");
+                }
+                return new RuleSet(source.getId(), source.getLibelle(), source.getDescription(), source.getPosition());
             }
         };
         mapper.addConverter(myConverter);

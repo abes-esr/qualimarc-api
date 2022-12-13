@@ -2,6 +2,7 @@ package fr.abes.qualimarc.web.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.DependencyRule;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.LinkedRule;
@@ -24,6 +25,7 @@ import fr.abes.qualimarc.web.dto.indexrules.contenu.*;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
+import fr.abes.qualimarc.web.dto.rulesets.RuleSetWebDto;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -1086,5 +1088,29 @@ public class WebDtoMapperTest {
         FamilleDocumentWebDto dto = mapper.map(familleDocument, FamilleDocumentWebDto.class);
         Assertions.assertEquals(dto.getId(), familleDocument.getId());
         Assertions.assertEquals(dto.getLibelle(), familleDocument.getLibelle());
+    }
+
+    @Test
+    @DisplayName("Test mapper ruleset")
+    void converterRuleSet() {
+        RuleSetWebDto ruleSetWebDto = new RuleSetWebDto(1, "libellé test", "description test", 0);
+        RuleSet entity = mapper.map(ruleSetWebDto, RuleSet.class);
+        Assertions.assertEquals(ruleSetWebDto.getId(), entity.getId());
+        Assertions.assertEquals(ruleSetWebDto.getLibelle(), entity.getLibelle());
+        Assertions.assertEquals(ruleSetWebDto.getDescription(), entity.getDescription());
+        Assertions.assertEquals(ruleSetWebDto.getPosition(), entity.getPosition());
+
+        ruleSetWebDto.setPosition(null);
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(ruleSetWebDto, entity));
+        Assertions.assertEquals("La position du jeu de règles est obligatoire", exception.getCause().getMessage());
+
+        ruleSetWebDto.setLibelle(null);
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(ruleSetWebDto, entity));
+        Assertions.assertEquals("Le libellé du jeu de règles est obligatoire", exception.getCause().getMessage());
+
+        ruleSetWebDto.setId(null);
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(ruleSetWebDto, entity));
+        Assertions.assertEquals("L'identifiant du jeu de règles est obligatoire", exception.getCause().getMessage());
+
     }
 }
