@@ -97,7 +97,6 @@ public class ReferenceControllerTest {
     @Test
     void testIndexRulesSet() throws Exception {
         String yaml =
-                "---\n" +
                 "rulesets:\n" +
                 "    - id:          1\n" +
                 "      libelle:     test\n" +
@@ -110,10 +109,8 @@ public class ReferenceControllerTest {
 
         Mockito.doNothing().when(referenceService).saveAllRuleSets(Mockito.any());
 
-        ResultActions result = this.mockMvc.perform(post("/api/v1/indexRuleSet")
+        this.mockMvc.perform(post("/api/v1/indexRuleSet")
                 .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
-                .content(yaml).characterEncoding(StandardCharsets.UTF_8));
-
-        result.andExpect(status().isOk());
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8)).andExpect(status().isOk());
     }
 }
