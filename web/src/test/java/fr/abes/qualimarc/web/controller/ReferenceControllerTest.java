@@ -20,12 +20,12 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = {ReferenceController.class})
+@SpringBootTest(classes = {ReferenceController.class, UtilsMapper.class})
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = {WebConfig.class})
 public class ReferenceControllerTest {
@@ -58,7 +58,7 @@ public class ReferenceControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @MockBean
+    @Autowired
     UtilsMapper utilsMapper;
 
     @BeforeEach
@@ -97,19 +97,23 @@ public class ReferenceControllerTest {
     @Test
     void testIndexRulesSet() throws Exception {
         String yaml =
+                "---\n" +
                 "rulesets:\n" +
-                        "    - id:          1\n" +
-                        "      libelle:     test\n" +
-                        "      description: descriptiontest\n" +
-                        "      position:    0\n" +
-                        "    - id:          2\n" +
-                        "      libelle:     test1\n" +
-                        "      description: descriptiontest1\n" +
-                        "      position:    1\n";
+                "    - id:          1\n" +
+                "      libelle:     test\n" +
+                "      description: descriptiontest\n" +
+                "      position:    0\n" +
+                "    - id:          2\n" +
+                "      libelle:     test1\n" +
+                "      description: descriptiontest1\n" +
+                "      position:    1\n";
 
-        this.mockMvc.perform(post("/api/v1/indexRuleSet")
-                        .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
-                        .content(yaml).characterEncoding(StandardCharsets.UTF_8))
-                .andExpect(status().isOk());
+        Mockito.doNothing().when(referenceService).saveAllRuleSets(Mockito.any());
+
+        ResultActions result = this.mockMvc.perform(post("/api/v1/indexRuleSet")
+                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8));
+
+        result.andExpect(status().isOk());
     }
 }

@@ -41,7 +41,7 @@ public class ReferenceController {
         }
     }
 
-    @GetMapping("/getFamillesDocuments")
+    @GetMapping(value = "/getFamillesDocuments", produces = {"application/json"})
     public List<FamilleDocumentWebDto> getFamillesDocuments() {
         List<FamilleDocumentWebDto> listToReturn = mapper.mapList(service.getTypesDocuments(), FamilleDocumentWebDto.class);
         for (TypeThese typeThese : EnumUtils.getEnumList(TypeThese.class)) {
