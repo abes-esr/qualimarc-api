@@ -592,7 +592,9 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(rule1WebDto.getId(), complexRule.getId());
         Assertions.assertEquals(rule1WebDto.getRuleSetList().get(0), new ArrayList<>(complexRule.getRuleSet()).get(0).getId());
         Assertions.assertEquals(rule1WebDto.getMessage(), complexRule.getMessage());
-        Assertions.assertEquals((rule1WebDto.getZone() + "$" + rule1WebDto.getSousZone()) + " / " + rule1WebDto.getZoneCible() + "$" + rule1WebDto.getSousZoneCible(), complexRule.getZonesFromChildren().get(0));
+        Assertions.assertEquals(2, complexRule.getZonesFromChildren().size());
+        Assertions.assertEquals(rule1WebDto.getZone() + "$" + rule1WebDto.getSousZone(), complexRule.getZonesFromChildren().get(0));
+        Assertions.assertEquals(rule1WebDto.getZoneCible() + "$" + rule1WebDto.getSousZoneCible(), complexRule.getZonesFromChildren().get(1));
         Assertions.assertEquals(rule1WebDto.getPriority(), complexRule.getPriority().toString());
         Assertions.assertTrue(complexRule.getFamillesDocuments().stream().anyMatch(familleDocument -> familleDocument.getId().equals(rule1WebDto.getTypesDoc().get(0))));
         Assertions.assertEquals(rule1WebDto.getZone(), complexRule.getFirstRule().getZone());
@@ -628,7 +630,9 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(comparaisonDateWebDto.getId(), complexRule.getId());
         Assertions.assertEquals(comparaisonDateWebDto.getRuleSetList().get(0), new ArrayList<>(complexRule.getRuleSet()).get(0).getId());
         Assertions.assertEquals(comparaisonDateWebDto.getMessage(), complexRule.getMessage());
-        Assertions.assertEquals((comparaisonDateWebDto.getZone() + "$" + comparaisonDateWebDto.getSousZone() + "/" + comparaisonDateWebDto.getZoneCible() + "$" + comparaisonDateWebDto.getSousZoneCible()), complexRule.getZonesFromChildren().get(0));
+        Assertions.assertEquals(2, complexRule.getZonesFromChildren().size());
+        Assertions.assertEquals(comparaisonDateWebDto.getZone() + "$" + comparaisonDateWebDto.getSousZone(), complexRule.getZonesFromChildren().get(0));
+        Assertions.assertEquals(comparaisonDateWebDto.getZoneCible() + "$" + comparaisonDateWebDto.getSousZoneCible(), complexRule.getZonesFromChildren().get(1));
         Assertions.assertEquals(comparaisonDateWebDto.getPriority(), complexRule.getPriority().toString());
         Assertions.assertTrue(complexRule.getFamillesDocuments().stream().anyMatch(familleDocument -> familleDocument.getId().equals(comparaisonDateWebDto.getTypesDoc().get(0))));
         Assertions.assertEquals(comparaisonDateWebDto.getSousZone(), comparaisonDate.getSousZone());
@@ -1031,7 +1035,7 @@ public class WebDtoMapperTest {
         //test où la notice est une thèse
         resultRules.setTypeThese(TypeThese.REPRO);
         responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
-        Assertions.assertEquals("Thèse", responseDto.getResultRules().get(0).getTypeDocument());
+        Assertions.assertEquals("Thèse de reproduction", responseDto.getResultRules().get(0).getTypeDocument());
     }
 
     @Test
@@ -1061,7 +1065,7 @@ public class WebDtoMapperTest {
 
         complexRule.addTypeThese(TypeThese.REPRO);
         ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
-        Assertions.assertEquals("Monographie, Manuscrit, Thèse", ruleWebDto.getTypeDoc());
+        Assertions.assertEquals("Monographie, Manuscrit, Thèse de reproduction", ruleWebDto.getTypeDoc());
 
         //test avec plusieurs zones dans la règle
         complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "310", true), BooleanOperateur.ET, 1, complexRule));

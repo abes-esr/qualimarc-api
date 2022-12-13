@@ -40,4 +40,11 @@ public class PresenceZoneTest {
         SimpleRule rule4 = new PresenceZone(4, "010", false);
         Assertions.assertFalse(rule4.isValid(notice));
     }
+
+    @Test
+    void testGetZones() {
+        SimpleRule rule = new PresenceZone(1, "100", true);
+        Assertions.assertEquals(1, rule.getZones().size());
+        Assertions.assertEquals("100", rule.getZones().get(0));
+    }
 }

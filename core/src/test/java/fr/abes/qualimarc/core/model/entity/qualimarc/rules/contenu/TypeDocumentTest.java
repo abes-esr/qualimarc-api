@@ -24,6 +24,11 @@ class TypeDocumentTest {
 
     private NoticeXml notice;
 
+    @Value("classpath:143519379.xml")
+    private Resource xmlFileNotice2;
+
+    private NoticeXml noticeWrongSize008;
+
     @BeforeEach
     void init() throws IOException {
         String xml = IOUtils.toString(new FileInputStream(xmlFileNotice.getFile()), StandardCharsets.UTF_8);
@@ -66,9 +71,23 @@ class TypeDocumentTest {
     }
 
     @Test
+    @DisplayName("test typeDocument : cas d'une valeur de 008 de moins de 4 caractères")
+    void isValidWithWrongSize() throws IOException {
+        String xml = IOUtils.toString(new FileInputStream(xmlFileNotice2.getFile()), StandardCharsets.UTF_8);
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(false);
+        XmlMapper mapper = new XmlMapper(module);
+        NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
+
+        TypeDocument typeDocument = new TypeDocument(1, TypeVerification.STRICTEMENT, 4, "a");
+        Assertions.assertTrue(typeDocument.isValid(notice));
+    }
+
+    @Test
     void getZone() {
         TypeDocument typeDocument = new TypeDocument(1, TypeVerification.STRICTEMENTDIFFERENT, 1, "a");
-        Assertions.assertEquals("008", typeDocument.getZones());
+        Assertions.assertEquals(1, typeDocument.getZones().size());
+        Assertions.assertEquals("008", typeDocument.getZones().get(0));
     }
 
 }

@@ -57,5 +57,12 @@ public class IndicateurTest {
         Assertions.assertTrue(rule3.isValid(notice));
     }
 
+    @Test
+    void testGetZones() {
+        Indicateur rule = new Indicateur(1, "100", 1, "#");
+        Assertions.assertEquals(1, rule.getZones().size());
+        Assertions.assertEquals("100", rule.getZones().get(0));
+    }
+
 
 }

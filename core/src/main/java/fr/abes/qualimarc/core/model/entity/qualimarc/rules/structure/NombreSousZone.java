@@ -56,7 +56,10 @@ public class NombreSousZone extends SimpleRule implements Serializable {
     }
 
     @Override
-    public String getZones() {
-        return this.getZone() + "$" + this.getSousZone() + " / " + this.getZoneCible() + "$" + this.getSousZoneCible();
+    public List<String> getZones() {
+        List<String> listZones = new ArrayList<>();
+        listZones.add(this.zone + "$" + this.sousZone);
+        listZones.add(this.zoneCible + "$" + this.sousZoneCible);
+        return  listZones;
     }
 }

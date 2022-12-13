@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +48,9 @@ public class PositionSousZone extends SimpleRule implements Serializable {
     }
 
     @Override
-    public String getZones() {
-        return this.getZone() + "$" + this.getSousZone();
+    public List<String> getZones() {
+        List<String> listZones = new ArrayList<>();
+        listZones.add(this.zone + "$" + this.sousZone);
+        return listZones;
     }
 }

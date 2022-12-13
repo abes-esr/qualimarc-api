@@ -11,6 +11,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +48,8 @@ public class TypeDocument extends SimpleRule implements Serializable {
         List<Controlfield> zones = notice.getControlfields().stream().filter(controlfield -> controlfield.getTag().equals(this.getZone())).collect(Collectors.toList());
 
         for (Controlfield zone : zones) {
+            if (zone.getValue().length() <= position)
+                return true;
             switch (this.typeDeVerification) {
                 case STRICTEMENT:
                     return zone.getValue().substring(this.position - 1, this.position).equalsIgnoreCase(this.valeur);
@@ -60,7 +63,9 @@ public class TypeDocument extends SimpleRule implements Serializable {
     }
 
     @Override
-    public String getZones() {
-        return this.getZone();
+    public List<String> getZones() {
+        List<String> listZones = new ArrayList<>();
+        listZones.add(this.zone);
+        return listZones;
     }
 }

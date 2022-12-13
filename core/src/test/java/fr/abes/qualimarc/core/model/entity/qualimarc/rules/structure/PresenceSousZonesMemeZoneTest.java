@@ -43,13 +43,19 @@ public class PresenceSousZonesMemeZoneTest {
         sousZoneOperators.add(new SousZoneOperator("a",true, null));
         PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"200",sousZoneOperators);
 
-        Assertions.assertEquals("200$a", presenceSousZonesMemeZone.getZones());
+        Assertions.assertEquals(1, presenceSousZonesMemeZone.getZones().size());
+        Assertions.assertEquals("200$a", presenceSousZonesMemeZone.getZones().get(0));
 
         sousZoneOperators.add(new SousZoneOperator("b",true, BooleanOperateur.ET, null));
-        Assertions.assertEquals("200$a/200$b", presenceSousZonesMemeZone.getZones());
+        Assertions.assertEquals(2, presenceSousZonesMemeZone.getZones().size());
+        Assertions.assertEquals("200$a", presenceSousZonesMemeZone.getZones().get(0));
+        Assertions.assertEquals("200$b", presenceSousZonesMemeZone.getZones().get(1));
 
         sousZoneOperators.add(new SousZoneOperator("c",false, BooleanOperateur.ET, null));
-        Assertions.assertEquals("200$a/200$b/200$c", presenceSousZonesMemeZone.getZones());
+        Assertions.assertEquals(3, presenceSousZonesMemeZone.getZones().size());
+        Assertions.assertEquals("200$a", presenceSousZonesMemeZone.getZones().get(0));
+        Assertions.assertEquals("200$b", presenceSousZonesMemeZone.getZones().get(1));
+        Assertions.assertEquals("200$c", presenceSousZonesMemeZone.getZones().get(2));
     }
 
     @Test
