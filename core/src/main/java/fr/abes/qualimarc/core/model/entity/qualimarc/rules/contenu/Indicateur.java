@@ -39,14 +39,25 @@ public class Indicateur extends SimpleRule implements Serializable {
     @Override
     public boolean isValid(NoticeXml ... notices) {
         NoticeXml notice = notices[0];
-        List<Datafield> zonesSource = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
-        for (Datafield datafield : zonesSource){
-            String indicateurCible = this.indicateur == 1 ? datafield.getInd1() : datafield.getInd2();
-            // # est different selon la base XML consulté (ex: # en prod = ' ' en test)
-            if(indicateurCible.equals(this.valeur) || ("#".equals(this.valeur) && indicateurCible.equals(" ")))
-                return true;
+        List<Datafield> datafieldList = notice.getDatafields().stream().filter(d -> d.getTag().equals(this.getZone())).collect(Collectors.toList());
+        if(datafieldList.isEmpty()) {
+            return false;
         }
-        return false;
+        if (this.getComplexRule() != null && this.getComplexRule().isMemeZone()) {
+            this.getComplexRule().setSavedZone(
+                    // Collecte dans une liste toutes les zones qui CONTIENNENT l'indicateur cible
+                    datafieldList.stream().filter(df -> {
+                        String indicateurCible = this.indicateur == 1 ? df.getInd1() : df.getInd2();
+                        return indicateurCible.equals(this.valeur) || (this.valeur.equals("#") && indicateurCible.equals(" "));
+                    }).collect(Collectors.toList())
+            );
+            return this.getComplexRule().isSavedZoneIsNotEmpty();
+        } else {
+            return datafieldList.stream().anyMatch(df -> {
+                String indicateurCible = this.indicateur == 1 ? df.getInd1() : df.getInd2();
+                return indicateurCible.equals(this.valeur) || (this.valeur.equals("#") && indicateurCible.equals(" "));
+            });
+        }
     }
 
     @Override
