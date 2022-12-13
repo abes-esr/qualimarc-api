@@ -46,6 +46,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/indexRules").hasAuthority("ANONYMOUS")
                 .antMatchers("/api/v1/indexComplexRules").hasAuthority("ANONYMOUS")
                 .antMatchers("/api/v1/emptyRules").hasAuthority("ANONYMOUS")
+                .antMatchers("/api/v1/indexRuleSet").hasAuthority("ANONYMOUS")
+                .antMatchers("/api/v1/emptyRuleSets").hasAuthority("ANONYMOUS")
                 .anyRequest().permitAll();
         http.addFilterBefore(jwtAuthenticationFilter(), AnonymousAuthenticationFilter.class);
 
