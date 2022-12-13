@@ -170,6 +170,8 @@ class ComparaisonDateTest {
     @Test
     void getZones() {
         ComparaisonDate comparaisonDate= new ComparaisonDate(1, "100", "a", "210", "d", ComparaisonOperateur.EGAL);
-        Assertions.assertEquals("100$a/210$d",comparaisonDate.getZones());
+        Assertions.assertEquals(2, comparaisonDate.getZones().size());
+        Assertions.assertEquals("100$a", comparaisonDate.getZones().get(0));
+        Assertions.assertEquals("210$d", comparaisonDate.getZones().get(1));
     }
 }

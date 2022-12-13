@@ -349,6 +349,7 @@ public class PresenceChaineCaracteresTest {
         list1ChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "020", "a", TypeVerification.STRICTEMENT, list1ChaineCaracteres);
 
-        Assertions.assertEquals("020$a", rule.getZones());
+        Assertions.assertEquals(1, rule.getZones().size());
+        Assertions.assertEquals("020$a", rule.getZones().get(0));
     }
 }

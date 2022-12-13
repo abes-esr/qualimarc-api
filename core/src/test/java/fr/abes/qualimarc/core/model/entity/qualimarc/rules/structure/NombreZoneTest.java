@@ -63,4 +63,11 @@ public class NombreZoneTest {
         SimpleRule rule2 = new NombreZone(1, "181", ComparaisonOperateur.INFERIEUR, 3);
         Assertions.assertTrue(rule2.isValid(notice));
     }
+
+    @Test
+    void testGetZones() {
+        SimpleRule rule = new NombreZone(1, "100", ComparaisonOperateur.INFERIEUR, 2);
+        Assertions.assertEquals(1, rule.getZones().size());
+        Assertions.assertEquals("100", rule.getZones().get(0));
+    }
 }

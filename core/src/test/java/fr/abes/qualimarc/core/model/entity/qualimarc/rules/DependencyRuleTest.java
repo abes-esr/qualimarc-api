@@ -55,6 +55,7 @@ public class DependencyRuleTest {
     @DisplayName("Récupération de la zone")
     void getZone() {
         DependencyRule rule1 = new DependencyRule(1, "607", "3", TypeNoticeLiee.AUTORITE, 1, new ComplexRule());
-        Assertions.assertEquals("607$3", rule1.getZones());
+        Assertions.assertEquals(1, rule1.getZones().size());
+        Assertions.assertEquals("607$3", rule1.getZones().get(0));
     }
 }

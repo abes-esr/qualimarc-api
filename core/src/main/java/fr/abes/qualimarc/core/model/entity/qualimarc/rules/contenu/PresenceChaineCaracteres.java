@@ -14,10 +14,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -227,8 +224,10 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
      * @return String
      */
     @Override
-    public String getZones() {
-        return this.getZone() + "$" + this.getSousZone();
+    public List<String> getZones() {
+        List<String> listZones = new ArrayList<>();
+        listZones.add(this.zone + "$" + this.sousZone);
+        return listZones;
     }
 
     private List<ChaineCaracteres> sortListChaineCaracteres(Set<ChaineCaracteres> listChainesCaracteres) {

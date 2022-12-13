@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,7 +72,9 @@ public class NombreCaracteres extends SimpleRule {
     }
 
     @Override
-    public String getZones() {
-        return this.getZone() + "$" + this.getSousZone();
+    public List<String> getZones() {
+        List<String> listZones = new ArrayList<>();
+        listZones.add(this.zone + "$" + this.sousZone);
+        return listZones;
     }
 }

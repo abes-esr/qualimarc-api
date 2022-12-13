@@ -41,12 +41,6 @@ public class NombreSousZoneTest {
     }
 
     @Test
-    void getZones() {
-        NombreSousZone rule = new NombreSousZone(1, "600", "a", "702", "b");
-        Assertions.assertEquals("600$a / 702$b", rule.getZones());
-    }
-
-    @Test
     void testIsValidSousZoneIntrouvable() {
         //si la zone sous zone n'existe pas on renvoie 0 occurrences
         SimpleRule rule1 = new NombreSousZone(1, "606", "b", "676", "b");
@@ -69,5 +63,13 @@ public class NombreSousZoneTest {
     void testIsValidZonesAbsents() {
         SimpleRule rule1 = new NombreSousZone(1, "675", "a", "674", "a");
         Assertions.assertFalse(rule1.isValid(notice));
+    }
+
+    @Test
+    void getZones() {
+        NombreSousZone rule = new NombreSousZone(1, "600", "a", "702", "b");
+        Assertions.assertEquals(2, rule.getZones().size());
+        Assertions.assertEquals("600$a", rule.getZones().get(0));
+        Assertions.assertEquals("702$b", rule.getZones().get(1));
     }
 }

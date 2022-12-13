@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,7 +48,9 @@ public class DependencyRule extends OtherRule {
     }
 
     @Override
-    public String getZones() {
-        return this.getZoneSource() + "$" + this.getSousZoneSource();
+    public List<String> getZones() {
+        List<String> listZones = new ArrayList<>();
+        listZones.add(this.zoneSource + "$" + this.sousZoneSource);
+        return listZones;
     }
 }

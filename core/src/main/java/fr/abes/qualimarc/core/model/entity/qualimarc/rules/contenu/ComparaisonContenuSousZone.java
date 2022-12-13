@@ -12,6 +12,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -184,8 +185,11 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
      * @return String
      */
     @Override
-    public String getZones() {
-        return this.getZone() + "$" + this.sousZone + " / " + this.zoneCible + "$" + this.sousZoneCible;
+    public List<String> getZones() {
+        List<String> listZones = new ArrayList<>();
+        listZones.add(this.zone + "$" + this.sousZone);
+        listZones.add(this.zoneCible + "$" + this.sousZoneCible);
+        return listZones;
     }
 
 }
