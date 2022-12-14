@@ -23,6 +23,12 @@ public class RuleSet implements Serializable {
     @Column(name = "LIBELLE")
     private String libelle;
 
+    @Column(name = "DESCRIPTION")
+    private String description;
+
+    @Column(name = "POSITION")
+    private Integer position;
+
     @ManyToMany(mappedBy = "ruleSet", targetEntity = ComplexRule.class, cascade = CascadeType.ALL)
     @JsonIgnore
     Set<ComplexRule> rules;
@@ -30,6 +36,13 @@ public class RuleSet implements Serializable {
     public RuleSet(Integer id, String libelle) {
         this.id = id;
         this.libelle = libelle;
+    }
+
+    public RuleSet(Integer id, String libelle, String description, Integer position) {
+        this.id = id;
+        this.libelle = libelle;
+        this.description = description;
+        this.position = position;
     }
 
     public RuleSet(Integer id) {
