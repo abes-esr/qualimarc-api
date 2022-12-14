@@ -91,6 +91,13 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         // création du boolean de résultat
         boolean isOk = false;
 
+        //  Vérifie qu'il y ait au moins une chaineCaracteres présente dans la liste de chaines de caractères
+        if (listChainesCaracteres == null || listChainesCaracteres.isEmpty()) {
+            return isOk;
+        }
+        //  Tri la liste de chaineCaracteres
+        List<ChaineCaracteres> sortedList = sortListChaineCaracteres(listChainesCaracteres);
+
         // pour chaque occurence de la zone
         for (Datafield zone : zones) {
 
@@ -99,117 +106,146 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
                  ) {
                 // si la sous-zone est celle recherchée
                 if (subField.getCode().equals(sousZone)) {
+                    Set<Datafield> datafieldsIsValidForSavedZone = new HashSet<>();
                     // détermination du type de recherche
                     switch (typeDeVerification) {
                         // Si la sous-zone contient STRICTEMENT la/les chaine.s de caractères
                         case STRICTEMENT:
-                            if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
-                                List<ChaineCaracteres> sortedList = sortListChaineCaracteres(listChainesCaracteres);
-                                for (ChaineCaracteres chaineCaracteres : sortedList
-                                ) {
-                                    // si il n'y a pas d'opérateur
-                                    if (chaineCaracteres.getBooleanOperateur() == null) {
-                                        isOk = subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
-                                        if(isOk) {
-                                            return isOk;
-                                        }
-                                    }
-                                    // si l'opérateur logique de la chaine de caractères recherchée est OU
-                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
-                                        isOk |= subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
-                                        if(isOk) {
-                                            return isOk;
-                                        }
+                            for (ChaineCaracteres chaineCaracteres : sortedList
+                            ) {
+                                //  Ajoute toutes les zones qui ont une chaineCaracteres qui MATCHENT STRICTEMENT avec la chaineCaracteres cible
+                                datafieldsIsValidForSavedZone.addAll(zones.stream().filter(df -> df.getSubFields().stream().anyMatch(sf -> sf.getValue().equals(chaineCaracteres.getChaineCaracteres()))).collect(Collectors.toList()));
+                                //  Si il n'y a pas d'opérateur
+                                if (chaineCaracteres.getBooleanOperateur() == null) {
+                                    isOk = subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
+                                    if(isOk) {
+                                        return isOk;
                                     }
                                 }
+                                //  Si l'opérateur logique de la chaine de caractères recherchée est OU
+                                else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
+                                    isOk |= subField.getValue().equals(chaineCaracteres.getChaineCaracteres());
+                                    if(isOk) {
+                                        return isOk;
+                                    }
+                                }
+                            }
+                            //  Collecte dans une liste toutes les zones qui comportent des sousZones qui MATCHENT avec la sousZone cible
+                            if (this.getComplexRule() != null && this.getComplexRule().isMemeZone()) {
+                                this.getComplexRule().setSavedZone(new ArrayList<>(datafieldsIsValidForSavedZone));
+                                return this.getComplexRule().isSavedZoneIsNotEmpty();
                             }
                             break;
                         // Si la sous-zone COMMENCE par la/les chaine.s de caractères
                         case COMMENCE:
-                            if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
-                                List<ChaineCaracteres> sortedList = sortListChaineCaracteres(listChainesCaracteres);
-                                for (ChaineCaracteres chaineCaracteres : sortedList
-                                ) {
-                                    // si il n'y a pas d'opérateur
-                                    if (chaineCaracteres.getBooleanOperateur() == null) {
-                                        isOk = subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres());
-                                        if(isOk) {
-                                            return isOk;
-                                        }
-                                    }
-                                    // si l'opérateur logique de la chaine de caractères recherchée est OU
-                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
-                                        isOk |= subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres());
-                                        if(isOk) {
-                                            return isOk;
-                                        }
+                            for (ChaineCaracteres chaineCaracteres : sortedList
+                            ) {
+                                //  Ajoute toutes les zones qui ont une chaineCaracteres qui MATCHENT STRICTEMENT avec la chaineCaracteres cible
+                                datafieldsIsValidForSavedZone.addAll(zones.stream().filter(df -> df.getSubFields().stream().anyMatch(sf -> sf.getValue().startsWith(chaineCaracteres.getChaineCaracteres()))).collect(Collectors.toList()));
+                                // si il n'y a pas d'opérateur
+                                if (chaineCaracteres.getBooleanOperateur() == null) {
+                                    isOk = subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres());
+                                    if(isOk) {
+                                        return isOk;
                                     }
                                 }
+                                // si l'opérateur logique de la chaine de caractères recherchée est OU
+                                else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
+                                    isOk |= subField.getValue().startsWith(chaineCaracteres.getChaineCaracteres());
+                                    if(isOk) {
+                                        return isOk;
+                                    }
+                                }
+                            }
+                            //  Collecte dans une liste toutes les zones qui comportent des sousZones qui MATCHENT avec la sousZone cible
+                            if (this.getComplexRule() != null && this.getComplexRule().isMemeZone()) {
+                                this.getComplexRule().setSavedZone(new ArrayList<>(datafieldsIsValidForSavedZone));
+                                return this.getComplexRule().isSavedZoneIsNotEmpty();
                             }
                             break;
                         // Si la sous-zone TERMINE par la/les chaine.s de caractères
                         case TERMINE:
-                            if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
-                                List<ChaineCaracteres> sortedList = sortListChaineCaracteres(listChainesCaracteres);
-                                for (ChaineCaracteres chaineCaracteres : sortedList
-                                ) {
-                                    // si il n'y a pas d'opérateur
-                                    if (chaineCaracteres.getBooleanOperateur() == null) {
-                                        isOk = subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres());
-                                        if(isOk) {
-                                            return isOk;
-                                        }
+                            for (ChaineCaracteres chaineCaracteres : sortedList
+                            ) {
+                                //  Ajoute toutes les zones qui ont une chaineCaracteres qui MATCHENT STRICTEMENT avec la chaineCaracteres cible
+                                datafieldsIsValidForSavedZone.addAll(zones.stream().filter(df -> df.getSubFields().stream().anyMatch(sf -> sf.getValue().endsWith(chaineCaracteres.getChaineCaracteres()))).collect(Collectors.toList()));
+                                // si il n'y a pas d'opérateur
+                                if (chaineCaracteres.getBooleanOperateur() == null) {
+                                    isOk = subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres());
+                                    if(isOk) {
+                                        return isOk;
                                     }
-                                    // si l'opérateur logique de la chaine de caractères recherchée est OU
-                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
-                                        isOk |= subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres());
-                                        if(isOk) {
-                                            return isOk;
-                                        }
+                                  }
+                                // si l'opérateur logique de la chaine de caractères recherchée est OU
+                                else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
+                                    isOk |= subField.getValue().endsWith(chaineCaracteres.getChaineCaracteres());
+                                    if(isOk) {
+                                        return isOk;
                                     }
                                 }
+                            }
+                            //  Collecte dans une liste toutes les zones qui comportent des sousZones qui MATCHENT avec la sousZone cible
+                            if (this.getComplexRule() != null && this.getComplexRule().isMemeZone()) {
+                                this.getComplexRule().setSavedZone(new ArrayList<>(datafieldsIsValidForSavedZone));
+                                return this.getComplexRule().isSavedZoneIsNotEmpty();
                             }
                             break;
                         // Si la sous-zone CONTIENT la/les chaine.s de caractères
                         case CONTIENT:
-                            if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
-                                List<ChaineCaracteres> sortedList = sortListChaineCaracteres(listChainesCaracteres);
-                                for (ChaineCaracteres chaineCaracteres : sortedList
-                                ) {
-                                    // si il n'y a pas d'opérateur
-                                    if (chaineCaracteres.getBooleanOperateur() == null) {
-                                        isOk = subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
-                                    }
-                                    // si l'opérateur logique de la chaine de caractères recherchée est ET
-                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
-                                        isOk &= subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
-                                    }
-                                    // si l'opérateur logique de la chaine de caractères recherchée est OU
-                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
-                                        isOk |= subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
-                                    }
+                            for (ChaineCaracteres chaineCaracteres : sortedList
+                            ) {
+                                // si il n'y a pas d'opérateur
+                                if (chaineCaracteres.getBooleanOperateur() == null) {
+                                    isOk = subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    //  Ajoute toutes les zones qui ont une chaineCaracteres qui CONTIENNENT la chaineCaracteres cible
+                                    datafieldsIsValidForSavedZone.addAll(zones.stream().filter(df -> df.getSubFields().stream().anyMatch(sf -> sf.getValue().contains(chaineCaracteres.getChaineCaracteres()))).collect(Collectors.toList()));
                                 }
+                                // si l'opérateur logique de la chaine de caractères recherchée est ET
+                                else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
+                                    isOk &= subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    //  Ajoute toutes les zones qui ont une chaineCaracteres qui CONTIENNENT la chaineCaracteres cible
+                                    datafieldsIsValidForSavedZone = datafieldsIsValidForSavedZone.stream().filter(datafield -> zones.stream().filter(df -> df.getSubFields().stream().anyMatch(sf -> sf.getValue().contains(chaineCaracteres.getChaineCaracteres()))).collect(Collectors.toList()).contains(datafield)).collect(Collectors.toSet());
+                                }
+                                // si l'opérateur logique de la chaine de caractères recherchée est OU
+                                else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
+                                    isOk |= subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    //  Ajoute toutes les zones qui ont une chaineCaracteres qui CONTIENNENT la chaineCaracteres cible
+                                    datafieldsIsValidForSavedZone.addAll(zones.stream().filter(df -> df.getSubFields().stream().anyMatch(sf -> sf.getValue().contains(chaineCaracteres.getChaineCaracteres()))).collect(Collectors.toList()));
+                                }
+                            }
+                            //  Collecte dans une liste toutes les zones qui comportent des sousZones qui MATCHENT avec la sousZone cible
+                            if (this.getComplexRule() != null && this.getComplexRule().isMemeZone()) {
+                                this.getComplexRule().setSavedZone(new ArrayList<>(datafieldsIsValidForSavedZone));
+                                return this.getComplexRule().isSavedZoneIsNotEmpty();
                             }
                             break;
                         // Si la sous-zone NECONTIENTPAS la/les chaine.s de caractères
                         case NECONTIENTPAS:
-                            if (listChainesCaracteres != null && !listChainesCaracteres.isEmpty()) {
-                                List<ChaineCaracteres> sortedList = sortListChaineCaracteres(listChainesCaracteres);
-                                for (ChaineCaracteres chaineCaracteres : sortedList
-                                ) {
-                                    // si il n'y a pas d'opérateur
-                                    if (chaineCaracteres.getBooleanOperateur() == null) {
-                                        isOk = !subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
-                                    }
-                                    // si l'opérateur logique de la chaine de caractères recherchée est ET
-                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
-                                        isOk &= !subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
-                                    }
-                                    // si l'opérateur logique de la chaine de caractères recherchée est OU
-                                    else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
-                                        isOk |= !subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
-                                    }
+                            for (ChaineCaracteres chaineCaracteres : sortedList
+                            ) {
+                                // si il n'y a pas d'opérateur
+                                if (chaineCaracteres.getBooleanOperateur() == null) {
+                                    isOk = !subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    //  Ajoute toutes les zones qui ont une chaineCaracteres qui NE CONTIENNENT PAS la chaineCaracteres cible
+                                    datafieldsIsValidForSavedZone.addAll(zones.stream().filter(df -> df.getSubFields().stream().noneMatch(sf -> sf.getValue().contains(chaineCaracteres.getChaineCaracteres()))).collect(Collectors.toList()));
                                 }
+                                // si l'opérateur logique de la chaine de caractères recherchée est ET
+                                else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.ET)) {
+                                    isOk &= !subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    //  Ajoute toutes les zones qui ont une chaineCaracteres qui CONTIENNENT la chaineCaracteres cible
+                                    datafieldsIsValidForSavedZone = datafieldsIsValidForSavedZone.stream().filter(datafield -> zones.stream().filter(df -> df.getSubFields().stream().noneMatch(sf -> sf.getValue().contains(chaineCaracteres.getChaineCaracteres()))).collect(Collectors.toList()).contains(datafield)).collect(Collectors.toSet());
+                                }
+                                // si l'opérateur logique de la chaine de caractères recherchée est OU
+                                else if (chaineCaracteres.getBooleanOperateur().equals(BooleanOperateur.OU)) {
+                                    isOk |= !subField.getValue().contains(chaineCaracteres.getChaineCaracteres());
+                                    //  Ajoute toutes les zones qui ont une chaineCaracteres qui CONTIENNENT la chaineCaracteres cible
+                                    datafieldsIsValidForSavedZone.addAll(zones.stream().filter(df -> df.getSubFields().stream().noneMatch(sf -> sf.getValue().contains(chaineCaracteres.getChaineCaracteres()))).collect(Collectors.toList()));
+                                }
+                            }
+                            //  Collecte dans une liste toutes les zones qui comportent des sousZones qui MATCHENT avec la sousZone cible
+                            if (this.getComplexRule() != null && this.getComplexRule().isMemeZone()) {
+                                this.getComplexRule().setSavedZone(new ArrayList<>(datafieldsIsValidForSavedZone));
+                                return this.getComplexRule().isSavedZoneIsNotEmpty();
                             }
                             break;
                     }

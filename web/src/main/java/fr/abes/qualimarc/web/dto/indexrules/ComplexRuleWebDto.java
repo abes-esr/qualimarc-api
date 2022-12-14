@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 @Data
 public class ComplexRuleWebDto {
@@ -19,6 +18,10 @@ public class ComplexRuleWebDto {
 
     @JsonProperty("id-excel")
     private Integer idExcel;
+
+    @Pattern(regexp = "\\b([A-Z]{0,1}[0-9]{3}|4XX|5XX|6XX|7XX)\\b", message = "Le champ zone doit contenir : soit trois chiffres, soit une lettre majuscule suivie de trois chiffres, soit une zone générique (4XX, 5XX, 6XX, ou 7XX).")
+    @JsonProperty("zone")
+    private String zone;
 
     @JsonProperty("jeux-de-regles")
     private List<Integer> ruleSetList;

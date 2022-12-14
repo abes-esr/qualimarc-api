@@ -243,18 +243,12 @@ public class WebDtoMapper {
             @Override
             public ComplexRule convert(MappingContext<ComparaisonContenuSousZoneWebDto, ComplexRule> context) {
                 ComparaisonContenuSousZoneWebDto source = context.getSource();
-                Integer nombreCaracteres = null;
-                if (source.getNombreCaracteres() != null) {
-                    nombreCaracteres = convertNombreCaracteres(source.getNombreCaracteres());
-                }
                 checkOtherRule(source);
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeVerification()), nombreCaracteres, source.getZoneCible(), source.getSousZoneCible()));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeVerification()), convertNombreCaracteres(source.getNombreCaracteres()), source.getZoneCible(), source.getSousZoneCible()));
             }
         };
         mapper.addConverter(myConverter);
     }
-
-
 
     /**
      * Convertion d'un modèle PresenceZoneWebDto en modèle SimpleRule (LinkedRule)
@@ -375,11 +369,7 @@ public class WebDtoMapper {
         Converter<ComparaisonContenuSousZoneWebDto, SimpleRule> myConverter = new Converter<ComparaisonContenuSousZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<ComparaisonContenuSousZoneWebDto, SimpleRule> context) {
                 ComparaisonContenuSousZoneWebDto source = context.getSource();
-                Integer nombreCaracteres = null;
-                if (source.getNombreCaracteres() != null) {
-                    nombreCaracteres = convertNombreCaracteres(source.getNombreCaracteres());
-                }
-                return new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeVerification()), nombreCaracteres, source.getZoneCible(), source.getSousZoneCible());
+                return new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.getSousZone(), getTypeDeVerification(source.getTypeVerification()), convertNombreCaracteres(source.getNombreCaracteres()), source.getZoneCible(), source.getSousZoneCible());
             }
         };
         mapper.addConverter(myConverter);
@@ -465,7 +455,7 @@ public class WebDtoMapper {
                 ComplexRuleWebDto source = context.getSource();
                 ComplexRule target;
                 //vérification qu'aucune règle simple ne contient de zone générique
-                if (source.getRegles().stream().anyMatch(rule -> rule.getZone().matches("\\dXX"))) {
+                if (source.getRegles().stream().anyMatch(rule -> (rule.getZone() != null && rule.getZone().matches("\\dXX")))) {
                     throw new IllegalArgumentException("Une règle complexe ne peut pas contenir de règles simple avec des zones génériques");
                 }
                 Iterator<SimpleRuleWebDto> reglesIt = source.getRegles().listIterator();
@@ -476,7 +466,17 @@ public class WebDtoMapper {
                     throw new IllegalArgumentException("La première règle d'une règle complexe ne peut pas être une règle de réciprocité");
                 int i = 0;
                 if (null == firstRegle.getBooleanOperator()) {
-                    target = new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), mapper.map(firstRegle, SimpleRule.class));
+                    if(source.getZone() != null){
+                        //verifier que la regle soit du bon type : [ presenceZone, presenceSousZone, presenceChaineCaracteres, indicateur, positionSousZone ]
+                        checkRuleWebDtoIsAInstanseMemeZoneRules(firstRegle);
+                        firstRegle.setZone(source.getZone());
+                        SimpleRule firstRegleEntity = mapper.map(firstRegle, SimpleRule.class);
+                        target = new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), firstRegleEntity);
+                        target.setMemeZone(true);
+                        firstRegleEntity.setComplexRule(target);
+                    }else{
+                        target = new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), mapper.map(firstRegle, SimpleRule.class));
+                    }
                     if (source.getRuleSetList() != null) {
                         target.setRuleSet(getRuleSet(source.getRuleSetList()));
                     }
@@ -493,7 +493,7 @@ public class WebDtoMapper {
                         checkTypeThese(otherRegle.getTypesThese());
                         if (otherRegle instanceof ReciprociteWebDto && !isDependencyRuleCreated)
                             throw new IllegalArgumentException("Une règle de dépendance doit être créée avant de créer une règle de réciprocité");
-                        if (otherRegle.getBooleanOperator() == null && !(otherRegle instanceof DependencyWebDto) && !isPreviousRegleDependency)
+                        if (otherRegle.getBooleanOperator() == null && !(otherRegle instanceof DependencyWebDto) && !isPreviousRegleDependency && (source.getZone() == null))
                             throw new IllegalArgumentException("Les règles autres que la première d'une règle complexe doivent avoir un opérateur");
                         //si la règle précédente est de type dépendance, la règle en cours ne doit pas avoir d'opérateur
                         if (isPreviousRegleDependency && otherRegle.getBooleanOperator() != null)
@@ -508,8 +508,16 @@ public class WebDtoMapper {
                             target.addOtherRule(new DependencyRule(otherRegle.getId(), otherRegle.getZone(), ((DependencyWebDto) otherRegle).getSousZone(), getTypeNoticeLiee(((DependencyWebDto) otherRegle).getTypeNoticeLiee()), i++, target));
                             isDependencyRuleCreated = true;
                         }
-                        else
-                            target.addOtherRule(new LinkedRule(mapper.map(otherRegle, SimpleRule.class), isPreviousRegleDependency ? BooleanOperateur.ET : getOperateur(otherRegle.getBooleanOperator()), i++, target));
+                        else {
+                            if(source.getZone() != null) {
+                                //verifier que la regle soit du bon type : [ presenceZone, presenceSousZone, presenceChaineCaracteres, indicateur, positionSousZone ]
+                                checkRuleWebDtoIsAInstanseMemeZoneRules(otherRegle);
+                                otherRegle.setZone(source.getZone());
+                                target.addOtherRule(new LinkedRule(mapper.map(otherRegle, SimpleRule.class),  BooleanOperateur.ET, i++, target));
+                            } else {
+                                target.addOtherRule(new LinkedRule(mapper.map(otherRegle, SimpleRule.class), isPreviousRegleDependency ? BooleanOperateur.ET : getOperateur(otherRegle.getBooleanOperator()), i++, target));
+                            }
+                        }
                         isPreviousRegleDependency = otherRegle instanceof DependencyWebDto;
                     }
 
@@ -521,22 +529,6 @@ public class WebDtoMapper {
         };
         mapper.addConverter(myConverter);
     }
-
-    private void checkDependencyRule(DependencyWebDto regle) throws IllegalArgumentException {
-        if (regle.getPriority() != null)
-            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de priorité");
-        if (regle.getMessage() != null)
-            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de message");
-        if (regle.getBooleanOperator() != null)
-            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir d'opérateur");
-        if (!regle.getRuleSetList().isEmpty())
-            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de jeu de règles personnalisé");
-        if (!regle.getTypesDoc().isEmpty())
-            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de famille de documents");
-        if (!regle.getTypesThese().isEmpty())
-            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de type thèse");
-    }
-
 
     /**
      * Convertion d'un modèle ResultAnalyse en modèle ResultAnalyseResponseDto
@@ -664,6 +656,8 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
+    // -------------------------------------- Constructeur simplerule --------------------------------------
+
     /**
      * Création d'un objet PresenceChaineCaracteres à partir des données issues d'un objet PresenceChaineCaracteresWebDto
      * @param source PresenceChaineCaracteresWebDto
@@ -730,8 +724,6 @@ public class WebDtoMapper {
         }
         return target;
     }
-
-
     private TypeCaractere constructTypeCaractere(TypeCaractereWebDto source) {
         if(source.getTypeCaracteres().isEmpty()){
             throw new IllegalArgumentException("Règle " + source.getId() + " : Le champ type-caracteres est obligatoire");
@@ -754,6 +746,14 @@ public class WebDtoMapper {
             throw new IllegalArgumentException("Règle " + source.getId() + " : le champ position ne peut être compris qu'entre 1 et 4");
         return new TypeDocument(source.getId(), getTypeDeVerification(source.getTypeDeVerification()), source.getPosition(), source.getValeur());
     }
+
+    private Integer convertNombreCaracteres(String nombreCarateres) {
+        if(nombreCarateres == null)
+            return null;
+        return Integer.valueOf(nombreCarateres);
+    }
+
+    // ---------------------------------------- Get Enum From String ----------------------------------------
 
     private Priority getPriority(String priority) {
         return EnumUtils.getEnum(Priority.class, priority);
@@ -808,12 +808,32 @@ public class WebDtoMapper {
             return null;
     }
 
+    //---------------------------------------------------------- Checkers ----------------------------------------------------------
+
+    private void checkDependencyRule(DependencyWebDto regle) throws IllegalArgumentException {
+        if (regle.getPriority() != null)
+            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de priorité");
+        if (regle.getMessage() != null)
+            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de message");
+        if (regle.getBooleanOperator() != null)
+            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir d'opérateur");
+        if (!regle.getRuleSetList().isEmpty())
+            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de jeu de règles personnalisé");
+        if (!regle.getTypesDoc().isEmpty())
+            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de famille de documents");
+        if (!regle.getTypesThese().isEmpty())
+            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de type thèse");
+    }
+
     private void checkOtherRule(SimpleRuleWebDto source) {
         if (source.getBooleanOperator() != null) {
             throw new IllegalArgumentException("Règle " + source.getId() + " : L'opérateur est interdit lors de la création d'une seule règle");
         }
         if (source.getMessage() == null || source.getPriority() == null) {
             throw new IllegalArgumentException("Règle " + source.getId() + " : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple");
+        }
+        if (source.getZone() == null) {
+            throw new IllegalArgumentException("Règle " + source.getId() + " : La zone est obligatoire lors de la création d'une règle simple");
         }
         checkTypeThese(source.getTypesThese());
     }
@@ -833,7 +853,12 @@ public class WebDtoMapper {
         }
     }
 
-    private Integer convertNombreCaracteres(String nombreCarateres) {
-        return Integer.valueOf(nombreCarateres);
+    private void checkRuleWebDtoIsAInstanseMemeZoneRules(SimpleRuleWebDto rule){
+        if(!(rule instanceof PresenceZoneWebDto) && !(rule instanceof PresenceSousZoneWebDto) && !(rule instanceof PositionSousZoneWebDto) && !(rule instanceof PresenceChaineCaracteresWebDto) && !(rule instanceof IndicateurWebDto)){
+            throw new IllegalArgumentException("Règle " + rule.getId() + " : La règle n'est pas une règle qui peut s'appliquer sur une même instance de zone");
+        }
+        if(rule.getZone() != null){
+            throw new IllegalArgumentException("Les règles complexe ne peuvent pas contenir de règles simples avec des zones différentes");
+        }
     }
 }

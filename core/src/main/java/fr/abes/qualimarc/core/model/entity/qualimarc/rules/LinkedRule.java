@@ -31,6 +31,7 @@ public class LinkedRule extends OtherRule {
     public LinkedRule(SimpleRule rule, BooleanOperateur operateur, Integer position, ComplexRule complexRule) {
         super(rule.getId(), position, complexRule);
         this.rule = rule;
+        this.rule.setComplexRule(complexRule);
         this.operateur = operateur;
     }
 

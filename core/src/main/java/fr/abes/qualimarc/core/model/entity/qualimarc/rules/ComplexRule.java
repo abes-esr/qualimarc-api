@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.core.model.entity.qualimarc.rules;
 
+import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
@@ -71,6 +72,11 @@ public class ComplexRule implements Serializable {
     @OneToMany(mappedBy = "complexRule", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<OtherRule> otherRules;
 
+    private boolean isMemeZone = false;
+
+    @Transient
+    private List<Datafield> savedZone;
+
     protected ComplexRule(){}
 
     public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, SimpleRule firstRule, List<OtherRule> otherRules) {
@@ -115,6 +121,8 @@ public class ComplexRule implements Serializable {
         this.ruleSet = new HashSet<>();
         this.firstRule = firstRule;
         this.otherRules = new LinkedList<>();
+        this.firstRule.setComplexRule(this);
+        this.savedZone = new ArrayList<>();
     }
 
     public ComplexRule(SimpleRule rule) {
@@ -136,6 +144,29 @@ public class ComplexRule implements Serializable {
 
     public void addOtherRule(OtherRule otherRule) {
         this.otherRules.add(otherRule);
+    }
+
+    /**
+     * Méthode qui créer la savedZone si est ne l'a pas déjà été.
+     * Méthode qui fait une intersection entre la liste de dataFields en paramètre de la méthode
+     * et les datafields contenus dans savedZone, si la savedZone a déjà été créée
+     * @param datafields liste de datafields à collecter
+     */
+    public void setSavedZone(List<Datafield> datafields) {
+        if (this.savedZone.isEmpty()) {
+            this.savedZone = datafields;
+        } else {
+            this.savedZone = this.savedZone.stream().filter(datafields::contains).collect(Collectors.toList());
+        }
+    }
+
+    /**
+     * Renvoie true si la savedZone n'est pas vide
+     * Renvoie false si la savedZone est vide
+     * @return boolean
+     */
+    public boolean isSavedZoneIsNotEmpty() {
+        return !savedZone.isEmpty();
     }
 
     /**
@@ -195,7 +226,7 @@ public class ComplexRule implements Serializable {
 
     /**
      * Vérifie la validité d'une règle complexe sans règle de dépendance, sur une seule notice
-     * @param notice
+     * @param notice la notice sur laquelle appliquer la méthode
      * @return true si la règle est valide, false sinon
      */
     private boolean isValidOneNotice(NoticeXml notice) {
