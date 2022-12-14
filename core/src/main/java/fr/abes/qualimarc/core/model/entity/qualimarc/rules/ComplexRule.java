@@ -72,7 +72,7 @@ public class ComplexRule implements Serializable {
     @OneToMany(mappedBy = "complexRule", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<OtherRule> otherRules;
 
-    private boolean isMemeZone;
+    private boolean isMemeZone = false;
 
     @Transient
     private List<Datafield> savedZone;
