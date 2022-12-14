@@ -461,7 +461,7 @@ public class WebDtoMapper {
                         checkTypeThese(otherRegle.getTypesThese());
                         if (otherRegle instanceof ReciprociteWebDto && !isDependencyRuleCreated)
                             throw new IllegalArgumentException("Une règle de dépendance doit être créée avant de créer une règle de réciprocité");
-                        if (otherRegle.getBooleanOperator() == null && !(otherRegle instanceof DependencyWebDto) && !isPreviousRegleDependency)
+                        if (otherRegle.getBooleanOperator() == null && !(otherRegle instanceof DependencyWebDto) && !isPreviousRegleDependency && (source.getZone() == null))
                             throw new IllegalArgumentException("Les règles autres que la première d'une règle complexe doivent avoir un opérateur");
                         //si la règle précédente est de type dépendance, la règle en cours ne doit pas avoir d'opérateur
                         if (isPreviousRegleDependency && otherRegle.getBooleanOperator() != null)
@@ -497,22 +497,6 @@ public class WebDtoMapper {
         };
         mapper.addConverter(myConverter);
     }
-
-    private void checkDependencyRule(DependencyWebDto regle) throws IllegalArgumentException {
-        if (regle.getPriority() != null)
-            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de priorité");
-        if (regle.getMessage() != null)
-            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de message");
-        if (regle.getBooleanOperator() != null)
-            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir d'opérateur");
-        if (!regle.getRuleSetList().isEmpty())
-            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de jeu de règles personnalisé");
-        if (!regle.getTypesDoc().isEmpty())
-            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de famille de documents");
-        if (!regle.getTypesThese().isEmpty())
-            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de type thèse");
-    }
-
 
     /**
      * Convertion d'un modèle ResultAnalyse en modèle ResultAnalyseResponseDto
@@ -617,6 +601,8 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
+    // -------------------------------------- Constructeur simplerule --------------------------------------
+
     /**
      * Création d'un objet PresenceChaineCaracteres à partir des données issues d'un objet PresenceChaineCaracteresWebDto
      * @param source PresenceChaineCaracteresWebDto
@@ -683,7 +669,24 @@ public class WebDtoMapper {
         }
         return target;
     }
+    private TypeCaractere constructTypeCaractere(TypeCaractereWebDto source) {
+        if(source.getTypeCaracteres().isEmpty()){
+            throw new IllegalArgumentException("Règle " + source.getId() + " : Le champ type-caracteres est obligatoire");
+        }
+        TypeCaractere target = new TypeCaractere(source.getId(), source.getZone(), source.getSousZone());
+        for(String typeCaracteresString : source.getTypeCaracteres()){
+            target.addTypeCaractere(getTypeCaracteres(typeCaracteresString));
+        }
+        return target;
+    }
 
+    private Integer convertNombreCaracteres(String nombreCarateres) {
+        if(nombreCarateres == null)
+            return null;
+        return Integer.valueOf(nombreCarateres);
+    }
+
+    // ---------------------------------------- Get Enum From String ----------------------------------------
 
     private Priority getPriority(String priority) {
         return EnumUtils.getEnum(Priority.class, priority);
@@ -738,6 +741,23 @@ public class WebDtoMapper {
             return null;
     }
 
+    //---------------------------------------------------------- Checkers ----------------------------------------------------------
+
+    private void checkDependencyRule(DependencyWebDto regle) throws IllegalArgumentException {
+        if (regle.getPriority() != null)
+            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de priorité");
+        if (regle.getMessage() != null)
+            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de message");
+        if (regle.getBooleanOperator() != null)
+            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir d'opérateur");
+        if (!regle.getRuleSetList().isEmpty())
+            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de jeu de règles personnalisé");
+        if (!regle.getTypesDoc().isEmpty())
+            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de famille de documents");
+        if (!regle.getTypesThese().isEmpty())
+            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de type thèse");
+    }
+
     private void checkOtherRule(SimpleRuleWebDto source) {
         if (source.getBooleanOperator() != null) {
             throw new IllegalArgumentException("Règle " + source.getId() + " : L'opérateur est interdit lors de la création d'une seule règle");
@@ -773,21 +793,5 @@ public class WebDtoMapper {
         if(rule.getZone() != null){
             throw new IllegalArgumentException("Les règles complexe ne peuvent pas contenir de règles simples avec des zones différentes");
         }
-    }
-    private TypeCaractere constructTypeCaractere(TypeCaractereWebDto source) {
-        if(source.getTypeCaracteres().isEmpty()){
-            throw new IllegalArgumentException("Règle " + source.getId() + " : Le champ type-caracteres est obligatoire");
-        }
-        TypeCaractere target = new TypeCaractere(source.getId(), source.getZone(), source.getSousZone());
-        for(String typeCaracteresString : source.getTypeCaracteres()){
-            target.addTypeCaractere(getTypeCaracteres(typeCaracteresString));
-        }
-        return target;
-    }
-
-    private Integer convertNombreCaracteres(String nombreCarateres) {
-        if(nombreCarateres == null)
-            return null;
-        return Integer.valueOf(nombreCarateres);
     }
 }
