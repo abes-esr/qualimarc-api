@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,8 +76,10 @@ public class PresenceSousZone extends SimpleRule implements Serializable {
     }
 
     @Override
-    public String getZones() {
-        return this.getZone() + "$" + this.getSousZone();
+    public List<String> getZones() {
+        List<String> listZones = new ArrayList<>();
+        listZones.add(this.zone + "$" + this.sousZone);
+        return listZones;
     }
 }
 

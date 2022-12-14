@@ -51,6 +51,7 @@ public class PresenceSousZoneTest {
     @DisplayName("test getZones")
     void getZones() {
         PresenceSousZone rule = new PresenceSousZone(1, "020", "a", true);
-        Assertions.assertEquals("020$a", rule.getZones());
+        Assertions.assertEquals(1, rule.getZones().size());
+        Assertions.assertEquals("020$a", rule.getZones().get(0));
     }
 }

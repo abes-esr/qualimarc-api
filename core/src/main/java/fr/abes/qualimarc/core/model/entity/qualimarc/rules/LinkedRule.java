@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * Règle liée composée d'une règle simple et d'un opérateur pour pouvoir la conditionner avec la règle précédente d'une liste
@@ -35,7 +36,7 @@ public class LinkedRule extends OtherRule {
     }
 
     @Override
-    public String getZones() {
+    public List<String> getZones() {
         return this.getRule().getZones();
     }
 }

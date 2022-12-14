@@ -1,9 +1,12 @@
 package fr.abes.qualimarc.web.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.service.ReferenceService;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.configuration.WebConfig;
+import fr.abes.qualimarc.web.exception.ExceptionControllerHandler;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,19 +16,23 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,10 +49,16 @@ public class ReferenceControllerTest {
     @Autowired
     MappingJackson2HttpMessageConverter jsonHttpConverter;
 
+    @Autowired
+    MappingJackson2HttpMessageConverter yamlHttpConverter;
+
     MockMvc mockMvc;
 
     @MockBean
     ReferenceService referenceService;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Autowired
     UtilsMapper utilsMapper;
@@ -55,7 +68,8 @@ public class ReferenceControllerTest {
         MockitoAnnotations.openMocks(this);
         this.mockMvc = MockMvcBuilders
                 .standaloneSetup(context.getBean(ReferenceController.class))
-                .setMessageConverters(this.jsonHttpConverter)
+                .setMessageConverters(this.yamlHttpConverter, this.jsonHttpConverter)
+                .setControllerAdvice(new ExceptionControllerHandler())
                 .build();
     }
 
@@ -80,5 +94,47 @@ public class ReferenceControllerTest {
                 .andExpect(jsonPath("$.[3].id").value("SOUT"))
                 .andExpect(jsonPath("$.[3].libelle").value("Thèse de soutenance"))
                 .andReturn();
+    }
+
+    @Test
+    void testIndexRulesSet() throws Exception {
+        String yaml =
+                "jeux-de-regles:\n" +
+                "    - id:          1\n" +
+                "      libelle:     test\n" +
+                "      description: descriptiontest\n" +
+                "      position:    0\n" +
+                "    - id:          2\n" +
+                "      libelle:     test1\n" +
+                "      description: descriptiontest1\n" +
+                "      position:    1\n";
+
+        Mockito.doNothing().when(referenceService).saveAllRuleSets(Mockito.any());
+
+        this.mockMvc.perform(post("/api/v1/indexRuleSet")
+                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8)).andExpect(status().isOk());
+    }
+
+    @Test
+    void testIndexRulesSetDataViolationIntegrity() throws Exception {
+        String yaml =
+                "jeux-de-regles:\n" +
+                        "    - id:          1\n" +
+                        "      libelle:     test\n" +
+                        "      description: descriptiontest\n" +
+                        "      position:    0\n" +
+                        "    - id:          2\n" +
+                        "      libelle:     test1\n" +
+                        "      description: descriptiontest1\n" +
+                        "      position:    1\n";
+
+        Mockito.doThrow(DataIntegrityViolationException.class).when(referenceService).saveAllRuleSets(Mockito.any());
+
+        this.mockMvc.perform(post("/api/v1/indexRuleSet")
+                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isBadRequest())
+                .andExpect(result1 -> result1.getResponse().getContentAsString().contains("debugMessage: Un jeu de règles avec l'identifiant null existe déjà"));
     }
 }

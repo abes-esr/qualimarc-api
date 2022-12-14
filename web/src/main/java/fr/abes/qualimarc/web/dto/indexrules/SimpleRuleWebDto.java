@@ -33,7 +33,8 @@ import java.util.List;
         @JsonSubTypes.Type(value = ReciprociteWebDto.class, name = "reciprocite"),
         @JsonSubTypes.Type(value = ComparaisonDateWebDto.class, name = "comparaisondate"),
         @JsonSubTypes.Type(value = ReciprociteWebDto.class, name = "reciprocite"),
-        @JsonSubTypes.Type(value = ComparaisonContenuSousZoneWebDto.class, name = "comparaisoncontenusouszone")
+        @JsonSubTypes.Type(value = ComparaisonContenuSousZoneWebDto.class, name = "comparaisoncontenusouszone"),
+        @JsonSubTypes.Type(value = TypeDocumentWebDto.class, name = "typedocument")
 })
 public abstract class SimpleRuleWebDto {
     @JsonProperty("id")

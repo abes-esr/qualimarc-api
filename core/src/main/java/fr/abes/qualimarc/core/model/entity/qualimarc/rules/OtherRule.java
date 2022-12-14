@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "LINKED_RULE")
@@ -30,5 +31,5 @@ public abstract class OtherRule implements Serializable {
         this.complexRule = complexRule;
     }
 
-    public abstract String getZones();
+    public abstract List<String> getZones();
 }

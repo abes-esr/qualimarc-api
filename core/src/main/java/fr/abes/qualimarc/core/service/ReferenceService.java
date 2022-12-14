@@ -35,6 +35,10 @@ public class ReferenceService {
         return ruleSetRepository.findAllByRulesNotEmpty();
     }
 
+    public void viderRulesSet() {
+        ruleSetRepository.deleteAll();
+    }
+
     public FamilleDocument getFamilleDocument(String typeDocument) {
         Optional<FamilleDocument> familleDocument = familleDocumentRepository.findById(typeDocument);
         if (familleDocument.isPresent()) {
@@ -45,5 +49,9 @@ public class ReferenceService {
 
     public List<String> getZonesGeneriques(String zone) {
         return this.zoneGeneriqueRepository.getZoneGeneriqueZoneByZoneGenerique(zone);
+    }
+
+    public void saveAllRuleSets(List<RuleSet> ruleSetList){
+        this.ruleSetRepository.saveAll(ruleSetList);
     }
 }

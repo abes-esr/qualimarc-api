@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,15 +72,15 @@ public class PresenceSousZonesMemeZone extends SimpleRule implements Serializabl
     }
 
     @Override
-    public String getZones() {
-        StringBuilder zones = new StringBuilder("");
+    public List<String> getZones() {
+        List<String> listZone = new ArrayList<>();
         for (int i =0; i < sousZoneOperators.size(); i++) {
-            zones.append(this.getZone());
-            zones.append("$");
-            zones.append(sousZoneOperators.get(i).getSousZone());
-            if(i < (sousZoneOperators.size()-1))
-                zones.append("/");
+            StringBuilder zone = new StringBuilder();
+            zone.append(this.zone);
+            zone.append("$");
+            zone.append(sousZoneOperators.get(i).getSousZone());
+            listZone.add(zone.toString());
         }
-        return zones.toString();
+        return listZone;
     }
 }

@@ -24,6 +24,7 @@ import fr.abes.qualimarc.web.dto.indexrules.contenu.*;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
+import fr.abes.qualimarc.web.dto.rulesets.RuleSetWebDto;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.EnumUtils;
 import org.modelmapper.Converter;
@@ -216,6 +217,23 @@ public class WebDtoMapper {
         };
         mapper.addConverter(myConverter);
     }
+
+    /**
+     * Convertion d'un modèle TypeDocumentWebDto en modèle ComplexRule
+     */
+    @Bean
+    public void converterTypeDocumentToComplexRule() {
+        Converter<TypeDocumentWebDto, ComplexRule> myConverter = new Converter<TypeDocumentWebDto, ComplexRule>() {
+            public ComplexRule convert(MappingContext<TypeDocumentWebDto, ComplexRule> context) {
+                TypeDocumentWebDto source = context.getSource();
+                checkOtherRule(source);
+                TypeDocument target = constructTypeDocument(source);
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), target);
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
     /**
      * Conversion d'un modèle ComparaisonContenuSousZoneWebDto en modèle ComplexRule
      */
@@ -387,7 +405,7 @@ public class WebDtoMapper {
     }
 
     /**
-     * Convertion d'un modèle ReciprociteWenDto en modèle SimpleRule (LinkedRule)
+     * Convertion d'un modèle ReciprociteWebDto en modèle SimpleRule (LinkedRule)
      */
     @Bean
     public void converterReciprociteToLinkedRule() {
@@ -401,13 +419,27 @@ public class WebDtoMapper {
     }
 
     /**
-     * Convertion d'un modèle ComparaisonDate en modèle SimpleRule (LinkedRule)
+     * Convertion d'un modèle ComparaisonDateWebDto en modèle SimpleRule (LinkedRule)
      */
     @Bean
     public void converterComparaisonDateToLinkedRule() {
         Converter<ComparaisonDateWebDto, SimpleRule> myConverter = new Converter<ComparaisonDateWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<ComparaisonDateWebDto, SimpleRule> context) {
                 return constructComparaisonDate(context.getSource());
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un modèle TypeDocumentWebdto en modèle SimpleRule (LinkedRule)
+     */
+    @Bean
+    public void converterTypeDocumentToLinkedRule() {
+        Converter<TypeDocumentWebDto, SimpleRule> myConverter = new Converter<TypeDocumentWebDto, SimpleRule>() {
+            public SimpleRule convert(MappingContext<TypeDocumentWebDto, SimpleRule> context) {
+                TypeDocumentWebDto source = context.getSource();
+                return constructTypeDocument(context.getSource());
             }
         };
         mapper.addConverter(myConverter);
@@ -514,7 +546,7 @@ public class WebDtoMapper {
                     ResultRulesResponseDto resultRulesResponseDto;
                     if (resultRules.getFamilleDocument() != null) {
                         if (resultRules.getTypeThese() != null) {
-                            resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), "Thèse", resultRules.getMessages());
+                            resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), (resultRules.getTypeThese().equals(TypeThese.REPRO) ? "Thèse de reproduction" : "Thèse de soutenance"), resultRules.getMessages());
                         }
                         else {
                             resultRulesResponseDto = new ResultRulesResponseDto(resultRules.getPpn(), resultRules.getFamilleDocument().getLibelle(), resultRules.getMessages());
@@ -573,7 +605,7 @@ public class WebDtoMapper {
                     typesDoc.append(", ");
                 });
                 if (!source.getTypesThese().isEmpty()) {
-                    typesDoc.append("Thèse, ");
+                    source.getTypesThese().stream().forEach(tt -> typesDoc.append((tt.equals(TypeThese.REPRO) ? "Thèse de reproduction, " : "Thèse de soutenance, ")));
                 }
                 if (source.getFamillesDocuments().size() == 0 && source.getTypesThese().size() == 0) {
                     ruleWebDto.setTypeDoc("Tous");
@@ -596,6 +628,29 @@ public class WebDtoMapper {
             public FamilleDocumentWebDto convert(MappingContext<FamilleDocument, FamilleDocumentWebDto> context) {
                 FamilleDocument source = context.getSource();
                 return new FamilleDocumentWebDto(source.getId(), source.getLibelle());
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
+     * Convertion d'un objet RuleSetWebDto en RuleSet
+     */
+    @Bean
+    public void converterRuleSetWebDtoToRuleSet() {
+        Converter<RuleSetWebDto, RuleSet> myConverter = new Converter<RuleSetWebDto, RuleSet>() {
+            public RuleSet convert(MappingContext<RuleSetWebDto, RuleSet> context) {
+                RuleSetWebDto source = context.getSource();
+                if(source.getId() == null){
+                    throw new IllegalArgumentException("L'identifiant du jeu de règles est obligatoire");
+                }
+                if(source.getLibelle() == null){
+                    throw new IllegalArgumentException("Le libellé du jeu de règles est obligatoire");
+                }
+                if(source.getPosition() == null){
+                    throw new IllegalArgumentException("La position du jeu de règles est obligatoire");
+                }
+                return new RuleSet(source.getId(), source.getLibelle(), source.getDescription(), source.getPosition());
             }
         };
         mapper.addConverter(myConverter);
@@ -678,6 +733,18 @@ public class WebDtoMapper {
             target.addTypeCaractere(getTypeCaracteres(typeCaracteresString));
         }
         return target;
+    }
+
+    private TypeDocument constructTypeDocument(TypeDocumentWebDto source) {
+        if (source.getValeur() == null || source.getValeur().isEmpty())
+            throw new IllegalArgumentException("Règle " + source.getId() + " : le champ valeur est obligatoire");
+        if (source.getTypeDeVerification() == null || source.getTypeDeVerification().isEmpty())
+            throw new IllegalArgumentException("Règle " + source.getId() + " : le champ type-de-verification est obligatoire");
+        if (source.getPosition() == null)
+            throw new IllegalArgumentException("Règle " + source.getId() + " : le champ position est obligatoire");
+        if (source.getPosition() != null && (source.getPosition() == 0 || source.getPosition() > 4))
+            throw new IllegalArgumentException("Règle " + source.getId() + " : le champ position ne peut être compris qu'entre 1 et 4");
+        return new TypeDocument(source.getId(), getTypeDeVerification(source.getTypeDeVerification()), source.getPosition(), source.getValeur());
     }
 
     private Integer convertNombreCaracteres(String nombreCarateres) {

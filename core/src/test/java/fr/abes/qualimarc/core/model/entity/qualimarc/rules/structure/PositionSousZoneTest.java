@@ -46,6 +46,7 @@ public class PositionSousZoneTest {
     @DisplayName("test getZones")
     void getZones() {
         PositionSousZone rule = new PositionSousZone(1, "200", "a", 2);
-        Assertions.assertEquals("200$a", rule.getZones());
+        Assertions.assertEquals(1, rule.getZones().size());
+        Assertions.assertEquals("200$a", rule.getZones().get(0));
     }
 }
