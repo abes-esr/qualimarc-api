@@ -18,8 +18,8 @@ public class StatutsController {
     @Autowired
     private StatutsService service;
 
-    @GetMapping(value = "/statuts", produces = MediaType.APPLICATION_JSON_VALUE)
-    public StatutsWebDto getStatuts() {
+    @GetMapping(value = "/statusApplication", produces = MediaType.APPLICATION_JSON_VALUE)
+    public StatutsWebDto getStatusApplication() {
         String statutBaseXml = (service.getStatutBaseXml()) ? "OK" : "NOK";
         String statutBaseQualimarc = (service.getStatutBaseQualimarc()) ? "OK" : "NOK";
         return new StatutsWebDto(statutBaseXml, statutBaseQualimarc, service.getDateLastPpnSynchronised());
