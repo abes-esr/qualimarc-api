@@ -832,7 +832,8 @@ public class WebDtoMapper {
         if (source.getMessage() == null || source.getPriority() == null) {
             throw new IllegalArgumentException("Règle " + source.getId() + " : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple");
         }
-        if (source.getZone() == null) {
+        // typeDoc est sur la zone 008
+        if (source.getZone() == null && !(source instanceof TypeDocumentWebDto)) {
             throw new IllegalArgumentException("Règle " + source.getId() + " : La zone est obligatoire lors de la création d'une règle simple");
         }
         checkTypeThese(source.getTypesThese());
