@@ -48,7 +48,7 @@ public class StatutServiceTest {
 
     @Test
     void testGetStatutBaseQualimarcOk() {
-        Mockito.when(qualimarcJdbcTemplate.queryForObject("SELECT SYSDATE FROM DUAL", String.class)).thenReturn("Test");
+        Mockito.when(qualimarcJdbcTemplate.queryForObject("SELECT 1", String.class)).thenReturn("Test");
         Assertions.assertTrue(service.getStatutBaseQualimarc());
     }
 
