@@ -458,6 +458,10 @@ public class WebDtoMapper {
                 if (source.getRegles().stream().anyMatch(rule -> (rule.getZone() != null && rule.getZone().matches("\\dXX")))) {
                     throw new IllegalArgumentException("Une règle complexe ne peut pas contenir de règles simple avec des zones génériques");
                 }
+
+                if(source.getZone() != null && source.getZone().matches("\\dXX")){
+                    throw new IllegalArgumentException("Une règle complexe sur une même instance de zone, ne peut pas avoir de zone générique");
+                }
                 Iterator<SimpleRuleWebDto> reglesIt = source.getRegles().listIterator();
                 SimpleRuleWebDto firstRegle = reglesIt.next();
                 if (firstRegle instanceof DependencyWebDto)
