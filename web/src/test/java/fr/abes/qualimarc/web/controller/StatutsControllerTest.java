@@ -47,7 +47,7 @@ public class StatutsControllerTest {
         Mockito.when(service.getStatutBaseQualimarc()).thenReturn(false);
         Mockito.when(service.getDateLastPpnSynchronised()).thenReturn("14/12/2022 14:43:10");
 
-        mockMvc.perform(get("/api/v1/statuts").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/v1/statusApplication").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.statutBaseXml").value("OK"))
                 .andExpect(jsonPath("$.statutBaseQualimarc").value("NOK"))
