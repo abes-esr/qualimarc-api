@@ -88,6 +88,7 @@ public class ComplexRule implements Serializable {
         this.ruleSet = new HashSet<>();
         this.firstRule = firstRule;
         this.otherRules = otherRules;
+        this.savedZone = new ArrayList<>();
     }
 
     public ComplexRule(Integer id, String message, Priority priority, SimpleRule firstRule, List<OtherRule> otherRules) {
@@ -99,6 +100,7 @@ public class ComplexRule implements Serializable {
         this.ruleSet = new HashSet<>();
         this.firstRule = firstRule;
         this.otherRules = otherRules;
+        this.savedZone = new ArrayList<>();
     }
 
     public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, Set<RuleSet> ruleSet, SimpleRule firstRule) {
@@ -110,6 +112,7 @@ public class ComplexRule implements Serializable {
         this.ruleSet = ruleSet;
         this.firstRule = firstRule;
         this.otherRules = new LinkedList<>();
+        this.savedZone = new ArrayList<>();
     }
 
     public ComplexRule(Integer id, String message, Priority priority, SimpleRule firstRule) {
@@ -130,6 +133,7 @@ public class ComplexRule implements Serializable {
         this.otherRules = new LinkedList<>();
         this.famillesDocuments = new HashSet<>();
         this.ruleSet = new HashSet<>();
+        this.savedZone = new ArrayList<>();
     }
 
     public void addRuleSet(RuleSet ruleSet) {
@@ -153,7 +157,7 @@ public class ComplexRule implements Serializable {
      * @param datafields liste de datafields à collecter
      */
     public void setSavedZone(List<Datafield> datafields) {
-        if (this.savedZone.isEmpty()) {
+        if ((this.savedZone == null) || (this.savedZone.isEmpty())) {
             this.savedZone = datafields;
         } else {
             this.savedZone = this.savedZone.stream().filter(datafields::contains).collect(Collectors.toList());
