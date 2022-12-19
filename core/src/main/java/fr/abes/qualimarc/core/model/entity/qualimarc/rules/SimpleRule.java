@@ -43,4 +43,11 @@ public abstract class SimpleRule {
 
     public abstract List<String> getZones();
 
+    public ComplexRule getComplexRule() {
+        if(this.complexRule != null) {
+            return this.complexRule;
+        } else {
+            return this.linkedRule.getComplexRule();
+        }
+    }
 }

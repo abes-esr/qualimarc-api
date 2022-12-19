@@ -517,7 +517,9 @@ public class WebDtoMapper {
                                 //verifier que la regle soit du bon type : [ presenceZone, presenceSousZone, presenceChaineCaracteres, indicateur, positionSousZone ]
                                 checkRuleWebDtoIsAInstanseMemeZoneRules(otherRegle);
                                 otherRegle.setZone(source.getZone());
-                                target.addOtherRule(new LinkedRule(mapper.map(otherRegle, SimpleRule.class),  BooleanOperateur.ET, i++, target));
+                                SimpleRule simpleRule = mapper.map(otherRegle, SimpleRule.class);
+                                simpleRule.setComplexRule(target);
+                                target.addOtherRule(new LinkedRule(simpleRule,  BooleanOperateur.ET, i++, target));
                             } else {
                                 target.addOtherRule(new LinkedRule(mapper.map(otherRegle, SimpleRule.class), isPreviousRegleDependency ? BooleanOperateur.ET : getOperateur(otherRegle.getBooleanOperator()), i++, target));
                             }
