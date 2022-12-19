@@ -131,7 +131,7 @@
         <subfield code="y">France</subfield>
         <subfield code="2">rameau</subfield>
     </datafield>
-    <datafield tag="607" ind1=" " ind2=" ">
+    <datafield tag="607" ind1=" " ind2="1">
         <subfield code="3">02787088X</subfield>
         <subfield code="a">Informatique</subfield>
         <subfield code="x">Personnel</subfield>
@@ -155,7 +155,7 @@
     <datafield tag="607" ind1=" " ind2=" ">
         <subfield code="4">02731667X</subfield>
         <subfield code="a">Informatique</subfield>
-        <subfield code="x">Personnel</subfield>
+        <subfield code="b">Personnel</subfield>
         <subfield code="4">987654321</subfield>
         <subfield code="x">Conventions collectives</subfield>
     </datafield>

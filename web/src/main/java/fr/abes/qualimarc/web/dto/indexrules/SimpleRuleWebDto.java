@@ -10,7 +10,6 @@ import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
@@ -63,8 +62,6 @@ public abstract class SimpleRuleWebDto {
 
     @JsonProperty("zone")
     @Pattern(regexp = "\\b([A-Z]{0,1}[0-9]{3}|4XX|5XX|6XX|7XX)\\b", message = "Le champ zone doit contenir : soit trois chiffres, soit une lettre majuscule suivie de trois chiffres, soit une zone générique (4XX, 5XX, 6XX, ou 7XX).")
-    @NotNull(message = "Le champ zone est obligatoire")
-    @NotBlank(message = "Le champ zone est obligatoire")
     protected String zone;
 
     @JsonProperty("operateur-booleen")

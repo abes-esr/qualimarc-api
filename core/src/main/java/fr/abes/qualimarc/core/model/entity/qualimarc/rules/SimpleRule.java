@@ -33,8 +33,21 @@ public abstract class SimpleRule {
         this.zone = zone;
     }
 
+    public SimpleRule(Integer id, String zone, ComplexRule complexRule) {
+        this.id = id;
+        this.zone = zone;
+        this.complexRule = complexRule;
+    }
+
     public abstract boolean isValid(NoticeXml ... notices);
 
     public abstract List<String> getZones();
 
+    public ComplexRule getComplexRule() {
+        if(this.complexRule != null)
+            return this.complexRule;
+        if(this.linkedRule != null)
+            return this.linkedRule.getComplexRule();
+        return null;
+    }
 }

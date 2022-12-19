@@ -30,13 +30,13 @@ public class PositionSousZoneTest {
         NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
 
         PositionSousZone rule = new PositionSousZone(1, "606", "3", 1);
-        Assertions.assertFalse(rule.isValid(notice));
+        Assertions.assertTrue(rule.isValid(notice));
 
         PositionSousZone rule2 = new PositionSousZone(1, "801", "3", 1);
-        Assertions.assertTrue(rule2.isValid(notice));
+        Assertions.assertFalse(rule2.isValid(notice));
 
         PositionSousZone rule3 = new PositionSousZone(1, "801", "a", 2);
-        Assertions.assertTrue(rule3.isValid(notice));
+        Assertions.assertFalse(rule3.isValid(notice));
 
         PositionSousZone rule4 = new PositionSousZone(1, "713", "a", 2);
         Assertions.assertFalse(rule4.isValid(notice));

@@ -982,6 +982,30 @@ public class WebDtoMapperTest {
         Assertions.assertEquals("Les règles autres que la première d'une règle complexe doivent avoir un opérateur", exception.getCause().getMessage());
     }
 
+    @Test
+    @DisplayName("test mapper ComplexRulesMemeZone")
+    void converterComplexRulesMemeZoneTest() {
+        // Test de la règle meme instance de zone
+        ComplexRuleWebDto complexRuleWebDto1 = new ComplexRuleWebDto();
+        complexRuleWebDto1.setId(1);
+        complexRuleWebDto1.setIdExcel(1);
+        complexRuleWebDto1.setMessage("message test");
+        complexRuleWebDto1.setPriority("P1");
+        complexRuleWebDto1.setZone("200");
+        complexRuleWebDto1.addRegle(new PresenceZoneWebDto(2,null,true));
+        complexRuleWebDto1.addRegle(new PresenceSousZoneWebDto(3,null,null,"a",true));
+        complexRuleWebDto1.addRegle(new IndicateurWebDto(4,null,null,1,"#"));
+        complexRuleWebDto1.addRegle(new PositionSousZoneWebDto(4,null,null,"a",1));
+
+        ComplexRule complexRule = mapper.map(complexRuleWebDto1, ComplexRule.class);
+
+        Assertions.assertEquals(complexRuleWebDto1.getId(),complexRule.getId());
+        Assertions.assertEquals(complexRuleWebDto1.getMessage(),complexRule.getMessage());
+        Assertions.assertEquals(complexRuleWebDto1.getPriority(),complexRule.getPriority().toString());
+        Assertions.assertEquals(complexRuleWebDto1.getZone(),complexRule.getFirstRule().getZone());
+        Assertions.assertEquals(complexRuleWebDto1.getRegles().size(),complexRule.getOtherRules().size() + 1);
+    }
+
     /**
      * Test du mapper converterResultAnalyseTest
      */
