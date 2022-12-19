@@ -8,6 +8,7 @@ import org.hibernate.annotations.ColumnTransformer;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Clob;
+import java.util.Calendar;
 
 @Entity
 @NoArgsConstructor
@@ -27,5 +28,9 @@ public class NoticesBibio implements Serializable {
     @Lob
     //Type Clob pour pouvoir récupérer les notices de plus de 4000 caractères
     private Clob dataXml;
+
+    @Column(name = "DATE_ETAT")
+    @Temporal(TemporalType.DATE)
+    private Calendar dateEtat;
 
 }

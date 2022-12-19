@@ -5,10 +5,13 @@ import fr.abes.qualimarc.core.model.entity.basexml.NoticesBibio;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Calendar;
 import java.util.Optional;
 
 @BaseXMLConfiguration
 @Repository
 public interface NoticesBibioRepository extends JpaRepository<NoticesBibio, Integer> {
     Optional<NoticesBibio> getByPpn(String ppn);
+
+    NoticesBibio findFirstByDateEtatBeforeOrderByDateEtatDesc(Calendar date);
 }

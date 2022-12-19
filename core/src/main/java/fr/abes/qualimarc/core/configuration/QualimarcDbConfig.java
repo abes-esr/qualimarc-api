@@ -3,7 +3,6 @@ package fr.abes.qualimarc.core.configuration;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -11,16 +10,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import java.util.HashMap;
 
 @Configuration
 @EnableJpaRepositories(entityManagerFactoryRef = "qualimarcEntityManager", transactionManagerRef = "qualimarcTransactionManager",
@@ -58,6 +54,7 @@ public class QualimarcDbConfig extends AbstractConfig {
         em.setPackagesToScan(
                 new String[]{"fr.abes.qualimarc.core.model.entity.qualimarc.*"});
         configHibernate(em, platform, showsql, dialect, ddlAuto, generateDdl, initMode);
+
         return em;
     }
 
@@ -73,5 +70,10 @@ public class QualimarcDbConfig extends AbstractConfig {
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    @Bean(name = "qualimarcJdbcTemplate")
+    public JdbcTemplate qualimarcJdbcTemplate() {
+        return new JdbcTemplate(qualimarcDataSource());
     }
 }
