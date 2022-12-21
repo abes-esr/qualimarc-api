@@ -9,7 +9,6 @@ import fr.abes.qualimarc.core.repository.qualimarc.ZoneGeneriqueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,15 +28,11 @@ public class ReferenceService {
     }
 
     public List<FamilleDocument> getTypesDocuments() {
-        List<FamilleDocument> resultsList = familleDocumentRepository.findAll();
-        Collections.sort(resultsList);
-        return resultsList;
+        return familleDocumentRepository.findAllByRulesNotEmptyOrderByLibelle();
     }
 
     public List<RuleSet> getRuleSets() {
-        List<RuleSet> resultsList = ruleSetRepository.findAllByRulesNotEmpty();
-        Collections.sort(resultsList);
-        return resultsList;
+        return ruleSetRepository.findAllByRulesNotEmpty();
     }
 
     public void viderRulesSet() {

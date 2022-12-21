@@ -15,7 +15,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "RULESSET")
-public class RuleSet implements Serializable, Comparable<RuleSet> {
+public class RuleSet implements Serializable {
     @Id
     @Column(name = "RULESET_ID")
     private Integer id;
@@ -47,10 +47,5 @@ public class RuleSet implements Serializable, Comparable<RuleSet> {
 
     public RuleSet(Integer id) {
         this.id = id;
-    }
-
-    @Override
-    public int compareTo(RuleSet o) {
-        return this.libelle.compareToIgnoreCase(o.getLibelle());
     }
 }

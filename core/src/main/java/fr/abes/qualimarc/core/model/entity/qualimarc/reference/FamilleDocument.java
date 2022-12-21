@@ -15,7 +15,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "FAMILLEDOCUMENT")
-public class FamilleDocument implements Serializable, Comparable<FamilleDocument> {
+public class FamilleDocument implements Serializable {
     @Id
     @Column(name = "FAMILLEDOCUMENT_ID")
     private String id;
@@ -34,10 +34,5 @@ public class FamilleDocument implements Serializable, Comparable<FamilleDocument
 
     public FamilleDocument(String id) {
         this.id = id;
-    }
-
-    @Override
-    public int compareTo(FamilleDocument o) {
-        return this.libelle.compareToIgnoreCase(o.getLibelle());
     }
 }
