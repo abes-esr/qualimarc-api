@@ -65,14 +65,22 @@ public class ReferenceController {
     @GetMapping(value = "/getAnalyses", produces = {"application/json"})
     public ResultAnalyseWebDto getAnalyse() {
         ResultAnalyseWebDto resultAnalyseWebDto = new ResultAnalyseWebDto();
-        AnalyseWebDto quickAnalyse = new AnalyseWebDto("QUICK", "Analyse rapide", "Analyse rapide", null);
+
+        AnalyseWebDto quickAnalyse = new AnalyseWebDto("QUICK", "Analyse rapide", "Analyse rapide", service.getNbRulesByAnalyse("QUICK"));
         resultAnalyseWebDto.setQuickAnalyse(quickAnalyse);
 
-        AnalyseWebDto completeAnalyse = new AnalyseWebDto("COMPLETE", "Analyse complète", "Analyse complète", null);
+        AnalyseWebDto completeAnalyse = new AnalyseWebDto("COMPLETE", "Analyse complète", "Analyse complète", service.getNbRulesByAnalyse("COMPLETE"));
         resultAnalyseWebDto.setCompleteAnalyse(completeAnalyse);
 
-        List<FamilleDocumentWebDto> familleDocumentWebDtos = mapper.mapList(service.getTypesDocuments(), FamilleDocumentWebDto.class);
-        List<RuleSetResponseWebDto> ruleSetWebDtos = mapper.mapList(service.getRuleSets(), RuleSetResponseWebDto.class);
+        List<FamilleDocumentWebDto> familleDocumentWebDtos = mapper.mapList(service.getTypesDocuments(), FamilleDocumentWebDto.class); //TODO: voir si on peut rajouter le nb de règles par famille de document
+        for(FamilleDocumentWebDto familleDocumentWebDto : familleDocumentWebDtos){
+            familleDocumentWebDto.setNbRules(service.getNbRulesByTypeDocument(familleDocumentWebDto.getId()));
+        }
+        List<RuleSetResponseWebDto> ruleSetWebDtos = mapper.mapList(service.getRuleSets(), RuleSetResponseWebDto.class);//TODO: voir si on peut rajouter le nb de règles par jeux de regles
+        for (RuleSetResponseWebDto ruleSetWebDto : ruleSetWebDtos) {
+            ruleSetWebDto.setNbRules(service.getNbRulesByRuleSet(ruleSetWebDto.getId()));
+        }
+
 
         AnalyseWebDto focusAnalyse = new AnalyseWebDto("FOCUS", "Analyse ciblée", "Analyse ciblée", null, familleDocumentWebDtos, ruleSetWebDtos);
 

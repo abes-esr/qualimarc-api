@@ -24,5 +24,6 @@ public class FamilleDocumentWebDto {
     public FamilleDocumentWebDto(String id, String libelle) {
         this.id = id;
         this.libelle = libelle;
+
     }
 }
