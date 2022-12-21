@@ -33,7 +33,7 @@ public class ReferenceService {
     }
 
     public List<FamilleDocument> getTypesDocuments() {
-        return familleDocumentRepository.findAll();
+        return familleDocumentRepository.findAllByOrderByLibelle();
     }
 
     public List<RuleSet> getRuleSets() {
