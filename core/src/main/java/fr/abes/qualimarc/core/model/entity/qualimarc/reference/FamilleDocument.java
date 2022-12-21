@@ -2,7 +2,9 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.reference;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,7 +15,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "FAMILLEDOCUMENT")
-public class FamilleDocument implements Serializable {
+public class FamilleDocument implements Serializable, Comparable<FamilleDocument> {
     @Id
     @Column(name = "FAMILLEDOCUMENT_ID")
     private String id;
@@ -32,5 +34,10 @@ public class FamilleDocument implements Serializable {
 
     public FamilleDocument(String id) {
         this.id = id;
+    }
+
+    @Override
+    public int compareTo(FamilleDocument o) {
+        return this.libelle.compareToIgnoreCase(o.getLibelle());
     }
 }

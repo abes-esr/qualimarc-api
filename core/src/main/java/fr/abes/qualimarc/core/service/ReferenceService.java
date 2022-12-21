@@ -29,7 +29,9 @@ public class ReferenceService {
     }
 
     public List<FamilleDocument> getTypesDocuments() {
-        return familleDocumentRepository.findAll();
+        List<FamilleDocument> resultsList = familleDocumentRepository.findAll();
+        Collections.sort(resultsList);
+        return resultsList;
     }
 
     public List<RuleSet> getRuleSets() {
