@@ -32,7 +32,7 @@ public class ReferenceService {
     }
 
     public List<RuleSet> getRuleSets() {
-        return ruleSetRepository.findAllByRulesNotEmpty();
+        return ruleSetRepository.findAllByRulesNotEmptyOrderByPosition();
     }
 
     public void viderRulesSet() {
