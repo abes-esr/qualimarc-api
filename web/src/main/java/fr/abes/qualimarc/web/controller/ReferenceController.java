@@ -66,10 +66,10 @@ public class ReferenceController {
     public ResultAnalyseWebDto getAnalyse() {
         ResultAnalyseWebDto resultAnalyseWebDto = new ResultAnalyseWebDto();
 
-        AnalyseWebDto quickAnalyse = new AnalyseWebDto("QUICK", "RAPIDE", "Règles essentielles", service.getNbRulesByAnalyse("QUICK"));
+        AnalyseWebDto quickAnalyse = new AnalyseWebDto("QUICK", "RAPIDE", "... permet de détecter les erreurs les plus urgentes à corriger (règles essentielles)", service.getNbRulesByAnalyse("QUICK"));
         resultAnalyseWebDto.addAnalyse(quickAnalyse);
 
-        AnalyseWebDto completeAnalyse = new AnalyseWebDto("COMPLETE", "EXPERTE", "Règles essentielles & règles avancées", service.getNbRulesByAnalyse("COMPLETE"));
+        AnalyseWebDto completeAnalyse = new AnalyseWebDto("COMPLETE", "EXPERTE", "... permet de détecter toutes les erreurs et incohérences à corriger (règles essentielles et avancées)", service.getNbRulesByAnalyse("COMPLETE"));
         resultAnalyseWebDto.addAnalyse(completeAnalyse);
 
         List<FamilleDocumentWebDto> familleDocumentWebDtos = mapper.mapList(service.getTypesDocuments(), FamilleDocumentWebDto.class); //TODO: voir si on peut rajouter le nb de règles par famille de document
@@ -82,7 +82,7 @@ public class ReferenceController {
         }
 
 
-        AnalyseWebDto focusAnalyse = new AnalyseWebDto("FOCUS", "CIBLÉE", "Règles filtrées par type de document et/ou par jeux de règles préconçus", null, familleDocumentWebDtos, ruleSetWebDtos);
+        AnalyseWebDto focusAnalyse = new AnalyseWebDto("FOCUS", "CIBLÉE", "... permet de filtrer, par type de document et/ou par jeux de règles thématiques, un type d'erreur précis à corriger", null, familleDocumentWebDtos, ruleSetWebDtos);
 
         resultAnalyseWebDto.addAnalyse(focusAnalyse);
 
