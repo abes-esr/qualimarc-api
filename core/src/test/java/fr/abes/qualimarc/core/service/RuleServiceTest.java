@@ -300,14 +300,14 @@ public class RuleServiceTest {
      */
     @Test
     void checkRulesOnNoticesFocusedNoParams() {
-        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUSED, null, null, null));
-        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUSED, new HashSet<>(), null, null));
-        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUSED, null, null, new HashSet<>()));
-        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUSED, new HashSet<>(), null, new HashSet<>()));
-        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUSED, null, new HashSet<>(), null));
-        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUSED, new HashSet<>(), new HashSet<>(), null));
-        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUSED, null, new HashSet<>(), new HashSet<>()));
-        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUSED, new HashSet<>(), new HashSet<>(), new HashSet<>()));
+        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUS, null, null, null));
+        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUS, new HashSet<>(), null, null));
+        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUS, null, null, new HashSet<>()));
+        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUS, new HashSet<>(), null, new HashSet<>()));
+        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUS, null, new HashSet<>(), null));
+        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUS, new HashSet<>(), new HashSet<>(), null));
+        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUS, null, new HashSet<>(), new HashSet<>()));
+        Assertions.assertThrows(IllegalRulesSetException.class, () -> service.getResultRulesList(TypeAnalyse.FOCUS, new HashSet<>(), new HashSet<>(), new HashSet<>()));
     }
 
     /**
@@ -353,7 +353,7 @@ public class RuleServiceTest {
 
         Mockito.when(complexRulesRepository.findByFamillesDocuments(Mockito.any())).thenReturn(rulesIn);
 
-        Set<ComplexRule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, typesDoc, null,null);
+        Set<ComplexRule> result = service.getResultRulesList(TypeAnalyse.FOCUS, typesDoc, null,null);
         Assertions.assertTrue(result.size() == rulesIn.size() && result.containsAll(rulesIn) && rulesIn.containsAll(result));
     }
 
@@ -392,7 +392,7 @@ public class RuleServiceTest {
         Set<RuleSet> ruleSets = new HashSet<>();
         ruleSets.add(ruleSet);
 
-        Set<ComplexRule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, null, null, ruleSets);
+        Set<ComplexRule> result = service.getResultRulesList(TypeAnalyse.FOCUS, null, null, ruleSets);
         //les listes ne contenant qu'un élément on utilise assertIterableEquals pour vérifier qu'elles sont identiques
         Assertions.assertTrue(result.size() == rulesIn.size() && result.containsAll(rulesIn) && rulesIn.containsAll(result));
     }
@@ -412,7 +412,7 @@ public class RuleServiceTest {
         Set<TypeThese> typeTheseSet = new HashSet<>();
         typeTheseSet.add(TypeThese.REPRO);
 
-        Set<ComplexRule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, null, typeTheseSet, null);
+        Set<ComplexRule> result = service.getResultRulesList(TypeAnalyse.FOCUS, null, typeTheseSet, null);
         //les listes ne contenant qu'un élément on utilise assertIterableEquals pour vérifier qu'elles sont identiques
         Assertions.assertTrue(result.size() == rulesIn.size() && result.containsAll(rulesIn) && rulesIn.containsAll(result));
     }
@@ -450,7 +450,7 @@ public class RuleServiceTest {
         Set<RuleSet> ruleSets = new HashSet<>();
         ruleSets.add(ruleSet);
 
-        Set<ComplexRule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, typesDoc, null, ruleSets);
+        Set<ComplexRule> result = service.getResultRulesList(TypeAnalyse.FOCUS, typesDoc, null, ruleSets);
 
         Assertions.assertTrue(result.size() == rulesIn.size() && result.containsAll(rulesIn) && rulesIn.containsAll(result));
     }
@@ -488,7 +488,7 @@ public class RuleServiceTest {
         Set<TypeThese> typeThese = new HashSet<>();
         typeThese.add(TypeThese.REPRO);
 
-        Set<ComplexRule> result = service.getResultRulesList(TypeAnalyse.FOCUSED, null, typeThese, ruleSets);
+        Set<ComplexRule> result = service.getResultRulesList(TypeAnalyse.FOCUS, null, typeThese, ruleSets);
 
         Assertions.assertTrue(result.size() == rulesIn.size() && result.containsAll(rulesIn) && rulesIn.containsAll(result));
     }
