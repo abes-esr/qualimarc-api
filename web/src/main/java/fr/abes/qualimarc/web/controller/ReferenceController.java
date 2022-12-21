@@ -5,7 +5,10 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.service.ReferenceService;
 import fr.abes.qualimarc.core.utils.TypeThese;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
+import fr.abes.qualimarc.web.dto.ResultAnalyseWebDto;
+import fr.abes.qualimarc.web.dto.reference.AnalyseWebDto;
 import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
+import fr.abes.qualimarc.web.dto.reference.RuleSetResponseWebDto;
 import fr.abes.qualimarc.web.dto.rulesets.RuleSetsRequestDto;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -58,5 +61,24 @@ public class ReferenceController {
         return listToReturn;
     }
 
+
+    @GetMapping(value = "/getAnalyses", produces = {"application/json"})
+    public ResultAnalyseWebDto getAnalyse() {
+        ResultAnalyseWebDto resultAnalyseWebDto = new ResultAnalyseWebDto();
+        AnalyseWebDto quickAnalyse = new AnalyseWebDto("QUICK", "Analyse rapide", "Analyse rapide", null);
+        resultAnalyseWebDto.setQuickAnalyse(quickAnalyse);
+
+        AnalyseWebDto completeAnalyse = new AnalyseWebDto("COMPLETE", "Analyse complète", "Analyse complète", null);
+        resultAnalyseWebDto.setCompleteAnalyse(completeAnalyse);
+
+        List<FamilleDocumentWebDto> familleDocumentWebDtos = mapper.mapList(service.getTypesDocuments(), FamilleDocumentWebDto.class);
+        List<RuleSetResponseWebDto> ruleSetWebDtos = mapper.mapList(service.getRuleSets(), RuleSetResponseWebDto.class);
+
+        AnalyseWebDto focusAnalyse = new AnalyseWebDto("FOCUS", "Analyse ciblée", "Analyse ciblée", null, familleDocumentWebDtos, ruleSetWebDtos);
+
+        resultAnalyseWebDto.setFocusAnalyse(focusAnalyse);
+
+        return resultAnalyseWebDto;
+    }
 
 }
