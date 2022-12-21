@@ -66,11 +66,11 @@ public class ReferenceController {
     public ResultAnalyseWebDto getAnalyse() {
         ResultAnalyseWebDto resultAnalyseWebDto = new ResultAnalyseWebDto();
 
-        AnalyseWebDto quickAnalyse = new AnalyseWebDto("QUICK", "Analyse rapide", "Analyse rapide", service.getNbRulesByAnalyse("QUICK"));
-        resultAnalyseWebDto.setQuickAnalyse(quickAnalyse);
+        AnalyseWebDto quickAnalyse = new AnalyseWebDto("QUICK", "RAPIDE", "Règles essentielles", service.getNbRulesByAnalyse("QUICK"));
+        resultAnalyseWebDto.addAnalyse(quickAnalyse);
 
-        AnalyseWebDto completeAnalyse = new AnalyseWebDto("COMPLETE", "Analyse complète", "Analyse complète", service.getNbRulesByAnalyse("COMPLETE"));
-        resultAnalyseWebDto.setCompleteAnalyse(completeAnalyse);
+        AnalyseWebDto completeAnalyse = new AnalyseWebDto("COMPLETE", "EXPERTE", "Règles essentielles & règles avancées", service.getNbRulesByAnalyse("COMPLETE"));
+        resultAnalyseWebDto.addAnalyse(completeAnalyse);
 
         List<FamilleDocumentWebDto> familleDocumentWebDtos = mapper.mapList(service.getTypesDocuments(), FamilleDocumentWebDto.class); //TODO: voir si on peut rajouter le nb de règles par famille de document
         for(FamilleDocumentWebDto familleDocumentWebDto : familleDocumentWebDtos){
@@ -82,9 +82,9 @@ public class ReferenceController {
         }
 
 
-        AnalyseWebDto focusAnalyse = new AnalyseWebDto("FOCUS", "Analyse ciblée", "Analyse ciblée", null, familleDocumentWebDtos, ruleSetWebDtos);
+        AnalyseWebDto focusAnalyse = new AnalyseWebDto("FOCUS", "CIBLÉE", "Règles filtrées par type de document et/ou par jeux de règles préconçus", null, familleDocumentWebDtos, ruleSetWebDtos);
 
-        resultAnalyseWebDto.setFocusAnalyse(focusAnalyse);
+        resultAnalyseWebDto.addAnalyse(focusAnalyse);
 
         return resultAnalyseWebDto;
     }
