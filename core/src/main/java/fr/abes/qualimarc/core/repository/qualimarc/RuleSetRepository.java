@@ -10,5 +10,8 @@ import java.util.List;
 @Repository
 @QualimarcConfiguration
 public interface RuleSetRepository extends JpaRepository<RuleSet, Integer> {
+
+    RuleSet findRuleSetById(Integer id);
+
     List<RuleSet> findAllByRulesNotEmptyOrderByPosition();
 }
