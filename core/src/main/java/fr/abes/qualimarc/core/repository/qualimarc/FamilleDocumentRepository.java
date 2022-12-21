@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 @QualimarcConfiguration
 public interface FamilleDocumentRepository extends JpaRepository<FamilleDocument, String> {
-    List<FamilleDocument> findAllByRulesNotEmptyOrderByLibelle();
+    List<FamilleDocument> findAllByOrderByLibelle();
 }

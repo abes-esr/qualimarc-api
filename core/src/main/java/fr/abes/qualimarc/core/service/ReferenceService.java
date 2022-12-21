@@ -28,7 +28,7 @@ public class ReferenceService {
     }
 
     public List<FamilleDocument> getTypesDocuments() {
-        return familleDocumentRepository.findAllByRulesNotEmptyOrderByLibelle();
+        return familleDocumentRepository.findAllByOrderByLibelle();
     }
 
     public List<RuleSet> getRuleSets() {
