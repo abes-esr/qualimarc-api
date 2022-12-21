@@ -8,7 +8,9 @@ Qualimarc est l'outil de diagnostic des notices du Sudoc.
 
 Ce dépôt héberge le code source de l'API de qualimarc.  
 Cette API fonctionne avec son interface utilisateur développée en VueJS (front) : https://github.com/abes-esr/qualimarc-front/  
-Et l'application qualimarc complète peut être déployée via Docker à l'aide de ce dépôt : https://github.com/abes-esr/qualimarc-docker/
+Et l'application qualimarc complète peut être déployée via Docker à l'aide de ce dépôt : https://github.com/abes-esr/qualimarc-docker/  
+
+Règles de qualimarc: https://github.com/abes-esr/qualimarc-rules/
 
 
 ## Développements
