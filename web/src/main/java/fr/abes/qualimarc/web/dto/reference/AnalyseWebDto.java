@@ -1,16 +1,20 @@
 package fr.abes.qualimarc.web.dto.reference;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
-public class RuleSetResponseWebDto {
+@AllArgsConstructor
+public class AnalyseWebDto {
     @JsonProperty("id")
-    private Integer id;
+    private String id;
 
     @JsonProperty("libelle")
     private String libelle;
@@ -18,24 +22,19 @@ public class RuleSetResponseWebDto {
     @JsonProperty("description")
     private String description;
 
-    @JsonProperty("position")
-    private Integer position;
-
     @JsonProperty("nbRules")
     private Integer nbRules;
 
-    public RuleSetResponseWebDto(Integer id, String libelle, String description, Integer position) {
-        this.id = id;
-        this.libelle = libelle;
-        this.description = description;
-        this.position = position;
-    }
+    @JsonProperty("famillesDocument")
+    private List<FamilleDocumentWebDto> famillesDocument;
 
-    public RuleSetResponseWebDto(Integer id, String libelle, String description, Integer position, Integer nbRules) {
+    @JsonProperty("ruleSets")
+    private List<RuleSetResponseWebDto> ruleSets;
+
+    public AnalyseWebDto(String id, String libelle, String description, Integer nbRules) {
         this.id = id;
         this.libelle = libelle;
         this.description = description;
-        this.position = position;
         this.nbRules = nbRules;
     }
 }
