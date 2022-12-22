@@ -5,7 +5,10 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.service.ReferenceService;
 import fr.abes.qualimarc.core.utils.TypeThese;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
+import fr.abes.qualimarc.web.dto.ResultAnalyseWebDto;
+import fr.abes.qualimarc.web.dto.reference.AnalyseWebDto;
 import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
+import fr.abes.qualimarc.web.dto.reference.RuleSetResponseWebDto;
 import fr.abes.qualimarc.web.dto.rulesets.RuleSetsRequestDto;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -58,5 +61,32 @@ public class ReferenceController {
         return listToReturn;
     }
 
+
+    @GetMapping(value = "/getAnalyses", produces = {"application/json"})
+    public ResultAnalyseWebDto getAnalyse() {
+        ResultAnalyseWebDto resultAnalyseWebDto = new ResultAnalyseWebDto();
+
+        AnalyseWebDto quickAnalyse = new AnalyseWebDto("QUICK", "RAPIDE", "... permet de détecter les erreurs les plus urgentes à corriger (règles essentielles)", service.getNbRulesByAnalyse("QUICK"));
+        resultAnalyseWebDto.addAnalyse(quickAnalyse);
+
+        AnalyseWebDto completeAnalyse = new AnalyseWebDto("COMPLETE", "EXPERTE", "... permet de détecter toutes les erreurs et incohérences à corriger (règles essentielles et avancées)", service.getNbRulesByAnalyse("COMPLETE"));
+        resultAnalyseWebDto.addAnalyse(completeAnalyse);
+
+        List<FamilleDocumentWebDto> familleDocumentWebDtos = mapper.mapList(service.getTypesDocuments(), FamilleDocumentWebDto.class); //TODO: voir si on peut rajouter le nb de règles par famille de document
+        for(FamilleDocumentWebDto familleDocumentWebDto : familleDocumentWebDtos){
+            familleDocumentWebDto.setNbRules(service.getNbRulesByTypeDocument(familleDocumentWebDto.getId()));
+        }
+        List<RuleSetResponseWebDto> ruleSetWebDtos = mapper.mapList(service.getRuleSets(), RuleSetResponseWebDto.class);//TODO: voir si on peut rajouter le nb de règles par jeux de regles
+        for (RuleSetResponseWebDto ruleSetWebDto : ruleSetWebDtos) {
+            ruleSetWebDto.setNbRules(service.getNbRulesByRuleSet(ruleSetWebDto.getId()));
+        }
+
+
+        AnalyseWebDto focusAnalyse = new AnalyseWebDto("FOCUS", "CIBLÉE", "... permet de filtrer, par type de document et/ou par jeux de règles thématiques, un type d'erreur précis à corriger", null, familleDocumentWebDtos, ruleSetWebDtos);
+
+        resultAnalyseWebDto.addAnalyse(focusAnalyse);
+
+        return resultAnalyseWebDto;
+    }
 
 }

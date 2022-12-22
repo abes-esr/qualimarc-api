@@ -17,4 +17,13 @@ public class FamilleDocumentWebDto {
 
     @JsonProperty("libelle")
     private String libelle;
+
+    @JsonProperty("nbRules")
+    private Integer nbRules;
+
+    public FamilleDocumentWebDto(String id, String libelle) {
+        this.id = id;
+        this.libelle = libelle;
+
+    }
 }

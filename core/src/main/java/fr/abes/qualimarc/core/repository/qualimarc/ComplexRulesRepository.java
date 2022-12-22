@@ -22,4 +22,9 @@ public interface ComplexRulesRepository extends JpaRepository<ComplexRule, Integ
 
     Set<ComplexRule> findByTypesThese(TypeThese typeThese);
 
+    Long countByPriority(Priority priority);
+
+    Long countByFamillesDocuments(FamilleDocument familleDocument);
+
+    Long countByRuleSet(RuleSet ruleSet);
 }

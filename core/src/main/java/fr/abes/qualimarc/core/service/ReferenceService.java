@@ -3,9 +3,11 @@ package fr.abes.qualimarc.core.service;
 import fr.abes.qualimarc.core.exception.IllegalTypeDocumentException;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
+import fr.abes.qualimarc.core.repository.qualimarc.ComplexRulesRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.RuleSetRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.ZoneGeneriqueRepository;
+import fr.abes.qualimarc.core.utils.Priority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,19 +22,22 @@ public class ReferenceService {
 
     private ZoneGeneriqueRepository zoneGeneriqueRepository;
 
+    private ComplexRulesRepository complexRulesRepository;
+
     @Autowired
-    public ReferenceService(FamilleDocumentRepository familleDocumentRepository, RuleSetRepository ruleSetRepository, ZoneGeneriqueRepository zoneGeneriqueRepository) {
+    public ReferenceService(FamilleDocumentRepository familleDocumentRepository, RuleSetRepository ruleSetRepository, ZoneGeneriqueRepository zoneGeneriqueRepository, ComplexRulesRepository complexRulesRepository) {
         this.familleDocumentRepository = familleDocumentRepository;
         this.ruleSetRepository = ruleSetRepository;
         this.zoneGeneriqueRepository = zoneGeneriqueRepository;
+        this.complexRulesRepository = complexRulesRepository;
     }
 
     public List<FamilleDocument> getTypesDocuments() {
-        return familleDocumentRepository.findAll();
+        return familleDocumentRepository.findAllByOrderByLibelle();
     }
 
     public List<RuleSet> getRuleSets() {
-        return ruleSetRepository.findAllByRulesNotEmpty();
+        return ruleSetRepository.findAllByRulesNotEmptyOrderByPosition();
     }
 
     public void viderRulesSet() {
@@ -49,6 +54,22 @@ public class ReferenceService {
 
     public List<String> getZonesGeneriques(String zone) {
         return this.zoneGeneriqueRepository.getZoneGeneriqueZoneByZoneGenerique(zone);
+    }
+
+    public Integer getNbRulesByAnalyse(String AnalyseId) {
+        if(AnalyseId.equals("QUICK"))
+            return Math.toIntExact(complexRulesRepository.countByPriority(Priority.P1));
+        if(AnalyseId.equals("COMPLETE"))
+            return Math.toIntExact(complexRulesRepository.count());
+        return null;
+    }
+
+    public Integer getNbRulesByTypeDocument(String typeDocument) {
+        return Math.toIntExact(complexRulesRepository.countByFamillesDocuments(getFamilleDocument(typeDocument)));
+    }
+
+    public Integer getNbRulesByRuleSet(Integer ruleSet) {
+        return Math.toIntExact(complexRulesRepository.countByRuleSet(ruleSetRepository.findRuleSetById(ruleSet)));
     }
 
     public void saveAllRuleSets(List<RuleSet> ruleSetList){
