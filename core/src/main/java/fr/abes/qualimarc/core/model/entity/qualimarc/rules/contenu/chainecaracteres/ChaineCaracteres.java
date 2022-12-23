@@ -2,6 +2,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaract
 
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
+import fr.abes.qualimarc.core.utils.TypeVerification;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -61,5 +62,22 @@ public class ChaineCaracteres implements Serializable {
         this.booleanOperateur = booleanOperateur;
         this.chaineCaracteres = chaineCaracteres;
         this.presenceChaineCaracteres = presenceChaineCaracteres;
+    }
+
+    public boolean isValid(String value, TypeVerification typeVerification){
+        switch (typeVerification) {
+            case STRICTEMENT:
+                return value.equals(chaineCaracteres);
+            case COMMENCE:
+                return value.startsWith(chaineCaracteres);
+            case TERMINE:
+                return value.endsWith(chaineCaracteres);
+            case CONTIENT:
+                return value.contains(chaineCaracteres);
+            case NECONTIENTPAS:
+                return !value.contains(chaineCaracteres);
+            default:
+                return false;
+        }
     }
 }
