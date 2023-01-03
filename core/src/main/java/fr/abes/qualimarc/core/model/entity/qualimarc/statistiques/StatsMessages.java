@@ -42,12 +42,23 @@ public class StatsMessages implements Serializable {
     public StatsMessages(String message) {
         Calendar today = Calendar.getInstance();
         this.annee = today.get(Calendar.YEAR);
-        this.mois = today.get(Calendar.MONTH + 1);
+        this.mois = today.get(Calendar.MONTH) + 1;
         this.message = message;
         this.occurrences = 1;
     }
 
+    public StatsMessages(Integer annee, Integer mois, String message, Integer occurrences) {
+        this.annee = annee;
+        this.mois = mois;
+        this.message = message;
+        this.occurrences = occurrences;
+    }
+
     public void addOccurrence() {
         this.occurrences++;
+    }
+
+    public void addOccurrence(Integer occurrences) {
+        this.occurrences += occurrences;
     }
 }

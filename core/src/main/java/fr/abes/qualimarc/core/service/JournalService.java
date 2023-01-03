@@ -7,7 +7,9 @@ import fr.abes.qualimarc.core.repository.qualimarc.JournalMessagesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class JournalService {
@@ -22,7 +24,17 @@ public class JournalService {
     }
 
     public void saveStatsMessages(List<StatsMessages> statsMessages) {
-        this.journalMessagesRepository.saveAll(statsMessages);
+        statsMessages.forEach(sm -> {
+            StatsMessages newStatMessage;
+            Optional<StatsMessages> existingMessage = journalMessagesRepository.findByAnneeAndMoisAndMessage(sm.getAnnee(), sm.getMois(), sm.getMessage());
+            if (existingMessage.isPresent()) {
+                newStatMessage = existingMessage.get();
+                newStatMessage.addOccurrence(sm.getOccurrences());
+            } else {
+                newStatMessage = new StatsMessages(sm.getAnnee(), sm.getMois(), sm.getMessage(), sm.getOccurrences());
+            }
+            this.journalMessagesRepository.save(newStatMessage);
+        });
     }
 
     public void addStatMessage(String message) {
@@ -40,7 +52,4 @@ public class JournalService {
         journalMessagesRepository.save(statsMessages);
     }
 
-    public void dedoublonnerList(List<StatsMessages> statsMessages) {
-        Set<StatsMessages> statsMessagesSet = new HashSet<>();
-    }
 }

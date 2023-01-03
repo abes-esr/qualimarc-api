@@ -4,10 +4,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.statistiques.StatsMessages;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -48,8 +45,13 @@ public class ResultAnalyse {
         this.ppnInconnus.add(ppn);
     }
 
-    public void addStatsMessage(String messages) {
-        this.statsMessagesList.add(new StatsMessages(messages));
+    public void addStatsMessage(String message) {
+        Optional<StatsMessages> statsMessages = this.statsMessagesList.stream().filter(sm -> sm.getMessage().equals(message)).findFirst();
+        if (statsMessages.isPresent()) {
+            statsMessages.get().addOccurrence();
+        } else {
+            this.statsMessagesList.add(new StatsMessages(message));
+        }
     }
 
     public void merge(ResultAnalyse resultAnalyse) {
@@ -58,6 +60,15 @@ public class ResultAnalyse {
         this.ppnOk.addAll(resultAnalyse.getPpnOk());
         this.ppnInconnus.addAll(resultAnalyse.getPpnInconnus());
         this.ppnErrones.addAll(resultAnalyse.getPpnErrones());
-        this.statsMessagesList.addAll(resultAnalyse.getStatsMessagesList());
+        resultAnalyse.getStatsMessagesList().forEach(this::addStatsMessage);
+    }
+
+    private void addStatsMessage(StatsMessages statsMessages) {
+        Optional<StatsMessages> statsMessagesOpt = this.statsMessagesList.stream().filter(sm -> sm.getMessage().equals(statsMessages.getMessage())).findFirst();
+        if (statsMessagesOpt.isPresent()) {
+            statsMessagesOpt.get().addOccurrence(statsMessages.getOccurrences());
+        } else {
+            this.statsMessagesList.add(statsMessages);
+        }
     }
 }
