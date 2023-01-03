@@ -52,6 +52,9 @@ public class RuleServiceTest {
     @MockBean
     ReferenceService referenceService;
 
+    @MockBean
+    JournalService journalService;
+
     @Value("classpath:143519379.xml")
     Resource xmlFileNoticeBiblio;
 

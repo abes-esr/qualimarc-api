@@ -2,6 +2,7 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.statistiques;
 
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,8 +11,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "JOURNAL_ANALYSE")
-@Getter
-@Setter
+@Getter @Setter
+@NoArgsConstructor
 public class JournalAnalyse implements Serializable {
     @Id
     @Column(name = "ID")

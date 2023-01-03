@@ -46,6 +46,9 @@ public class RuleService {
     private ReferenceService referenceService;
 
     @Autowired
+    private JournalService journalService;
+
+    @Autowired
     private ComplexRulesRepository complexRulesRepository;
 
     @Autowired
@@ -88,6 +91,7 @@ public class RuleService {
                     if (isOk) {
                         resultAnalyse.addPpnOk(ppn);
                     } else {
+                        addInputToJournal(result);
                         resultAnalyse.addPpnErrone(ppn);
                         resultAnalyse.addResultRule(result);
                     }
@@ -104,6 +108,12 @@ public class RuleService {
             this.cn.addAndGet(1);
         }
         return CompletableFuture.completedFuture(resultAnalyse);
+    }
+
+    private void addInputToJournal(ResultRules result) {
+        result.getDetailErreurs().forEach(resultRule -> { ;
+            journalService.addMessageToJournal(resultRule.getMessage(), resultRule.getZonesUnm());
+        });
     }
 
     @SneakyThrows
