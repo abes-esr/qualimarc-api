@@ -126,11 +126,14 @@ public class RuleController {
         journal.setNbPpnErreur(resultAnalyse.getPpnErrones().size());
         journal.setNbPpnInconnus(resultAnalyse.getPpnInconnus().size());
         journalService.addAnalyseIntoJournal(journal);
+        journalService.saveStatsMessages(resultAnalyse.getStatsMessagesList());
+
         ResultAnalyseResponseDto responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
         long end = System.currentTimeMillis();
         log.debug("Temps de traitement : " + (end - start));
         return responseDto;
     }
+
 
     @PostMapping(value = "/indexRules", consumes = {"text/yaml", "text/yml"})
     public void indexRules(@Valid @RequestBody ListRulesWebDto rules) {

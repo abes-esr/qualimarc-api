@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.core.model.resultats;
 
+import fr.abes.qualimarc.core.model.entity.qualimarc.statistiques.StatsMessages;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,7 @@ public class ResultAnalyse {
     private Set<String> ppnErrones;
     private Set<String> ppnOk;
     private Set<String> ppnInconnus;
+    private List<StatsMessages> statsMessagesList;
 
     public ResultAnalyse() {
         this.resultRules = new ArrayList<>();
@@ -23,6 +25,7 @@ public class ResultAnalyse {
         this.ppnErrones = new HashSet<>();
         this.ppnOk = new HashSet<>();
         this.ppnInconnus = new HashSet<>();
+        this.statsMessagesList = new ArrayList<>();
     }
 
     public void addResultRule(ResultRules rule) {
@@ -45,11 +48,16 @@ public class ResultAnalyse {
         this.ppnInconnus.add(ppn);
     }
 
+    public void addStatsMessage(String messages) {
+        this.statsMessagesList.add(new StatsMessages(messages));
+    }
+
     public void merge(ResultAnalyse resultAnalyse) {
         this.resultRules.addAll(resultAnalyse.getResultRules());
         this.ppnAnalyses.addAll(resultAnalyse.getPpnAnalyses());
         this.ppnOk.addAll(resultAnalyse.getPpnOk());
         this.ppnInconnus.addAll(resultAnalyse.getPpnInconnus());
         this.ppnErrones.addAll(resultAnalyse.getPpnErrones());
+        this.statsMessagesList.addAll(resultAnalyse.getStatsMessagesList());
     }
 }

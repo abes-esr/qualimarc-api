@@ -91,7 +91,6 @@ public class RuleService {
                     if (isOk) {
                         resultAnalyse.addPpnOk(ppn);
                     } else {
-                        addInputToJournal(result);
                         resultAnalyse.addPpnErrone(ppn);
                         resultAnalyse.addResultRule(result);
                     }
@@ -107,13 +106,11 @@ public class RuleService {
             }
             this.cn.addAndGet(1);
         }
-        return CompletableFuture.completedFuture(resultAnalyse);
-    }
-
-    private void addInputToJournal(ResultRules result) {
-        result.getDetailErreurs().forEach(resultRule -> { ;
-            journalService.addMessageToJournal(resultRule.getMessage(), resultRule.getZonesUnm());
+        //on alimente la liste des journaux de message dans le résultat du thread
+        resultAnalyse.getResultRules().forEach(resultRules -> {
+            resultRules.getDetailErreurs().stream().map(ResultRule::getMessage).forEach(message -> resultAnalyse.addStatsMessage(message));
         });
+        return CompletableFuture.completedFuture(resultAnalyse);
     }
 
     @SneakyThrows

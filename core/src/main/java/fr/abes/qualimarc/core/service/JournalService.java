@@ -1,15 +1,13 @@
 package fr.abes.qualimarc.core.service;
 
 import fr.abes.qualimarc.core.model.entity.qualimarc.statistiques.JournalAnalyse;
-import fr.abes.qualimarc.core.model.entity.qualimarc.statistiques.JournalMessages;
+import fr.abes.qualimarc.core.model.entity.qualimarc.statistiques.StatsMessages;
 import fr.abes.qualimarc.core.repository.qualimarc.JournalAnalyseRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.JournalMessagesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 public class JournalService {
@@ -23,8 +21,26 @@ public class JournalService {
         journalAnalyseRepository.save(journalAnalyse);
     }
 
-    public void addMessageToJournal(String message, List<String> zones) {
-        JournalMessages journalMessages = new JournalMessages(new Date(), message, zones.stream().collect(Collectors.joining("|")));
-        journalMessagesRepository.save(journalMessages);
+    public void saveStatsMessages(List<StatsMessages> statsMessages) {
+        this.journalMessagesRepository.saveAll(statsMessages);
+    }
+
+    public void addStatMessage(String message) {
+        Calendar today = Calendar.getInstance();
+        StatsMessages statsMessages;
+        Integer actualYear = today.get(Calendar.YEAR);
+        Integer actualMonth = today.get(Calendar.MONTH) + 1;
+        Optional<StatsMessages> existingMessage = journalMessagesRepository.findByAnneeAndMoisAndMessage(actualYear, actualMonth, message);
+        if (existingMessage.isPresent()) {
+            statsMessages = existingMessage.get();
+            statsMessages.addOccurrence();
+        } else {
+            statsMessages = new StatsMessages(actualYear, actualMonth, message);
+        }
+        journalMessagesRepository.save(statsMessages);
+    }
+
+    public void dedoublonnerList(List<StatsMessages> statsMessages) {
+        Set<StatsMessages> statsMessagesSet = new HashSet<>();
     }
 }
