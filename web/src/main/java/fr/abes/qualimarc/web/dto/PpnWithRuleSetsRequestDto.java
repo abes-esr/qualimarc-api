@@ -27,4 +27,7 @@ public class PpnWithRuleSetsRequestDto {
 
     @JsonProperty("ruleSet")
     private Set<RuleSetResponseWebDto> ruleSet;
+
+    @JsonProperty("isReplayed")
+    private boolean isReplayed;
 }
