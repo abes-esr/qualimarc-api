@@ -60,6 +60,6 @@ RUN dnf install -y java-11-openjdk
 COPY ./docker/batch/qualimarc-batch.sh /scripts/qualimarc-batch.sh
 COPY --from=build-image /build/batch/target/*.jar /scripts/qualimarc-batch.jar
 
-COPY ./docker/batch/docker-entrypoint.sh /docker-entrypoint.sh
-ENTRYPOINT ["/docker-entrypoint.sh"]
+COPY ./docker/batch/docker-entrypoint.sh /home/docker/docker-entrypoint.sh
+ENTRYPOINT ["/home/docker/docker-entrypoint.sh"]
 CMD ["crond", "-n"]
