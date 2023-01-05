@@ -107,9 +107,9 @@ public class RuleService {
             }
             this.cn.addAndGet(1);
         }
-        //on alimente la liste des journaux de message dans le résultat du thread
+        //on alimente la liste des journaux de messages dans le résultat du thread
         resultAnalyse.getResultRules().forEach(resultRules -> {
-            resultRules.getDetailErreurs().stream().map(ResultRule::getMessage).forEach(message -> resultAnalyse.addStatsMessage(message));
+            resultRules.getDetailErreurs().stream().map(ResultRule::getMessage).forEach(resultAnalyse::mergeStatsMessages);
         });
         return CompletableFuture.completedFuture(resultAnalyse);
     }
