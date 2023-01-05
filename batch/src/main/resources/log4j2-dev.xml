@@ -9,10 +9,10 @@
         <Property name="debugFileName">${bundle:application:application.name}_debug</Property>
 
         <!-- Politique de gestion des fichiers -->
-        <Property name="sizeTriggerPolicy">200 MB</Property>
-        <Property name="deleteAgeFile">15d</Property>
-        <Property name="keepMostRecentFile">10</Property>
-        <Property name="keepMostRecentSize">100 MB</Property>
+        <Property name="sizeTriggerPolicy">100 MB</Property>
+        <Property name="deleteAgeFile">1d</Property>
+        <Property name="keepMostRecentFile">1</Property>
+        <Property name="keepMostRecentSize">10 MB</Property>
     </Properties>
     <Appenders>
 
@@ -65,7 +65,7 @@
             <Policies>
                 <!-- On exécute les stratégies de création de nouveau fichier et de suppresion :
                 - Au démarrage de l'application
-                - Si l'un des fichiers atteint ${sizeTriggerPolicy}
+                - Si l'un des fichiers atteint 10 MB
                 - Si la date du filePattern nécessite un nouveau fichier -->
                 <OnStartupTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="${sizeTriggerPolicy}" />
@@ -98,7 +98,7 @@
             <Policies>
                 <!-- On exécute les stratégies de création de nouveau fichier et de suppresion :
                 - Au démarrage de l'application
-                - Si l'un des fichiers atteint ${sizeTriggerPolicy}
+                - Si l'un des fichiers atteint 10 MB
                 - Si la date du filePattern nécessite un nouveau fichier -->
                 <OnStartupTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="${sizeTriggerPolicy}" />
@@ -123,6 +123,7 @@
 
     <Loggers>
         <Root level="all">
+            <AppenderRef ref="Console" />
             <AppenderRef ref="DebugFile" />
             <AppenderRef ref="LogFile" />
             <AppenderRef ref="ErrorFile" />
