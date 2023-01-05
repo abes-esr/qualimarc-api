@@ -5,7 +5,9 @@ import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
+import fr.abes.qualimarc.core.model.entity.qualimarc.statistiques.JournalAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
+import fr.abes.qualimarc.core.service.JournalService;
 import fr.abes.qualimarc.core.service.NoticeService;
 import fr.abes.qualimarc.core.service.ReferenceService;
 import fr.abes.qualimarc.core.service.RuleService;
@@ -18,6 +20,7 @@ import fr.abes.qualimarc.web.dto.indexrules.*;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.*;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
+import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,10 +35,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
@@ -54,6 +54,9 @@ public class RuleController {
 
     @Autowired
     private ReferenceService referenceService;
+
+    @Autowired
+    private JournalService journalService;
 
     @Autowired
     private UtilsMapper mapper;
@@ -76,13 +79,16 @@ public class RuleController {
     public ResultAnalyseResponseDto checkPpn(@Valid @RequestBody PpnWithRuleSetsRequestDto requestBody) {
         Long start = System.currentTimeMillis();
         ruleService.resetCn();
+        //initialisation de l'entrée dans la table journée
+        JournalAnalyse journal = new JournalAnalyse(new Date(), requestBody.getTypeAnalyse(), requestBody.isReplayed());
         Set<RuleSet> ruleSets = new HashSet<>();
         Set<FamilleDocument> familleDocuments =  new HashSet<>();
         Set<TypeThese> typeThese = new HashSet<>();
 
         if ((requestBody.getFamilleDocumentSet()!= null) && (!requestBody.getFamilleDocumentSet().isEmpty())) {
+            journal.setTypeDocument(requestBody.getFamilleDocumentSet().stream().map(FamilleDocumentWebDto::getId).collect(Collectors.joining("|")));
             for (TypeThese enumTypeThese : EnumUtils.getEnumList(TypeThese.class)) {
-                if (requestBody.getFamilleDocumentSet().stream().map(f -> f.getId()).collect(Collectors.toList()).contains(enumTypeThese.name())) {
+                if (requestBody.getFamilleDocumentSet().stream().map(FamilleDocumentWebDto::getId).collect(Collectors.toList()).contains(enumTypeThese.name())) {
                     typeThese.add(enumTypeThese);
                     //suppression du type these de la requête pour ne pas altérer la récupération de familles de documents dans la base
                     requestBody.getFamilleDocumentSet().removeIf(f -> f.getId().equals(enumTypeThese.name()));
@@ -92,6 +98,7 @@ public class RuleController {
         }
         if ((requestBody.getRuleSet() != null) && (!requestBody.getRuleSet().isEmpty())){
             ruleSets = mapper.mapSet(requestBody.getRuleSet(),RuleSet.class);
+            journal.setRuleSet(ruleSets.stream().map(ruleSet -> ruleSet.getId().toString()).collect(Collectors.joining("|")));
         }
         this.nbTotalPpn = requestBody.getPpnList().size();
         List<List<String>> splittedList = Lists.partition(requestBody.getPpnList(), requestBody.getPpnList().size() / nbThread + 1);
@@ -114,11 +121,19 @@ public class RuleController {
             resultAnalyse = ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList()).join();
         }
 
+        journal.setNbPpnAnalyse(resultAnalyse.getPpnAnalyses().size());
+        journal.setNbPpnOk(resultAnalyse.getPpnOk().size());
+        journal.setNbPpnErreur(resultAnalyse.getPpnErrones().size());
+        journal.setNbPpnInconnus(resultAnalyse.getPpnInconnus().size());
+        journalService.addAnalyseIntoJournal(journal);
+        journalService.saveStatsMessages(resultAnalyse.getStatsMessagesList());
+
         ResultAnalyseResponseDto responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
         long end = System.currentTimeMillis();
         log.debug("Temps de traitement : " + (end - start));
         return responseDto;
     }
+
 
     @PostMapping(value = "/indexRules", consumes = {"text/yaml", "text/yml"})
     public void indexRules(@Valid @RequestBody ListRulesWebDto rules) {

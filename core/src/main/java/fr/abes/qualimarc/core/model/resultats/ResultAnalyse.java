@@ -1,12 +1,10 @@
 package fr.abes.qualimarc.core.model.resultats;
 
+import fr.abes.qualimarc.core.model.entity.qualimarc.statistiques.StatsMessages;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -16,6 +14,7 @@ public class ResultAnalyse {
     private Set<String> ppnErrones;
     private Set<String> ppnOk;
     private Set<String> ppnInconnus;
+    private List<StatsMessages> statsMessagesList;
 
     public ResultAnalyse() {
         this.resultRules = new ArrayList<>();
@@ -23,6 +22,7 @@ public class ResultAnalyse {
         this.ppnErrones = new HashSet<>();
         this.ppnOk = new HashSet<>();
         this.ppnInconnus = new HashSet<>();
+        this.statsMessagesList = new ArrayList<>();
     }
 
     public void addResultRule(ResultRules rule) {
@@ -45,11 +45,30 @@ public class ResultAnalyse {
         this.ppnInconnus.add(ppn);
     }
 
+    public void addStatsMessage(String message) {
+        Optional<StatsMessages> statsMessages = this.statsMessagesList.stream().filter(sm -> sm.getMessage().equals(message)).findFirst();
+        if (statsMessages.isPresent()) {
+            statsMessages.get().addOccurrence();
+        } else {
+            this.statsMessagesList.add(new StatsMessages(message));
+        }
+    }
+
     public void merge(ResultAnalyse resultAnalyse) {
         this.resultRules.addAll(resultAnalyse.getResultRules());
         this.ppnAnalyses.addAll(resultAnalyse.getPpnAnalyses());
         this.ppnOk.addAll(resultAnalyse.getPpnOk());
         this.ppnInconnus.addAll(resultAnalyse.getPpnInconnus());
         this.ppnErrones.addAll(resultAnalyse.getPpnErrones());
+        resultAnalyse.getStatsMessagesList().forEach(this::addStatsMessage);
+    }
+
+    private void addStatsMessage(StatsMessages statsMessages) {
+        Optional<StatsMessages> statsMessagesOpt = this.statsMessagesList.stream().filter(sm -> sm.getMessage().equals(statsMessages.getMessage())).findFirst();
+        if (statsMessagesOpt.isPresent()) {
+            statsMessagesOpt.get().addOccurrence(statsMessages.getOccurrences());
+        } else {
+            this.statsMessagesList.add(statsMessages);
+        }
     }
 }

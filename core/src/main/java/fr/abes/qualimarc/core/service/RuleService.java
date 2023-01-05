@@ -46,6 +46,9 @@ public class RuleService {
     private ReferenceService referenceService;
 
     @Autowired
+    private JournalService journalService;
+
+    @Autowired
     private ComplexRulesRepository complexRulesRepository;
 
     @Autowired
@@ -68,6 +71,7 @@ public class RuleService {
                 } else {
                     resultAnalyse.addPpnAnalyse(ppn);
                     for (ComplexRule rule : rulesList) {
+                        resultAnalyse.addPpnAnalyse(ppn);
                         if (isRuleAppliedToNotice(noticeSource, rule)) {
                             OtherRule dependencyRule = rule.getDependencyRule();
                             if (dependencyRule != null) {
@@ -103,6 +107,10 @@ public class RuleService {
             }
             this.cn.addAndGet(1);
         }
+        //on alimente la liste des journaux de message dans le résultat du thread
+        resultAnalyse.getResultRules().forEach(resultRules -> {
+            resultRules.getDetailErreurs().stream().map(ResultRule::getMessage).forEach(message -> resultAnalyse.addStatsMessage(message));
+        });
         return CompletableFuture.completedFuture(resultAnalyse);
     }
 
