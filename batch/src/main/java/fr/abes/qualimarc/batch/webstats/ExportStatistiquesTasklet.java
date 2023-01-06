@@ -12,7 +12,6 @@ import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,15 +24,15 @@ public class ExportStatistiquesTasklet implements Tasklet, StepExecutionListener
 
     private final FamilleDocumentRepository familleDocumentRepository;
 
-    @Value("${path.statistiques}")
     private String uploadPath;
 
     private Integer annee;
     private Integer mois;
 
-    public ExportStatistiquesTasklet(RuleSetRepository ruleSetRepository, FamilleDocumentRepository familleDocumentRepository) {
+    public ExportStatistiquesTasklet(RuleSetRepository ruleSetRepository, FamilleDocumentRepository familleDocumentRepository, String uploadPath) {
         this.ruleSetRepository = ruleSetRepository;
         this.familleDocumentRepository = familleDocumentRepository;
+        this.uploadPath = uploadPath;
     }
 
     @Override
@@ -55,7 +54,6 @@ public class ExportStatistiquesTasklet implements Tasklet, StepExecutionListener
 
         RuleSetStat ruleSet = new RuleSetStat(ruleSetRepository);
         ruleSet.generate(getFileName("correspondance_rule_set.csv"), getDate());
-
 
 
         return RepeatStatus.FINISHED;

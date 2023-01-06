@@ -8,12 +8,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersIncrementer;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.persistence.EntityManagerFactory;
 
 @Slf4j
 @EnableBatchProcessing
@@ -30,6 +34,14 @@ public class BatchConfiguration {
 
     @Autowired
     private FamilleDocumentRepository familleDocumentRepository;
+
+    @Value("${path.statistiques}")
+    private String uploadPath;
+
+    @Bean
+    public BatchConfigurer configurer(EntityManagerFactory entityManagerFactory) {
+        return new QualimarcBatchConfigurer(entityManagerFactory);
+    }
 
     @Bean
     public Job jobExportStatistiques() {
@@ -48,7 +60,7 @@ public class BatchConfiguration {
     @Bean
     public Step stepExportStatistiques() {
         return steps.get("stepExportStatistiques").allowStartIfComplete(true)
-                .tasklet(new ExportStatistiquesTasklet(ruleSetRepository, familleDocumentRepository)).build();
+                .tasklet(new ExportStatistiquesTasklet(ruleSetRepository, familleDocumentRepository, uploadPath)).build();
     }
 
 
