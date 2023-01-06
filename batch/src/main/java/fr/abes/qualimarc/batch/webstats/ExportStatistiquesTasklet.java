@@ -2,7 +2,9 @@ package fr.abes.qualimarc.batch.webstats;
 
 import fr.abes.qualimarc.batch.webstats.correspondance.FamilleDocumentStat;
 import fr.abes.qualimarc.batch.webstats.correspondance.RuleSetStat;
+import fr.abes.qualimarc.batch.webstats.statanalyses.AnalysesStat;
 import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
+import fr.abes.qualimarc.core.repository.qualimarc.JournalAnalyseRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.RuleSetRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
@@ -15,7 +17,6 @@ import org.springframework.batch.repeat.RepeatStatus;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 @Slf4j
@@ -24,14 +25,17 @@ public class ExportStatistiquesTasklet implements Tasklet, StepExecutionListener
 
     private final FamilleDocumentRepository familleDocumentRepository;
 
+    private final JournalAnalyseRepository journalAnalyseRepository;
+
     private String uploadPath;
 
     private Integer annee;
     private Integer mois;
 
-    public ExportStatistiquesTasklet(RuleSetRepository ruleSetRepository, FamilleDocumentRepository familleDocumentRepository, String uploadPath) {
+    public ExportStatistiquesTasklet(RuleSetRepository ruleSetRepository, FamilleDocumentRepository familleDocumentRepository, JournalAnalyseRepository journalAnalyseRepository, String uploadPath) {
         this.ruleSetRepository = ruleSetRepository;
         this.familleDocumentRepository = familleDocumentRepository;
+        this.journalAnalyseRepository = journalAnalyseRepository;
         this.uploadPath = uploadPath;
     }
 
@@ -55,17 +59,15 @@ public class ExportStatistiquesTasklet implements Tasklet, StepExecutionListener
         RuleSetStat ruleSet = new RuleSetStat(ruleSetRepository);
         ruleSet.generate(getFileName("correspondance_rule_set.csv"), getDate());
 
+        AnalysesStat analysesStat = new AnalysesStat(journalAnalyseRepository, getDate());
+        analysesStat.generate(getFileName("analyses.csv"), getDate());
 
         return RepeatStatus.FINISHED;
     }
 
     private Date getDate() throws ParseException {
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = formater.parse(this.annee + "-" + this.mois + "-01");
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        c.add(Calendar.MONTH, 1); // Je rajoute un mois pour arriver au mois suivant (en effet, comme je fais 01, je suis au début du mois hors je dois passer à mes stats la date max de recherche
-        return c.getTime();
+        return formater.parse(this.annee + "-" + this.mois + "-01");
     }
 
     private String getFileName(String filename) {

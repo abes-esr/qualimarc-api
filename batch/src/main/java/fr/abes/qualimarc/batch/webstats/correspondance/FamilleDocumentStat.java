@@ -15,6 +15,11 @@ public class FamilleDocumentStat extends Export<FamilleDocument> {
     }
 
     @Override
+    protected void headerToCsv(CSVWriter writer) {
+        writer.writeNext(new String[]{"id", "libelle"});
+    }
+
+    @Override
     protected void lineToCsv(CSVWriter writer, FamilleDocument dto) {
         writer.writeNext(new String[]{dto.getId(), dto.getLibelle()});
     }

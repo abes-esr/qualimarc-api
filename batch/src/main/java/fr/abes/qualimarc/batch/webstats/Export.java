@@ -14,12 +14,15 @@ public abstract class Export<T> {
         log.info(destination + " [" + date + "]: Génération");
         try (CSVWriter writer = new CSVWriter(new FileWriter(destination), ';', CSVWriter.NO_QUOTE_CHARACTER)) {
             List<T> tuples = this.getTuples();
+            this.headerToCsv(writer);
             tuples.forEach(t -> this.lineToCsv(writer, t));
 
         } catch (Exception e) {
             log.error(destination + " [" + date + "]: Erreur dans la création du fichier", e);
         }
     }
+
+    protected abstract void headerToCsv(CSVWriter writer);
 
     protected abstract void lineToCsv(CSVWriter writer, T dto);
 

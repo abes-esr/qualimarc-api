@@ -16,6 +16,11 @@ public class RuleSetStat extends Export<RuleSet> {
     }
 
     @Override
+    protected void headerToCsv(CSVWriter writer) {
+        writer.writeNext(new String[]{"id", "libelle"});
+    }
+
+    @Override
     protected void lineToCsv(CSVWriter writer, RuleSet dto) {
         writer.writeNext(new String[]{dto.getId().toString(), dto.getLibelle()});
     }

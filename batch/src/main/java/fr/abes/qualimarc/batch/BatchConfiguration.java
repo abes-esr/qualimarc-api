@@ -3,6 +3,7 @@ package fr.abes.qualimarc.batch;
 import fr.abes.qualimarc.batch.webstats.ExportStatistiquesTasklet;
 import fr.abes.qualimarc.batch.webstats.VerifierParamsTasklet;
 import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
+import fr.abes.qualimarc.core.repository.qualimarc.JournalAnalyseRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.RuleSetRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -35,6 +36,9 @@ public class BatchConfiguration {
     @Autowired
     private FamilleDocumentRepository familleDocumentRepository;
 
+    @Autowired
+    private JournalAnalyseRepository journalAnalyseRepository;
+
     @Value("${path.statistiques}")
     private String uploadPath;
 
@@ -60,7 +64,7 @@ public class BatchConfiguration {
     @Bean
     public Step stepExportStatistiques() {
         return steps.get("stepExportStatistiques").allowStartIfComplete(true)
-                .tasklet(new ExportStatistiquesTasklet(ruleSetRepository, familleDocumentRepository, uploadPath)).build();
+                .tasklet(new ExportStatistiquesTasklet(ruleSetRepository, familleDocumentRepository, journalAnalyseRepository, uploadPath)).build();
     }
 
 
