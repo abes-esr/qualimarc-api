@@ -1,4 +1,4 @@
-package fr.abes.qualimarc.core.model.entity.qualimarc.statistiques;
+package fr.abes.qualimarc.core.model.entity.qualimarc.journal;
 
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
 import lombok.Getter;

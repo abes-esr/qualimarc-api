@@ -2,7 +2,7 @@ package fr.abes.qualimarc.batch.webstats.statanalyses;
 
 import com.opencsv.CSVWriter;
 import fr.abes.qualimarc.batch.webstats.Export;
-import fr.abes.qualimarc.core.model.entity.qualimarc.statistiques.JournalAnalyse;
+import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalAnalyse;
 import fr.abes.qualimarc.core.repository.qualimarc.JournalAnalyseRepository;
 
 import java.util.Calendar;

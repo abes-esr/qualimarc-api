@@ -2,10 +2,10 @@ package fr.abes.qualimarc.web.controller;
 
 import com.google.common.collect.Lists;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalAnalyse;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
-import fr.abes.qualimarc.core.model.entity.qualimarc.statistiques.JournalAnalyse;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.service.JournalService;
 import fr.abes.qualimarc.core.service.NoticeService;
@@ -126,7 +126,7 @@ public class RuleController {
         journal.setNbPpnErreur(resultAnalyse.getPpnErrones().size());
         journal.setNbPpnInconnus(resultAnalyse.getPpnInconnus().size());
         journalService.addAnalyseIntoJournal(journal);
-        journalService.saveStatsMessages(resultAnalyse.getStatsMessagesList());
+        journalService.saveJournalMessages(resultAnalyse.getJournalMessagesList());
 
         ResultAnalyseResponseDto responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
         long end = System.currentTimeMillis();

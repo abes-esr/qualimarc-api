@@ -1,6 +1,6 @@
 package fr.abes.qualimarc.core.model.resultats;
 
-import fr.abes.qualimarc.core.model.entity.qualimarc.statistiques.StatsMessages;
+import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalMessages;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +14,7 @@ public class ResultAnalyse {
     private Set<String> ppnErrones;
     private Set<String> ppnOk;
     private Set<String> ppnInconnus;
-    private List<StatsMessages> statsMessagesList;
+    private List<JournalMessages> journalMessagesList;
 
     public ResultAnalyse() {
         this.resultRules = new ArrayList<>();
@@ -22,7 +22,7 @@ public class ResultAnalyse {
         this.ppnErrones = new HashSet<>();
         this.ppnOk = new HashSet<>();
         this.ppnInconnus = new HashSet<>();
-        this.statsMessagesList = new ArrayList<>();
+        this.journalMessagesList = new ArrayList<>();
     }
 
     public void addResultRule(ResultRules rule) {
@@ -51,21 +51,21 @@ public class ResultAnalyse {
         this.ppnOk.addAll(resultAnalyse.getPpnOk());
         this.ppnInconnus.addAll(resultAnalyse.getPpnInconnus());
         this.ppnErrones.addAll(resultAnalyse.getPpnErrones());
-        resultAnalyse.getStatsMessagesList().forEach(this::mergeStatsMessages);
+        resultAnalyse.getJournalMessagesList().forEach(this::mergeStatsMessages);
     }
 
     /**
      * Vérifie si le message est déjà présent dans l'objet courant et gère le nombre d'occurrences
-     * @param statsMessages
+     * @param journalMessages
      */
-    private void mergeStatsMessages(StatsMessages statsMessages) {
-        Optional<StatsMessages> statsMessagesOpt = this.statsMessagesList.stream().filter(sm -> sm.getMessage().equals(statsMessages.getMessage())).findFirst();
+    private void mergeStatsMessages(JournalMessages journalMessages) {
+        Optional<JournalMessages> statsMessagesOpt = this.journalMessagesList.stream().filter(sm -> sm.getMessage().equals(journalMessages.getMessage())).findFirst();
         if (statsMessagesOpt.isPresent()) {
             //message trouvé dans l'objet on incrémente le nombre d'occurrences
-            statsMessagesOpt.get().addOccurrence(statsMessages.getOccurrences());
+            statsMessagesOpt.get().addOccurrence(journalMessages.getOccurrences());
         } else {
             //message non trouvé, on ajoute l'objet à l'objet courant
-            this.statsMessagesList.add(statsMessages);
+            this.journalMessagesList.add(journalMessages);
         }
     }
 
@@ -74,13 +74,13 @@ public class ResultAnalyse {
      * @param message
      */
     public void mergeStatsMessages(String message) {
-        Optional<StatsMessages> statsMessages = this.statsMessagesList.stream().filter(sm -> sm.getMessage().equals(message)).findFirst();
+        Optional<JournalMessages> statsMessages = this.journalMessagesList.stream().filter(sm -> sm.getMessage().equals(message)).findFirst();
         if (statsMessages.isPresent()) {
             //message trouvé, on ajoute 1 au nombre d'occurrence du message dans l'objet courant
             statsMessages.get().addOccurrence();
         } else {
             //message non trouvé, on l'ajout à la liste
-            this.statsMessagesList.add(new StatsMessages(message));
+            this.journalMessagesList.add(new JournalMessages(message));
         }
     }
 }

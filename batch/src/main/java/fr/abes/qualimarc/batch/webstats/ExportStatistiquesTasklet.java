@@ -3,8 +3,10 @@ package fr.abes.qualimarc.batch.webstats;
 import fr.abes.qualimarc.batch.webstats.correspondance.FamilleDocumentStat;
 import fr.abes.qualimarc.batch.webstats.correspondance.RuleSetStat;
 import fr.abes.qualimarc.batch.webstats.statanalyses.AnalysesStat;
+import fr.abes.qualimarc.batch.webstats.statmessages.MessagesStats;
 import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.JournalAnalyseRepository;
+import fr.abes.qualimarc.core.repository.qualimarc.JournalMessagesRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.RuleSetRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
@@ -27,15 +29,18 @@ public class ExportStatistiquesTasklet implements Tasklet, StepExecutionListener
 
     private final JournalAnalyseRepository journalAnalyseRepository;
 
+    private final JournalMessagesRepository journalMessagesRepository;
+
     private String uploadPath;
 
     private Integer annee;
     private Integer mois;
 
-    public ExportStatistiquesTasklet(RuleSetRepository ruleSetRepository, FamilleDocumentRepository familleDocumentRepository, JournalAnalyseRepository journalAnalyseRepository, String uploadPath) {
+    public ExportStatistiquesTasklet(RuleSetRepository ruleSetRepository, FamilleDocumentRepository familleDocumentRepository, JournalAnalyseRepository journalAnalyseRepository, JournalMessagesRepository journalMessagesRepository,String uploadPath) {
         this.ruleSetRepository = ruleSetRepository;
         this.familleDocumentRepository = familleDocumentRepository;
         this.journalAnalyseRepository = journalAnalyseRepository;
+        this.journalMessagesRepository = journalMessagesRepository;
         this.uploadPath = uploadPath;
     }
 
@@ -61,6 +66,9 @@ public class ExportStatistiquesTasklet implements Tasklet, StepExecutionListener
 
         AnalysesStat analysesStat = new AnalysesStat(journalAnalyseRepository, getDate());
         analysesStat.generate(getFileName("analyses.csv"), getDate());
+
+        MessagesStats messagesStats = new MessagesStats(journalMessagesRepository, getDate());
+        messagesStats.generate(getFileName("messages.csv"), getDate());
 
         return RepeatStatus.FINISHED;
     }

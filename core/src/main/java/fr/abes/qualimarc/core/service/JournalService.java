@@ -1,7 +1,7 @@
 package fr.abes.qualimarc.core.service;
 
-import fr.abes.qualimarc.core.model.entity.qualimarc.statistiques.JournalAnalyse;
-import fr.abes.qualimarc.core.model.entity.qualimarc.statistiques.StatsMessages;
+import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalAnalyse;
+import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalMessages;
 import fr.abes.qualimarc.core.repository.qualimarc.JournalAnalyseRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.JournalMessagesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +24,21 @@ public class JournalService {
 
     /**
      * Méthode permettant de sauvegarder une liste de messages d'erreur dans la table des stats. Vérifie d'abord si le message est présent pour le mois en cours
-     * @param statsMessages liste des messages à sauvegarder
+     * @param journalMessages liste des messages à sauvegarder
      */
-    public void saveStatsMessages(List<StatsMessages> statsMessages) {
-        statsMessages.forEach(sm -> {
-            StatsMessages newStatMessage;
-            Optional<StatsMessages> existingMessage = journalMessagesRepository.findByAnneeAndMoisAndMessage(sm.getAnnee(), sm.getMois(), sm.getMessage());
+    public void saveJournalMessages(List<JournalMessages> journalMessages) {
+        journalMessages.forEach(sm -> {
+            JournalMessages newJournalMessage;
+            Optional<JournalMessages> existingMessage = journalMessagesRepository.findByAnneeAndMoisAndMessage(sm.getAnnee(), sm.getMois(), sm.getMessage());
             if (existingMessage.isPresent()) {
                 //le message est trouvé dans la table pour le mois et l'année en cours, on incrémente juste le nombre d'occurrences
-                newStatMessage = existingMessage.get();
-                newStatMessage.addOccurrence(sm.getOccurrences());
+                newJournalMessage = existingMessage.get();
+                newJournalMessage.addOccurrence(sm.getOccurrences());
             } else {
                 //message non trouvé, on l'ajoute à la table
-                newStatMessage = new StatsMessages(sm.getAnnee(), sm.getMois(), sm.getMessage(), sm.getOccurrences());
+                newJournalMessage = new JournalMessages(sm.getAnnee(), sm.getMois(), sm.getMessage(), sm.getOccurrences());
             }
-            this.journalMessagesRepository.save(newStatMessage);
+            this.journalMessagesRepository.save(newJournalMessage);
         });
     }
 }
