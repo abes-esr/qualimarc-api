@@ -1,9 +1,13 @@
 package fr.abes.qualimarc.core.service;
 
 import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalAnalyse;
+import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalFamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalMessages;
+import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalRuleSet;
 import fr.abes.qualimarc.core.repository.qualimarc.JournalAnalyseRepository;
+import fr.abes.qualimarc.core.repository.qualimarc.JournalFamilleRepository;
 import fr.abes.qualimarc.core.repository.qualimarc.JournalMessagesRepository;
+import fr.abes.qualimarc.core.repository.qualimarc.JournalRuleSetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +21,12 @@ public class JournalService {
 
     @Autowired
     private JournalMessagesRepository journalMessagesRepository;
+
+    @Autowired
+    private JournalFamilleRepository journalFamilleRepository;
+
+    @Autowired
+    private JournalRuleSetRepository journalRuleSetRepository;
 
     public void addAnalyseIntoJournal(JournalAnalyse journalAnalyse) {
         journalAnalyseRepository.save(journalAnalyse);
@@ -40,5 +50,13 @@ public class JournalService {
             }
             this.journalMessagesRepository.save(newJournalMessage);
         });
+    }
+
+    public void saveJournalFamille(JournalFamilleDocument journalFamilleDocument) {
+        this.journalFamilleRepository.save(journalFamilleDocument);
+    }
+
+    public void saveJournalRuleSet(JournalRuleSet journalRuleSet) {
+        this.journalRuleSetRepository.save(journalRuleSet);
     }
 }

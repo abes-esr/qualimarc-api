@@ -58,7 +58,7 @@ public class RuleService {
     private AtomicInteger cn = new AtomicInteger(0);
 
     @Async("asyncExecutor")
-    public CompletableFuture<ResultAnalyse> checkRulesOnNotices(Set<ComplexRule> rulesList, List<String> ppns) {
+    public CompletableFuture<ResultAnalyse> checkRulesOnNotices(Set<ComplexRule> rulesList, List<String> ppns, boolean isReplayed) {
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         log.debug("Handling list of " + ppns.size() + " ppn");
         for (String ppn : ppns) {
@@ -107,10 +107,12 @@ public class RuleService {
             }
             this.cn.addAndGet(1);
         }
-        //on alimente la liste des journaux de messages dans le résultat du thread
-        resultAnalyse.getResultRules().forEach(resultRules -> {
-            resultRules.getDetailErreurs().stream().map(ResultRule::getMessage).forEach(resultAnalyse::mergeStatsMessages);
-        });
+        //on alimente la liste des journaux de messages dans le résultat du thread (uniquement si on l'analyse n'est pas rejouée)
+        if (!isReplayed) {
+            resultAnalyse.getResultRules().forEach(resultRules -> {
+                resultRules.getDetailErreurs().stream().map(ResultRule::getMessage).forEach(resultAnalyse::mergeStatsMessages);
+            });
+        }
         return CompletableFuture.completedFuture(resultAnalyse);
     }
 

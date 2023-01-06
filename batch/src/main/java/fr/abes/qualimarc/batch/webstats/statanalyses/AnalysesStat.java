@@ -31,7 +31,7 @@ public class AnalysesStat extends Export<JournalAnalyse> {
 
     @Override
     protected void lineToCsv(CSVWriter writer, JournalAnalyse dto) {
-        writer.writeNext(new String[]{dto.getId().toString(), dto.getDateTime().toString(), dto.isReplayed() ? "1":"0", dto.getTypeAnalyse().toString(), dto.getTypeDocument(), dto.getRuleSet(), dto.getNbPpnAnalyse().toString(), dto.getNbPpnErreur().toString(), dto.getNbPpnOk().toString(), dto.getNbPpnInconnus().toString()});
+        writer.writeNext(new String[]{dto.getId().toString(), dto.getDateTime().toString(), dto.isReplayed() ? "1":"0", dto.getTypeAnalyse().toString(), dto.getNbPpnAnalyse().toString(), dto.getNbPpnErreur().toString(), dto.getNbPpnOk().toString(), dto.getNbPpnInconnus().toString()});
     }
 
     @Override

@@ -7,10 +7,10 @@ import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
 
 import java.util.List;
 
-public class FamilleDocumentStat extends Export<FamilleDocument> {
+public class FamilleDocumentCorr extends Export<FamilleDocument> {
     private final FamilleDocumentRepository familleDocumentRepository;
 
-    public FamilleDocumentStat(FamilleDocumentRepository familleDocumentRepository) {
+    public FamilleDocumentCorr(FamilleDocumentRepository familleDocumentRepository) {
         this.familleDocumentRepository = familleDocumentRepository;
     }
 

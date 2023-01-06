@@ -7,11 +7,11 @@ import fr.abes.qualimarc.core.repository.qualimarc.RuleSetRepository;
 
 import java.util.List;
 
-public class RuleSetStat extends Export<RuleSet> {
+public class RuleSetCorr extends Export<RuleSet> {
 
     private final RuleSetRepository ruleSetRepository;
 
-    public RuleSetStat(RuleSetRepository ruleSetRepository) {
+    public RuleSetCorr(RuleSetRepository ruleSetRepository) {
         this.ruleSetRepository = ruleSetRepository;
     }
 

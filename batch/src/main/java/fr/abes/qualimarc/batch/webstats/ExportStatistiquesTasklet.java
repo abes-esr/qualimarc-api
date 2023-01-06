@@ -1,13 +1,12 @@
 package fr.abes.qualimarc.batch.webstats;
 
-import fr.abes.qualimarc.batch.webstats.correspondance.FamilleDocumentStat;
-import fr.abes.qualimarc.batch.webstats.correspondance.RuleSetStat;
+import fr.abes.qualimarc.batch.webstats.correspondance.FamilleDocumentCorr;
+import fr.abes.qualimarc.batch.webstats.correspondance.RuleSetCorr;
 import fr.abes.qualimarc.batch.webstats.statanalyses.AnalysesStat;
+import fr.abes.qualimarc.batch.webstats.statanalyses.FamilleDocumentStat;
+import fr.abes.qualimarc.batch.webstats.statanalyses.RuleSetStat;
 import fr.abes.qualimarc.batch.webstats.statmessages.MessagesStats;
-import fr.abes.qualimarc.core.repository.qualimarc.FamilleDocumentRepository;
-import fr.abes.qualimarc.core.repository.qualimarc.JournalAnalyseRepository;
-import fr.abes.qualimarc.core.repository.qualimarc.JournalMessagesRepository;
-import fr.abes.qualimarc.core.repository.qualimarc.RuleSetRepository;
+import fr.abes.qualimarc.core.repository.qualimarc.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
@@ -31,16 +30,22 @@ public class ExportStatistiquesTasklet implements Tasklet, StepExecutionListener
 
     private final JournalMessagesRepository journalMessagesRepository;
 
+    private final JournalFamilleRepository journalFamilleRepository;
+
+    private final JournalRuleSetRepository journalRuleSetRepository;
+
     private String uploadPath;
 
     private Integer annee;
     private Integer mois;
 
-    public ExportStatistiquesTasklet(RuleSetRepository ruleSetRepository, FamilleDocumentRepository familleDocumentRepository, JournalAnalyseRepository journalAnalyseRepository, JournalMessagesRepository journalMessagesRepository,String uploadPath) {
+    public ExportStatistiquesTasklet(RuleSetRepository ruleSetRepository, FamilleDocumentRepository familleDocumentRepository, JournalAnalyseRepository journalAnalyseRepository, JournalMessagesRepository journalMessagesRepository, JournalFamilleRepository journalFamilleRepository, JournalRuleSetRepository journalRuleSetRepository, String uploadPath) {
         this.ruleSetRepository = ruleSetRepository;
         this.familleDocumentRepository = familleDocumentRepository;
         this.journalAnalyseRepository = journalAnalyseRepository;
         this.journalMessagesRepository = journalMessagesRepository;
+        this.journalFamilleRepository = journalFamilleRepository;
+        this.journalRuleSetRepository = journalRuleSetRepository;
         this.uploadPath = uploadPath;
     }
 
@@ -58,10 +63,10 @@ public class ExportStatistiquesTasklet implements Tasklet, StepExecutionListener
     @Override
     public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
         log.info("Execute exportStatistiquesTasklet");
-        FamilleDocumentStat famille = new FamilleDocumentStat(familleDocumentRepository);
+        FamilleDocumentCorr famille = new FamilleDocumentCorr(familleDocumentRepository);
         famille.generate(getFileName("correspondance_famille_document.csv"), getDate());
 
-        RuleSetStat ruleSet = new RuleSetStat(ruleSetRepository);
+        RuleSetCorr ruleSet = new RuleSetCorr(ruleSetRepository);
         ruleSet.generate(getFileName("correspondance_rule_set.csv"), getDate());
 
         AnalysesStat analysesStat = new AnalysesStat(journalAnalyseRepository, getDate());
@@ -69,6 +74,12 @@ public class ExportStatistiquesTasklet implements Tasklet, StepExecutionListener
 
         MessagesStats messagesStats = new MessagesStats(journalMessagesRepository, getDate());
         messagesStats.generate(getFileName("messages.csv"), getDate());
+
+        FamilleDocumentStat familleDocumentStat = new FamilleDocumentStat(journalFamilleRepository, getDate());
+        familleDocumentStat.generate(getFileName("famille_document.csv"), getDate());
+
+        RuleSetStat ruleSetStat = new RuleSetStat(journalRuleSetRepository, getDate());
+        ruleSetStat.generate(getFileName("rule_set.csv"), getDate());
 
         return RepeatStatus.FINISHED;
     }

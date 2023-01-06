@@ -3,6 +3,8 @@ package fr.abes.qualimarc.web.controller;
 import com.google.common.collect.Lists;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalAnalyse;
+import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalFamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalRuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
@@ -79,14 +81,20 @@ public class RuleController {
     public ResultAnalyseResponseDto checkPpn(@Valid @RequestBody PpnWithRuleSetsRequestDto requestBody) {
         Long start = System.currentTimeMillis();
         ruleService.resetCn();
+        Date dateJour = Calendar.getInstance().getTime();
         //initialisation de l'entrée dans la table journée
-        JournalAnalyse journal = new JournalAnalyse(new Date(), requestBody.getTypeAnalyse(), requestBody.isReplayed());
+        JournalAnalyse journal = new JournalAnalyse(dateJour, requestBody.getTypeAnalyse(), requestBody.isReplayed());
         Set<RuleSet> ruleSets = new HashSet<>();
         Set<FamilleDocument> familleDocuments =  new HashSet<>();
         Set<TypeThese> typeThese = new HashSet<>();
 
         if ((requestBody.getFamilleDocumentSet()!= null) && (!requestBody.getFamilleDocumentSet().isEmpty())) {
-            journal.setTypeDocument(requestBody.getFamilleDocumentSet().stream().map(FamilleDocumentWebDto::getId).collect(Collectors.joining("|")));
+            if (!requestBody.isReplayed()) {
+                requestBody.getFamilleDocumentSet().stream().map(FamilleDocumentWebDto::getId).forEach(id -> {
+                    JournalFamilleDocument journalFamilleDocument = new JournalFamilleDocument(dateJour, id);
+                    journalService.saveJournalFamille(journalFamilleDocument);
+                });
+            }
             for (TypeThese enumTypeThese : EnumUtils.getEnumList(TypeThese.class)) {
                 if (requestBody.getFamilleDocumentSet().stream().map(FamilleDocumentWebDto::getId).collect(Collectors.toList()).contains(enumTypeThese.name())) {
                     typeThese.add(enumTypeThese);
@@ -98,7 +106,12 @@ public class RuleController {
         }
         if ((requestBody.getRuleSet() != null) && (!requestBody.getRuleSet().isEmpty())){
             ruleSets = mapper.mapSet(requestBody.getRuleSet(),RuleSet.class);
-            journal.setRuleSet(ruleSets.stream().map(ruleSet -> ruleSet.getId().toString()).collect(Collectors.joining("|")));
+            if (!requestBody.isReplayed()) {
+                ruleSets.stream().map(RuleSet::getId).forEach(id -> {
+                    JournalRuleSet journalRuleSet = new JournalRuleSet(dateJour, id);
+                    journalService.saveJournalRuleSet(journalRuleSet);
+                });
+            }
         }
         this.nbTotalPpn = requestBody.getPpnList().size();
         List<List<String>> splittedList = Lists.partition(requestBody.getPpnList(), requestBody.getPpnList().size() / nbThread + 1);
@@ -107,7 +120,7 @@ public class RuleController {
         ResultAnalyse resultAnalyse;
         if(splittedList.size() > 1) {
             for (List<String> ppnList : splittedList)
-                resultList.add(ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), ppnList));
+                resultList.add(ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), ppnList, requestBody.isReplayed()));
 
             //biFunction permet de prendre le résultat de 2 traitements en parallèle et de les fusionner en un troisième qui est retourné
             BiFunction<ResultAnalyse, ResultAnalyse, ResultAnalyse> biFunction = (res1, res2) -> {
@@ -118,7 +131,7 @@ public class RuleController {
             //on récupère chaque traitement lancé en parallèle et on le combine au précédent en fusionnant les résultats
             resultAnalyse = resultList.stream().reduce((res1, res2) -> res1.thenCombineAsync(res2, biFunction, asyncExecutor)).orElse(CompletableFuture.completedFuture(new ResultAnalyse())).join();
         } else {
-            resultAnalyse = ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList()).join();
+            resultAnalyse = ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList(), requestBody.isReplayed()).join();
         }
 
         journal.setNbPpnAnalyse(resultAnalyse.getPpnAnalyses().size());

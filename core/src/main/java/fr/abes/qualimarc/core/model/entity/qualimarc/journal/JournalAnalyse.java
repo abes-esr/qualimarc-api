@@ -26,12 +26,6 @@ public class JournalAnalyse implements Serializable {
     @Enumerated(EnumType.STRING)
     private TypeAnalyse typeAnalyse;
 
-    @Column(name = "TYPE_DOCUMENT")
-    private String typeDocument;
-
-    @Column(name = "RULESET")
-    private String ruleSet;
-
     @Column(name = "NB_PPN_ANALYSE")
     private Integer nbPpnAnalyse;
 
