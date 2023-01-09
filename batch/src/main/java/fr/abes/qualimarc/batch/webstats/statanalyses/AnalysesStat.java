@@ -26,7 +26,7 @@ public class AnalysesStat extends Export<JournalAnalyse> {
 
     @Override
     protected void headerToCsv(CSVWriter writer) {
-        writer.writeNext(new String[]{"id", "date", "isReplayed", "typeAnalyse", "typeDoc", "ruleSet", "nbPpnAnalyse","nbPpnErreur","nbPpnOk","nbPpnInconnus"});
+        writer.writeNext(new String[]{"id", "date", "isReplayed", "typeAnalyse", "nbPpnAnalyse","nbPpnErreur","nbPpnOk","nbPpnInconnus"});
     }
 
     @Override
