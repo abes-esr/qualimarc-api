@@ -1,6 +1,7 @@
 package fr.abes.qualimarc.batch;
 
 import fr.abes.qualimarc.batch.webstats.ExportStatistiquesTasklet;
+import fr.abes.qualimarc.batch.webstats.FlushStatistiquesTasklet;
 import fr.abes.qualimarc.batch.webstats.VerifierParamsTasklet;
 import fr.abes.qualimarc.core.repository.qualimarc.*;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,19 @@ public class BatchConfiguration {
                 .start(stepVerifierParams()).on("FAILED").end()
                 .from(stepVerifierParams()).on("COMPLETED").to(stepExportStatistiques())
                 .build().build();
+    }
+
+    @Bean
+    public Job jobFlushStatistiques() {
+        return jobs.get("flushStatistiques").incrementer(incrementer())
+                .start(stepFlushStatistiques()).on("FAILED").end()
+                .from(stepFlushStatistiques()).on("COMPLETED").end()
+                .build().build();
+    }
+
+    private Step stepFlushStatistiques() {
+        return steps.get("flushStatistiques")
+                .tasklet(new FlushStatistiquesTasklet(journalAnalyseRepository, journalMessagesRepository, journalFamilleRepository, journalRuleSetRepository)).build();
     }
 
     @Bean

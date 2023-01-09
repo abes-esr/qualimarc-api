@@ -13,5 +13,6 @@ import java.util.List;
 public interface JournalAnalyseRepository extends JpaRepository<JournalAnalyse, Integer> {
 
     List<JournalAnalyse> findAllByDateTimeBetween(Date dateDebut, Date dateFin);
-//    List<JournalAnalyse> findAllByDateTimeBetween(String dateDebut, String dateFin);
+
+    void deleteAllByDateTimeBefore(Date date);
 }
