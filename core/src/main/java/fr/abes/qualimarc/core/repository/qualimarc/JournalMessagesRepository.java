@@ -14,4 +14,6 @@ public interface JournalMessagesRepository extends JpaRepository<JournalMessages
     Optional<JournalMessages> findByAnneeAndMoisAndMessage(Integer annee, Integer mois, String message);
 
     List<JournalMessages> findByAnneeAndMois(Integer annee, Integer mois);
+
+    void deleteAllByAnneeLessThan(Integer annee);
 }

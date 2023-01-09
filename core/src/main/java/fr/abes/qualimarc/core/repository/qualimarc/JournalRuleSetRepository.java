@@ -11,4 +11,6 @@ import java.util.List;
 public interface JournalRuleSetRepository extends JpaRepository<JournalRuleSet, Integer> {
 
     List<JournalRuleSet> findAllByDateTimeBetween(Date dateDebut, Date dateFin);
+
+    void deleteAllByDateTimeBefore(Date date);
 }

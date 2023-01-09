@@ -11,4 +11,6 @@ import java.util.List;
 public interface JournalFamilleRepository extends JpaRepository<JournalFamilleDocument, Integer> {
 
     List<JournalFamilleDocument> findAllByDateTimeBetween(Date dateDebut, Date dateFin);
+
+    void deleteAllByDateTimeBefore(Date date);
 }

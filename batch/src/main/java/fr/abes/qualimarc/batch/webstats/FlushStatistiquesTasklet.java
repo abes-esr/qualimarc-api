@@ -63,6 +63,12 @@ public class FlushStatistiquesTasklet implements Tasklet, StepExecutionListener 
 
         log.info("Delete journalAnalyse before " + dateTwoYearsAgo);
         this.journalAnalyseRepository.deleteAllByDateTimeBefore(dateTwoYearsAgo);
+        this.journalFamilleRepository.deleteAllByDateTimeBefore(dateTwoYearsAgo);
+        this.journalRuleSetRepository.deleteAllByDateTimeBefore(dateTwoYearsAgo);
+
+
+        log.info("Delete Message before " + calendar.get(Calendar.YEAR));
+        this.journalMessagesRepository.deleteAllByAnneeLessThan(calendar.get(Calendar.YEAR));
 
         return RepeatStatus.FINISHED;
     }
