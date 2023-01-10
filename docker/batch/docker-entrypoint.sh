@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Paramètres par défaut du conteneur
-export QUALIMARC_BATCH_CRON=${QUALIMARC_BATCH_CRON:='50 6 1 * *'}
+export QUALIMARC_BATCH_CRON=${QUALIMARC_BATCH_CRON:='0 50 6 1 * *'}
+export QUALIMARC_BATCH_CRON_FLUSH=${QUALIMARC_BATCH_CRON_FLUSH:='0 0 0 1 1 *'}
 export QUALIMARC_BATCH_AT_STARTUP=${QUALIMARC_BATCH_AT_STARTUP:='1'}
 
 # Réglage de /etc/environment pour que les crontab s'exécutent avec les bonnes variables d'env
