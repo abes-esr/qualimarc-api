@@ -52,6 +52,9 @@ public class RuleServiceTest {
     @MockBean
     ReferenceService referenceService;
 
+    @MockBean
+    JournalService journalService;
+
     @Value("classpath:143519379.xml")
     Resource xmlFileNoticeBiblio;
 
@@ -161,7 +164,7 @@ public class RuleServiceTest {
         Mockito.when(referenceService.getFamilleDocument("O")).thenReturn(new FamilleDocument("O", "Doc Elec"));
         Mockito.when(referenceService.getFamilleDocument("BD")).thenReturn(new FamilleDocument("BD", "Ressource Continue"));
 
-        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
+        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns, false);
 
         Assertions.assertEquals(3, resultAnalyse.get().getPpnAnalyses().size());
         Assertions.assertEquals(2, resultAnalyse.get().getPpnErrones().size());
@@ -219,7 +222,7 @@ public class RuleServiceTest {
 
         Mockito.when(noticeService.getBiblioByPpn("111111111")).thenThrow(new IllegalPpnException("le PPN 111111111 n'existe pas"));
 
-        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
+        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns, false);
 
         Assertions.assertEquals(1, resultAnalyse.get().getPpnInconnus().size());
 
@@ -235,7 +238,7 @@ public class RuleServiceTest {
 
         Mockito.when(noticeService.getBiblioByPpn("111111111")).thenReturn(noticeDeleted);
 
-        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
+        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns, false);
 
         Assertions.assertEquals(1, resultAnalyse.get().getPpnInconnus().size());
     }
@@ -247,7 +250,7 @@ public class RuleServiceTest {
 
         Mockito.when(noticeService.getBiblioByPpn("111111111")).thenThrow(new SQLException("Erreur d'accès à la base de données sur PPN : 111111111"));
 
-        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns);
+        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeRegles, ppns, false);
         Assertions.assertEquals(1, resultAnalyse.get().getPpnInconnus().size());
 
         List<ResultRules> resultat = resultAnalyse.get().getResultRules();
@@ -369,7 +372,7 @@ public class RuleServiceTest {
 
         Mockito.when(noticeService.getBiblioByPpn("123456789")).thenReturn(noticeAutorite1);
 
-        CompletableFuture<ResultAnalyse> result = service.checkRulesOnNotices(rules, Lists.newArrayList("123456789"));
+        CompletableFuture<ResultAnalyse> result = service.checkRulesOnNotices(rules, Lists.newArrayList("123456789"), false);
         Assertions.assertEquals("123456789", result.get().getPpnInconnus().iterator().next());
         Assertions.assertEquals(0, result.get().getPpnOk().size());
         Assertions.assertEquals(0, result.get().getPpnErrones().size());
@@ -511,7 +514,7 @@ public class RuleServiceTest {
 
         Mockito.when(referenceService.getFamilleDocument("A")).thenReturn(new FamilleDocument("A", "Monographie"));
 
-        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeReglesDependency, ppns);
+        CompletableFuture<ResultAnalyse> resultAnalyse = service.checkRulesOnNotices(listeReglesDependency, ppns, false);
         Assertions.assertEquals(1, resultAnalyse.get().getPpnAnalyses().size());
         Assertions.assertEquals(1, resultAnalyse.get().getPpnErrones().size());
         Assertions.assertEquals(0, resultAnalyse.get().getPpnOk().size());

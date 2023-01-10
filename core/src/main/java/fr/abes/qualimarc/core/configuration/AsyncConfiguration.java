@@ -10,6 +10,7 @@ import java.util.concurrent.Executor;
 
 @Configuration
 @EnableAsync
+@AsyncConfig
 public class AsyncConfiguration {
     @Value("${spring.task.execution.pool.core-size}")
     private Integer coreSize;
