@@ -62,6 +62,7 @@ RUN chmod +x /scripts/qualimarc-batch.sh
 COPY ./docker/batch/qualimarc-batch-flush.sh /scripts/qualimarc-batch-flush.sh
 RUN chmod +x /scripts/qualimarc-batch-flush.sh
 COPY --from=build-image /build/batch/target/*.jar /scripts/qualimarc-batch.jar
+RUN chmod +x /scripts/qualimarc-batch.jar
 
 COPY ./docker/batch/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
