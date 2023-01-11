@@ -58,7 +58,9 @@ COPY ./docker/batch/tasks.tmpl /etc/cron.d/tasks.tmpl
 # Le JAR et le script pour le batch de LN
 RUN dnf install -y java-11-openjdk
 COPY ./docker/batch/qualimarc-batch.sh /scripts/qualimarc-batch.sh
+RUN chmod +x /scripts/qualimarc-batch.sh
 COPY ./docker/batch/qualimarc-batch-flush.sh /scripts/qualimarc-batch-flush.sh
+RUN chmod +x /scripts/qualimarc-batch-flush.sh
 COPY --from=build-image /build/batch/target/*.jar /scripts/qualimarc-batch.jar
 
 COPY ./docker/batch/docker-entrypoint.sh /docker-entrypoint.sh
