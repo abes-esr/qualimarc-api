@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure;
 
+import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import lombok.Getter;
@@ -11,9 +12,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -37,29 +38,21 @@ public class PresenceZone extends SimpleRule implements Serializable {
     public boolean isValid(NoticeXml ... notices) {
         NoticeXml notice = notices[0];
 
-        //cas ou on veut que la zone soit présente dans la notice pour lever le message
-        if(this.isPresent) {
-            if (this.getComplexRule() != null && this.getComplexRule().isMemeZone()) {
-                //  Collecte dans une liste toutes les zones qui MATCHENT avec la zone cible
-                this.getComplexRule().setSavedZone(
-                    notice.getDatafields().stream().filter(df -> df.getTag().equals(this.getZone())).collect(Collectors.toList())
-                );
-                return this.getComplexRule().isSavedZoneIsNotEmpty();
-            } else {
-                return notice.getDatafields().stream().anyMatch(dataField -> dataField.getTag().equals(this.getZone()));
-            }
-        } else {
-            //cas ou on veut que la zone soit absente de la notice pour lever le message
-            if (this.getComplexRule() != null && this.getComplexRule().isMemeZone()) {
-                this.getComplexRule().setSavedZone(
-                    //  Collecte dans une liste toutes les zones qui NE MATCHENT PAS avec la zone cible
-                    notice.getDatafields().stream().filter(df -> !df.getTag().equals(this.getZone())).collect(Collectors.toList())
-                );
-                return this.getComplexRule().isSavedZoneIsNotEmpty();
-            } else {
-                return notice.getDatafields().stream().noneMatch(dataField -> dataField.getTag().equals(this.getZone()));
-            }
+        List<Datafield> datafieldsValid;
+
+        // On récupère les datafields qui correspondent à la zone
+        datafieldsValid = notice.getDatafields().stream()
+                .filter(datafield -> datafield.getTag().equals(this.getZone()))
+                .collect(Collectors.toList());
+
+        if(this.getComplexRule() != null && this.getComplexRule().isMemeZone()){
+            // TODO: Il y a t'il un cas ou on verifie l'absence d'une zone dans une meme zone ???
+            this.getComplexRule().setSavedZone(datafieldsValid);
+            return this.getComplexRule().isSavedZoneIsNotEmpty();
         }
+
+        return isPresent != datafieldsValid.isEmpty();
+
     }
 
     @Override

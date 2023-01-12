@@ -2,10 +2,14 @@ package fr.abes.qualimarc.web.controller;
 
 import com.google.common.collect.Lists;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalAnalyse;
+import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalFamilleDocument;
+import fr.abes.qualimarc.core.model.entity.qualimarc.journal.JournalRuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.FamilleDocument;
 import fr.abes.qualimarc.core.model.entity.qualimarc.reference.RuleSet;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.ComplexRule;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
+import fr.abes.qualimarc.core.service.JournalService;
 import fr.abes.qualimarc.core.service.NoticeService;
 import fr.abes.qualimarc.core.service.ReferenceService;
 import fr.abes.qualimarc.core.service.RuleService;
@@ -18,6 +22,7 @@ import fr.abes.qualimarc.web.dto.indexrules.*;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.*;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
+import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,10 +37,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
@@ -54,6 +56,9 @@ public class RuleController {
 
     @Autowired
     private ReferenceService referenceService;
+
+    @Autowired
+    private JournalService journalService;
 
     @Autowired
     private UtilsMapper mapper;
@@ -76,13 +81,22 @@ public class RuleController {
     public ResultAnalyseResponseDto checkPpn(@Valid @RequestBody PpnWithRuleSetsRequestDto requestBody) {
         Long start = System.currentTimeMillis();
         ruleService.resetCn();
+        Date dateJour = Calendar.getInstance().getTime();
+        //initialisation de l'entrée dans la table journée
+        JournalAnalyse journal = new JournalAnalyse(dateJour, requestBody.getTypeAnalyse(), requestBody.isReplayed());
         Set<RuleSet> ruleSets = new HashSet<>();
         Set<FamilleDocument> familleDocuments =  new HashSet<>();
         Set<TypeThese> typeThese = new HashSet<>();
 
         if ((requestBody.getFamilleDocumentSet()!= null) && (!requestBody.getFamilleDocumentSet().isEmpty())) {
+            if (!requestBody.isReplayed()) {
+                requestBody.getFamilleDocumentSet().stream().map(FamilleDocumentWebDto::getId).forEach(id -> {
+                    JournalFamilleDocument journalFamilleDocument = new JournalFamilleDocument(dateJour, id);
+                    journalService.saveJournalFamille(journalFamilleDocument);
+                });
+            }
             for (TypeThese enumTypeThese : EnumUtils.getEnumList(TypeThese.class)) {
-                if (requestBody.getFamilleDocumentSet().stream().map(f -> f.getId()).collect(Collectors.toList()).contains(enumTypeThese.name())) {
+                if (requestBody.getFamilleDocumentSet().stream().map(FamilleDocumentWebDto::getId).collect(Collectors.toList()).contains(enumTypeThese.name())) {
                     typeThese.add(enumTypeThese);
                     //suppression du type these de la requête pour ne pas altérer la récupération de familles de documents dans la base
                     requestBody.getFamilleDocumentSet().removeIf(f -> f.getId().equals(enumTypeThese.name()));
@@ -92,6 +106,12 @@ public class RuleController {
         }
         if ((requestBody.getRuleSet() != null) && (!requestBody.getRuleSet().isEmpty())){
             ruleSets = mapper.mapSet(requestBody.getRuleSet(),RuleSet.class);
+            if (!requestBody.isReplayed()) {
+                ruleSets.stream().map(RuleSet::getId).forEach(id -> {
+                    JournalRuleSet journalRuleSet = new JournalRuleSet(dateJour, id);
+                    journalService.saveJournalRuleSet(journalRuleSet);
+                });
+            }
         }
         this.nbTotalPpn = requestBody.getPpnList().size();
         List<List<String>> splittedList = Lists.partition(requestBody.getPpnList(), requestBody.getPpnList().size() / nbThread + 1);
@@ -100,7 +120,7 @@ public class RuleController {
         ResultAnalyse resultAnalyse;
         if(splittedList.size() > 1) {
             for (List<String> ppnList : splittedList)
-                resultList.add(ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), ppnList));
+                resultList.add(ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), ppnList, requestBody.isReplayed()));
 
             //biFunction permet de prendre le résultat de 2 traitements en parallèle et de les fusionner en un troisième qui est retourné
             BiFunction<ResultAnalyse, ResultAnalyse, ResultAnalyse> biFunction = (res1, res2) -> {
@@ -111,14 +131,22 @@ public class RuleController {
             //on récupère chaque traitement lancé en parallèle et on le combine au précédent en fusionnant les résultats
             resultAnalyse = resultList.stream().reduce((res1, res2) -> res1.thenCombineAsync(res2, biFunction, asyncExecutor)).orElse(CompletableFuture.completedFuture(new ResultAnalyse())).join();
         } else {
-            resultAnalyse = ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList()).join();
+            resultAnalyse = ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList(), requestBody.isReplayed()).join();
         }
+
+        journal.setNbPpnAnalyse(resultAnalyse.getPpnAnalyses().size());
+        journal.setNbPpnOk(resultAnalyse.getPpnOk().size());
+        journal.setNbPpnErreur(resultAnalyse.getPpnErrones().size());
+        journal.setNbPpnInconnus(resultAnalyse.getPpnInconnus().size());
+        journalService.addAnalyseIntoJournal(journal);
+        journalService.saveJournalMessages(resultAnalyse.getJournalMessagesList());
 
         ResultAnalyseResponseDto responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
         long end = System.currentTimeMillis();
         log.debug("Temps de traitement : " + (end - start));
         return responseDto;
     }
+
 
     @PostMapping(value = "/indexRules", consumes = {"text/yaml", "text/yml"})
     public void indexRules(@Valid @RequestBody ListRulesWebDto rules) {
@@ -162,7 +190,7 @@ public class RuleController {
                     if (rule instanceof NombreCaracteresWebDto)
                         rulesEntity.add(mapper.map(new NombreCaracteresWebDto(generateNewId(rule.getId(), indexForGeneratingId), rule.getIdExcel(), rule.getRuleSetList(), rule.getMessage(), zoneGenerique, ((NombreCaracteresWebDto) rule).getSousZone(), rule.getPriority(), rule.getTypesDoc(), rule.getTypesThese(), ((NombreCaracteresWebDto) rule).getComparaisonOperateur(), ((NombreCaracteresWebDto) rule).getOccurrences()), ComplexRule.class));
                     if (rule instanceof IndicateurWebDto)
-                        rulesEntity.add(mapper.map(new IndicateurWebDto(generateNewId(rule.getId(), indexForGeneratingId), rule.getIdExcel(), rule.getRuleSetList(), rule.getMessage(), zoneGenerique, rule.getPriority(), rule.getTypesDoc(), rule.getTypesThese(), ((IndicateurWebDto) rule).getIndicateur(), ((IndicateurWebDto) rule).getValeur()), ComplexRule.class));
+                        rulesEntity.add(mapper.map(new IndicateurWebDto(generateNewId(rule.getId(), indexForGeneratingId), rule.getIdExcel(), rule.getRuleSetList(), rule.getMessage(), zoneGenerique, rule.getPriority(), rule.getTypesDoc(), rule.getTypesThese(), ((IndicateurWebDto) rule).getIndicateur(), ((IndicateurWebDto) rule).getValeur(), ((IndicateurWebDto) rule).getTypeDeVerification()), ComplexRule.class));
                     if (rule instanceof ComparaisonDateWebDto)
                         rulesEntity.add(mapper.map(new ComparaisonDateWebDto(generateNewId(rule.getId(), indexForGeneratingId), rule.getIdExcel(), rule.getRuleSetList(), rule.getMessage(), zoneGenerique, rule.getPriority(), rule.getTypesDoc(), rule.getTypesThese(), ((ComparaisonDateWebDto) rule).getSousZone(), ((ComparaisonDateWebDto) rule).getPositionStart(), ((ComparaisonDateWebDto) rule).getPositionEnd(), ((ComparaisonDateWebDto) rule).getZoneCible(), ((ComparaisonDateWebDto) rule).getSousZoneCible(), ((ComparaisonDateWebDto) rule).getPositionStartCible(), ((ComparaisonDateWebDto) rule).getPositionEndCible(),((ComparaisonDateWebDto) rule).getComparateur()), ComplexRule.class));
                     if (rule instanceof ComparaisonContenuSousZoneWebDto) {
@@ -223,7 +251,7 @@ public class RuleController {
 
     /**
      * Methode pour la bar de progress
-     * @return
+     * @return pourcentage de progression
      */
     @GetMapping("/getStatus")
     public String getStatus() {

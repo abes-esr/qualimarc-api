@@ -5,10 +5,11 @@
     <groupId>fr.abes.qualimarc</groupId>
     <artifactId>qualimarc-api</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.9</version>
+    <version>0.0.10-SNAPSHOT</version>
     <modules>
         <module>core</module>
         <module>web</module>
+        <module>batch</module>
     </modules>
 
     <properties>

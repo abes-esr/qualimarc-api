@@ -148,8 +148,10 @@ public class WebDtoMapper {
                 checkOtherRule(source);
                 if (source.getIndicateur() != 1 && source.getIndicateur() != 2) {
                     throw new IllegalArgumentException("Règle " + source.getId() + " : le champ indicateur peut etre soit '1', soit '2'");
+                } else if (source.getTypeDeVerification() == null || source.getTypeDeVerification().isEmpty() || (!source.getTypeDeVerification().equals("STRICTEMENT") && !source.getTypeDeVerification().equals("STRICTEMENTDIFFERENT"))) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : le champ type-de-verification est obligatoire et peut etre soit 'STRICTEMENT', soit 'STRICTEMENTDIFFERENT'");
                 }
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new Indicateur(source.getId(), source.getZone(), source.getIndicateur(), source.getValeur()));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new Indicateur(source.getId(), source.getZone(), source.getIndicateur(), source.getValeur(), getTypeDeVerification(source.getTypeDeVerification())));
             }
         };
         mapper.addConverter(myConverter);
@@ -383,7 +385,12 @@ public class WebDtoMapper {
         Converter<IndicateurWebDto, SimpleRule> myConverter = new Converter<IndicateurWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<IndicateurWebDto, SimpleRule> context) {
                 IndicateurWebDto source = context.getSource();
-                return new Indicateur(source.getId(), source.getZone(), source.getIndicateur(), source.getValeur());
+                if (source.getIndicateur() != 1 && source.getIndicateur() != 2) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : le champ indicateur peut etre soit '1', soit '2'");
+                } else if (source.getTypeDeVerification() == null || source.getTypeDeVerification().isEmpty() || (!source.getTypeDeVerification().equals("STRICTEMENT") && !source.getTypeDeVerification().equals("STRICTEMENTDIFFERENT"))) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : le champ type-de-verification est obligatoire et peut etre soit 'STRICTEMENT', soit 'STRICTEMENTDIFFERENT'");
+                }
+                return new Indicateur(source.getId(), source.getZone(), source.getIndicateur(), source.getValeur(), getTypeDeVerification(source.getTypeDeVerification()));
             }
         };
         mapper.addConverter(myConverter);

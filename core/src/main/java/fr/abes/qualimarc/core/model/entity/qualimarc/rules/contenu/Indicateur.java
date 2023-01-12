@@ -3,13 +3,12 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu;
 import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
+import fr.abes.qualimarc.core.utils.TypeVerification;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,11 +29,16 @@ public class Indicateur extends SimpleRule implements Serializable {
     //regex 1 seul caractere
     private String valeur;
 
+    @Column(name = "ENUM_TYPE_DE_VERIFICATION")
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private TypeVerification typeDeVerification;
 
-    public Indicateur(Integer id, String zone, Integer indicateur, String valeur) {
+    public Indicateur(Integer id, String zone, Integer indicateur, String valeur, TypeVerification typeDeVerification) {
         super(id, zone);
         this.indicateur = indicateur;
         this.valeur = valeur;
+        this.typeDeVerification = typeDeVerification;
     }
 
     @Override
@@ -47,18 +51,27 @@ public class Indicateur extends SimpleRule implements Serializable {
         if (this.getComplexRule() != null && this.getComplexRule().isMemeZone()) {
             this.getComplexRule().setSavedZone(
                     // Collecte dans une liste toutes les zones qui CONTIENNENT l'indicateur cible
-                    datafieldList.stream().filter(df -> {
-                        String indicateurCible = this.indicateur == 1 ? df.getInd1() : df.getInd2();
-                        return indicateurCible.equals(this.valeur) || (this.valeur.equals("#") && indicateurCible.equals(" "));
-                    }).collect(Collectors.toList())
+                    datafieldList.stream().filter(df -> isValueIndicateurValidWithTypeVerification(df)).collect(Collectors.toList())
             );
             return this.getComplexRule().isSavedZoneIsNotEmpty();
         } else {
-            return datafieldList.stream().anyMatch(df -> {
-                String indicateurCible = this.indicateur == 1 ? df.getInd1() : df.getInd2();
-                return indicateurCible.equals(this.valeur) || (this.valeur.equals("#") && indicateurCible.equals(" "));
-            });
+            return datafieldList.stream().anyMatch(df -> isValueIndicateurValidWithTypeVerification(df));
         }
+    }
+
+    public boolean isValueIndicateurValidWithTypeVerification(Datafield df) {
+        String indicateurCible = this.indicateur == 1 ? df.getInd1() : df.getInd2();
+        boolean isOk = false;
+        if (this.typeDeVerification == TypeVerification.STRICTEMENT) {
+            isOk = indicateurCible.equals(this.valeur) || (this.valeur.equals("#") && indicateurCible.equals(" "));
+        } else if (this.typeDeVerification == TypeVerification.STRICTEMENTDIFFERENT) {
+            if (this.valeur.equals("#")) {
+                isOk = !indicateurCible.equals(" ");
+            } else {
+                isOk = !indicateurCible.equals(this.valeur);
+            }
+        }
+        return isOk;
     }
 
     @Override
