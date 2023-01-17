@@ -12,6 +12,7 @@ import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,9 @@ import javax.persistence.EntityManagerFactory;
 public class BatchConfiguration {
     @Autowired
     private JobBuilderFactory jobs;
+
+    @Autowired
+    private JobExplorer jobExplorer;
 
     @Autowired
     private StepBuilderFactory steps;
@@ -93,4 +97,5 @@ public class BatchConfiguration {
     protected JobParametersIncrementer incrementer() {
         return new TimeIncrementer();
     }
+
 }
