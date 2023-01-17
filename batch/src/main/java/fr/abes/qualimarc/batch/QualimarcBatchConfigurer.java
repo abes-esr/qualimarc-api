@@ -10,7 +10,6 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.batch.support.DatabaseType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -79,7 +78,6 @@ public class QualimarcBatchConfigurer implements BatchConfigurer {
             // jobLauncher:
             SimpleJobLauncher jobLauncherParam = new SimpleJobLauncher();
             jobLauncherParam.setJobRepository(getJobRepository());
-            jobLauncherParam.setTaskExecutor(new SyncTaskExecutor());
             jobLauncherParam.afterPropertiesSet();
             this.jobLauncher = jobLauncherParam;
 
