@@ -19,14 +19,14 @@ public class VerifierParamsTasklet implements Tasklet, StepExecutionListener {
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
-        if (System.getProperty("annee") != null && System.getProperty("mois") != null) {
-            this.annee = Integer.parseInt(System.getProperty("annee"));
-            this.mois = Integer.parseInt(System.getProperty("mois"));
+        if (stepExecution.getJobExecution().getJobParameters().getString("annee") != null && stepExecution.getJobExecution().getJobParameters().getString("mois") != null) {
+            this.annee = Integer.valueOf(stepExecution.getJobExecution().getJobParameters().getString("annee"));
+            this.mois = Integer.valueOf(stepExecution.getJobExecution().getJobParameters().getString("mois"));
         }
         else {
             Calendar dateJour = Calendar.getInstance();
-            this.annee = dateJour.get(Calendar.YEAR);
-            this.mois = dateJour.get(Calendar.MONTH);
+            this.annee = Integer.valueOf(dateJour.get(Calendar.YEAR));
+            this.mois = Integer.valueOf(dateJour.get(Calendar.MONTH));
             if (this.mois == 0) {
                 this.mois = 12;
                 this.annee--;

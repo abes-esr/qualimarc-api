@@ -13,7 +13,7 @@ public class TimeIncrementer implements JobParametersIncrementer {
     @Override
     public JobParameters getNext(JobParameters parameters) {
 
-        JobParameters params = parameters == null ? new JobParameters() : parameters;
+        JobParameters params = (parameters == null ? new JobParameters() : parameters);
 
         return new JobParametersBuilder(params).addLong(key, System.currentTimeMillis()).toJobParameters();
     }

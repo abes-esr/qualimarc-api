@@ -1,4 +1,4 @@
-if [[ $(pgrep -cf "qualimarc-batch.jar --spring.batch.job.names=exportStatistiques") = 0 ]];
+if [[ $(pgrep -cf "qualimarc-batch.jar exportStatistiques") = 0 ]];
 then
-    java -jar /scripts/qualimarc-batch.jar --spring.batch.job.names=exportStatistiques
+    java -jar /scripts/qualimarc-batch.jar exportStatistiques
 fi
