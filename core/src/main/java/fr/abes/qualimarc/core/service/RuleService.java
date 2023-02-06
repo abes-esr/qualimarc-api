@@ -193,7 +193,7 @@ public class RuleService {
         switch (typeAnalyse) {
             case QUICK:
                 return complexRulesRepository.findByPriority(Priority.P1);
-            case COMPLETE:
+            case EXPERTE:
                 return new HashSet<>(complexRulesRepository.findAll());
             case FOCUS:
                 //cas d'une analyse ciblée, on récupère les règles en fonction des types de documents et des ruleSet

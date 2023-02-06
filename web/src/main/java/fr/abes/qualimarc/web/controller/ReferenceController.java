@@ -69,7 +69,7 @@ public class ReferenceController {
         AnalyseWebDto quickAnalyse = new AnalyseWebDto("QUICK", "RAPIDE", "... permet de détecter les erreurs les plus urgentes à corriger (règles essentielles)", service.getNbRulesByAnalyse("QUICK"));
         resultAnalyseWebDto.addAnalyse(quickAnalyse);
 
-        AnalyseWebDto completeAnalyse = new AnalyseWebDto("COMPLETE", "EXPERTE", "... permet de détecter toutes les erreurs et incohérences à corriger (règles essentielles et avancées)", service.getNbRulesByAnalyse("COMPLETE"));
+        AnalyseWebDto completeAnalyse = new AnalyseWebDto("EXPERTE", "EXPERTE", "... permet de détecter toutes les erreurs et incohérences à corriger (règles essentielles et avancées)", service.getNbRulesByAnalyse("EXPERTE"));
         resultAnalyseWebDto.addAnalyse(completeAnalyse);
 
         List<FamilleDocumentWebDto> familleDocumentWebDtos = mapper.mapList(service.getTypesDocuments(), FamilleDocumentWebDto.class); //TODO: voir si on peut rajouter le nb de règles par famille de document
