@@ -189,11 +189,11 @@ public class RuleService {
      * @return list of rules according to given parameters
      */
     public Set<ComplexRule> getResultRulesList(TypeAnalyse typeAnalyse, Set<FamilleDocument> familleDocuments, Set<TypeThese> typeThese, Set<RuleSet> ruleSet) {
-        //cas analyse rapide ou experte
+        //cas analyse rapide ou complete
         switch (typeAnalyse) {
             case QUICK:
                 return complexRulesRepository.findByPriority(Priority.P1);
-            case EXPERTE:
+            case COMPLETE:
                 return new HashSet<>(complexRulesRepository.findAll());
             case FOCUS:
                 //cas d'une analyse ciblée, on récupère les règles en fonction des types de documents et des ruleSet
