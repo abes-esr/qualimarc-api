@@ -339,7 +339,7 @@ public class RuleServiceTest {
 
         Mockito.when(complexRulesRepository.findAll()).thenReturn(rules);
 
-        Set<ComplexRule> result = service.getResultRulesList(TypeAnalyse.COMPLETE, null, null, null);
+        Set<ComplexRule> result = service.getResultRulesList(TypeAnalyse.EXPERTE, null, null, null);
         //les listes contenant plusieurs objets, assertIterableIquals peut renvoyer false s'ils ne sont pas dans le même ordre, on compare donc les listes éléments par éléments
         Assertions.assertTrue(result.size() == rules.size() && result.containsAll(rules) && rules.containsAll(result));
     }

@@ -59,7 +59,7 @@ public class ReferenceService {
     public Integer getNbRulesByAnalyse(String AnalyseId) {
         if(AnalyseId.equals("QUICK"))
             return Math.toIntExact(complexRulesRepository.countByPriority(Priority.P1));
-        if(AnalyseId.equals("COMPLETE"))
+        if(AnalyseId.equals("EXPERTE"))
             return Math.toIntExact(complexRulesRepository.count());
         return null;
     }
