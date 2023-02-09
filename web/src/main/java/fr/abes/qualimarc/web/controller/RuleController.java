@@ -23,7 +23,6 @@ import fr.abes.qualimarc.web.dto.indexrules.contenu.*;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -73,7 +72,6 @@ public class RuleController {
 
     private int nbTotalPpn;
 
-    @ApiOperation(value = "test")
     @GetMapping("/{ppn}")
     public NoticeXml getPpn(@PathVariable String ppn) throws IOException, SQLException {
         return noticeService.getBiblioByPpn(ppn);

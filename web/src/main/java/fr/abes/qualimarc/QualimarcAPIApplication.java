@@ -26,13 +26,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @SpringBootApplication
-@EnableSwagger2
 public class QualimarcAPIApplication implements CommandLineRunner {
     @Value("${jwt.anonymousUser")
     private String user;
