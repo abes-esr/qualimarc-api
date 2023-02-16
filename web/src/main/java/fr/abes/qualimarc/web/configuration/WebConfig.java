@@ -27,7 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void  configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(yamlHttpConverter());
-        converters.add(jsonHttpConverter());
+        converters.add(jsonHttpConverter()); //TODO changer le converter pour faire marcher swagger
     }
 
     @Override
