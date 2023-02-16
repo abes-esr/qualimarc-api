@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
@@ -27,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void  configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(yamlHttpConverter());
-        converters.add(jsonHttpConverter()); //TODO changer le converter pour faire marcher swagger
+        converters.add(new StringHttpMessageConverter());
     }
 
     @Override
@@ -49,13 +50,6 @@ public class WebConfig implements WebMvcConfigurer {
         ObjectMapper objectMapper = builder.build();
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper;
-    }
-
-    @Bean
-    public MappingJackson2HttpMessageConverter jsonHttpConverter() {
-        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
-        jsonConverter.setObjectMapper(objectMapper());
-        return jsonConverter;
     }
 
     @Bean
