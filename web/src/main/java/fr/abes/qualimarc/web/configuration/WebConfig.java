@@ -29,6 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void  configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(yamlHttpConverter());
         converters.add(new StringHttpMessageConverter());
+        converters.add(jsonHttpConverter());
     }
 
     @Override
@@ -50,6 +51,13 @@ public class WebConfig implements WebMvcConfigurer {
         ObjectMapper objectMapper = builder.build();
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper;
+    }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter jsonHttpConverter() {
+        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
+        jsonConverter.setObjectMapper(objectMapper());
+        return jsonConverter;
     }
 
     @Bean
