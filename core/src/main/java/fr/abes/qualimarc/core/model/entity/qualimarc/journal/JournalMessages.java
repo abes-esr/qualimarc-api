@@ -22,7 +22,7 @@ public class JournalMessages implements Serializable {
     @Column(name = "MOIS")
     private Integer mois;
 
-    @Column(name = "MESSAGE")
+    @Column(name = "MESSAGE", length = 2000)
     private String message;
 
     @Column(name = "OCCURRENCES")

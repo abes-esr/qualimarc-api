@@ -31,7 +31,7 @@ public class ComplexRule implements Serializable {
     @Column(name = "RULE_ID")
     private Integer id;
 
-    @Column(name = "MESSAGE")
+    @Column(name = "MESSAGE", length = 2000)
     @NotNull
     private String message;
 
