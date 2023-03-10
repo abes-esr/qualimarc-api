@@ -16,6 +16,9 @@ import java.util.Set;
 @NoArgsConstructor
 public class PpnWithRuleSetsRequestDto {
 
+    @JsonProperty("id")
+    private Integer id;
+
     @JsonProperty("ppnList")
     private List<String> ppnList;
 
