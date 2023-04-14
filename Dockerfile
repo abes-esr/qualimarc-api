@@ -40,7 +40,7 @@ WORKDIR /app/
 COPY --from=build-image /build/web/target/*.jar /app/qualimarc.jar
 ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-ENTRYPOINT ["java","-jar","/app/qualimarc.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=95","-jar","/app/qualimarc.jar"]
 
 
 ###
