@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class QualimarcAPIApplication implements CommandLineRunner {
-    @Value("${jwt.anonymousUser")
+    @Value("${jwt.anonymousUser}")
     private String user;
 
     @Autowired

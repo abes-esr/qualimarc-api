@@ -89,4 +89,8 @@ public class ReferenceController {
         return resultAnalyseWebDto;
     }
 
+    @GetMapping(value = "/getGeneratedId", produces = {"application/json"})
+    public Integer getGeneratedId(){
+        return (int) (Math.random() * 1000000);
+    }
 }
