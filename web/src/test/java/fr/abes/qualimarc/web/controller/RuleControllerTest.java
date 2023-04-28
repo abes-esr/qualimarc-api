@@ -107,7 +107,7 @@ public class RuleControllerTest {
         Mockito.when(utilsMapper.map(any(),any())).thenReturn(resultAnalyseResponseDto);
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         resultAnalyse.setPpnAnalyses(Sets.newLinkedHashSet("143519379"));
-        Mockito.when(ruleService.checkRulesOnNotices(Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenReturn(CompletableFuture.completedFuture(resultAnalyse));
+        Mockito.when(ruleService.checkRulesOnNotices(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenReturn(CompletableFuture.completedFuture(resultAnalyse));
         //  Création de l'objet ControllingPpnWithRuleSetsRequestDto à passer dans la requête
         List<String> ppnList = new ArrayList<>();
         ppnList.add("143519379");
@@ -143,7 +143,7 @@ public class RuleControllerTest {
         Mockito.when(utilsMapper.map(any(),any())).thenReturn(resultAnalyseResponseDto);
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         resultAnalyse.setPpnAnalyses(Sets.newLinkedHashSet("143519379", "123456789", "987654321", "654987321"));
-        Mockito.when(ruleService.checkRulesOnNotices(Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenReturn(CompletableFuture.completedFuture(resultAnalyse));
+        Mockito.when(ruleService.checkRulesOnNotices(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenReturn(CompletableFuture.completedFuture(resultAnalyse));
 
         //  Création de l'objet ControllingPpnWithRuleSetsRequestDto à passer dans la requête
         List<String> ppnList = new ArrayList<>();

@@ -70,7 +70,7 @@ public class RuleController {
     @Value("${spring.task.execution.pool.core-size}")
     private Integer nbThread;
 
-    private int nbTotalPpn;
+    private Map<Integer,Integer> mapIdToNbTotalPpn = new HashMap<>();
 
     @GetMapping("/{ppn}")
     public NoticeXml getPpn(@PathVariable String ppn) throws IOException, SQLException {
@@ -80,7 +80,7 @@ public class RuleController {
     @PostMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResultAnalyseResponseDto checkPpn(@Valid @RequestBody PpnWithRuleSetsRequestDto requestBody) {
         Long start = System.currentTimeMillis();
-        ruleService.resetCn();
+        ruleService.resetCn(requestBody.getId());
         Date dateJour = Calendar.getInstance().getTime();
         //initialisation de l'entrée dans la table journée
         JournalAnalyse journal = new JournalAnalyse(dateJour, requestBody.getTypeAnalyse(), requestBody.isReplayed());
@@ -113,14 +113,14 @@ public class RuleController {
                 });
             }
         }
-        this.nbTotalPpn = requestBody.getPpnList().size();
+        this.mapIdToNbTotalPpn.put(requestBody.getId(), requestBody.getPpnList().size());
         List<List<String>> splittedList = Lists.partition(requestBody.getPpnList(), requestBody.getPpnList().size() / nbThread + 1);
         List<CompletableFuture<ResultAnalyse>> resultList = new ArrayList<>();
 
         ResultAnalyse resultAnalyse;
         if(splittedList.size() > 1) {
             for (List<String> ppnList : splittedList)
-                resultList.add(ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), ppnList, requestBody.isReplayed()));
+                resultList.add(ruleService.checkRulesOnNotices(requestBody.getId(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), ppnList, requestBody.isReplayed()));
 
             //biFunction permet de prendre le résultat de 2 traitements en parallèle et de les fusionner en un troisième qui est retourné
             BiFunction<ResultAnalyse, ResultAnalyse, ResultAnalyse> biFunction = (res1, res2) -> {
@@ -131,7 +131,7 @@ public class RuleController {
             //on récupère chaque traitement lancé en parallèle et on le combine au précédent en fusionnant les résultats
             resultAnalyse = resultList.stream().reduce((res1, res2) -> res1.thenCombineAsync(res2, biFunction, asyncExecutor)).orElse(CompletableFuture.completedFuture(new ResultAnalyse())).join();
         } else {
-            resultAnalyse = ruleService.checkRulesOnNotices(ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList(), requestBody.isReplayed()).join();
+            resultAnalyse = ruleService.checkRulesOnNotices(requestBody.getId(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList(), requestBody.isReplayed()).join();
         }
 
         journal.setNbPpnAnalyse(resultAnalyse.getPpnAnalyses().size());
@@ -253,8 +253,8 @@ public class RuleController {
      * Methode pour la bar de progress
      * @return pourcentage de progression
      */
-    @GetMapping("/getStatus")
-    public String getStatus() {
-        return String.format("%.0f%%", ruleService.getCn(this.nbTotalPpn));
+    @GetMapping("/getStatus/{id}")
+    public String getStatus(@PathVariable int id) {
+        return String.format("%.0f%%", ruleService.getCn(id,mapIdToNbTotalPpn.get(id)));
     }
 }
