@@ -28,9 +28,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -55,10 +53,10 @@ public class RuleService {
     @Qualifier("asyncExecutor")
     private Executor asyncExecutor;
 
-    private AtomicInteger cn = new AtomicInteger(0);
+    private Map<Integer,AtomicInteger> idToCn = new HashMap<>();
 
     @Async("asyncExecutor")
-    public CompletableFuture<ResultAnalyse> checkRulesOnNotices(Set<ComplexRule> rulesList, List<String> ppns, boolean isReplayed) {
+    public CompletableFuture<ResultAnalyse> checkRulesOnNotices(Integer id, Set<ComplexRule> rulesList, List<String> ppns, boolean isReplayed) {
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         log.debug("Handling list of " + ppns.size() + " ppn");
         for (String ppn : ppns) {
@@ -105,7 +103,10 @@ public class RuleService {
                 result.addMessage(ex.getMessage());
                 resultAnalyse.addResultRule(result);
             }
-            this.cn.addAndGet(1);
+            if(this.idToCn.get(id) == null){
+                this.idToCn.put(id, new AtomicInteger(0));
+            }
+            this.idToCn.get(id).addAndGet(1);
         }
         //on alimente la liste des journaux de messages dans le résultat du thread (uniquement si on l'analyse n'est pas rejouée)
         if (!isReplayed) {
@@ -159,7 +160,7 @@ public class RuleService {
         //si pas de type de document renseigné, la règle est appliquée quoi qu'il arrive
         if (rule.getFamillesDocuments().size() == 0) {
             //on force la vérification sur la famille de document pour lever une exception le cas échéant
-            if (notice.getFamilleDocument() != "" && rule.getTypesThese().size() != 0) {
+            if (!Objects.equals(notice.getFamilleDocument(), "") && rule.getTypesThese().size() != 0) {
                 return rule.getTypesThese().stream().anyMatch(tt -> tt.equals(notice.getTypeThese()));
             }
             return true;
@@ -237,14 +238,19 @@ public class RuleService {
         this.complexRulesRepository.deleteAll();
     }
 
-    public double getCn(int nbTotal) {
+    public double getCn(Integer id, int nbTotal) {
+
+        log.info("Nb total : " + nbTotal + " cn : " + this.idToCn.get(id).get());
         if (nbTotal != 0)
-            return ((double) this.cn.get() / (double) (nbTotal) * 100);
+            return ((double) this.idToCn.get(id).get() / (double) (nbTotal) * 100);
         return 0;
     }
 
-    public void resetCn() {
-        this.cn = new AtomicInteger();
+    public void resetCn(Integer id) {
+        if(this.idToCn.get(id) == null){
+            this.idToCn.put(id,new AtomicInteger(0));
+        }
+        this.idToCn.get(id).getAndSet(0);
     }
 
     public List<ComplexRule> getAllComplexRules() {
