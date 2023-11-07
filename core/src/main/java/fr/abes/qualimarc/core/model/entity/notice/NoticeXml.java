@@ -207,6 +207,7 @@ public class NoticeXml {
             case "md":
             case "jd":
             case "ad":
+            case "ai":
                 return "BD";
             //FAMILLE MONOGRAPHIE
             case "am":
