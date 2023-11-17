@@ -103,7 +103,7 @@ public class RuleControllerTest {
         ResultAnalyseResponseDto resultAnalyseResponseDto = new ResultAnalyseResponseDto();
         resultAnalyseResponseDto.setResultRules(resultRulesResponseDtoList);
         //  Création du Mockito
-        Mockito.doNothing().when(journalService).addAnalyseIntoJournal(Mockito.any());
+        Mockito.doNothing().when(journalService).saveJournalAnalyse(Mockito.any());
         Mockito.when(utilsMapper.map(any(),any())).thenReturn(resultAnalyseResponseDto);
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         resultAnalyse.setPpnAnalyses(Sets.newLinkedHashSet("143519379"));
@@ -139,7 +139,7 @@ public class RuleControllerTest {
         resultAnalyseResponseDto.setResultRules(resultRulesResponseDtoList);
 
         //  Création du Mockito
-        Mockito.doNothing().when(journalService).addAnalyseIntoJournal(Mockito.any());
+        Mockito.doNothing().when(journalService).saveJournalAnalyse(Mockito.any());
         Mockito.when(utilsMapper.map(any(),any())).thenReturn(resultAnalyseResponseDto);
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         resultAnalyse.setPpnAnalyses(Sets.newLinkedHashSet("143519379", "123456789", "987654321", "654987321"));

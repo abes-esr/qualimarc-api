@@ -108,7 +108,7 @@ public class RuleService {
             }
             this.idToCn.get(id).addAndGet(1);
         }
-        //on alimente la liste des journaux de messages dans le résultat du thread (uniquement si on l'analyse n'est pas rejouée)
+        //on alimente la liste des journaux de messages dans le résultat du thread (uniquement si on l'analyse n'est pas rejouée ) (pour les statsMessage
         if (!isReplayed) {
             resultAnalyse.getResultRules().forEach(resultRules -> {
                 resultRules.getDetailErreurs().stream().map(ResultRule::getMessage).forEach(resultAnalyse::mergeStatsMessages);
@@ -158,7 +158,7 @@ public class RuleService {
 
     public boolean isRuleAppliedToNotice(NoticeXml notice, ComplexRule rule) {
         //si pas de type de document renseigné, la règle est appliquée quoi qu'il arrive
-        if (rule.getFamillesDocuments().size() == 0) {
+        if (rule.getFamillesDocuments().isEmpty()) {
             //on force la vérification sur la famille de document pour lever une exception le cas échéant
             if (!Objects.equals(notice.getFamilleDocument(), "") && rule.getTypesThese().size() != 0) {
                 return rule.getTypesThese().stream().anyMatch(tt -> tt.equals(notice.getTypeThese()));
@@ -169,7 +169,7 @@ public class RuleService {
         if (rule.getFamillesDocuments().stream().anyMatch(type -> notice.getFamilleDocument().equals(type.getId()))) {
             return true;
         } else {
-            if (rule.getTypesThese().size() != 0) {
+            if (!rule.getTypesThese().isEmpty()) {
                 return rule.getTypesThese().stream().anyMatch(tt -> tt.equals(notice.getTypeThese()));
             }
         }

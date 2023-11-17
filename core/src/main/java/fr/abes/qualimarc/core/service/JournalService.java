@@ -28,7 +28,7 @@ public class JournalService {
     @Autowired
     private JournalRuleSetRepository journalRuleSetRepository;
 
-    public void addAnalyseIntoJournal(JournalAnalyse journalAnalyse) {
+    public void saveJournalAnalyse(JournalAnalyse journalAnalyse) {
         journalAnalyseRepository.save(journalAnalyse);
     }
 
