@@ -83,7 +83,7 @@ public class RuleController {
         ruleService.resetCn(requestBody.getId());
         Date dateJour = Calendar.getInstance().getTime();
         //initialisation de l'entrée dans la table journée
-        JournalAnalyse journal = new JournalAnalyse(dateJour, requestBody.getTypeAnalyse(), requestBody.isReplayed());
+        JournalAnalyse journalAnalyse = new JournalAnalyse(dateJour, requestBody.getTypeAnalyse(), requestBody.isReplayed());
         Set<RuleSet> ruleSets = new HashSet<>();
         Set<FamilleDocument> familleDocuments =  new HashSet<>();
         Set<TypeThese> typeThese = new HashSet<>();
@@ -134,11 +134,11 @@ public class RuleController {
             resultAnalyse = ruleService.checkRulesOnNotices(requestBody.getId(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList(), requestBody.isReplayed()).join();
         }
 
-        journal.setNbPpnAnalyse(resultAnalyse.getPpnAnalyses().size());
-        journal.setNbPpnOk(resultAnalyse.getPpnOk().size());
-        journal.setNbPpnErreur(resultAnalyse.getPpnErrones().size());
-        journal.setNbPpnInconnus(resultAnalyse.getPpnInconnus().size());
-        journalService.addAnalyseIntoJournal(journal);
+        journalAnalyse.setNbPpnAnalyse(resultAnalyse.getPpnAnalyses().size());
+        journalAnalyse.setNbPpnOk(resultAnalyse.getPpnOk().size());
+        journalAnalyse.setNbPpnErreur(resultAnalyse.getPpnErrones().size());
+        journalAnalyse.setNbPpnInconnus(resultAnalyse.getPpnInconnus().size());
+        journalService.saveJournalAnalyse(journalAnalyse);
         journalService.saveJournalMessages(resultAnalyse.getJournalMessagesList());
 
         ResultAnalyseResponseDto responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
