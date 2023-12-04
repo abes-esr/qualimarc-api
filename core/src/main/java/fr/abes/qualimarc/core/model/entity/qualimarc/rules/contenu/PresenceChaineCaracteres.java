@@ -97,7 +97,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         }
 
         // Récupération de la liste des zones qui MATCH avec la règle
-        List<Datafield> zonesValid = zones.stream().filter(datafield -> datafield.getSubFields().stream().anyMatch(subField -> (isValueValidWithChaineCaracteres(subField.getValue(), typeDeVerification)))).collect(Collectors.toList());
+        List<Datafield> zonesValid = zones.stream().filter(datafield -> datafield.getSubFields().stream().anyMatch(subField -> (subField.getCode().equals(sousZone)) && isValueValidWithChaineCaracteres(subField.getValue(), typeDeVerification))).collect(Collectors.toList());
 
         if (this.getComplexRule() != null && this.getComplexRule().isMemeZone()){
             this.getComplexRule().setSavedZone(zonesValid);
