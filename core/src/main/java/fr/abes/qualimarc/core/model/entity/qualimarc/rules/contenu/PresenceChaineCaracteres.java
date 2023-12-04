@@ -66,6 +66,8 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         this.sousZone = sousZone;
         this.typeDeVerification = typeDeVerification;
         this.listChainesCaracteres = listChainesCaracteres;
+        //  Tri la liste de chaineCaracteres
+        sortListChaineCaracteres();
     }
 
     /**
@@ -74,6 +76,8 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
      */
     public void addChaineCaracteres(ChaineCaracteres chaine) {
         this.listChainesCaracteres.add(chaine);
+        //  Tri la liste de chaineCaracteres
+        sortListChaineCaracteres();
     }
 
     /**
@@ -92,11 +96,8 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
             return false;
         }
 
-        //  Tri la liste de chaineCaracteres
-        sortListChaineCaracteres();
-
         // Récupération de la liste des zones qui MATCH avec la règle
-        List<Datafield> zonesValid = zones.stream().filter(datafield -> datafield.getSubFields().stream().anyMatch(subField -> (subField.getCode().equals(sousZone)) && isValueValidWithChaineCaracteres(subField.getValue(), typeDeVerification))).collect(Collectors.toList());
+        List<Datafield> zonesValid = zones.stream().filter(datafield -> datafield.getSubFields().stream().anyMatch(subField -> (isValueValidWithChaineCaracteres(subField.getValue(), typeDeVerification)))).collect(Collectors.toList());
 
         if (this.getComplexRule() != null && this.getComplexRule().isMemeZone()){
             this.getComplexRule().setSavedZone(zonesValid);
