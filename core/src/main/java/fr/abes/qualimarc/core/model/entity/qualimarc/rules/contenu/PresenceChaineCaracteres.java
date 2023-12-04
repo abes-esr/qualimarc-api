@@ -13,7 +13,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +39,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     private TypeVerification typeDeVerification;
 
     @OneToMany(mappedBy = "presenceChaineCaracteres", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<ChaineCaracteres> listChainesCaracteres;
+    private TreeSet<ChaineCaracteres> listChainesCaracteres;
 
     /**
      * Constructeur sans liste de chaines de caractères
@@ -50,7 +52,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         super(id, zone);
         this.sousZone = sousZone;
         this.typeDeVerification = typeDeVerification;
-        this.listChainesCaracteres = new HashSet<>();
+        this.listChainesCaracteres = new TreeSet<>();
     }
 
     /**
@@ -61,13 +63,11 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
      * @param typeDeVerification type de vérification à appliquer pour la règle
      * @param listChainesCaracteres liste de chaines de caractères à rechercher
      */
-    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, TypeVerification typeDeVerification, Set<ChaineCaracteres> listChainesCaracteres) {
+    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, TypeVerification typeDeVerification, TreeSet<ChaineCaracteres> listChainesCaracteres) {
         super(id, zone);
         this.sousZone = sousZone;
         this.typeDeVerification = typeDeVerification;
         this.listChainesCaracteres = listChainesCaracteres;
-        //  Tri la liste de chaineCaracteres
-        sortListChaineCaracteres();
     }
 
     /**
@@ -76,8 +76,6 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
      */
     public void addChaineCaracteres(ChaineCaracteres chaine) {
         this.listChainesCaracteres.add(chaine);
-        //  Tri la liste de chaineCaracteres
-        sortListChaineCaracteres();
     }
 
     /**
@@ -116,10 +114,6 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         List<String> listZones = new ArrayList<>();
         listZones.add(this.zone + "$" + this.sousZone);
         return listZones;
-    }
-
-    private void sortListChaineCaracteres() {
-        listChainesCaracteres = listChainesCaracteres.stream().sorted(Comparator.comparing(ChaineCaracteres::getPosition)).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     /**

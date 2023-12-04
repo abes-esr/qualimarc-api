@@ -25,8 +25,7 @@ import org.springframework.core.io.Resource;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.TreeSet;
 
 @SpringBootTest(classes = {ComplexRule.class})
 public class ComplexRuleTest {
@@ -274,7 +273,7 @@ public class ComplexRuleTest {
         //  -------------------------------------------------------------------------------
 
         //  STRICTEMENT / PAS DE BOOLEAN / RESULT TRUE
-        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(new ChaineCaracteres(1, "Informatique", null));
 
         ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
@@ -285,7 +284,7 @@ public class ComplexRuleTest {
         Assertions.assertTrue(complexRule.isValid(noticeBiblio));
 
         //  STRICTEMENT / PAS DE BOOLEAN / RESULT FALSE
-        Set<ChaineCaracteres> listChaineCaracteres1 = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres1 = new TreeSet<>();
         listChaineCaracteres1.add(new ChaineCaracteres(1, "Informatiqu", null));
 
         ComplexRule complexRule1 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
@@ -296,7 +295,7 @@ public class ComplexRuleTest {
         Assertions.assertFalse(complexRule1.isValid(noticeBiblio));
 
         //  STRICTEMENT / OU / RESULT TRUE
-        Set<ChaineCaracteres> listChaineCaracteres2 = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres2 = new TreeSet<>();
         listChaineCaracteres2.add(new ChaineCaracteres(1, "Inform", null));
         listChaineCaracteres2.add(new ChaineCaracteres(2, BooleanOperateur.OU, "Informatique", null));
 
@@ -308,7 +307,7 @@ public class ComplexRuleTest {
         Assertions.assertTrue(complexRule2.isValid(noticeBiblio));
 
         //  STRICTEMENT / OU / RESULT FALSE
-        Set<ChaineCaracteres> listChaineCaracteres2b = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres2b = new TreeSet<>();
         listChaineCaracteres2b.add(new ChaineCaracteres(1, "Inform", null));
         listChaineCaracteres2b.add(new ChaineCaracteres(2, BooleanOperateur.OU, "atique", null));
 
@@ -326,7 +325,7 @@ public class ComplexRuleTest {
         //  -------------------------------------------------------------------------------
 
         //  COMMENCE / PAS DE BOOLEAN / RESULT TRUE
-        Set<ChaineCaracteres> listChaineCaracteres3 = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres3 = new TreeSet<>();
         listChaineCaracteres3.add(new ChaineCaracteres(1, "Info", null));
 
         ComplexRule complexRule3 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
@@ -337,7 +336,7 @@ public class ComplexRuleTest {
         Assertions.assertTrue(complexRule3.isValid(noticeBiblio));
 
         //  COMMENCE / PAS DE BOOLEAN / RESULT FALSE
-        Set<ChaineCaracteres> listChaineCaracteres4 = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres4 = new TreeSet<>();
         listChaineCaracteres4.add(new ChaineCaracteres(1, "nfo", null));
 
         ComplexRule complexRule4 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
@@ -348,7 +347,7 @@ public class ComplexRuleTest {
         Assertions.assertFalse(complexRule4.isValid(noticeBiblio));
 
         //  COMMENCE / OU / RESULT TRUE
-        Set<ChaineCaracteres> listChaineCaracteres5 = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres5 = new TreeSet<>();
         listChaineCaracteres5.add(new ChaineCaracteres(1, "nfo", null));
         listChaineCaracteres5.add(new ChaineCaracteres(2, BooleanOperateur.OU, "Info", null));
 
@@ -360,7 +359,7 @@ public class ComplexRuleTest {
         Assertions.assertTrue(complexRule5.isValid(noticeBiblio));
 
         //  COMMENCE / OU / RESULT FALSE
-        Set<ChaineCaracteres> listChaineCaracteres5b = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres5b = new TreeSet<>();
         listChaineCaracteres5b.add(new ChaineCaracteres(1, "nfo", null));
         listChaineCaracteres5b.add(new ChaineCaracteres(2, BooleanOperateur.OU, "for", null));
 
@@ -378,7 +377,7 @@ public class ComplexRuleTest {
         //  -------------------------------------------------------------------------------
 
         //  TERMINE / PAS DE BOOLEAN / RESULT TRUE
-        Set<ChaineCaracteres> listChaineCaracteres6 = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres6 = new TreeSet<>();
         listChaineCaracteres6.add(new ChaineCaracteres(1, "matique", null));
 
         ComplexRule complexRule6 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
@@ -389,7 +388,7 @@ public class ComplexRuleTest {
         Assertions.assertTrue(complexRule6.isValid(noticeBiblio));
 
         //  TERMINE / PAS DE BOOLEAN / RESULT FALSE
-        Set<ChaineCaracteres> listChaineCaracteres6b = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres6b = new TreeSet<>();
         listChaineCaracteres6b.add(new ChaineCaracteres(1, "mat", null));
 
         ComplexRule complexRule6b = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
@@ -400,7 +399,7 @@ public class ComplexRuleTest {
         Assertions.assertFalse(complexRule6b.isValid(noticeBiblio));
 
         //  TERMINE / OU / RESULT TRUE
-        Set<ChaineCaracteres> listChaineCaracteres7 = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres7 = new TreeSet<>();
         listChaineCaracteres7.add(new ChaineCaracteres(1, "mat", null));
         listChaineCaracteres7.add(new ChaineCaracteres(2, BooleanOperateur.OU, "matique", null));
 
@@ -412,7 +411,7 @@ public class ComplexRuleTest {
         Assertions.assertTrue(complexRule7.isValid(noticeBiblio));
 
         //  TERMINE / OU / RESULT FALSE
-        Set<ChaineCaracteres> listChaineCaracteres7b = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres7b = new TreeSet<>();
         listChaineCaracteres7b.add(new ChaineCaracteres(1, "mat", null));
         listChaineCaracteres7b.add(new ChaineCaracteres(2, BooleanOperateur.OU, "Info", null));
 
@@ -430,7 +429,7 @@ public class ComplexRuleTest {
         //  -------------------------------------------------------------------------------
 
         //  CONTIENT / PAS DE BOOLEAN / RESULT TRUE
-        Set<ChaineCaracteres> listChaineCaracteres8 = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres8 = new TreeSet<>();
         listChaineCaracteres8.add(new ChaineCaracteres(1, "format", null));
 
         ComplexRule complexRule8 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
@@ -441,7 +440,7 @@ public class ComplexRuleTest {
         Assertions.assertTrue(complexRule8.isValid(noticeBiblio));
 
         //  CONTIENT / PAS DE BOOLEAN / RESULT FALSE
-        Set<ChaineCaracteres> listChaineCaracteres8b = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres8b = new TreeSet<>();
         listChaineCaracteres8b.add(new ChaineCaracteres(1, "formation", null));
 
         ComplexRule complexRule8b = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
@@ -452,7 +451,7 @@ public class ComplexRuleTest {
         Assertions.assertFalse(complexRule8b.isValid(noticeBiblio));
 
         //  CONTIENT / OU / RESULT TRUE
-        Set<ChaineCaracteres> listChaineCaracteres9 = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres9 = new TreeSet<>();
         listChaineCaracteres9.add(new ChaineCaracteres(1, "formation", null));
         listChaineCaracteres9.add(new ChaineCaracteres(2, BooleanOperateur.OU, "format", null));
 
@@ -464,7 +463,7 @@ public class ComplexRuleTest {
         Assertions.assertTrue(complexRule7.isValid(noticeBiblio));
 
         //  CONTIENT / OU / RESULT FALSE
-        Set<ChaineCaracteres> listChaineCaracteres9b = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres9b = new TreeSet<>();
         listChaineCaracteres9b.add(new ChaineCaracteres(1, "formation", null));
         listChaineCaracteres9b.add(new ChaineCaracteres(2, BooleanOperateur.OU, "formant", null));
 
@@ -476,7 +475,7 @@ public class ComplexRuleTest {
         Assertions.assertFalse(complexRule9b.isValid(noticeBiblio));
 
         //  CONTIENT / ET / RESULT TRUE
-        Set<ChaineCaracteres> listChaineCaracteres10 = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres10 = new TreeSet<>();
         listChaineCaracteres10.add(new ChaineCaracteres(1, "Infor", null));
         listChaineCaracteres10.add(new ChaineCaracteres(2, BooleanOperateur.ET, "matique", null));
 
@@ -488,7 +487,7 @@ public class ComplexRuleTest {
         Assertions.assertTrue(complexRule10.isValid(noticeBiblio));
 
         //  CONTIENT / ET / RESULT FALSE
-        Set<ChaineCaracteres> listChaineCaracteres10b = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres10b = new TreeSet<>();
         listChaineCaracteres10b.add(new ChaineCaracteres(1, "Infaur", null));
         listChaineCaracteres10b.add(new ChaineCaracteres(2, BooleanOperateur.ET, "matik", null));
 
@@ -506,7 +505,7 @@ public class ComplexRuleTest {
         //  -------------------------------------------------------------------------------
 
         //  NECONTIENTPAS / PAS DE BOOLEAN / RESULT TRUE
-        Set<ChaineCaracteres> listChaineCaracteres11 = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres11 = new TreeSet<>();
         listChaineCaracteres11.add(new ChaineCaracteres(1, "NotFound", null));
 
         ComplexRule complexRule11 = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
@@ -517,7 +516,7 @@ public class ComplexRuleTest {
         Assertions.assertTrue(complexRule11.isValid(noticeBiblio));
 
         //  NECONTIENTPAS / PAS DE BOOLEAN / RESULT FALSE
-        Set<ChaineCaracteres> listChaineCaracteres11b = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres11b = new TreeSet<>();
         listChaineCaracteres11b.add(new ChaineCaracteres(1, "Informatique", null));
 
         ComplexRule complexRule11b = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "607", true));
@@ -528,7 +527,7 @@ public class ComplexRuleTest {
         Assertions.assertFalse(complexRule11b.isValid(noticeBiblio));
 
         //  NECONTIENTPAS / OU / RESULT TRUE
-        Set<ChaineCaracteres> listChaineCaracteres12 = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres12 = new TreeSet<>();
         listChaineCaracteres12.add(new ChaineCaracteres(1, "NotFound", null));
         listChaineCaracteres12.add(new ChaineCaracteres(2, BooleanOperateur.OU, "NotFound2", null));
 
@@ -540,7 +539,7 @@ public class ComplexRuleTest {
         Assertions.assertTrue(complexRule12.isValid(noticeBiblio));
 
         //  NECONTIENTPAS / OU / RESULT FALSE
-        Set<ChaineCaracteres> listChaineCaracteres12b = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres12b = new TreeSet<>();
         listChaineCaracteres12b.add(new ChaineCaracteres(1, "Infor", null));
         listChaineCaracteres12b.add(new ChaineCaracteres(2, BooleanOperateur.OU, "matique", null));
 
@@ -552,7 +551,7 @@ public class ComplexRuleTest {
         Assertions.assertFalse(complexRule12b.isValid(noticeBiblio));
 
         //  NECONTIENTPAS / ET / RESULT TRUE
-        Set<ChaineCaracteres> listChaineCaracteres13 = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres13 = new TreeSet<>();
         listChaineCaracteres13.add(new ChaineCaracteres(1, "Not", null));
         listChaineCaracteres13.add(new ChaineCaracteres(2, BooleanOperateur.ET, "Found", null));
 
@@ -564,7 +563,7 @@ public class ComplexRuleTest {
         Assertions.assertTrue(complexRule13.isValid(noticeBiblio));
 
         //  NECONTIENTPAS / ET / RESULT FALSE
-        Set<ChaineCaracteres> listChaineCaracteres13b = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres13b = new TreeSet<>();
         listChaineCaracteres13b.add(new ChaineCaracteres(1, "Infor", null));
         listChaineCaracteres13b.add(new ChaineCaracteres(2, BooleanOperateur.ET, "matique", null));
 

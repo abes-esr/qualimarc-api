@@ -9,7 +9,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 /**
  * Classe qui définie une chaine de caractères et son opérateur logique (ET/OU)
@@ -19,7 +18,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @Table(name = "CHAINE_CARACTERES")
-public class ChaineCaracteres implements Serializable {
+public class ChaineCaracteres implements Comparable {
 
     @Id
     @Column(name = "ID")
@@ -27,7 +26,7 @@ public class ChaineCaracteres implements Serializable {
     private Integer id;
 
     @Column(name = "POSITION")
-    private Integer position;
+    private Integer position = 0;
 
     @Column(name= "BOOLEAN_OPERATOR")
     private BooleanOperateur booleanOperateur;
@@ -81,4 +80,10 @@ public class ChaineCaracteres implements Serializable {
                 return false;
         }
     }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.position.compareTo(((ChaineCaracteres) o).position);
+    }
+
 }

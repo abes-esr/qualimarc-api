@@ -18,8 +18,7 @@ import org.springframework.core.io.Resource;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.TreeSet;
 
 @SpringBootTest(classes = {PresenceChaineCaracteres.class})
 public class PresenceChaineCaracteresTest {
@@ -42,7 +41,7 @@ public class PresenceChaineCaracteresTest {
     @DisplayName("Zone absente")
     void isValid() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Texte imprimé", null);
-        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(0, "999", "", TypeVerification.STRICTEMENT, listChaineCaracteres);
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
@@ -52,7 +51,7 @@ public class PresenceChaineCaracteresTest {
     @DisplayName("Sous-zone absente")
     void isValid0() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Texte imprimé", null);
-        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres0 = new PresenceChaineCaracteres(0, "200", "g", TypeVerification.STRICTEMENT, listChaineCaracteres);
         Assertions.assertFalse(presenceChaineCaracteres0.isValid(notice));
@@ -62,7 +61,7 @@ public class PresenceChaineCaracteresTest {
     @DisplayName("contient STRICTEMENT la chaine de caractères")
     void isValid1() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Texte imprimé", null);
-        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.STRICTEMENT, listChaineCaracteres);
         Assertions.assertTrue(presenceChaineCaracteres1.isValid(notice));
@@ -72,7 +71,7 @@ public class PresenceChaineCaracteresTest {
     @DisplayName("ne contient pas STRICTEMENT la chaine de caractères")
     void isValid2() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Texte imprime", null);
-        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.STRICTEMENT, listChaineCaracteres);
         Assertions.assertFalse(presenceChaineCaracteres1.isValid(notice));
@@ -83,7 +82,7 @@ public class PresenceChaineCaracteresTest {
     void isValid3() {
         ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Texte", null);
         ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(2, BooleanOperateur.OU, "Texte imprimé", null);
-        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.STRICTEMENT, listChainesCaracteres);
@@ -96,7 +95,7 @@ public class PresenceChaineCaracteresTest {
     void isValid4() {
         ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Texte", null);
         ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(2, BooleanOperateur.OU, "Texte imprime", null);
-        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.STRICTEMENT, listChainesCaracteres);
@@ -108,7 +107,7 @@ public class PresenceChaineCaracteresTest {
     @DisplayName("COMMENCE par la chaine de caractères")
     void isValid5() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Texte", null);
-        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.COMMENCE, listChaineCaracteres);
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
@@ -118,7 +117,7 @@ public class PresenceChaineCaracteresTest {
     @DisplayName("ne COMMENCE pas par la chaine de caractères")
     void isValid6() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Convention", null);
-        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.COMMENCE, listChaineCaracteres);
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
@@ -129,7 +128,7 @@ public class PresenceChaineCaracteresTest {
     void isValid7() {
         ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Convention", null);
         ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(2, BooleanOperateur.OU, "Texte", null);
-        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.COMMENCE, listChainesCaracteres);
@@ -142,7 +141,7 @@ public class PresenceChaineCaracteresTest {
     void isValid8() {
         ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Convention", null);
         ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(2, BooleanOperateur.OU, "[brochure", null);
-        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.COMMENCE, listChainesCaracteres);
@@ -154,7 +153,7 @@ public class PresenceChaineCaracteresTest {
     @DisplayName("TERMINE par la chaine de caractères")
     void isValid9() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "imprimé", null);
-        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.TERMINE, listChaineCaracteres);
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
@@ -164,7 +163,7 @@ public class PresenceChaineCaracteresTest {
     @DisplayName("ne TERMINE pas par la chaine de caractères")
     void isValid10() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "imprime", null);
-        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.TERMINE, listChaineCaracteres);
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
@@ -175,7 +174,7 @@ public class PresenceChaineCaracteresTest {
     void isValid11() {
         ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Convention", null);
         ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(2, BooleanOperateur.OU, "imprimé", null);
-        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.TERMINE, listChainesCaracteres);
@@ -188,7 +187,7 @@ public class PresenceChaineCaracteresTest {
     void isValid12() {
         ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Convention", null);
         ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(2, BooleanOperateur.OU, "[brochure", null);
-        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.TERMINE, listChainesCaracteres);
@@ -200,7 +199,7 @@ public class PresenceChaineCaracteresTest {
     @DisplayName("CONTIENT la chaine de caractères")
     void isValid13() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "xte imp", null);
-        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.CONTIENT, listChaineCaracteres);
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
@@ -210,7 +209,7 @@ public class PresenceChaineCaracteresTest {
     @DisplayName("ne CONTIENT pas la chaine de caractères")
     void isValid14() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "xteimp", null);
-        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.CONTIENT, listChaineCaracteres);
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
@@ -221,7 +220,7 @@ public class PresenceChaineCaracteresTest {
     void isValid15() {
         ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Convention", null);
         ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(2, BooleanOperateur.OU, "xte imp", null);
-        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.CONTIENT, listChainesCaracteres);
@@ -234,7 +233,7 @@ public class PresenceChaineCaracteresTest {
     void isValid16() {
         ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Texte", null);
         ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(1, BooleanOperateur.ET, "xte imp", null);
-        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.CONTIENT, listChainesCaracteres);
@@ -247,7 +246,7 @@ public class PresenceChaineCaracteresTest {
     void isValid17() {
         ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, BooleanOperateur.OU, "Convention", null);
         ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(1, BooleanOperateur.OU, "[brochure", null);
-        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.CONTIENT, listChainesCaracteres);
@@ -260,7 +259,7 @@ public class PresenceChaineCaracteresTest {
     void isValid18() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Test des TU", null);
         ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(1, BooleanOperateur.OU, "Test", null);
-        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         listChaineCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "990", "b", TypeVerification.STRICTEMENT, listChaineCaracteres);
@@ -271,7 +270,7 @@ public class PresenceChaineCaracteresTest {
     @DisplayName("NECONTIENTPAS la chaine de caractères")
     void isValid19() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Convention", null);
-        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.NECONTIENTPAS, listChaineCaracteres);
 
@@ -282,7 +281,7 @@ public class PresenceChaineCaracteresTest {
     @DisplayName("ne NECONTIENTPAS pas la chaine de caractères")
     void isValid20() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Texte", null);
-        Set<ChaineCaracteres> listChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.NECONTIENTPAS, listChaineCaracteres);
 
@@ -294,7 +293,7 @@ public class PresenceChaineCaracteresTest {
     void isValid21() {
         ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Texte", null);
         ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(1, BooleanOperateur.OU, "Convention", null);
-        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "990", "b", TypeVerification.NECONTIENTPAS, listChainesCaracteres);
@@ -307,7 +306,7 @@ public class PresenceChaineCaracteresTest {
     void isValid22() {
         ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "Texte", null);
         ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(1, BooleanOperateur.OU, "imprimé", null);
-        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.NECONTIENTPAS, listChainesCaracteres);
@@ -320,7 +319,7 @@ public class PresenceChaineCaracteresTest {
     void isValid23() {
         ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1, "collective", null);
         ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(1, BooleanOperateur.ET, "Convention", null);
-        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.NECONTIENTPAS, listChainesCaracteres);
@@ -333,7 +332,7 @@ public class PresenceChaineCaracteresTest {
     void isValid24() {
         ChaineCaracteres chaineCaracteres1 = new ChaineCaracteres(1,"imprimé", null);
         ChaineCaracteres chaineCaracteres2 = new ChaineCaracteres(1, BooleanOperateur.ET, "Texte", null);
-        Set<ChaineCaracteres> listChainesCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
         PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.NECONTIENTPAS, listChainesCaracteres);
@@ -345,7 +344,7 @@ public class PresenceChaineCaracteresTest {
     @DisplayName("test getZones")
     void getZones() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres();
-        Set<ChaineCaracteres> list1ChaineCaracteres = new HashSet<>();
+        TreeSet<ChaineCaracteres> list1ChaineCaracteres = new TreeSet<>();
         list1ChaineCaracteres.add(chaineCaracteres);
         PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "020", "a", TypeVerification.STRICTEMENT, list1ChaineCaracteres);
 
