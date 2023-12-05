@@ -684,7 +684,7 @@ public class WebDtoMapper {
                 if (chaine.getOperateur() == null || chaine.getOperateur().isEmpty()) {
                     target.addChaineCaracteres(new ChaineCaracteres(i, chaine.getChaineCaracteres(), target));
                     i++;
-                } else if (chaine.getOperateur() != null && !chaine.getOperateur().isEmpty()) {
+                } else {
                     target.addChaineCaracteres(new ChaineCaracteres(i, getOperateur(chaine.getOperateur()), chaine.getChaineCaracteres(), target));
                     i++;
                 }

@@ -103,7 +103,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
             return this.getComplexRule().isSavedZoneIsNotEmpty();
         }
 
-        return zonesValid.size() > 0;
+        return !zonesValid.isEmpty();
     }
 
     /**
@@ -126,11 +126,8 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     private boolean isValueValidWithChaineCaracteres(String value, TypeVerification typeDeVerification) {
         boolean isOk = false;
         for( ChaineCaracteres chaineCaractere : listChainesCaracteres) {
-            if(chaineCaractere.getBooleanOperateur() == BooleanOperateur.ET) {
-                isOk &= chaineCaractere.isValid(value, typeDeVerification);
-            } else {
-                isOk |= chaineCaractere.isValid(value, typeDeVerification);
-            }
+            boolean isValid = chaineCaractere.isValid(value, typeDeVerification);
+            isOk = (chaineCaractere.getBooleanOperateur() == BooleanOperateur.ET) ? (isOk && isValid) : (isOk || isValid);
         }
         return isOk;
     }
