@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     private TypeVerification typeDeVerification;
 
     @OneToMany(mappedBy = "presenceChaineCaracteres", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private TreeSet<ChaineCaracteres> listChainesCaracteres;
+    private Set<ChaineCaracteres> listChainesCaracteres;
 
     /**
      * Constructeur sans liste de chaines de caractères
