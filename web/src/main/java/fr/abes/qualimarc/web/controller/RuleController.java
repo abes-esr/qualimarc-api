@@ -255,6 +255,10 @@ public class RuleController {
      */
     @GetMapping("/getStatus/{id}")
     public String getStatus(@PathVariable int id) {
-        return String.format("%.0f%%", ruleService.getCn(id,mapIdToNbTotalPpn.get(id)));
+        if(ruleService.isCnPresent(id)) {
+            return String.format("%.0f%%", ruleService.getCn(id, mapIdToNbTotalPpn.get(id)));
+        } else {
+            throw new IllegalArgumentException("L'identifiant pour obtenir le status de progression est incorrecte, Actualiser votre page");
+        }
     }
 }
