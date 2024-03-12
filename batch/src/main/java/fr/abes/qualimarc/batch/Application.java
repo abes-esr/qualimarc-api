@@ -57,7 +57,7 @@ public class Application implements CommandLineRunner {
         // Pass the required Job Parameters from here to read it anywhere within
         // Spring Batch infrastructure
         if (args[0].equals("exportStatistiques")) {
-            Map<String, String> params = new HashMap();
+            Map<String, String> params = new HashMap<>();
             for (int i=1; i < args.length; i++) {
                 String key = args[i].substring(0, args[i].indexOf("="));
                 String value = args[i].substring(args[i].indexOf("=") + 1);

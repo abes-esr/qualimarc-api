@@ -74,13 +74,14 @@ public class ResultAnalyse {
      * @param message
      */
     public void mergeStatsMessages(String message) {
-        Optional<JournalMessages> statsMessages = this.journalMessagesList.stream().filter(sm -> sm.getMessage().equals(message)).findFirst();
+        String finalMessage = message.replaceAll(" PPN lié : \\d{9}", "");
+        Optional<JournalMessages> statsMessages = this.journalMessagesList.stream().filter(sm -> sm.getMessage().equals(finalMessage)).findFirst();
         if (statsMessages.isPresent()) {
             //message trouvé, on ajoute 1 au nombre d'occurrence du message dans l'objet courant
             statsMessages.get().addOccurrence();
         } else {
             //message non trouvé, on l'ajout à la liste
-            this.journalMessagesList.add(new JournalMessages(message));
+            this.journalMessagesList.add(new JournalMessages(finalMessage));
         }
     }
 }
