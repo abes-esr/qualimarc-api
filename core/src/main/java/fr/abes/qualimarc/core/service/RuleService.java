@@ -247,12 +247,16 @@ public class RuleService {
     }
 
     public void resetCn(Integer id) {
-        if(this.idToCn.get(id) == null){
+        if(!isCnPresent(id)){
             this.idToCn.put(id,new AtomicInteger(0));
         }
         this.idToCn.get(id).getAndSet(0);
     }
 
+    public boolean isCnPresent(Integer id){
+        return !(this.idToCn.get(id) == null);
+
+    }
     public List<ComplexRule> getAllComplexRules() {
         return this.complexRulesRepository.findAll();
     }
