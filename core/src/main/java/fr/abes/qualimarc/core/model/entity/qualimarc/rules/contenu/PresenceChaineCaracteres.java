@@ -124,11 +124,16 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
      * @return boolean
      */
     private boolean isValueValidWithChaineCaracteres(String value, TypeVerification typeDeVerification) {
-        boolean isOk = false;
-        for( ChaineCaracteres chaineCaractere : listChainesCaracteres) {
+        Boolean isOk = null;
+        TreeSet<ChaineCaracteres> orderedListChaine = new TreeSet<>(listChainesCaracteres);
+        for( ChaineCaracteres chaineCaractere : orderedListChaine) {
             boolean isValid = chaineCaractere.isValid(value, typeDeVerification);
-            isOk = (chaineCaractere.getBooleanOperateur() == BooleanOperateur.ET) ? (isOk && isValid) : (isOk || isValid);
+            if(isOk == null) {
+                isOk = isValid;
+            } else {
+                isOk = (chaineCaractere.getBooleanOperateur() == BooleanOperateur.ET) ? (isOk && isValid) : (isOk || isValid);
+            }
         }
-        return isOk;
+        return isOk != null && isOk;
     }
 }
