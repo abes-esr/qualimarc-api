@@ -53,7 +53,7 @@ public class RuleService {
     @Qualifier("asyncExecutor")
     private Executor asyncExecutor;
 
-    private Map<Integer,AtomicInteger> idToCn = new HashMap<>();
+    private final Map<Integer,AtomicInteger> idToCn = new HashMap<>();
 
     @Async("asyncExecutor")
     public CompletableFuture<ResultAnalyse> checkRulesOnNotices(Integer id, Set<ComplexRule> rulesList, List<String> ppns, boolean isReplayed) {

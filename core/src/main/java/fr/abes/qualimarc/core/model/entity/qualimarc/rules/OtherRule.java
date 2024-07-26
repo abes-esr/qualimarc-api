@@ -32,4 +32,8 @@ public abstract class OtherRule implements Serializable {
     }
 
     public abstract List<String> getZones();
+
+    public ComplexRule getComplexRule() {
+        return this.complexRule;
+    }
 }
