@@ -70,7 +70,7 @@ public class RuleController {
     @Value("${spring.task.execution.pool.core-size}")
     private Integer nbThread;
 
-    private Map<Integer,Integer> mapIdToNbTotalPpn = new HashMap<>();
+    private final Map<Integer,Integer> mapIdToNbTotalPpn = new HashMap<>();
 
     @GetMapping("/{ppn}")
     public NoticeXml getPpn(@PathVariable String ppn) throws IOException, SQLException {

@@ -75,7 +75,7 @@ public class ComplexRule implements Serializable {
     private boolean isMemeZone = false;
 
     @Transient
-    private List<Datafield> savedZone;
+    private List<Datafield> savedZone = new ArrayList<>();
 
     protected ComplexRule(){}
 
@@ -88,7 +88,6 @@ public class ComplexRule implements Serializable {
         this.ruleSet = new HashSet<>();
         this.firstRule = firstRule;
         this.otherRules = otherRules;
-        this.savedZone = new ArrayList<>();
     }
 
     public ComplexRule(Integer id, String message, Priority priority, SimpleRule firstRule, List<OtherRule> otherRules) {
@@ -100,7 +99,6 @@ public class ComplexRule implements Serializable {
         this.ruleSet = new HashSet<>();
         this.firstRule = firstRule;
         this.otherRules = otherRules;
-        this.savedZone = new ArrayList<>();
     }
 
     public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, Set<RuleSet> ruleSet, SimpleRule firstRule) {
@@ -112,7 +110,6 @@ public class ComplexRule implements Serializable {
         this.ruleSet = ruleSet;
         this.firstRule = firstRule;
         this.otherRules = new LinkedList<>();
-        this.savedZone = new ArrayList<>();
     }
 
     public ComplexRule(Integer id, String message, Priority priority, SimpleRule firstRule) {
@@ -125,7 +122,6 @@ public class ComplexRule implements Serializable {
         this.firstRule = firstRule;
         this.otherRules = new LinkedList<>();
         this.firstRule.setComplexRule(this);
-        this.savedZone = new ArrayList<>();
     }
 
     public ComplexRule(SimpleRule rule) {
@@ -133,7 +129,6 @@ public class ComplexRule implements Serializable {
         this.otherRules = new LinkedList<>();
         this.famillesDocuments = new HashSet<>();
         this.ruleSet = new HashSet<>();
-        this.savedZone = new ArrayList<>();
     }
 
     public void addRuleSet(RuleSet ruleSet) {
@@ -157,8 +152,8 @@ public class ComplexRule implements Serializable {
      * @param datafields liste de datafields à collecter
      */
     public void setSavedZone(List<Datafield> datafields) {
-        if ((this.savedZone == null) || (this.savedZone.isEmpty())) {
-            this.savedZone = datafields;
+        if ((this.savedZone.isEmpty())) {
+            this.savedZone.addAll(datafields);
         } else {
             this.savedZone = this.savedZone.stream().filter(datafields::contains).collect(Collectors.toList());
         }
@@ -234,7 +229,9 @@ public class ComplexRule implements Serializable {
      * @return true si la règle est valide, false sinon
      */
     private boolean isValidOneNotice(NoticeXml notice) {
+        this.savedZone.clear();
         boolean isValid = firstRule.isValid(notice);
+
         for (OtherRule otherRule : otherRules.stream().sorted(Comparator.comparing(OtherRule::getPosition)).collect(Collectors.toList())) {
             LinkedRule linkedRule = (LinkedRule) otherRule;
             switch (linkedRule.getOperateur()) {
@@ -254,8 +251,7 @@ public class ComplexRule implements Serializable {
     }
 
     public List<String> getZonesFromChildren() {
-        List<String> liste = new LinkedList<>();
-        liste.addAll(this.getFirstRule().getZones());
+        List<String> liste = new LinkedList<>(this.getFirstRule().getZones());
         for (OtherRule rule : this.getOtherRules()) {
             liste.addAll(rule.getZones());
             if(rule instanceof DependencyRule && ((DependencyRule) rule).getTypeNoticeLiee().equals(TypeNoticeLiee.AUTORITE))
