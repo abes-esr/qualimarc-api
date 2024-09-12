@@ -74,7 +74,7 @@ public class ResultAnalyse {
      * @param message
      */
     public void mergeStatsMessages(String message) {
-        String finalMessage = message.replaceAll(" PPN lié : \\d{9}", "");
+        String finalMessage = message.replaceAll(" PPN lié : \\d{8}[X|\\d]", "");
         Optional<JournalMessages> statsMessages = this.journalMessagesList.stream().filter(sm -> sm.getMessage().equals(finalMessage)).findFirst();
         if (statsMessages.isPresent()) {
             //message trouvé, on ajoute 1 au nombre d'occurrence du message dans l'objet courant

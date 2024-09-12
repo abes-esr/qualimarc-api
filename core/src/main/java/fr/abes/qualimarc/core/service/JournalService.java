@@ -36,7 +36,7 @@ public class JournalService {
      * Méthode permettant de sauvegarder une liste de messages d'erreur dans la table des stats. Vérifie d'abord si le message est présent pour le mois en cours
      * @param journalMessages liste des messages à sauvegarder
      */
-    public void saveJournalMessages(List<JournalMessages> journalMessages) {
+    public synchronized void saveJournalMessages(List<JournalMessages> journalMessages) {
         journalMessages.forEach(sm -> {
             JournalMessages newJournalMessage;
             Optional<JournalMessages> existingMessage = journalMessagesRepository.findByAnneeAndMoisAndMessage(sm.getAnnee(), sm.getMois(), sm.getMessage());
