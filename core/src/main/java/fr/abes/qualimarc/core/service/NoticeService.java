@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.model.entity.basexml.NoticesAutorite;
 import fr.abes.qualimarc.core.model.entity.basexml.NoticesBibio;
+import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.repository.basexml.NoticesAutoriteRepository;
 import fr.abes.qualimarc.core.repository.basexml.NoticesBibioRepository;
@@ -13,10 +14,14 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class NoticeService {
+    private static final List<String> zonesLocales = List.of("012", "035", "316", "317", "318", "319", "606", "608", "701", "702","712", "722");
     @Autowired
     private NoticesBibioRepository repositoryBiblio;
 
@@ -28,7 +33,10 @@ public class NoticeService {
             throw new IllegalPpnException("Le PPN ne peut pas être null");
         Optional<NoticesBibio> noticesBibio = repositoryBiblio.getByPpn(ppn);
         if (noticesBibio.isPresent()) {
-            return getMapper().readValue(noticesBibio.get().getDataXml().getCharacterStream(), NoticeXml.class);
+            NoticeXml noticeXml = getMapper().readValue(noticesBibio.get().getDataXml().getCharacterStream(), NoticeXml.class);
+            List<Datafield> datafields = noticeXml.getDatafields().stream().filter(zone -> (!zone.getTag().startsWith("9") && !(zonesLocales.contains(zone.getTag()) && zone.getSubFields().stream().anyMatch(sousZone -> sousZone.getCode().equals("1"))))).collect(Collectors.toList());
+            noticeXml.setDatafields(datafields);
+            return noticeXml;
         }
         throw new IllegalPpnException("le PPN " + ppn + " n'existe pas");
     }
