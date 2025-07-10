@@ -440,8 +440,8 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(rule4.getPriority(), complexRule.getPriority().toString());
         Indicateur simpleRule = (Indicateur) complexRule.getFirstRule();
         Assertions.assertEquals(rule4.getZone(), simpleRule.getZone());
-        Assertions.assertEquals(simpleRule.getIndicateur(), simpleRule.getIndicateur());
-        Assertions.assertEquals(simpleRule.getValeur(), simpleRule.getValeur());
+        Assertions.assertEquals(rule4.getIndicateur(), simpleRule.getIndicateur());
+        Assertions.assertEquals(rule4.getValeur(), simpleRule.getValeur());
         Assertions.assertEquals(rule4.getTypesDoc().size(), complexRule.getFamillesDocuments().size());
         Assertions.assertTrue(complexRule.getFamillesDocuments().stream().findFirst().isPresent());
         Assertions.assertEquals(rule4.getTypesDoc().get(0), complexRule.getFamillesDocuments().stream().findFirst().get().getId());
