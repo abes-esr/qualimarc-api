@@ -315,8 +315,8 @@ public class WebDtoMapperTest {
         List<Integer> ruleSetsList = new ArrayList<>();
         Integer ruleSetWebDto = 1;
         ruleSetsList.add(ruleSetWebDto);
-
-        PositionSousZoneWebDto positionSousZoneWebDto = new PositionSousZoneWebDto(1, 1, ruleSetsList, "message 1", "100", "P1", typeDoc, typeThese, "a", 1);
+        PositionSousZoneWebDto.PositionsOperatorWebDto positionsOperatorWebDto1 = new PositionSousZoneWebDto.PositionsOperatorWebDto(1, ComparaisonOperateur.EGAL);
+        PositionSousZoneWebDto positionSousZoneWebDto = new PositionSousZoneWebDto(1, 1, ruleSetsList, "message 1", "100", "P1", typeDoc, typeThese, "a", Lists.newArrayList(positionsOperatorWebDto1), BooleanOperateur.OU);
 
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(positionSousZoneWebDto, ComplexRule.class);
@@ -334,16 +334,18 @@ public class WebDtoMapperTest {
         Assertions.assertTrue(complexRule.getTypesThese().stream().findFirst().isPresent());
         Assertions.assertEquals(positionSousZoneWebDto.getTypesThese().get(0), complexRule.getTypesThese().stream().findFirst().get().toString());
         Assertions.assertEquals(positionSousZoneWebDto.getSousZone(), firstRule.getSousZone());
-        Assertions.assertEquals(positionSousZoneWebDto.getPosition(), firstRule.getPosition());
+        Assertions.assertEquals(positionSousZoneWebDto.getPositions().get(0).getPosition(), firstRule.getPositions().get(0).getPosition());
+        Assertions.assertEquals(positionSousZoneWebDto.getPositions().get(0).getComparateur(), firstRule.getPositions().get(0).getComparaisonOperateur());
         Assertions.assertEquals(positionSousZoneWebDto.getId(), firstRule.getId());
         Assertions.assertEquals(positionSousZoneWebDto.getZone(), firstRule.getZone());
 
         //  Test avec priorité nulle
-        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, ruleSetsList, "message 1", "100", null, typeDoc, new ArrayList<>(), "a", 2), ComplexRule.class));
+        PositionSousZoneWebDto.PositionsOperatorWebDto positionsOperatorWebDto2 = new PositionSousZoneWebDto.PositionsOperatorWebDto(2, ComparaisonOperateur.EGAL);
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, ruleSetsList, "message 1", "100", null, typeDoc, new ArrayList<>(), "a", Lists.newArrayList(positionsOperatorWebDto2), BooleanOperateur.OU), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
         //  Test avec message null
-        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, ruleSetsList, null, "100", "P1", typeDoc, new ArrayList<>(), "a", 2), ComplexRule.class));
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, ruleSetsList, null, "100", "P1", typeDoc, new ArrayList<>(), "a", Lists.newArrayList(positionsOperatorWebDto2), BooleanOperateur.OU), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
     }
@@ -440,8 +442,8 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(rule4.getPriority(), complexRule.getPriority().toString());
         Indicateur simpleRule = (Indicateur) complexRule.getFirstRule();
         Assertions.assertEquals(rule4.getZone(), simpleRule.getZone());
-        Assertions.assertEquals(simpleRule.getIndicateur(), simpleRule.getIndicateur());
-        Assertions.assertEquals(simpleRule.getValeur(), simpleRule.getValeur());
+        Assertions.assertEquals(rule4.getIndicateur(), simpleRule.getIndicateur());
+        Assertions.assertEquals(rule4.getValeur(), simpleRule.getValeur());
         Assertions.assertEquals(rule4.getTypesDoc().size(), complexRule.getFamillesDocuments().size());
         Assertions.assertTrue(complexRule.getFamillesDocuments().stream().findFirst().isPresent());
         Assertions.assertEquals(rule4.getTypesDoc().get(0), complexRule.getFamillesDocuments().stream().findFirst().get().getId());
@@ -995,7 +997,8 @@ public class WebDtoMapperTest {
         complexRuleWebDto1.addRegle(new PresenceZoneWebDto(2,null,true));
         complexRuleWebDto1.addRegle(new PresenceSousZoneWebDto(3,null,null,"a",true));
         complexRuleWebDto1.addRegle(new IndicateurWebDto(4,null,null,1,"#", "STRICTEMENT"));
-        complexRuleWebDto1.addRegle(new PositionSousZoneWebDto(4,null,null,"a",1));
+        PositionSousZoneWebDto.PositionsOperatorWebDto positionsOperatorWebDto = new PositionSousZoneWebDto.PositionsOperatorWebDto(1, ComparaisonOperateur.EGAL);
+        complexRuleWebDto1.addRegle(new PositionSousZoneWebDto(4,null,null,"a",Lists.newArrayList(positionsOperatorWebDto), BooleanOperateur.OU));
 
         ComplexRule complexRule = mapper.map(complexRuleWebDto1, ComplexRule.class);
 

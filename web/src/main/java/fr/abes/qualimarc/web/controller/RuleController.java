@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -48,29 +47,31 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*")
 @Slf4j
 public class RuleController {
-    @Autowired
-    private NoticeService noticeService;
+    private final NoticeService noticeService;
 
-    @Autowired
-    private RuleService ruleService;
+    private final RuleService ruleService;
 
-    @Autowired
-    private ReferenceService referenceService;
+    private final ReferenceService referenceService;
 
-    @Autowired
-    private JournalService journalService;
+    private final JournalService journalService;
 
-    @Autowired
-    private UtilsMapper mapper;
+    private final UtilsMapper mapper;
 
-    @Autowired
-    @Qualifier("asyncExecutor")
-    private Executor asyncExecutor;
+    private final Executor asyncExecutor;
 
     @Value("${spring.task.execution.pool.core-size}")
     private Integer nbThread;
 
     private final Map<Integer,Integer> mapIdToNbTotalPpn = new HashMap<>();
+
+    public RuleController(NoticeService noticeService, RuleService ruleService, ReferenceService referenceService, JournalService journalService, UtilsMapper mapper, @Qualifier("asyncExecutor") Executor asyncExecutor) {
+        this.noticeService = noticeService;
+        this.ruleService = ruleService;
+        this.referenceService = referenceService;
+        this.journalService = journalService;
+        this.mapper = mapper;
+        this.asyncExecutor = asyncExecutor;
+    }
 
     @GetMapping("/{ppn}")
     public NoticeXml getPpn(@PathVariable String ppn) throws IOException, SQLException {
@@ -79,7 +80,7 @@ public class RuleController {
 
     @PostMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResultAnalyseResponseDto checkPpn(@Valid @RequestBody PpnWithRuleSetsRequestDto requestBody) {
-        Long start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         ruleService.resetCn(requestBody.getId());
         Date dateJour = Calendar.getInstance().getTime();
         //initialisation de l'entrée dans la table journée
@@ -143,7 +144,7 @@ public class RuleController {
 
         ResultAnalyseResponseDto responseDto = mapper.map(resultAnalyse, ResultAnalyseResponseDto.class);
         long end = System.currentTimeMillis();
-        log.debug("Temps de traitement : " + (end - start));
+        log.debug("Temps de traitement : {}", end - start);
         return responseDto;
     }
 
@@ -168,7 +169,7 @@ public class RuleController {
                 throw new IllegalArgumentException("Une règle simple ne peut pas être de type reciprocite");
             List<String> zonesGeneriques = referenceService.getZonesGeneriques(rule.getZone());
 //            List<String> zonesGeneriquesCible = (rule instanceof ComparaisonDateWebDto) ? referenceService.getZonesGeneriques(((ComparaisonDateWebDto) rule).getZoneCible()) : null;
-            if (zonesGeneriques.size() > 0) {
+            if (!zonesGeneriques.isEmpty()) {
                 int indexForGeneratingId = 0;
                 for (String zoneGenerique : zonesGeneriques) {
                     if (rule instanceof PresenceZoneWebDto)
@@ -178,7 +179,7 @@ public class RuleController {
                     if (rule instanceof PresenceSousZonesMemeZoneWebDto)
                         rulesEntity.add(mapper.map(new PresenceSousZonesMemeZoneWebDto(generateNewId(rule.getId(), indexForGeneratingId), rule.getIdExcel(), rule.getRuleSetList(), rule.getMessage(), zoneGenerique, rule.getPriority(), rule.getTypesDoc(), rule.getTypesThese(), ((PresenceSousZonesMemeZoneWebDto) rule).getSousZones()), ComplexRule.class));
                     if (rule instanceof PositionSousZoneWebDto)
-                        rulesEntity.add(mapper.map(new PositionSousZoneWebDto(generateNewId(rule.getId(), indexForGeneratingId), rule.getIdExcel(), rule.getRuleSetList(), rule.getMessage(), zoneGenerique, rule.getPriority(), rule.getTypesDoc(), rule.getTypesThese(), ((PositionSousZoneWebDto) rule).getSousZone(), ((PositionSousZoneWebDto) rule).getPosition()), ComplexRule.class));
+                        rulesEntity.add(mapper.map(new PositionSousZoneWebDto(generateNewId(rule.getId(), indexForGeneratingId), rule.getIdExcel(), rule.getRuleSetList(), rule.getMessage(), zoneGenerique, rule.getPriority(), rule.getTypesDoc(), rule.getTypesThese(), ((PositionSousZoneWebDto) rule).getSousZone(), ((PositionSousZoneWebDto) rule).getPositions(), ((PositionSousZoneWebDto) rule).getBooleanOperateur()), ComplexRule.class));
                     if (rule instanceof NombreZoneWebDto)
                         rulesEntity.add(mapper.map(new NombreZoneWebDto(generateNewId(rule.getId(), indexForGeneratingId), rule.getIdExcel(), rule.getRuleSetList(), rule.getMessage(), zoneGenerique, rule.getPriority(), rule.getTypesDoc(), rule.getTypesThese(), ((NombreZoneWebDto) rule).getComparaisonOperateur(), ((NombreZoneWebDto) rule).getOccurrences()), ComplexRule.class));
                     if (rule instanceof NombreSousZoneWebDto)

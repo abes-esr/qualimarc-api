@@ -2,8 +2,11 @@ package fr.abes.qualimarc.web.dto.indexrules.structure;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fr.abes.qualimarc.core.utils.BooleanOperateur;
+import fr.abes.qualimarc.core.utils.ComparaisonOperateur;
 import fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
@@ -19,23 +22,42 @@ public class PositionSousZoneWebDto extends SimpleRuleWebDto {
     @NotNull(message = "Le champ souszone est obligatoire")
     private String sousZone;
 
-    @JsonProperty(value = "position")
-    @NotNull(message = "la position est obligatoire")
-    private Integer position;
+    @JsonProperty(value = "positions")
+    @NotNull(message = "Au moins une position est obligatoire")
+    private List<PositionsOperatorWebDto> positions;
 
-    public PositionSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, Integer position) {
+    @JsonProperty(value = "operateur")
+    @Pattern(regexp = "ET|OU", message = "L'opérateur doit être égal à OU ou à ET")
+    @NotNull(message = "L'opérateur est obligatoire")
+    private BooleanOperateur booleanOperateur;
+
+    public PositionSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, List<PositionsOperatorWebDto> positions, BooleanOperateur booleanOperateur) {
         super(id, idExcel, ruleSetList,  message, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
-        this.position = position;
+        this.positions = positions;
+        this.booleanOperateur = booleanOperateur;
     }
 
-    public PositionSousZoneWebDto() {
-        super();
-    }
-
-    public PositionSousZoneWebDto(Integer id, String zone, String booleanOperator, String sousZone, Integer position) {
+    public PositionSousZoneWebDto(Integer id, String zone, String booleanOperator, String sousZone, List<PositionsOperatorWebDto> positions, BooleanOperateur booleanOperateur) {
         super(id, zone, booleanOperator);
         this.sousZone = sousZone;
-        this.position = position;
+        this.positions = positions;
+        this.booleanOperateur = booleanOperateur;
+    }
+
+
+    @Getter
+    @NoArgsConstructor
+    public static class PositionsOperatorWebDto {
+        @JsonProperty(value = "position")
+        private Integer position;
+        @Pattern(regexp = "EGAL|DIFFERENT|INFERIEUR|SUPERIEUR|INFERIEUR_EGAL|SUPERIEUR_EGAL", message = "Le champ comparateur ne peut contenir que EGAL, DIFFERENT, INFERIEUR, SUPERIEUR, INFERIEUR_EGAL, SUPERIEUR_EGAL")
+        @JsonProperty(value = "comparateur")
+        private ComparaisonOperateur comparateur;
+
+        public PositionsOperatorWebDto(Integer position, ComparaisonOperateur comparateur) {
+            this.position = position;
+            this.comparateur = comparateur;
+        }
     }
 }
