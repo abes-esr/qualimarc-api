@@ -172,6 +172,10 @@
         <subfield code="a">JuriTravail.com</subfield>
         <subfield code="4">340</subfield>
     </datafield>
+    <datafield tag="712" ind1="0" ind2="2">
+        <subfield code="1">10</subfield>
+        <subfield code="a">testDonnéeLocale</subfield>
+    </datafield>
     <datafield tag="801" ind1=" " ind2="3">
         <subfield code="a">FR</subfield>
         <subfield code="b">Abes</subfield>
