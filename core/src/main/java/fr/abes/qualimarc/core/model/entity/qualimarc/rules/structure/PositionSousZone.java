@@ -10,6 +10,8 @@ import fr.abes.qualimarc.core.utils.ComparaisonOperateur;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -29,6 +31,7 @@ public class PositionSousZone extends SimpleRule implements Serializable {
     private String sousZone;
     @Column(name = "POSITION")
     @OneToMany(mappedBy = "positionSousZone", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     private List<PositionsOperator> positions;
     @Column(name = "OPERATEUR")
     @Enumerated(EnumType.STRING)
