@@ -10,11 +10,10 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.dependance.Reciprocit
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PositionSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
-import fr.abes.qualimarc.core.utils.BooleanOperateur;
-import fr.abes.qualimarc.core.utils.Priority;
-import fr.abes.qualimarc.core.utils.TypeNoticeLiee;
-import fr.abes.qualimarc.core.utils.TypeVerification;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.positions.PositionsOperator;
+import fr.abes.qualimarc.core.utils.*;
 import org.apache.commons.io.IOUtils;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -585,23 +584,29 @@ public class ComplexRuleTest {
         NoticeXml noticeBiblio = mapper.readValue(xml, NoticeXml.class);
 
         // la zone 607 avec la sous zone 4 en position 1 ET la sous zone b en position 3
-        ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PositionSousZone(1, "607", "4", 1));
+        PositionsOperator positionsOperator = new PositionsOperator(1, 1, ComparaisonOperateur.EGAL);
+        ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PositionSousZone(1, "607", "4", Lists.newArrayList(positionsOperator), BooleanOperateur.OU));
         complexRule.setMemeZone(true);
-        complexRule.addOtherRule(new LinkedRule(new PositionSousZone(3, "607", "b", 3), BooleanOperateur.ET, 0, complexRule));
+        positionsOperator = new PositionsOperator(1, 3, ComparaisonOperateur.EGAL);
+        complexRule.addOtherRule(new LinkedRule(new PositionSousZone(3, "607", "b", Lists.newArrayList(positionsOperator), BooleanOperateur.OU), BooleanOperateur.ET, 0, complexRule));
 
         Assertions.assertTrue(complexRule.isValid(noticeBiblio));
 
         // la zone 607 avec la sous zone 4 en position 2 ET la sous zone b en position 3
-        ComplexRule complexRule1 = new ComplexRule(1, "test", Priority.P1, new PositionSousZone(1, "607", "4", 2));
+        positionsOperator = new PositionsOperator(1, 2, ComparaisonOperateur.EGAL);
+        ComplexRule complexRule1 = new ComplexRule(1, "test", Priority.P1, new PositionSousZone(1, "607", "4", Lists.newArrayList(positionsOperator), BooleanOperateur.OU));
         complexRule1.setMemeZone(true);
-        complexRule1.addOtherRule(new LinkedRule(new PositionSousZone(3, "607", "b", 3), BooleanOperateur.ET, 0, complexRule1));
+        positionsOperator = new PositionsOperator(1, 3, ComparaisonOperateur.EGAL);
+        complexRule1.addOtherRule(new LinkedRule(new PositionSousZone(3, "607", "b", Lists.newArrayList(positionsOperator), BooleanOperateur.OU), BooleanOperateur.ET, 0, complexRule1));
 
         Assertions.assertFalse(complexRule1.isValid(noticeBiblio));
 
         // la zone 607 avec la sous zone 4 en position 4 ET la sous zone 3 en position 1
-        ComplexRule complexRule2 = new ComplexRule(1, "test", Priority.P1, new PositionSousZone(1, "607", "4", 4));
+        positionsOperator = new PositionsOperator(1, 4, ComparaisonOperateur.EGAL);
+        ComplexRule complexRule2 = new ComplexRule(1, "test", Priority.P1, new PositionSousZone(1, "607", "4", Lists.newArrayList(positionsOperator), BooleanOperateur.OU));
         complexRule2.setMemeZone(true);
-        complexRule2.addOtherRule(new LinkedRule(new PositionSousZone(3, "607", "3", 1), BooleanOperateur.ET, 0, complexRule2));
+        positionsOperator = new PositionsOperator(1, 1, ComparaisonOperateur.EGAL);
+        complexRule2.addOtherRule(new LinkedRule(new PositionSousZone(3, "607", "3", Lists.newArrayList(positionsOperator), BooleanOperateur.OU), BooleanOperateur.ET, 0, complexRule2));
 
         Assertions.assertTrue(complexRule2.isValid(noticeBiblio));
     }

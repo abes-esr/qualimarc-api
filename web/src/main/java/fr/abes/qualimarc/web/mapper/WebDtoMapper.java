@@ -10,6 +10,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.*;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.dependance.Reciprocite;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.*;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.positions.PositionsOperator;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.souszoneoperator.SousZoneOperator;
 import fr.abes.qualimarc.core.model.resultats.ResultAnalyse;
 import fr.abes.qualimarc.core.utils.*;
@@ -114,8 +115,10 @@ public class WebDtoMapper {
         Converter<PositionSousZoneWebDto, ComplexRule> myConverter = new Converter<PositionSousZoneWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<PositionSousZoneWebDto, ComplexRule> context) {
                 PositionSousZoneWebDto source = context.getSource();
+                PositionSousZone target = new PositionSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getBooleanOperateur());
                 checkOtherRule(source);
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new PositionSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getPosition()));
+                source.getPositions().forEach(pos -> target.addPositionOperator(new PositionsOperator(pos.getPosition(), pos.getComparateur(), target)));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), target);
             }
         };
         mapper.addConverter(myConverter);
@@ -319,7 +322,11 @@ public class WebDtoMapper {
         Converter<PositionSousZoneWebDto, SimpleRule> myConverter = new Converter<PositionSousZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<PositionSousZoneWebDto, SimpleRule> context) {
                 PositionSousZoneWebDto source = context.getSource();
-                return new PositionSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getPosition());
+                PositionSousZone target = new PositionSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getBooleanOperateur());
+                source.getPositions().forEach(pos -> {
+                    target.addPositionOperator(new PositionsOperator(pos.getPosition(), pos.getComparateur(), target));
+                });
+                return target;
             }
         };
         mapper.addConverter(myConverter);
