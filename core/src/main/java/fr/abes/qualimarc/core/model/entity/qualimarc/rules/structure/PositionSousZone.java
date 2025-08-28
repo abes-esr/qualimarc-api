@@ -28,17 +28,28 @@ public class PositionSousZone extends SimpleRule implements Serializable {
     @Column(name = "SOUS_ZONE")
     private String sousZone;
     @Column(name = "POSITION")
-    @OneToMany(mappedBy = "positionSousZone", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "positionSousZone", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PositionsOperator> positions;
     @Column(name = "OPERATEUR")
     @Enumerated(EnumType.STRING)
     private BooleanOperateur operateur;
+
+    public PositionSousZone(Integer id, String zone, String sousZone, BooleanOperateur operateur) {
+        super(id, zone);
+        this.sousZone = sousZone;
+        this.operateur = operateur;
+        this.positions = new ArrayList<>();
+    }
 
     public PositionSousZone(Integer id, String zone, String sousZone, List<PositionsOperator> positions, BooleanOperateur operateur) {
         super(id, zone);
         this.sousZone = sousZone;
         this.positions = positions;
         this.operateur = operateur;
+    }
+
+    public void addPositionOperator(PositionsOperator posOp) {
+        this.positions.add(posOp);
     }
 
     @Override
@@ -143,4 +154,6 @@ public class PositionSousZone extends SimpleRule implements Serializable {
         listZones.add(this.zone + "$" + this.sousZone);
         return listZones;
     }
+
+
 }

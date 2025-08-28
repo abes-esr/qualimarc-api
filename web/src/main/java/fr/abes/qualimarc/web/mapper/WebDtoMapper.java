@@ -115,10 +115,10 @@ public class WebDtoMapper {
         Converter<PositionSousZoneWebDto, ComplexRule> myConverter = new Converter<PositionSousZoneWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<PositionSousZoneWebDto, ComplexRule> context) {
                 PositionSousZoneWebDto source = context.getSource();
+                PositionSousZone target = new PositionSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getBooleanOperateur());
                 checkOtherRule(source);
-                List<PositionsOperator> positionOperator = new ArrayList<>();
-                source.getPositions().forEach(pos -> positionOperator.add(new PositionsOperator(pos.getPosition(), pos.getComparateur())));
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new PositionSousZone(source.getId(), source.getZone(), source.getSousZone(), positionOperator, source.getBooleanOperateur()));
+                source.getPositions().forEach(pos -> target.addPositionOperator(new PositionsOperator(pos.getPosition(), pos.getComparateur(), target)));
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), target);
             }
         };
         mapper.addConverter(myConverter);
@@ -322,9 +322,11 @@ public class WebDtoMapper {
         Converter<PositionSousZoneWebDto, SimpleRule> myConverter = new Converter<PositionSousZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<PositionSousZoneWebDto, SimpleRule> context) {
                 PositionSousZoneWebDto source = context.getSource();
-                List<PositionsOperator> positionOperator = new ArrayList<>();
-                source.getPositions().forEach(pos -> positionOperator.add(new PositionsOperator(pos.getPosition(), pos.getComparateur())));
-                return new PositionSousZone(source.getId(), source.getZone(), source.getSousZone(), positionOperator, source.getBooleanOperateur());
+                PositionSousZone target = new PositionSousZone(source.getId(), source.getZone(), source.getSousZone(), source.getBooleanOperateur());
+                source.getPositions().forEach(pos -> {
+                    target.addPositionOperator(new PositionsOperator(pos.getPosition(), pos.getComparateur(), target));
+                });
+                return target;
             }
         };
         mapper.addConverter(myConverter);
