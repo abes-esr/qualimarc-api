@@ -542,7 +542,7 @@ public class WebDtoMapperTest {
         List<PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto> chaineCaracteresWebDtoList = new ArrayList<>();
         chaineCaracteresWebDtoList.add(chaineCaracteresWebDto1);
         chaineCaracteresWebDtoList.add(chaineCaracteresWebDto2);
-        PresenceChaineCaracteresWebDto presenceChaineCaracteresWebDto = new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, "Erreur", false, "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENT", chaineCaracteresWebDtoList);
+        PresenceChaineCaracteresWebDto presenceChaineCaracteresWebDto = new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, "Erreur", true, "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENT", chaineCaracteresWebDtoList);
 
 
         //  Appel du mapper
@@ -585,7 +585,7 @@ public class WebDtoMapperTest {
         Integer ruleSetWebDto = 1;
         ruleSetsList.add(ruleSetWebDto);
 
-        ComparaisonContenuSousZoneWebDto rule1WebDto = new ComparaisonContenuSousZoneWebDto(1, 1, ruleSetsList, "Erreur", false, "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENTDIFFERENT", "1", "300", "b");
+        ComparaisonContenuSousZoneWebDto rule1WebDto = new ComparaisonContenuSousZoneWebDto(1, 1, ruleSetsList, "Erreur", true, "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENTDIFFERENT", "1", "300", "b");
 
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(rule1WebDto, ComplexRule.class);
@@ -626,7 +626,7 @@ public class WebDtoMapperTest {
         List<Integer> ruleSetsList = new ArrayList<>();
         ruleSetsList.add(1);
 
-        ComparaisonDateWebDto comparaisonDateWebDto = new ComparaisonDateWebDto(1,1,ruleSetsList,"MESSAGE",false, "200","P1",typeDoc, null,"a",0,4,"400","a",0,4,"EGAL");
+        ComparaisonDateWebDto comparaisonDateWebDto = new ComparaisonDateWebDto(1,1,ruleSetsList,"MESSAGE",true, "200","P1",typeDoc, null,"a",0,4,"400","a",0,4,"EGAL");
         ComplexRule complexRule = mapper.map(comparaisonDateWebDto, ComplexRule.class);
 
         ComparaisonDate comparaisonDate = (ComparaisonDate) complexRule.getFirstRule();
@@ -652,7 +652,7 @@ public class WebDtoMapperTest {
         List<Integer> ruleSetsList = new ArrayList<>();
         ruleSetsList.add(1);
 
-        TypeDocumentWebDto typeDocumentWebDto = new TypeDocumentWebDto(1,1,ruleSetsList,"MESSAGE",false, "P1",typeDoc, null,"STRICTEMENT",1,"A");
+        TypeDocumentWebDto typeDocumentWebDto = new TypeDocumentWebDto(1,1,ruleSetsList,"MESSAGE",true, "P1",typeDoc, null,"STRICTEMENT",1,"A");
         ComplexRule complexRule = mapper.map(typeDocumentWebDto, ComplexRule.class);
 
         TypeDocument typeDocument = (TypeDocument) complexRule.getFirstRule();
@@ -1070,7 +1070,7 @@ public class WebDtoMapperTest {
     @Test
     @DisplayName("test converter ComplexRule vers RuleWebDto")
     void converterComplexRuleToRuleWebDto() {
-        SimpleRule simpleRule = new PresenceZone(1, "200",false, true);
+        SimpleRule simpleRule = new PresenceZone(1, "200",true, true);
         ComplexRule complexRule = new ComplexRule(1, "message", Priority.P1, simpleRule);
 
         RuleWebDto ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
@@ -1097,12 +1097,12 @@ public class WebDtoMapperTest {
         Assertions.assertEquals("Monographie, Manuscrit, Thèse de reproduction", ruleWebDto.getTypeDoc());
 
         //test avec plusieurs zones dans la règle
-        complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "310",false, true), BooleanOperateur.ET, 1, complexRule));
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "310",true, true), BooleanOperateur.ET, 1, complexRule));
         ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
         Assertions.assertEquals("310", ruleWebDto.getZoneUnm2());
 
         complexRule = new ComplexRule(1, "message", Priority.P1, new PresenceZone(1, "310",false, true));
-        complexRule.addOtherRule(new LinkedRule(new Indicateur(3, "310",false, 1, "#", TypeVerification.STRICTEMENT), BooleanOperateur.ET, 2, complexRule));
+        complexRule.addOtherRule(new LinkedRule(new Indicateur(3, "310",true, 1, "#", TypeVerification.STRICTEMENT), BooleanOperateur.ET, 2, complexRule));
         ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
         Assertions.assertEquals("310", ruleWebDto.getZoneUnm1());
         Assertions.assertNull(ruleWebDto.getZoneUnm2());
