@@ -145,9 +145,9 @@ public class RuleServiceTest {
         typesThese.add(TypeThese.REPRO);
         Set<RuleSet> ruleSet = new HashSet<>();
 
-        listeRegles.add(new ComplexRule(1, "La zone 010 est présente", Priority.P1, familleDoc1, typesThese, ruleSet, new PresenceZone(1, "010",false, true)));
-        listeRegles.add(new ComplexRule(2, "La zone 011 est absente", Priority.P1, new PresenceZone(2, "011",false, false)));
-        listeRegles.add(new ComplexRule(3, "La zone 012 est présente", Priority.P1, new PresenceZone(3, "012",false,  true)));
+        listeRegles.add(new ComplexRule(1, "La zone 010 est présente", Priority.P1, familleDoc1, typesThese, ruleSet, new PresenceZone(1, "010",true, true)));
+        listeRegles.add(new ComplexRule(2, "La zone 011 est absente", Priority.P1, new PresenceZone(2, "011",true, false)));
+        listeRegles.add(new ComplexRule(3, "La zone 012 est présente", Priority.P1, new PresenceZone(3, "012",true,  true)));
     }
 
     @Test
