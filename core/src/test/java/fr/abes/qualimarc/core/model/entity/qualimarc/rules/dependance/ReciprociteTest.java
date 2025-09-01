@@ -42,33 +42,33 @@ public class ReciprociteTest {
     @Test
     void isValid() {
         //cas ou le PPN est dans la notice liée : une seule zone / sous zone
-        Reciprocite rule = new Reciprocite(1, "455", "0");
+        Reciprocite rule = new Reciprocite(1, "455",false, "0");
         Assertions.assertFalse(rule.isValid(notice, noticeLiee));
 
         //cas ou le PPN n'est pas dans la notice liée : une seule zone / sous zone
-        rule = new Reciprocite(1, "456", "0");
+        rule = new Reciprocite(1, "456",false, "0");
         Assertions.assertTrue(rule.isValid(notice, noticeLiee));
 
         //cas ou le PPN est dans la notice liée : plusieurs zones
-        rule = new Reciprocite(1, "457", "0");
+        rule = new Reciprocite(1, "457",false, "0");
         Assertions.assertFalse(rule.isValid(notice, noticeLiee));
 
         //cas ou le PPN n'est pas dans la notice liée : plusieurs zones
-        rule = new Reciprocite(1, "458", "0");
+        rule = new Reciprocite(1, "458", false,"0");
         Assertions.assertTrue(rule.isValid(notice, noticeLiee));
 
         //cas ou le PPN est dans la notice liée : plusieurs sous zones
-        rule = new Reciprocite(1, "459", "0");
+        rule = new Reciprocite(1, "459",false, "0");
         Assertions.assertFalse(rule.isValid(notice, noticeLiee));
 
         //cas ou le PPN n'est pas dans la notice liée : plusieurs sous zones
-        rule = new Reciprocite(1, "460", "0");
+        rule = new Reciprocite(1, "460",false, "0");
         Assertions.assertTrue(rule.isValid(notice, noticeLiee));
     }
 
     @Test
     void getZones() {
-        Reciprocite rule = new Reciprocite(1, "200", "a");
+        Reciprocite rule = new Reciprocite(1, "200",false, "a");
         Assertions.assertEquals(1, rule.getZones().size());
         Assertions.assertEquals("200$a", rule.getZones().get(0));
     }

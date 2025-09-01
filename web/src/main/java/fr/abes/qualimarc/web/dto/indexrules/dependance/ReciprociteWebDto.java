@@ -23,8 +23,8 @@ public class ReciprociteWebDto extends SimpleRuleWebDto {
     @NotBlank(message = "la sous zone ne peut pas être vide")
     private String sousZone;
 
-    public ReciprociteWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone) {
-        super(id, idExcel, ruleSetList, message, zone, priority, typesDoc, typesThese);
+    public ReciprociteWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone) {
+        super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
 
     }

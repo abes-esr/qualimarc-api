@@ -30,14 +30,14 @@ public class PresenceSousZone extends SimpleRule implements Serializable {
     @NotNull
     private boolean isPresent;
 
-    public PresenceSousZone(Integer id, String zone, String sousZone, boolean isPresent) {
-        super(id, zone);
+    public PresenceSousZone(Integer id, String zone, Boolean affichageEtiquette,  String sousZone, boolean isPresent) {
+        super(id, zone, affichageEtiquette);
         this.sousZone = sousZone;
         this.isPresent = isPresent;
     }
 
-    public PresenceSousZone(Integer id, String zone, String sousZone, boolean isPresent, ComplexRule complexRule) {
-        super(id, zone, complexRule);
+    public PresenceSousZone(Integer id, String zone, Boolean affichageEtiquette, String sousZone, boolean isPresent, ComplexRule complexRule) {
+        super(id, zone, affichageEtiquette, complexRule);
         this.sousZone = sousZone;
         this.isPresent = isPresent;
     }

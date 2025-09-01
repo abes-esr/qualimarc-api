@@ -36,73 +36,73 @@ public class NombreCaracteresTest {
     @Test
     @DisplayName("Test isValid cas zone absente, sous zone absente")
     void isValid1() {
-        NombreCaracteres rule = new NombreCaracteres(1, "011", "c", ComparaisonOperateur.SUPERIEUR, 1);
+        NombreCaracteres rule = new NombreCaracteres(1, "011",false, "c", ComparaisonOperateur.SUPERIEUR, 1);
         Assertions.assertFalse(rule.isValid(notice));
     }
 
     @Test
     @DisplayName("Test isValid cas zone présente, sous zone absente")
     void isValid2() {
-        NombreCaracteres rule = new NombreCaracteres(1, "010", "c", ComparaisonOperateur.SUPERIEUR, 1);
+        NombreCaracteres rule = new NombreCaracteres(1, "010",false, "c", ComparaisonOperateur.SUPERIEUR, 1);
         Assertions.assertFalse(rule.isValid(notice));
     }
 
     @Test
     @DisplayName("test isValid ok Opérateur EGAL")
     void isValid3() {
-        NombreCaracteres rule = new NombreCaracteres(1, "200", "a", ComparaisonOperateur.EGAL, 47);
+        NombreCaracteres rule = new NombreCaracteres(1, "200",false, "a", ComparaisonOperateur.EGAL, 47);
         Assertions.assertTrue(rule.isValid(notice));
     }
 
     @Test
     @DisplayName("test isValid ok Opérateur SUPERIEUR")
     void isValid4() {
-        NombreCaracteres rule = new NombreCaracteres(1, "200", "a", ComparaisonOperateur.SUPERIEUR, 1);
+        NombreCaracteres rule = new NombreCaracteres(1, "200",false, "a", ComparaisonOperateur.SUPERIEUR, 1);
         Assertions.assertTrue(rule.isValid(notice));
     }
 
     @Test
     @DisplayName("test isValid ok Opérateur INFERIEUR")
     void isValid5() {
-        NombreCaracteres rule = new NombreCaracteres(1, "200", "a", ComparaisonOperateur.INFERIEUR, 100);
+        NombreCaracteres rule = new NombreCaracteres(1, "200",false, "a", ComparaisonOperateur.INFERIEUR, 100);
         Assertions.assertTrue(rule.isValid(notice));
     }
 
     @Test
     @DisplayName("test isValid ok Opérateur SUPERIEUR_EGAL")
     void isValid6() {
-        NombreCaracteres rule = new NombreCaracteres(1, "200", "a", ComparaisonOperateur.SUPERIEUR_EGAL, 47);
+        NombreCaracteres rule = new NombreCaracteres(1, "200",false,"a", ComparaisonOperateur.SUPERIEUR_EGAL, 47);
         Assertions.assertTrue(rule.isValid(notice));
     }
 
     @Test
     @DisplayName("test isValid ok Opérateur INFERIEUR_EGAL")
     void isValid7() {
-        NombreCaracteres rule = new NombreCaracteres(1, "200", "a", ComparaisonOperateur.INFERIEUR_EGAL, 47);
+        NombreCaracteres rule = new NombreCaracteres(1, "200",false, "a", ComparaisonOperateur.INFERIEUR_EGAL, 47);
         Assertions.assertTrue(rule.isValid(notice));
     }
 
     @Test
     @DisplayName("test isValid ok sur plusieurs sous zones dans une même zone")
     void isValid8() {
-        NombreCaracteres rule = new NombreCaracteres(1, "606", "x", ComparaisonOperateur.EGAL, 9);
+        NombreCaracteres rule = new NombreCaracteres(1, "606",false, "x", ComparaisonOperateur.EGAL, 9);
         Assertions.assertTrue(rule.isValid(notice));
-        NombreCaracteres rule2 = new NombreCaracteres(1, "606", "x", ComparaisonOperateur.EGAL, 23);
+        NombreCaracteres rule2 = new NombreCaracteres(1, "606",false, "x", ComparaisonOperateur.EGAL, 23);
         Assertions.assertTrue(rule2.isValid(notice));
     }
 
     @Test
     @DisplayName("test isValid ok sur zones répétées")
     void isValid9() {
-        NombreCaracteres rule = new NombreCaracteres(1, "300", "a", ComparaisonOperateur.EGAL, 28);
+        NombreCaracteres rule = new NombreCaracteres(1, "300",false, "a", ComparaisonOperateur.EGAL, 28);
         Assertions.assertTrue(rule.isValid(notice));
-        NombreCaracteres rule2 = new NombreCaracteres(1, "300", "a", ComparaisonOperateur.EGAL, 32);
+        NombreCaracteres rule2 = new NombreCaracteres(1, "300",false, "a", ComparaisonOperateur.EGAL, 32);
         Assertions.assertTrue(rule2.isValid(notice));
     }
 
     @Test
     void getZones() {
-        NombreCaracteres rule = new NombreCaracteres(1, "200", "a", ComparaisonOperateur.SUPERIEUR, 1);
+        NombreCaracteres rule = new NombreCaracteres(1, "200",false, "a", ComparaisonOperateur.SUPERIEUR, 1);
         Assertions.assertEquals(1, rule.getZones().size());
         Assertions.assertEquals("200$a", rule.getZones().get(0));
     }

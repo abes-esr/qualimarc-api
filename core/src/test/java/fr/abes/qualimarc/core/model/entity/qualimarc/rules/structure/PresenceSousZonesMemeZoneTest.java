@@ -41,7 +41,7 @@ public class PresenceSousZonesMemeZoneTest {
     void getZones() {
         List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
         sousZoneOperators.add(new SousZoneOperator("a",true, null));
-        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"200",sousZoneOperators);
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"200", false, sousZoneOperators);
 
         Assertions.assertEquals(1, presenceSousZonesMemeZone.getZones().size());
         Assertions.assertEquals("200$a", presenceSousZonesMemeZone.getZones().get(0));
@@ -64,7 +64,7 @@ public class PresenceSousZonesMemeZoneTest {
         List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
         sousZoneOperators.add(new SousZoneOperator("a",true, null));
         sousZoneOperators.add(new SousZoneOperator("b",true,BooleanOperateur.ET, null));
-        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"201",sousZoneOperators);
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"201", false, sousZoneOperators);
 
         Assertions.assertFalse(presenceSousZonesMemeZone.isValid(noticeXml));
     }
@@ -75,7 +75,7 @@ public class PresenceSousZonesMemeZoneTest {
         List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
         sousZoneOperators.add(new SousZoneOperator("a",true, null));
         sousZoneOperators.add(new SousZoneOperator("b",true,BooleanOperateur.ET, null));
-        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"200",sousZoneOperators);
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"200", false, sousZoneOperators);
 
         Assertions.assertTrue(presenceSousZonesMemeZone.isValid(noticeXml));
     }
@@ -86,7 +86,7 @@ public class PresenceSousZonesMemeZoneTest {
         List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
         sousZoneOperators.add(new SousZoneOperator("a",true, null));
         sousZoneOperators.add(new SousZoneOperator("b",false,BooleanOperateur.ET, null));
-        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"200",sousZoneOperators);
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"200",false, sousZoneOperators);
 
         Assertions.assertFalse(presenceSousZonesMemeZone.isValid(noticeXml));
     }
@@ -97,7 +97,7 @@ public class PresenceSousZonesMemeZoneTest {
         List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
         sousZoneOperators.add(new SousZoneOperator("a",true, null));
         sousZoneOperators.add(new SousZoneOperator("c",true,BooleanOperateur.ET, null));
-        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"200",sousZoneOperators);
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"200",false, sousZoneOperators);
 
         Assertions.assertFalse(presenceSousZonesMemeZone.isValid(noticeXml));
     }
@@ -108,7 +108,7 @@ public class PresenceSousZonesMemeZoneTest {
         List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
         sousZoneOperators.add(new SousZoneOperator("a",true, null));
         sousZoneOperators.add(new SousZoneOperator("c",true,BooleanOperateur.OU, null));
-        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"200",sousZoneOperators);
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"200",false, sousZoneOperators);
 
         Assertions.assertTrue(presenceSousZonesMemeZone.isValid(noticeXml));
     }
@@ -120,7 +120,7 @@ public class PresenceSousZonesMemeZoneTest {
         sousZoneOperators.add(new SousZoneOperator("a",true, null));
         sousZoneOperators.add(new SousZoneOperator("e",false,BooleanOperateur.OU, null));
         sousZoneOperators.add(new SousZoneOperator("b",true,BooleanOperateur.ET, null));
-        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"200",sousZoneOperators);
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"200",false, sousZoneOperators);
 
         Assertions.assertTrue(presenceSousZonesMemeZone.isValid(noticeXml));
     }
@@ -132,7 +132,7 @@ public class PresenceSousZonesMemeZoneTest {
         List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
         sousZoneOperators.add(new SousZoneOperator("6",true, null));
         sousZoneOperators.add(new SousZoneOperator("a",true,BooleanOperateur.ET, null));
-        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"181",sousZoneOperators);
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"181",false, sousZoneOperators);
 
         Assertions.assertTrue(presenceSousZonesMemeZone.isValid(noticeXml));
     }
@@ -143,7 +143,7 @@ public class PresenceSousZonesMemeZoneTest {
         List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
         sousZoneOperators.add(new SousZoneOperator("6",true, null));
         sousZoneOperators.add(new SousZoneOperator("c",true,BooleanOperateur.ET, null));
-        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"181",sousZoneOperators);
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"181",false, sousZoneOperators);
 
         Assertions.assertTrue(presenceSousZonesMemeZone.isValid(noticeXml));
     }
@@ -154,7 +154,7 @@ public class PresenceSousZonesMemeZoneTest {
         List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
         sousZoneOperators.add(new SousZoneOperator("7",false, null));
         sousZoneOperators.add(new SousZoneOperator("6",true,BooleanOperateur.ET, null));
-        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"214",sousZoneOperators);
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"214",false, sousZoneOperators);
 
         Assertions.assertTrue(presenceSousZonesMemeZone.isValid(noticeXml));
     }
@@ -165,7 +165,7 @@ public class PresenceSousZonesMemeZoneTest {
         List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
         sousZoneOperators.add(new SousZoneOperator("7",true, null));
         sousZoneOperators.add(new SousZoneOperator("6",false,BooleanOperateur.ET, null));
-        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"214",sousZoneOperators);
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"214",false, sousZoneOperators);
 
         Assertions.assertTrue(presenceSousZonesMemeZone.isValid(noticeXml));
     }
@@ -176,7 +176,7 @@ public class PresenceSousZonesMemeZoneTest {
         List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
         sousZoneOperators.add(new SousZoneOperator("7",false, null));
         sousZoneOperators.add(new SousZoneOperator("6",false,BooleanOperateur.ET, null));
-        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"214",sousZoneOperators);
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"214",false, sousZoneOperators);
 
         Assertions.assertTrue(presenceSousZonesMemeZone.isValid(noticeXml));
     }
@@ -187,7 +187,7 @@ public class PresenceSousZonesMemeZoneTest {
         List<SousZoneOperator> sousZoneOperators = new LinkedList<>();
         sousZoneOperators.add(new SousZoneOperator("7",true, null));
         sousZoneOperators.add(new SousZoneOperator("6",true,BooleanOperateur.ET, null));
-        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"214",sousZoneOperators);
+        PresenceSousZonesMemeZone presenceSousZonesMemeZone = new PresenceSousZonesMemeZone(1,"214",false, sousZoneOperators);
 
         Assertions.assertFalse(presenceSousZonesMemeZone.isValid(noticeXml));
     }

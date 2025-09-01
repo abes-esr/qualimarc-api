@@ -32,8 +32,8 @@ public class PositionSousZoneWebDto extends SimpleRuleWebDto {
     @NotNull(message = "L'opérateur est obligatoire")
     private BooleanOperateur booleanOperateur;
 
-    public PositionSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, List<PositionsOperatorWebDto> positions, BooleanOperateur booleanOperateur) {
-        super(id, idExcel, ruleSetList,  message, zone, priority, typesDoc, typesThese);
+    public PositionSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, List<PositionsOperatorWebDto> positions, BooleanOperateur booleanOperateur) {
+        super(id, idExcel, ruleSetList,  message, affichageEtiquette, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
         this.positions = positions;
         this.booleanOperateur = booleanOperateur;

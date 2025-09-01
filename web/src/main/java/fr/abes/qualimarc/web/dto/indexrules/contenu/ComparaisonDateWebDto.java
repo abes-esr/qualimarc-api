@@ -61,8 +61,8 @@ public class ComparaisonDateWebDto extends SimpleRuleWebDto {
         this.comparateur = comparateur;
     }
 
-    public ComparaisonDateWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, Integer positionStart, Integer positionEnd, String zoneCible, String sousZoneCible, Integer positionStartCible, Integer positionEndCible, String comparateur) {
-        super(id, idExcel, ruleSetList, message, zone, priority, typesDoc, typesThese);
+    public ComparaisonDateWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, Integer positionStart, Integer positionEnd, String zoneCible, String sousZoneCible, Integer positionStartCible, Integer positionEndCible, String comparateur) {
+        super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
         this.positionStart = positionStart;
         this.positionEnd = positionEnd;

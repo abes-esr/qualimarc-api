@@ -39,4 +39,8 @@ public class LinkedRule extends OtherRule {
     public List<String> getZones() {
         return this.getRule().getZones();
     }
+
+    public boolean isAffichageEtiquette() {
+        return rule.getAffichageEtiquette();
+    }
 }

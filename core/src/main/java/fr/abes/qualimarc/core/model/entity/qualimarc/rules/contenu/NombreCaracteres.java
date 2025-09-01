@@ -32,8 +32,8 @@ public class NombreCaracteres extends SimpleRule {
     @Column(name = "OCCURRENCES")
     private Integer occurrences;
 
-    public NombreCaracteres(Integer id, String zone, @NotNull String sousZone, @NotNull ComparaisonOperateur comparaisonOperateur, @NotNull Integer occurrences) {
-        super(id, zone);
+    public NombreCaracteres(Integer id, String zone, Boolean affichageEtiquette,  @NotNull String sousZone, @NotNull ComparaisonOperateur comparaisonOperateur, @NotNull Integer occurrences) {
+        super(id, zone, affichageEtiquette);
         this.sousZone = sousZone;
         this.comparaisonOperateur = comparaisonOperateur;
         this.occurrences = occurrences;

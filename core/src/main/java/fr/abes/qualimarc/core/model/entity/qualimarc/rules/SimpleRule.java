@@ -23,19 +23,23 @@ public abstract class SimpleRule {
     protected Integer id;
     @Column(name = "ZONE")
     protected String zone;
+    @Column(name = "AFFICHAGE_ETIQUETTE")
+    protected Boolean affichageEtiquette;
     @OneToOne(mappedBy = "firstRule")
     private ComplexRule complexRule;
     @OneToOne(mappedBy = "rule")
     private LinkedRule linkedRule;
 
-    public SimpleRule(Integer id, String zone) {
+    public SimpleRule(Integer id, String zone, Boolean affichageEtiquette) {
         this.id = id;
         this.zone = zone;
+        this.affichageEtiquette = affichageEtiquette;
     }
 
-    public SimpleRule(Integer id, String zone, ComplexRule complexRule) {
+    public SimpleRule(Integer id, String zone, Boolean affichageEtiquette, ComplexRule complexRule) {
         this.id = id;
         this.zone = zone;
+        this.affichageEtiquette = affichageEtiquette;
         this.complexRule = complexRule;
     }
 
