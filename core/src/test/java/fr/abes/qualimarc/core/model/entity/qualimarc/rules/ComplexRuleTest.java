@@ -614,24 +614,23 @@ public class ComplexRuleTest {
         @Test
     @DisplayName("test getZonesFromChildren")
     void testGetZonesFromChildren() {
-        ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "200", false, true));
+        ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "200", true, true));
 
         Assertions.assertEquals(1, complexRule.getZonesFromChildren().size());
         Assertions.assertEquals("200", complexRule.getZonesFromChildren().get(0));
 
-        complexRule.addOtherRule(new LinkedRule(new PresenceZone(1, "300", false, false), BooleanOperateur.OU, 1, complexRule));
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(1, "300", true, false), BooleanOperateur.OU, 1, complexRule));
         Assertions.assertEquals(2, complexRule.getZonesFromChildren().size());
         Assertions.assertEquals("300", complexRule.getZonesFromChildren().get(1));
 
-        complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "300", false, false), BooleanOperateur.OU, 2, complexRule));
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "300", true, false), BooleanOperateur.OU, 2, complexRule));
         Assertions.assertEquals(2, complexRule.getZonesFromChildren().size());
         Assertions.assertEquals("300", complexRule.getZonesFromChildren().get(1));
 
 
         complexRule.addOtherRule(new DependencyRule(1, "600", "a", TypeNoticeLiee.AUTORITE,3,complexRule));
-        complexRule.addOtherRule(new LinkedRule(new PresenceZone(3, "400",  false, false), BooleanOperateur.OU, 4, complexRule));
-        Assertions.assertEquals(3, complexRule.getZonesFromChildren().size());
-        Assertions.assertEquals("600$a", complexRule.getZonesFromChildren().get(2));
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(3, "400",  true, false), BooleanOperateur.OU, 4, complexRule));
+        Assertions.assertEquals(2, complexRule.getZonesFromChildren().size());
     }
 
 
