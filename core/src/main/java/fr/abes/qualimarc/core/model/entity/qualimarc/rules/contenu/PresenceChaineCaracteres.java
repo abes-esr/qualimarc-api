@@ -49,8 +49,8 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
      * @param sousZone sous-zone sur laquelle appliquer la recherhe
      * @param typeDeVerification type de vérification à appliquer pour la règle
      */
-    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, TypeVerification typeDeVerification) {
-        super(id, zone);
+    public PresenceChaineCaracteres(Integer id, String zone, Boolean affichageEtiquette,  String sousZone, TypeVerification typeDeVerification) {
+        super(id, zone, affichageEtiquette);
         this.sousZone = sousZone;
         this.typeDeVerification = typeDeVerification;
         this.listChainesCaracteres = new TreeSet<>();
@@ -60,12 +60,13 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
      * Constructeur avec liste de chaines de caractères
      * @param id identifiant de la règle
      * @param zone zone sur laquelle appliquer la recherche
+     * @param affichageEtiquette false si l'étiquette de la zone ne doit pas être renvoyée au front
      * @param sousZone sous-zone sur laquelle appliquer la recherhe
      * @param typeDeVerification type de vérification à appliquer pour la règle
      * @param listChainesCaracteres liste de chaines de caractères à rechercher
      */
-    public PresenceChaineCaracteres(Integer id, String zone, String sousZone, TypeVerification typeDeVerification, TreeSet<ChaineCaracteres> listChainesCaracteres) {
-        super(id, zone);
+    public PresenceChaineCaracteres(Integer id, String zone, Boolean affichageEtiquette, String sousZone, TypeVerification typeDeVerification, TreeSet<ChaineCaracteres> listChainesCaracteres) {
+        super(id, zone, affichageEtiquette);
         this.sousZone = sousZone;
         this.typeDeVerification = typeDeVerification;
         this.listChainesCaracteres = listChainesCaracteres;

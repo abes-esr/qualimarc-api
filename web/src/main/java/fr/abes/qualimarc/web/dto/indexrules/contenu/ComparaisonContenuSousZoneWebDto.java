@@ -63,8 +63,8 @@ public class ComparaisonContenuSousZoneWebDto extends SimpleRuleWebDto {
      * @param sousZoneCible sous-zone cible pour la vérification
      * @param typeVerification type de vérification à appliquer à la règle
      */
-    public ComparaisonContenuSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeVerification, String zoneCible, String sousZoneCible) {
-        super(id, idExcel, ruleSetList, message, zone, priority, typesDoc, typesThese);
+    public ComparaisonContenuSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeVerification, String zoneCible, String sousZoneCible) {
+        super(id, idExcel, ruleSetList, message,affichageEtiquette, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
         this.typeVerification = typeVerification;
         this.zoneCible = zoneCible;
@@ -86,8 +86,8 @@ public class ComparaisonContenuSousZoneWebDto extends SimpleRuleWebDto {
      * @param sousZoneCible sous-zone cible pour la vérification
      * @param typeVerification type de vérification à appliquer à la règle
      */
-    public ComparaisonContenuSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeVerification, String nombreCaracteres, String zoneCible, String sousZoneCible) {
-        super(id, idExcel, ruleSetList, message, zone, priority, typesDoc, typesThese);
+    public ComparaisonContenuSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeVerification, String nombreCaracteres, String zoneCible, String sousZoneCible) {
+        super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
         this.typeVerification = typeVerification;
         this.nombreCaracteres = nombreCaracteres;
@@ -95,34 +95,3 @@ public class ComparaisonContenuSousZoneWebDto extends SimpleRuleWebDto {
         this.sousZoneCible = sousZoneCible;
     }
 }
-
-/*
-// SIMPLE
-### Comparaison contenu sous-zone
-
-Liste des champs propres au type de règle comparaison contenu sous-zone:
-* souszone : **obligatoire** - de type caractère. La sous-zone sur laquelle va porter la comparaison. ATTENTION : le $ du format Unimarc de catalogage ne doit pas être renseigné
-* type-de-verification : **obligatoire** - ne peut être que `STRICTEMENT` ou `COMMENCE` ou `TERMINE` ou `CONTIENT` ou `NECONTIENTPAS` ou `STRICTEMENTDIFFERENT`
-* nombreCaracteres : *optionnel* - de type chiffre. Le nombre de caractères de la souszonecible à comparer à la souszone. Ne peux contenir que deux chiffres maximum. Ce paramètre est pris en compte uniquement pour les type-de-verification COMMENCE et TERMINE.
-* zonecible : **obligatoire** - de type caractère. La zone dans laquelle aller chercher la souszonecible qui permettra d'effectuer la comparaison.
-* souszonecible : **obligatoire** - de type caractère. La souszonecible qui sera comparée à la souszone. ATTENTION : le $ du format Unimarc de catalogage ne doit pas être renseigné
-
-``` YAML
----
-rules:
-    - id:                       1
-      id-excel:                 1
-      type:                     comparaisoncontenusouszone
-      message:                  message de retour
-      zone:                     307
-      priorite:                 P1
-      type-these:
-          - REPRO
-      souszone:                 a
-      type-de-verification:     COMMENCE
-      nombreCaracteres:         6
-      zonecible:                215
-      souszonecible:            a
-```
-
-*/

@@ -28,22 +28,22 @@ public class PresenceZoneTest {
         XmlMapper mapper = new XmlMapper(module);
         NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
 
-        SimpleRule rule = new PresenceZone(1, "010", true);
+        SimpleRule rule = new PresenceZone(1, "010",false, true);
         Assertions.assertTrue(rule.isValid(notice));
 
-        SimpleRule rule2 = new PresenceZone(2, "011", false);
+        SimpleRule rule2 = new PresenceZone(2, "011",false, false);
         Assertions.assertTrue(rule2.isValid(notice));
 
-        SimpleRule rule3 = new PresenceZone(3, "011", true);
+        SimpleRule rule3 = new PresenceZone(3, "011",false, true);
         Assertions.assertFalse(rule3.isValid(notice));
 
-        SimpleRule rule4 = new PresenceZone(4, "010", false);
+        SimpleRule rule4 = new PresenceZone(4, "010",false, false);
         Assertions.assertFalse(rule4.isValid(notice));
     }
 
     @Test
     void testGetZones() {
-        SimpleRule rule = new PresenceZone(1, "100", true);
+        SimpleRule rule = new PresenceZone(1, "100",false, true);
         Assertions.assertEquals(1, rule.getZones().size());
         Assertions.assertEquals("100", rule.getZones().get(0));
     }

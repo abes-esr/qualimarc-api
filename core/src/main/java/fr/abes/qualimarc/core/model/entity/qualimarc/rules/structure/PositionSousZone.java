@@ -34,15 +34,15 @@ public class PositionSousZone extends SimpleRule implements Serializable {
     @Enumerated(EnumType.STRING)
     private BooleanOperateur operateur;
 
-    public PositionSousZone(Integer id, String zone, String sousZone, BooleanOperateur operateur) {
-        super(id, zone);
+    public PositionSousZone(Integer id, String zone, Boolean affichageEtiquette, String sousZone, BooleanOperateur operateur) {
+        super(id, zone, affichageEtiquette);
         this.sousZone = sousZone;
         this.operateur = operateur;
         this.positions = new ArrayList<>();
     }
 
-    public PositionSousZone(Integer id, String zone, String sousZone, List<PositionsOperator> positions, BooleanOperateur operateur) {
-        super(id, zone);
+    public PositionSousZone(Integer id, String zone, Boolean affichageEtiquette, String sousZone, List<PositionsOperator> positions, BooleanOperateur operateur) {
+        super(id, zone, affichageEtiquette);
         this.sousZone = sousZone;
         this.positions = positions;
         this.operateur = operateur;

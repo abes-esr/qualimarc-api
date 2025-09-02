@@ -41,8 +41,8 @@ public class TypeCaractere extends SimpleRule implements Serializable {
     @Fetch(FetchMode.JOIN)
     private Set<TypeCaracteres> typeCaracteres;
 
-    public TypeCaractere(Integer id, String zone, String sousZone) {
-        super(id, zone);
+    public TypeCaractere(Integer id, String zone, Boolean affichageEtiquette, String sousZone) {
+        super(id, zone, affichageEtiquette);
         this.sousZone = sousZone;
         this.typeCaracteres = new HashSet<>();
     }

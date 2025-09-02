@@ -34,8 +34,8 @@ public class TypeDocument extends SimpleRule implements Serializable {
     @NotNull
     private String valeur;
 
-    public TypeDocument(Integer id, @NotNull TypeVerification typeDeVerification, @NotNull Integer position, @NotNull String valeur) {
-        super(id, "008");
+    public TypeDocument(Integer id, Boolean affichageEtiquette, @NotNull TypeVerification typeDeVerification, @NotNull Integer position, @NotNull String valeur) {
+        super(id, "008", affichageEtiquette);
         this.typeDeVerification = typeDeVerification;
         this.position = position;
         this.valeur = valeur;

@@ -31,26 +31,26 @@ public class PresenceSousZoneTest {
         NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
 
         //la zone n'existe pas dans la notice, donc la sous zone n'est pas présente donc le test est faux
-        SimpleRule rule0 = new PresenceSousZone(1, "190", "a", true);
+        SimpleRule rule0 = new PresenceSousZone(1, "190",false, "a", true);
         Assertions.assertFalse(rule0.isValid(notice));
 
-        SimpleRule rule1 = new PresenceSousZone(1, "010", "a", true);
+        SimpleRule rule1 = new PresenceSousZone(1, "010",false, "a", true);
         Assertions.assertTrue(rule1.isValid(notice));
 
-        SimpleRule rule2 = new PresenceSousZone(2, "010", "j", true);
+        SimpleRule rule2 = new PresenceSousZone(2, "010",false,"j", true);
         Assertions.assertFalse(rule2.isValid(notice));
 
-        SimpleRule rule3 = new PresenceSousZone(3, "020", "a", false);
+        SimpleRule rule3 = new PresenceSousZone(3, "020",false,"a", false);
         Assertions.assertFalse(rule3.isValid(notice));
 
-        SimpleRule rule4 = new PresenceSousZone(4, "020", "j", false);
+        SimpleRule rule4 = new PresenceSousZone(4, "020", false,"j", false);
         Assertions.assertTrue(rule4.isValid(notice));
     }
 
     @Test
     @DisplayName("test getZones")
     void getZones() {
-        PresenceSousZone rule = new PresenceSousZone(1, "020", "a", true);
+        PresenceSousZone rule = new PresenceSousZone(1, "020",false, "a", true);
         Assertions.assertEquals(1, rule.getZones().size());
         Assertions.assertEquals("020$a", rule.getZones().get(0));
     }

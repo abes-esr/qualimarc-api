@@ -35,8 +35,8 @@ public class NombreSousZone extends SimpleRule implements Serializable {
     @NotNull
     private String sousZoneCible;
 
-    public NombreSousZone(Integer id, String zone, String sousZone, String zoneCible, String sousZoneCible) {
-        super(id, zone);
+    public NombreSousZone(Integer id, String zone, Boolean affichageEtiquette,  String sousZone, String zoneCible, String sousZoneCible) {
+        super(id, zone, affichageEtiquette);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;

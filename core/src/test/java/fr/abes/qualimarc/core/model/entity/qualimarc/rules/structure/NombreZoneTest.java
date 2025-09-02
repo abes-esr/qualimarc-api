@@ -37,36 +37,36 @@ public class NombreZoneTest {
     @Test
     @DisplayName("Test nombre de zones opérateur EGAL")
     void testIsValidEgal() {
-        SimpleRule rule1 = new NombreZone(1, "181", ComparaisonOperateur.EGAL, 3);
+        SimpleRule rule1 = new NombreZone(1, "181",false, ComparaisonOperateur.EGAL, 3);
         Assertions.assertFalse(rule1.isValid(notice));
 
-        SimpleRule rule2 = new NombreZone(1, "181", ComparaisonOperateur.EGAL, 2);
+        SimpleRule rule2 = new NombreZone(1, "181",false, ComparaisonOperateur.EGAL, 2);
         Assertions.assertTrue(rule2.isValid(notice));
     }
 
     @Test
     @DisplayName("Test nombre de zones opérateur SUPERIEUR")
     void testIsValidSuperieur() {
-        SimpleRule rule1 = new NombreZone(1,  "181", ComparaisonOperateur.SUPERIEUR, 2);
+        SimpleRule rule1 = new NombreZone(1,  "181",false, ComparaisonOperateur.SUPERIEUR, 2);
         Assertions.assertFalse(rule1.isValid(notice));
 
-        SimpleRule rule2 = new NombreZone(1, "181", ComparaisonOperateur.SUPERIEUR, 1);
+        SimpleRule rule2 = new NombreZone(1, "181",false, ComparaisonOperateur.SUPERIEUR, 1);
         Assertions.assertTrue(rule2.isValid(notice));
     }
 
     @Test
     @DisplayName("Test nombre de zones opérateur INFERIEUR")
     void testIsValidInferieur() {
-        SimpleRule rule1 = new NombreZone(1, "181", ComparaisonOperateur.INFERIEUR, 2);
+        SimpleRule rule1 = new NombreZone(1, "181",false, ComparaisonOperateur.INFERIEUR, 2);
         Assertions.assertFalse(rule1.isValid(notice));
 
-        SimpleRule rule2 = new NombreZone(1, "181", ComparaisonOperateur.INFERIEUR, 3);
+        SimpleRule rule2 = new NombreZone(1, "181",false, ComparaisonOperateur.INFERIEUR, 3);
         Assertions.assertTrue(rule2.isValid(notice));
     }
 
     @Test
     void testGetZones() {
-        SimpleRule rule = new NombreZone(1, "100", ComparaisonOperateur.INFERIEUR, 2);
+        SimpleRule rule = new NombreZone(1, "100",false, ComparaisonOperateur.INFERIEUR, 2);
         Assertions.assertEquals(1, rule.getZones().size());
         Assertions.assertEquals("100", rule.getZones().get(0));
     }

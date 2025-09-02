@@ -32,8 +32,8 @@ public class NombreSousZoneWebDto extends SimpleRuleWebDto {
     @NotNull(message = "Le champ souszonecible est obligatoire")
     private String sousZoneCible;
 
-    public NombreSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String zoneCible, String sousZoneCible) {
-        super(id, idExcel, ruleSetList, message, zone, priority, typesDoc, typesThese);
+    public NombreSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String zoneCible, String sousZoneCible) {
+        super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
