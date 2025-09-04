@@ -46,8 +46,8 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
      * @param sousZone sous-zone sur laquelle appliquer la règle
      * @param typeDeVerifications type de vérification à appliquer pour la règle
      */
-    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeDeVerifications, List<ChaineCaracteresWebDto> listChaineCaracteres) {
-        super(id, idExcel, ruleSetList, message, zone, priority, typesDoc, typesThese);
+    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message,  boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeDeVerifications, List<ChaineCaracteresWebDto> listChaineCaracteres) {
+        super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
         this.typeDeVerification = typeDeVerifications;
         this.listChaineCaracteres = listChaineCaracteres;

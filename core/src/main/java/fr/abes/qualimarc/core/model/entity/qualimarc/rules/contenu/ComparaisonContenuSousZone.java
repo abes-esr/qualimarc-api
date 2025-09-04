@@ -56,8 +56,8 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
      * @param sousZoneCible deuxième sous-zone pour effectuer la comparaison
      * @param typeVerification type de vérficiation à appliquer pour la règle
      */
-    public ComparaisonContenuSousZone(Integer id, String zone, String sousZone, TypeVerification typeVerification, String zoneCible, String sousZoneCible){
-        super(id, zone);
+    public ComparaisonContenuSousZone(Integer id, String zone, Boolean affichageEtiquette,  String sousZone, TypeVerification typeVerification, String zoneCible, String sousZoneCible){
+        super(id, zone, affichageEtiquette);
         this.sousZone = sousZone;
         this.typeVerification = typeVerification;
         this.zoneCible = zoneCible;
@@ -72,8 +72,8 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
      * @param sousZoneCible deuxième sous-zone pour effectuer la comparaison
      * @param nombreCaracteres nombre de caractères à contrôler
      */
-    public ComparaisonContenuSousZone(Integer id, String zone, String sousZone, TypeVerification typeVerification, Integer nombreCaracteres, String zoneCible, String sousZoneCible){
-        super(id, zone);
+    public ComparaisonContenuSousZone(Integer id, String zone, Boolean affichageEtiquette,  String sousZone, TypeVerification typeVerification, Integer nombreCaracteres, String zoneCible, String sousZoneCible){
+        super(id, zone, affichageEtiquette);
         this.sousZone = sousZone;
         this.typeVerification = typeVerification;
         this.nombreCaracteres = nombreCaracteres;

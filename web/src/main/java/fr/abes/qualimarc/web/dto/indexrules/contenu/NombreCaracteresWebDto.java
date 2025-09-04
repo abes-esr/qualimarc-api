@@ -30,8 +30,8 @@ public class NombreCaracteresWebDto extends SimpleRuleWebDto {
     @NotNull(message = "le nombre d'occurrence est obligatoire")
     private Integer occurrences;
 
-    public NombreCaracteresWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String sousZone, String priority, List<String> typesDoc, List<String> typesThese, ComparaisonOperateur comparaisonOperateur, Integer occurrences) {
-        super(id, idExcel, ruleSetList, message, zone, priority, typesDoc, typesThese);
+    public NombreCaracteresWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String sousZone, String priority, List<String> typesDoc, List<String> typesThese, ComparaisonOperateur comparaisonOperateur, Integer occurrences) {
+        super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
         this.comparaisonOperateur = comparaisonOperateur;
         this.occurrences = occurrences;

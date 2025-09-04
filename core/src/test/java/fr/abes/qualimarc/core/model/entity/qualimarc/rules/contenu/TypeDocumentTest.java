@@ -39,26 +39,26 @@ class TypeDocumentTest {
     @Test
     @DisplayName("test typeDocument : cas général")
     void isValid() {
-        TypeDocument typeDocument = new TypeDocument(1, TypeVerification.STRICTEMENT, 2, "a");
+        TypeDocument typeDocument = new TypeDocument(1, false,TypeVerification.STRICTEMENT, 2, "a");
         Assertions.assertTrue(typeDocument.isValid(this.notice));
 
-        TypeDocument typeDocument1 = new TypeDocument(2, TypeVerification.STRICTEMENT, 2, "b");
+        TypeDocument typeDocument1 = new TypeDocument(2,false, TypeVerification.STRICTEMENT, 2, "b");
         Assertions.assertFalse(typeDocument1.isValid(notice));
 
-        TypeDocument typeDocument2 = new TypeDocument(3, TypeVerification.STRICTEMENTDIFFERENT, 1, "b");
+        TypeDocument typeDocument2 = new TypeDocument(3,false, TypeVerification.STRICTEMENTDIFFERENT, 1, "b");
         Assertions.assertTrue(typeDocument2.isValid(notice));
 
-        TypeDocument typeDocument3 = new TypeDocument(4, TypeVerification.STRICTEMENTDIFFERENT, 3, "x");
+        TypeDocument typeDocument3 = new TypeDocument(4,false, TypeVerification.STRICTEMENTDIFFERENT, 3, "x");
         Assertions.assertFalse(typeDocument3.isValid(notice));
 
-        TypeDocument typeDocument4 = new TypeDocument(5, TypeVerification.STRICTEMENTDIFFERENT, 4, "3");
+        TypeDocument typeDocument4 = new TypeDocument(5,false, TypeVerification.STRICTEMENTDIFFERENT, 4, "3");
         Assertions.assertFalse(typeDocument4.isValid(notice));
     }
 
     @Test
     @DisplayName("test typeDocument : cas d'un operateur non géré par cette règle")
     void isValidWithWrongOperateur() {
-        TypeDocument typeDocument = new TypeDocument(1, TypeVerification.COMMENCE, 1, "a");
+        TypeDocument typeDocument = new TypeDocument(1,false, TypeVerification.COMMENCE, 1, "a");
         Assertions.assertThrows(IllegalArgumentException.class, () -> typeDocument.isValid(notice));
 
         typeDocument.setTypeDeVerification(TypeVerification.CONTIENT);
@@ -80,13 +80,13 @@ class TypeDocumentTest {
         XmlMapper mapper = new XmlMapper(module);
         NoticeXml notice2 = mapper.readValue(xml, NoticeXml.class);
 
-        TypeDocument typeDocument = new TypeDocument(1, TypeVerification.STRICTEMENT, 4, "a");
+        TypeDocument typeDocument = new TypeDocument(1,false, TypeVerification.STRICTEMENT, 4, "a");
         Assertions.assertTrue(typeDocument.isValid(notice2));
     }
 
     @Test
     void getZone() {
-        TypeDocument typeDocument = new TypeDocument(1, TypeVerification.STRICTEMENTDIFFERENT, 1, "a");
+        TypeDocument typeDocument = new TypeDocument(1,false, TypeVerification.STRICTEMENTDIFFERENT, 1, "a");
         Assertions.assertEquals(1, typeDocument.getZones().size());
         Assertions.assertEquals("008", typeDocument.getZones().get(0));
     }
