@@ -249,7 +249,13 @@ public class WebDtoMapper {
             public ComplexRule convert(MappingContext<ComparaisonContenuSousZoneWebDto, ComplexRule> context) {
                 ComparaisonContenuSousZoneWebDto source = context.getSource();
                 checkOtherRule(source);
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.isAffichageEtiquette(), source.getSousZone(), getTypeDeVerification(source.getTypeVerification()), convertNombreCaracteres(source.getNombreCaracteres()), source.getZoneCible(), source.getSousZoneCible()));
+                if((source.getPositionStart() != null || source.getPositionEnd() != null) && source.getPosition() != null) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut position ne peut pas etre present en meme temps que positionstart ou positionend");
+                }
+                if((source.getPositionStartCible() != null || source.getPositionEndCible() != null) && source.getPositionCible() != null) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut positioncible ne peut pas etre present en meme temps que positionstartcible ou positionendcible");
+                }
+                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.isAffichageEtiquette(), source.getSousZone(), convertStringToInteger(source.getPositionStart()), convertStringToInteger(source.getPositionEnd()), convertStringToInteger(source.getPosition()), getTypeDeVerification(source.getTypeVerification()), convertStringToInteger(source.getNombreCaracteres()), source.getZoneCible(), source.getSousZoneCible(), convertStringToInteger(source.getPositionStartCible()), convertStringToInteger(source.getPositionEndCible()), convertStringToInteger(source.getPositionCible())));
             }
         };
         mapper.addConverter(myConverter);
@@ -378,7 +384,13 @@ public class WebDtoMapper {
         Converter<ComparaisonContenuSousZoneWebDto, SimpleRule> myConverter = new Converter<ComparaisonContenuSousZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<ComparaisonContenuSousZoneWebDto, SimpleRule> context) {
                 ComparaisonContenuSousZoneWebDto source = context.getSource();
-                return new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.isAffichageEtiquette(), source.getSousZone(), getTypeDeVerification(source.getTypeVerification()), convertNombreCaracteres(source.getNombreCaracteres()), source.getZoneCible(), source.getSousZoneCible());
+                if((source.getPositionStart() != null || source.getPositionEnd() != null) && source.getPosition() != null) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut position ne peut pas etre present en meme temps que positionstart ou positionend");
+                }
+                if((source.getPositionStartCible() != null || source.getPositionEndCible() != null) && source.getPositionCible() != null) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut positioncible ne peut pas etre present en meme temps que positionstartcible ou positionendcible");
+                }
+                return new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.isAffichageEtiquette(), source.getSousZone(), convertStringToInteger(source.getPositionStart()), convertStringToInteger(source.getPositionEnd()), convertStringToInteger(source.getPosition()), getTypeDeVerification(source.getTypeVerification()), convertStringToInteger(source.getNombreCaracteres()), source.getZoneCible(), source.getSousZoneCible(), convertStringToInteger(source.getPositionStartCible()), convertStringToInteger(source.getPositionEndCible()), convertStringToInteger(source.getPositionCible()));
             }
         };
         mapper.addConverter(myConverter);
@@ -767,10 +779,10 @@ public class WebDtoMapper {
         return new TypeDocument(source.getId(), source.isAffichageEtiquette(), getTypeDeVerification(source.getTypeDeVerification()), source.getPosition(), source.getValeur());
     }
 
-    private Integer convertNombreCaracteres(String nombreCarateres) {
-        if(nombreCarateres == null)
+    private Integer convertStringToInteger(String myIntegerInString) {
+        if(myIntegerInString == null)
             return null;
-        return Integer.valueOf(nombreCarateres);
+        return Integer.valueOf(myIntegerInString);
     }
 
     // ---------------------------------------- Get Enum From String ----------------------------------------
