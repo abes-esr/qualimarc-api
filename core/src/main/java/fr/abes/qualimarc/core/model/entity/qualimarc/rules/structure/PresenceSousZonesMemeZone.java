@@ -29,13 +29,13 @@ public class PresenceSousZonesMemeZone extends SimpleRule implements Serializabl
     @Fetch(FetchMode.SUBSELECT)
     private List<SousZoneOperator> sousZoneOperators;
 
-    public PresenceSousZonesMemeZone(Integer id, String zone, List<SousZoneOperator> sousZoneOperators) {
-        super(id, zone);
+    public PresenceSousZonesMemeZone(Integer id, String zone, Boolean affichageEtiquette, List<SousZoneOperator> sousZoneOperators) {
+        super(id, zone, affichageEtiquette);
         this.sousZoneOperators = sousZoneOperators;
     }
 
-    public PresenceSousZonesMemeZone(Integer id, String zone) {
-        super(id, zone);
+    public PresenceSousZonesMemeZone(Integer id, String zone, Boolean affichageEtiquette) {
+        super(id, zone, affichageEtiquette);
         this.sousZoneOperators = new LinkedList<>();
     }
 

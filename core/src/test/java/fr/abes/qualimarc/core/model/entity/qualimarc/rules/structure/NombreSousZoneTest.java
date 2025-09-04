@@ -34,40 +34,40 @@ public class NombreSousZoneTest {
 
     @Test
     void isValidMemeNombre() {
-        SimpleRule rule1 = new NombreSousZone(1, "606", "3", "712", "3");
+        SimpleRule rule1 = new NombreSousZone(1, "606",false, "3", "712", "3");
         Assertions.assertTrue(rule1.isValid(notice));
-        SimpleRule rule2 = new NombreSousZone(1, "606", "a", "676", "a");
+        SimpleRule rule2 = new NombreSousZone(1, "606",false, "a", "676", "a");
         Assertions.assertFalse(rule2.isValid(notice));
     }
 
     @Test
     void testIsValidSousZoneIntrouvable() {
         //si la zone sous zone n'existe pas on renvoie 0 occurrences
-        SimpleRule rule1 = new NombreSousZone(1, "606", "b", "676", "b");
+        SimpleRule rule1 = new NombreSousZone(1, "606",false, "b", "676", "b");
         Assertions.assertFalse(rule1.isValid(notice));
     }
 
     @Test
     void testIsValidZoneSourceRepetee() {
-        SimpleRule rule1 = new NombreSousZone(1, "300", "a", "801", "b");
+        SimpleRule rule1 = new NombreSousZone(1, "300",false, "a", "801", "b");
         Assertions.assertFalse(rule1.isValid(notice));
     }
 
     @Test
     void testIsValidZoneCibleRepetee() {
-        SimpleRule rule1 = new NombreSousZone(1, "801", "b", "300", "b");
+        SimpleRule rule1 = new NombreSousZone(1, "801",false, "b", "300", "b");
         Assertions.assertTrue(rule1.isValid(notice));
     }
 
     @Test
     void testIsValidZonesAbsents() {
-        SimpleRule rule1 = new NombreSousZone(1, "675", "a", "674", "a");
+        SimpleRule rule1 = new NombreSousZone(1, "675",false, "a", "674", "a");
         Assertions.assertFalse(rule1.isValid(notice));
     }
 
     @Test
     void getZones() {
-        NombreSousZone rule = new NombreSousZone(1, "600", "a", "702", "b");
+        NombreSousZone rule = new NombreSousZone(1, "600",false, "a", "702", "b");
         Assertions.assertEquals(2, rule.getZones().size());
         Assertions.assertEquals("600$a", rule.getZones().get(0));
         Assertions.assertEquals("702$b", rule.getZones().get(1));

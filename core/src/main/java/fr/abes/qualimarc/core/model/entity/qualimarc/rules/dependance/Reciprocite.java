@@ -23,8 +23,8 @@ public class Reciprocite extends SimpleRule implements Serializable {
 
     private String sousZoneCible;
 
-    public Reciprocite(Integer id, String zone, String sousZoneCible) {
-        super(id, zone);
+    public Reciprocite(Integer id, String zone, Boolean affichageEtiquette, String sousZoneCible) {
+        super(id, zone, affichageEtiquette);
         this.sousZoneCible = sousZoneCible;
     }
 
@@ -34,7 +34,7 @@ public class Reciprocite extends SimpleRule implements Serializable {
         NoticeXml noticeLiee = notices[1];
         List<Datafield> datafields = noticeLiee.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.zone) && datafield.getSubFields().stream().anyMatch(subField -> subField.getCode().equals(this.sousZoneCible))).collect(Collectors.toList());
 
-        return datafields.stream().allMatch(datafield -> datafield.getSubFields().stream().noneMatch(subField -> subField.getValue().equals(noticeMere.getPpn()))) || datafields.isEmpty();
+        return datafields.stream().allMatch(datafield -> datafield.getSubFields().stream().noneMatch(subField -> subField.getValue().equals(noticeMere.getPpn())));
     }
 
     @Override

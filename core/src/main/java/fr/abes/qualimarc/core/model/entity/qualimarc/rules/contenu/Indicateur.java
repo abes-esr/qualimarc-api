@@ -34,8 +34,8 @@ public class Indicateur extends SimpleRule implements Serializable {
     @Enumerated(EnumType.STRING)
     private TypeVerification typeDeVerification;
 
-    public Indicateur(Integer id, String zone, Integer indicateur, String valeur, TypeVerification typeDeVerification) {
-        super(id, zone);
+    public Indicateur(Integer id, String zone, Boolean affichageEtiquette,  Integer indicateur, String valeur, TypeVerification typeDeVerification) {
+        super(id, zone, affichageEtiquette);
         this.indicateur = indicateur;
         this.valeur = valeur;
         this.typeDeVerification = typeDeVerification;

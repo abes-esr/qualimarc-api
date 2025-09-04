@@ -50,6 +50,9 @@ public abstract class SimpleRuleWebDto {
     @JsonProperty("message")
     protected String message;
 
+    @JsonProperty(value = "affichage-etiquette", defaultValue = "true")
+    protected boolean affichageEtiquette = true;
+
     @JsonProperty("priorite")
     @Pattern(regexp = "([P]{1}[1-2]{1}){1}", message = "Le champ priorité ne peut contenir qu'une des deux valeurs : P1 ou P2")
     protected String priority;
@@ -74,6 +77,7 @@ public abstract class SimpleRuleWebDto {
      * @param idExcel id qui permet de faire reference dans le excel
      * @param ruleSetList list d'id qui permet de savoir si une regle appartien a un jeu de regle
      * @param message string qui sera affiché lors que la regle est vrai
+     * @param affichageEtiquette boolean placé à false si on ne souhaite pas afficher la zone de la règle dans le front
      * @param zone string
      * @param priority priorité de la règle
      * @param typesDoc type de document sur lequel appliquer la règle
@@ -83,6 +87,7 @@ public abstract class SimpleRuleWebDto {
                             @JsonProperty("id-excel") Integer idExcel,
                             @JsonProperty("jeux-de-regles") List<Integer> ruleSetList,
                             @JsonProperty("message") String message,
+                            @JsonProperty("affichage-etiquette") boolean affichageEtiquette,
                             @JsonProperty("zone") String zone,
                             @JsonProperty("priorite") String priority,
                             @JsonProperty("type-doc") List<String> typesDoc,
@@ -91,6 +96,7 @@ public abstract class SimpleRuleWebDto {
         this.idExcel = idExcel;
         this.ruleSetList = ruleSetList;
         this.message = message;
+        this.affichageEtiquette = affichageEtiquette;
         this.zone = zone;
         this.priority = priority;
         this.typesDoc = typesDoc;

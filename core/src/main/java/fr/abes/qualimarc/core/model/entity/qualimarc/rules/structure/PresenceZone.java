@@ -29,8 +29,8 @@ public class PresenceZone extends SimpleRule implements Serializable {
 
     public boolean isPresent() {return isPresent;}
 
-    public PresenceZone(Integer id, String zone, boolean isPresent) {
-        super(id, zone);
+    public PresenceZone(Integer id, String zone, Boolean affichageEtiquette, boolean isPresent) {
+        super(id, zone, affichageEtiquette);
         this.isPresent = isPresent;
     }
 

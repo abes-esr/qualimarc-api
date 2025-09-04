@@ -3,6 +3,7 @@ package fr.abes.qualimarc.core.service;
 import fr.abes.qualimarc.core.exception.IllegalPpnException;
 import fr.abes.qualimarc.core.model.entity.basexml.NoticesAutorite;
 import fr.abes.qualimarc.core.model.entity.basexml.NoticesBibio;
+import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.repository.basexml.NoticesAutoriteRepository;
 import fr.abes.qualimarc.core.repository.basexml.NoticesBibioRepository;
 import org.apache.commons.io.IOUtils;
@@ -54,7 +55,11 @@ public class NoticeServiceTest {
 
         Mockito.when(repositoryBiblio.getByPpn("143519379")).thenReturn(Optional.of(notice));
 
-        Assertions.assertThat(service.getBiblioByPpn("143519379").getLeader()).isEqualTo("     cam0 22        450 ");
+        NoticeXml noticesBibio = service.getBiblioByPpn("143519379");
+        Assertions.assertThat(noticesBibio.getLeader()).isEqualTo("     cam0 22        450 ");
+        Assertions.assertThat(noticesBibio.getPpn()).isEqualTo("143519379");
+        Assertions.assertThat(noticesBibio.getDatafields().stream().filter(datafield -> datafield.getTag().equals("712")).count()).isEqualTo(1);
+        Assertions.assertThat(noticesBibio.getDatafields().stream().filter(datafield -> datafield.getTag().startsWith("9")).count()).isEqualTo(0);
 
         Mockito.when(repositoryBiblio.getByPpn("111111111")).thenThrow(new IllegalPpnException("le PPN 111111111 n'existe pas"));
         assertThrows(IllegalPpnException.class, () -> service.getBiblioByPpn("111111111"));

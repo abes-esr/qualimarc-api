@@ -40,8 +40,8 @@ public class TypeDocumentWebDto extends SimpleRuleWebDto {
      * @param position position sur laquelle chercher dans la zone
      * @param valeur valeur à chercher dans la zone
      */
-    public TypeDocumentWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String priority, List<String> typesDoc, List<String> typesThese, String typeDeVerifications, Integer position, String valeur) {
-        super(id, idExcel, ruleSetList, message, "008", priority, typesDoc, typesThese);
+    public TypeDocumentWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String priority, List<String> typesDoc, List<String> typesThese, String typeDeVerifications, Integer position, String valeur) {
+        super(id, idExcel, ruleSetList, message, affichageEtiquette, "008", priority, typesDoc, typesThese);
         this.position = position;
         this.typeDeVerification = typeDeVerifications;
         this.valeur = valeur;

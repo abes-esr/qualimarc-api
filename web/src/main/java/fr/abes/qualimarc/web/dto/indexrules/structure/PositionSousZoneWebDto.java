@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.LinkedList;
 import java.util.List;
 
 @Getter
@@ -31,8 +32,8 @@ public class PositionSousZoneWebDto extends SimpleRuleWebDto {
     @NotNull(message = "L'opérateur est obligatoire")
     private BooleanOperateur booleanOperateur;
 
-    public PositionSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, List<PositionsOperatorWebDto> positions, BooleanOperateur booleanOperateur) {
-        super(id, idExcel, ruleSetList,  message, zone, priority, typesDoc, typesThese);
+    public PositionSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, List<PositionsOperatorWebDto> positions, BooleanOperateur booleanOperateur) {
+        super(id, idExcel, ruleSetList,  message, affichageEtiquette, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
         this.positions = positions;
         this.booleanOperateur = booleanOperateur;
@@ -45,6 +46,7 @@ public class PositionSousZoneWebDto extends SimpleRuleWebDto {
         this.booleanOperateur = booleanOperateur;
     }
 
+    public PositionSousZoneWebDto() {this.positions = new LinkedList<>();}
 
     @Getter
     @NoArgsConstructor

@@ -27,8 +27,8 @@ public class NombreZone extends SimpleRule implements Serializable {
     @NotNull
     private Integer occurrences;
 
-    public NombreZone(Integer id, String zone, ComparaisonOperateur comparaisonOperateur, Integer occurrences) {
-        super(id, zone);
+    public NombreZone(Integer id, String zone, Boolean affichageEtiquette, ComparaisonOperateur comparaisonOperateur, Integer occurrences) {
+        super(id, zone, affichageEtiquette);
         this.comparaisonOperateur = comparaisonOperateur;
         this.occurrences = occurrences;
     }

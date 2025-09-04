@@ -31,14 +31,20 @@ public class PositionsOperator implements Serializable {
     @JoinColumn(name = "ID_POSITION_SOUSZONE")
     private PositionSousZone positionSousZone;
 
-    public PositionsOperator(Integer id, Integer position, ComparaisonOperateur comparaisonOperateur) {
-        this.id = id;
+    public PositionsOperator(Integer position, ComparaisonOperateur comparaisonOperateur, PositionSousZone positionSousZone) {
         this.position = position;
         this.comparaisonOperateur = comparaisonOperateur;
+        this.positionSousZone = positionSousZone;
     }
 
     public PositionsOperator(Integer position, ComparaisonOperateur comparateur) {
         this.position = position;
         this.comparaisonOperateur = comparateur;
+    }
+
+    public PositionsOperator(Integer id, Integer position, ComparaisonOperateur comparaisonOperateur) {
+        this.id = id;
+        this.position = position;
+        this.comparaisonOperateur = comparaisonOperateur;
     }
 }

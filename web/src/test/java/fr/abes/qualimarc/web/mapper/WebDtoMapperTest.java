@@ -122,7 +122,7 @@ public class WebDtoMapperTest {
         Integer ruleSetWebDto = 1;
         ruleSetsList.add(ruleSetWebDto);
 
-        PresenceZoneWebDto presenceZoneWebDto = new PresenceZoneWebDto(1, 1, ruleSetsList, "message 1", "100", "P1", typeDoc, typeThese, true);
+        PresenceZoneWebDto presenceZoneWebDto = new PresenceZoneWebDto(1, 1, ruleSetsList, "message 1",false,  "100", "P1", typeDoc, typeThese, true);
 
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(presenceZoneWebDto, ComplexRule.class);
@@ -144,11 +144,11 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(presenceZoneWebDto.isPresent(), firstRule.isPresent());
 
         //  Test avec priorité nulle
-        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceZoneWebDto(1, 1, ruleSetsList,"message 1", "100", null, typeDoc, new ArrayList<>(), true), ComplexRule.class));
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceZoneWebDto(1, 1, ruleSetsList,"message 1",false,  "100", null, typeDoc, new ArrayList<>(), true), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
         //  Test avec message null
-        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceZoneWebDto(1, 1, ruleSetsList, null, "100", "P1", typeDoc, new ArrayList<>(), true), ComplexRule.class));
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceZoneWebDto(1, 1, ruleSetsList, null,false,  "100", "P1", typeDoc, new ArrayList<>(), true), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
     }
@@ -168,7 +168,7 @@ public class WebDtoMapperTest {
         Integer ruleSetWebDto = 1;
         ruleSetsList.add(ruleSetWebDto);
 
-        PresenceSousZoneWebDto presenceSousZoneWebDto = new PresenceSousZoneWebDto(1, 1, ruleSetsList, "message 1", "100", "P1", typeDoc, typeThese, "a", true);
+        PresenceSousZoneWebDto presenceSousZoneWebDto = new PresenceSousZoneWebDto(1, 1, ruleSetsList, "message 1",false,  "100", "P1", typeDoc, typeThese, "a", true);
 
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(presenceSousZoneWebDto, ComplexRule.class);
@@ -191,10 +191,10 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(presenceSousZoneWebDto.isPresent(), firstRule.isPresent());
 
         //  Test avec priorité nulle
-        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceSousZoneWebDto(1, 1, ruleSetsList, "message 1", "100", null, typeDoc, new ArrayList<>(), "a", true), ComplexRule.class));
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceSousZoneWebDto(1, 1, ruleSetsList, "message 1",false,  "100", null, typeDoc, new ArrayList<>(), "a", true), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
         //  Test avec message null
-        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceSousZoneWebDto(1, 1, ruleSetsList, null, "100", "P1", typeDoc, new ArrayList<>(), "a", true), ComplexRule.class));
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceSousZoneWebDto(1, 1, ruleSetsList, null,false,  "100", "P1", typeDoc, new ArrayList<>(), "a", true), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
     }
@@ -205,11 +205,11 @@ public class WebDtoMapperTest {
     @Test
     @DisplayName("Test Mapper converterNombreZone")
     void converterNombreZoneTest() {
-        NombreZoneWebDto nombreZoneWebDto0 = new NombreZoneWebDto(1, 1, new ArrayList<>(),"test", "100", "P1", null, null, ComparaisonOperateur.INFERIEUR_EGAL, 1);
+        NombreZoneWebDto nombreZoneWebDto0 = new NombreZoneWebDto(1, 1, new ArrayList<>(),"test", false, "100", "P1", null, null, ComparaisonOperateur.INFERIEUR_EGAL, 1);
         Exception ex = Assertions.assertThrows(MappingException.class, () -> mapper.map(nombreZoneWebDto0, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Seuls les opérateurs INFERIEUR, SUPERIEUR ou EGAL sont autorisés sur ce type de règle", ex.getCause().getMessage());
 
-        NombreZoneWebDto nombreZoneWebDto1 = new NombreZoneWebDto(1, 1, new ArrayList<>(), "test", "100", "P1", null, null, ComparaisonOperateur.SUPERIEUR_EGAL, 1);
+        NombreZoneWebDto nombreZoneWebDto1 = new NombreZoneWebDto(1, 1, new ArrayList<>(), "test", false, "100", "P1", null, null, ComparaisonOperateur.SUPERIEUR_EGAL, 1);
         ex = Assertions.assertThrows(MappingException.class, () -> mapper.map(nombreZoneWebDto1, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Seuls les opérateurs INFERIEUR, SUPERIEUR ou EGAL sont autorisés sur ce type de règle", ex.getCause().getMessage());
 
@@ -222,7 +222,7 @@ public class WebDtoMapperTest {
         Integer ruleSetWebDto = 1;
         ruleSetsList.add(ruleSetWebDto);
 
-        NombreZoneWebDto nombreZoneWebDto = new NombreZoneWebDto(1, 1, ruleSetsList, "message 1", "100", "P1", typeDoc, typeThese, ComparaisonOperateur.EGAL, 1);
+        NombreZoneWebDto nombreZoneWebDto = new NombreZoneWebDto(1, 1, ruleSetsList, "message 1", false,  "100", "P1", typeDoc, typeThese, ComparaisonOperateur.EGAL, 1);
 
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(nombreZoneWebDto, ComplexRule.class);
@@ -245,10 +245,10 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(nombreZoneWebDto.getZone(), firstRule.getZone());
 
         //  Test avec priorité nulle
-        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new NombreZoneWebDto(1, 1, ruleSetsList, "message 1", "100", null, typeDoc, new ArrayList<>(), ComparaisonOperateur.SUPERIEUR, 1), ComplexRule.class));
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new NombreZoneWebDto(1, 1, ruleSetsList, "message 1", false,  "100", null, typeDoc, new ArrayList<>(), ComparaisonOperateur.SUPERIEUR, 1), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
         //  Test avec message null
-        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new NombreZoneWebDto(1, 1, ruleSetsList, null, "100", "P1", typeDoc, new ArrayList<>(), ComparaisonOperateur.SUPERIEUR, 1), ComplexRule.class));
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new NombreZoneWebDto(1, 1, ruleSetsList, null, false,  "100", "P1", typeDoc, new ArrayList<>(), ComparaisonOperateur.SUPERIEUR, 1), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
     }
@@ -268,7 +268,7 @@ public class WebDtoMapperTest {
         Integer ruleSetWebDto = 1;
         ruleSetsList.add(ruleSetWebDto);
 
-        NombreSousZoneWebDto nombreSousZoneWebDto = new NombreSousZoneWebDto(1, 1, ruleSetsList, "message 1", "100", "P1", typeDoc, typeThese, "a", "100", "a");
+        NombreSousZoneWebDto nombreSousZoneWebDto = new NombreSousZoneWebDto(1, 1, ruleSetsList, "message 1", false, "100", "P1", typeDoc, typeThese, "a", "100", "a");
 
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(nombreSousZoneWebDto, ComplexRule.class);
@@ -292,11 +292,11 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(nombreSousZoneWebDto.getZone(), firstRule.getZone());
 
         //  Test avec priorité nulle
-        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new NombreSousZoneWebDto(1, 1, ruleSetsList, "message 1", "100", null, typeDoc, new ArrayList<>(), "a", "200", "b"), ComplexRule.class));
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new NombreSousZoneWebDto(1, 1, ruleSetsList, "message 1",false,  "100", null, typeDoc, new ArrayList<>(), "a", "200", "b"), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
         //  Test avec message null
-        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new NombreSousZoneWebDto(1, 1, ruleSetsList, null, "100", "P1", typeDoc, new ArrayList<>(), "a", "200", "b"), ComplexRule.class));
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new NombreSousZoneWebDto(1, 1, ruleSetsList, null,false,  "100", "P1", typeDoc, new ArrayList<>(), "a", "200", "b"), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
     }
@@ -316,7 +316,7 @@ public class WebDtoMapperTest {
         Integer ruleSetWebDto = 1;
         ruleSetsList.add(ruleSetWebDto);
         PositionSousZoneWebDto.PositionsOperatorWebDto positionsOperatorWebDto1 = new PositionSousZoneWebDto.PositionsOperatorWebDto(1, ComparaisonOperateur.EGAL);
-        PositionSousZoneWebDto positionSousZoneWebDto = new PositionSousZoneWebDto(1, 1, ruleSetsList, "message 1", "100", "P1", typeDoc, typeThese, "a", Lists.newArrayList(positionsOperatorWebDto1), BooleanOperateur.OU);
+        PositionSousZoneWebDto positionSousZoneWebDto = new PositionSousZoneWebDto(1, 1, ruleSetsList, "message 1",false,  "100", "P1", typeDoc, typeThese, "a", Lists.newArrayList(positionsOperatorWebDto1), BooleanOperateur.OU);
 
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(positionSousZoneWebDto, ComplexRule.class);
@@ -341,11 +341,11 @@ public class WebDtoMapperTest {
 
         //  Test avec priorité nulle
         PositionSousZoneWebDto.PositionsOperatorWebDto positionsOperatorWebDto2 = new PositionSousZoneWebDto.PositionsOperatorWebDto(2, ComparaisonOperateur.EGAL);
-        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, ruleSetsList, "message 1", "100", null, typeDoc, new ArrayList<>(), "a", Lists.newArrayList(positionsOperatorWebDto2), BooleanOperateur.OU), ComplexRule.class));
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, ruleSetsList, "message 1",false,  "100", null, typeDoc, new ArrayList<>(), "a", Lists.newArrayList(positionsOperatorWebDto2), BooleanOperateur.OU), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
         //  Test avec message null
-        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, ruleSetsList, null, "100", "P1", typeDoc, new ArrayList<>(), "a", Lists.newArrayList(positionsOperatorWebDto2), BooleanOperateur.OU), ComplexRule.class));
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PositionSousZoneWebDto(1, 1, ruleSetsList, null,false,  "100", "P1", typeDoc, new ArrayList<>(), "a", Lists.newArrayList(positionsOperatorWebDto2), BooleanOperateur.OU), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
     }
@@ -357,11 +357,11 @@ public class WebDtoMapperTest {
         MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule1, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : L'opérateur est interdit lors de la création d'une seule règle", exception.getCause().getMessage());
 
-        PresenceSousZonesMemeZoneWebDto rule2 = new PresenceSousZonesMemeZoneWebDto(1, 1, new ArrayList<>(), null, "200", null, null, null, null);
+        PresenceSousZonesMemeZoneWebDto rule2 = new PresenceSousZonesMemeZoneWebDto(1, 1, new ArrayList<>(), null, false, "200", null, null, null, null);
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule2, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
-        PresenceSousZonesMemeZoneWebDto rule3 = new PresenceSousZonesMemeZoneWebDto(1, 1,  new ArrayList<>(), "test", "200", "P1", new ArrayList<>(), new ArrayList<>(), new LinkedList<>());
+        PresenceSousZonesMemeZoneWebDto rule3 = new PresenceSousZonesMemeZoneWebDto(1, 1,  new ArrayList<>(), "test", false, "200", "P1", new ArrayList<>(), new ArrayList<>(), new LinkedList<>());
         rule3.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("a", true, BooleanOperateur.ET));
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule3, ComplexRule.class));
         Assertions.assertEquals("La règle 1 doit avoir au moins deux sous-zones déclarées", exception.getCause().getMessage());
@@ -370,7 +370,7 @@ public class WebDtoMapperTest {
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule3, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : La première sous-zone ne doit pas avoir d'opérateur booléen", exception.getCause().getMessage());
 
-        PresenceSousZonesMemeZoneWebDto rule4 = new PresenceSousZonesMemeZoneWebDto(1, 1,  new ArrayList<>(), "test", "200", "P1", new ArrayList<>(), new ArrayList<>(), new LinkedList<>());
+        PresenceSousZonesMemeZoneWebDto rule4 = new PresenceSousZonesMemeZoneWebDto(1, 1,  new ArrayList<>(), "test", false, "200", "P1", new ArrayList<>(), new ArrayList<>(), new LinkedList<>());
         rule4.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("a", true));
         rule4.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("b", false));
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule4, ComplexRule.class));
@@ -384,7 +384,7 @@ public class WebDtoMapperTest {
         Integer ruleSetWebDto = 1;
         ruleSetsList.add(ruleSetWebDto);
 
-        PresenceSousZonesMemeZoneWebDto rule5 = new PresenceSousZonesMemeZoneWebDto(1, 1, ruleSetsList, "test", "200", "P1", typeDoc, typeThese, new LinkedList<>());
+        PresenceSousZonesMemeZoneWebDto rule5 = new PresenceSousZonesMemeZoneWebDto(1, 1, ruleSetsList, "test", false, "200", "P1", typeDoc, typeThese, new LinkedList<>());
         rule5.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("a", true));
         rule5.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("b", false, BooleanOperateur.ET));
 
@@ -417,11 +417,11 @@ public class WebDtoMapperTest {
         MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule1, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : L'opérateur est interdit lors de la création d'une seule règle", exception.getCause().getMessage());
 
-        IndicateurWebDto rule2 = new IndicateurWebDto(1, 1, new ArrayList<>(), null, "200", null, null, null, 1, "#", "STRICTEMENT");
+        IndicateurWebDto rule2 = new IndicateurWebDto(1, 1, new ArrayList<>(), null, false, "200", null, null, null, 1, "#", "STRICTEMENT");
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule2, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
-        IndicateurWebDto rule3 = new IndicateurWebDto(1, 1, new ArrayList<>(), "test", "200", "P1", new ArrayList<>(), new ArrayList<>(), 3, "#", "STRICTEMENT");
+        IndicateurWebDto rule3 = new IndicateurWebDto(1, 1, new ArrayList<>(), "test", false, "200", "P1", new ArrayList<>(), new ArrayList<>(), 3, "#", "STRICTEMENT");
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule3, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : le champ indicateur peut etre soit '1', soit '2'", exception.getCause().getMessage());
 
@@ -433,7 +433,7 @@ public class WebDtoMapperTest {
         Integer ruleSetWebDto = 1;
         ruleSetsList.add(ruleSetWebDto);
 
-        IndicateurWebDto rule4 = new IndicateurWebDto(1, 1, ruleSetsList, "test", "200", "P1", typeDoc, typeThese, 1, "#", "STRICTEMENT");
+        IndicateurWebDto rule4 = new IndicateurWebDto(1, 1, ruleSetsList, "test", false, "200", "P1", typeDoc, typeThese, 1, "#", "STRICTEMENT");
 
         ComplexRule complexRule = mapper.map(rule4, ComplexRule.class);
         Assertions.assertEquals(rule4.getId(), complexRule.getId());
@@ -462,11 +462,11 @@ public class WebDtoMapperTest {
 
         Assertions.assertEquals("Règle 1 : L'opérateur est interdit lors de la création d'une seule règle", exception.getCause().getMessage());
 
-        TypeCaractereWebDto rule2 = new TypeCaractereWebDto(1, 1, new ArrayList<>(), null, "200", null, null, null, "a", typeCaracteres);
+        TypeCaractereWebDto rule2 = new TypeCaractereWebDto(1, 1, new ArrayList<>(), null, false, "200", null, null, null, "a", typeCaracteres);
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule2, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
-        TypeCaractereWebDto rule3 = new TypeCaractereWebDto(1, 1, new ArrayList<>(), "test", "200", "P1", new ArrayList<>(), new ArrayList<>(), "a", new ArrayList<>());
+        TypeCaractereWebDto rule3 = new TypeCaractereWebDto(1, 1, new ArrayList<>(), "test", false, "200", "P1", new ArrayList<>(), new ArrayList<>(), "a", new ArrayList<>());
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(rule3, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le champ type-caracteres est obligatoire", exception.getCause().getMessage());
 
@@ -475,7 +475,7 @@ public class WebDtoMapperTest {
         ruleSetsList.add(ruleSetWebDto);
 
         typeCaracteres.add("NUMERIQUE");
-        TypeCaractereWebDto rule6 = new TypeCaractereWebDto(1, 1,ruleSetsList, "test", "200", "P1", new ArrayList<>(), new ArrayList<>(), "a", typeCaracteres);
+        TypeCaractereWebDto rule6 = new TypeCaractereWebDto(1, 1,ruleSetsList, "test", false, "200", "P1", new ArrayList<>(), new ArrayList<>(), "a", typeCaracteres);
 
         ComplexRule complexRule = mapper.map(rule6, ComplexRule.class);
         TypeCaractere simpleRule = (TypeCaractere) complexRule.getFirstRule();
@@ -499,7 +499,7 @@ public class WebDtoMapperTest {
         MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(ruleWebDto, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : L'opérateur est interdit lors de la création d'une seule règle", exception.getCause().getMessage());
 
-        NombreCaracteresWebDto ruleWebDto2 = new NombreCaracteresWebDto(1, 1, ruleSetsList, null, "200", "a", null, null, new ArrayList<>(), ComparaisonOperateur.INFERIEUR_EGAL, 1);
+        NombreCaracteresWebDto ruleWebDto2 = new NombreCaracteresWebDto(1, 1, ruleSetsList, null, false, "200", "a", null, null, new ArrayList<>(), ComparaisonOperateur.INFERIEUR_EGAL, 1);
         exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(ruleWebDto2, ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
@@ -508,7 +508,7 @@ public class WebDtoMapperTest {
         List<String> typeThese = new ArrayList<>();
         typeThese.add("REPRO");
 
-        NombreCaracteresWebDto ruleWebDto3 = new NombreCaracteresWebDto(1, 1, null, "test", "200", "a", "P1", typeDoc, typeThese, ComparaisonOperateur.INFERIEUR, 2);
+        NombreCaracteresWebDto ruleWebDto3 = new NombreCaracteresWebDto(1, 1, null, "test", false, "200", "a", "P1", typeDoc, typeThese, ComparaisonOperateur.INFERIEUR, 2);
         ComplexRule complexRule = mapper.map(ruleWebDto3, ComplexRule.class);
         NombreCaracteres simpleRule = (NombreCaracteres) complexRule.getFirstRule();
 
@@ -542,7 +542,7 @@ public class WebDtoMapperTest {
         List<PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto> chaineCaracteresWebDtoList = new ArrayList<>();
         chaineCaracteresWebDtoList.add(chaineCaracteresWebDto1);
         chaineCaracteresWebDtoList.add(chaineCaracteresWebDto2);
-        PresenceChaineCaracteresWebDto presenceChaineCaracteresWebDto = new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, "Erreur", "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENT", chaineCaracteresWebDtoList);
+        PresenceChaineCaracteresWebDto presenceChaineCaracteresWebDto = new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, "Erreur", true, "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENT", chaineCaracteresWebDtoList);
 
 
         //  Appel du mapper
@@ -566,11 +566,11 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(presenceChaineCaracteresWebDto.getListChaineCaracteres().get(1).getChaineCaracteres(), sortedList.get(1).getChaineCaracteres());
 
         //  Test avec priorité nulle
-        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, "Erreur", "200", null, typeDoc, new ArrayList<>(), "a", "STRICTEMENT", chaineCaracteresWebDtoList), ComplexRule.class));
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, "Erreur", false, "200", null, typeDoc, new ArrayList<>(), "a", "STRICTEMENT", chaineCaracteresWebDtoList), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
         //  Test avec message null
-        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, null, "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENT", chaineCaracteresWebDtoList), ComplexRule.class));
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, null, false, "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENT", chaineCaracteresWebDtoList), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
     }
 
@@ -585,7 +585,7 @@ public class WebDtoMapperTest {
         Integer ruleSetWebDto = 1;
         ruleSetsList.add(ruleSetWebDto);
 
-        ComparaisonContenuSousZoneWebDto rule1WebDto = new ComparaisonContenuSousZoneWebDto(1, 1, ruleSetsList, "Erreur", "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENTDIFFERENT", "1", "300", "b");
+        ComparaisonContenuSousZoneWebDto rule1WebDto = new ComparaisonContenuSousZoneWebDto(1, 1, ruleSetsList, "Erreur", true, "200", "P1", typeDoc, new ArrayList<>(), "a", "STRICTEMENTDIFFERENT", "1", "300", "b");
 
         //  Appel du mapper
         ComplexRule complexRule = mapper.map(rule1WebDto, ComplexRule.class);
@@ -609,11 +609,11 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(rule1WebDto.getSousZoneCible(), ((ComparaisonContenuSousZone) complexRule.getFirstRule()).getSousZoneCible());
 
         //  Test avec priorité nulle
-        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new ComparaisonContenuSousZoneWebDto(1, 1, ruleSetsList, "Erreur", "200", null, typeDoc, new ArrayList<>(), "a", "300", "b", "STRICTEMENTDIFFERENT"), ComplexRule.class));
+        MappingException exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new ComparaisonContenuSousZoneWebDto(1, 1, ruleSetsList, "Erreur", false, "200", null, typeDoc, new ArrayList<>(), "a", "300", "b", "STRICTEMENTDIFFERENT"), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
 
         //  Test avec message null
-        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new ComparaisonContenuSousZoneWebDto(1, 1, ruleSetsList, null, "200", "P1", typeDoc, new ArrayList<>(), "a", "300", "b", "STRICTEMENTDIFFERENT"), ComplexRule.class));
+        exception = Assertions.assertThrows(MappingException.class, () -> mapper.map(new ComparaisonContenuSousZoneWebDto(1, 1, ruleSetsList, null,false,  "200", "P1", typeDoc, new ArrayList<>(), "a", "300", "b", "STRICTEMENTDIFFERENT"), ComplexRule.class));
         Assertions.assertEquals("Règle 1 : Le message et / ou la priorité est obligatoire lors de la création d'une règle simple", exception.getCause().getMessage());
     }
 
@@ -626,7 +626,7 @@ public class WebDtoMapperTest {
         List<Integer> ruleSetsList = new ArrayList<>();
         ruleSetsList.add(1);
 
-        ComparaisonDateWebDto comparaisonDateWebDto = new ComparaisonDateWebDto(1,1,ruleSetsList,"MESSAGE","200","P1",typeDoc, null,"a",0,4,"400","a",0,4,"EGAL");
+        ComparaisonDateWebDto comparaisonDateWebDto = new ComparaisonDateWebDto(1,1,ruleSetsList,"MESSAGE",true, "200","P1",typeDoc, null,"a",0,4,"400","a",0,4,"EGAL");
         ComplexRule complexRule = mapper.map(comparaisonDateWebDto, ComplexRule.class);
 
         ComparaisonDate comparaisonDate = (ComparaisonDate) complexRule.getFirstRule();
@@ -652,7 +652,7 @@ public class WebDtoMapperTest {
         List<Integer> ruleSetsList = new ArrayList<>();
         ruleSetsList.add(1);
 
-        TypeDocumentWebDto typeDocumentWebDto = new TypeDocumentWebDto(1,1,ruleSetsList,"MESSAGE","P1",typeDoc, null,"STRICTEMENT",1,"A");
+        TypeDocumentWebDto typeDocumentWebDto = new TypeDocumentWebDto(1,1,ruleSetsList,"MESSAGE",true, "P1",typeDoc, null,"STRICTEMENT",1,"A");
         ComplexRule complexRule = mapper.map(typeDocumentWebDto, ComplexRule.class);
 
         TypeDocument typeDocument = (TypeDocument) complexRule.getFirstRule();
@@ -1070,7 +1070,7 @@ public class WebDtoMapperTest {
     @Test
     @DisplayName("test converter ComplexRule vers RuleWebDto")
     void converterComplexRuleToRuleWebDto() {
-        SimpleRule simpleRule = new PresenceZone(1, "200", true);
+        SimpleRule simpleRule = new PresenceZone(1, "200",true, true);
         ComplexRule complexRule = new ComplexRule(1, "message", Priority.P1, simpleRule);
 
         RuleWebDto ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
@@ -1097,12 +1097,12 @@ public class WebDtoMapperTest {
         Assertions.assertEquals("Monographie, Manuscrit, Thèse de reproduction", ruleWebDto.getTypeDoc());
 
         //test avec plusieurs zones dans la règle
-        complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "310", true), BooleanOperateur.ET, 1, complexRule));
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "310",true, true), BooleanOperateur.ET, 1, complexRule));
         ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
         Assertions.assertEquals("310", ruleWebDto.getZoneUnm2());
 
-        complexRule = new ComplexRule(1, "message", Priority.P1, new PresenceZone(1, "310", true));
-        complexRule.addOtherRule(new LinkedRule(new Indicateur(3, "310", 1, "#", TypeVerification.STRICTEMENT), BooleanOperateur.ET, 2, complexRule));
+        complexRule = new ComplexRule(1, "message", Priority.P1, new PresenceZone(1, "310",false, true));
+        complexRule.addOtherRule(new LinkedRule(new Indicateur(3, "310",true, 1, "#", TypeVerification.STRICTEMENT), BooleanOperateur.ET, 2, complexRule));
         ruleWebDto = mapper.map(complexRule, RuleWebDto.class);
         Assertions.assertEquals("310", ruleWebDto.getZoneUnm1());
         Assertions.assertNull(ruleWebDto.getZoneUnm2());

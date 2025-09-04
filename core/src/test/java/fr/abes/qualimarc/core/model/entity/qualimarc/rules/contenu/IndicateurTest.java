@@ -36,57 +36,57 @@ public class IndicateurTest {
     @Test
     @DisplayName("test indicateur 1")
     void isValid1() {
-        Indicateur rule1 = new Indicateur(1,"101",1,"0", TypeVerification.STRICTEMENT);
+        Indicateur rule1 = new Indicateur(1,"101",false,1,"0", TypeVerification.STRICTEMENT);
         Assertions.assertTrue(rule1.isValid(notice));
 
-        Indicateur rule2 = new Indicateur(1,"101",1,"#", TypeVerification.STRICTEMENT);
+        Indicateur rule2 = new Indicateur(1,"101",false,1,"#", TypeVerification.STRICTEMENT);
         Assertions.assertFalse(rule2.isValid(notice));
 
-        Indicateur rule3= new Indicateur(1,"073",1,"#", TypeVerification.STRICTEMENT);
+        Indicateur rule3= new Indicateur(1,"073",false,1,"#", TypeVerification.STRICTEMENT);
         Assertions.assertTrue(rule3.isValid(notice));
     }
     @Test
     @DisplayName("test indicateur 2")
     void isValid2() {
-        Indicateur rule1 = new Indicateur(1,"073",2,"0", TypeVerification.STRICTEMENT);
+        Indicateur rule1 = new Indicateur(1,"073",false,2,"0", TypeVerification.STRICTEMENT);
         Assertions.assertTrue(rule1.isValid(notice));
 
-        Indicateur rule2 = new Indicateur(1,"073",2,"#", TypeVerification.STRICTEMENT);
+        Indicateur rule2 = new Indicateur(1,"073",false,2,"#", TypeVerification.STRICTEMENT);
         Assertions.assertFalse(rule2.isValid(notice));
 
-        Indicateur rule3= new Indicateur(1,"101",2,"#", TypeVerification.STRICTEMENT);
+        Indicateur rule3= new Indicateur(1,"101",false,2,"#", TypeVerification.STRICTEMENT);
         Assertions.assertTrue(rule3.isValid(notice));
     }
 
     @Test
     @DisplayName("test indicateur 1 STRICTEMENTDIFFERENT")
     void isValid3() {
-        Indicateur rule1 = new Indicateur(1,"101",1,"0", TypeVerification.STRICTEMENTDIFFERENT);
+        Indicateur rule1 = new Indicateur(1,"101",false,1,"0", TypeVerification.STRICTEMENTDIFFERENT);
         Assertions.assertFalse(rule1.isValid(notice));
 
-        Indicateur rule2 = new Indicateur(1,"101",1,"#", TypeVerification.STRICTEMENTDIFFERENT);
+        Indicateur rule2 = new Indicateur(1,"101",false,1,"#", TypeVerification.STRICTEMENTDIFFERENT);
         Assertions.assertTrue(rule2.isValid(notice));
 
-        Indicateur rule3= new Indicateur(1,"073",1,"#", TypeVerification.STRICTEMENTDIFFERENT);
+        Indicateur rule3= new Indicateur(1,"073",false,1,"#", TypeVerification.STRICTEMENTDIFFERENT);
         Assertions.assertFalse(rule3.isValid(notice));
     }
 
     @Test
     @DisplayName("test indicateur 2 STRICTEMENTDIFFERENT")
     void isValid4() {
-        Indicateur rule1 = new Indicateur(1,"073",2,"0", TypeVerification.STRICTEMENTDIFFERENT);
+        Indicateur rule1 = new Indicateur(1,"073",false,2,"0", TypeVerification.STRICTEMENTDIFFERENT);
         Assertions.assertFalse(rule1.isValid(notice));
 
-        Indicateur rule2 = new Indicateur(1,"073",2,"#", TypeVerification.STRICTEMENTDIFFERENT);
+        Indicateur rule2 = new Indicateur(1,"073",false,2,"#", TypeVerification.STRICTEMENTDIFFERENT);
         Assertions.assertTrue(rule2.isValid(notice));
 
-        Indicateur rule3= new Indicateur(1,"101",2,"#", TypeVerification.STRICTEMENTDIFFERENT);
+        Indicateur rule3= new Indicateur(1,"101",false,2,"#", TypeVerification.STRICTEMENTDIFFERENT);
         Assertions.assertFalse(rule3.isValid(notice));
     }
 
     @Test
     void testGetZones() {
-        Indicateur rule = new Indicateur(1, "100", 1, "#", TypeVerification.STRICTEMENT);
+        Indicateur rule = new Indicateur(1, "100",false, 1, "#", TypeVerification.STRICTEMENT);
         Assertions.assertEquals(1, rule.getZones().size());
         Assertions.assertEquals("100", rule.getZones().get(0));
     }

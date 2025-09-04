@@ -52,8 +52,8 @@ public class ComparaisonDate extends SimpleRule implements Serializable {
     @NotNull
     private ComparaisonOperateur comparateur;
 
-    public ComparaisonDate(Integer id, String zone, String sousZone, Integer positionStart, Integer positionEnd, String zoneCible, String sousZoneCible, Integer positionStartCible, Integer positionEndCible, ComparaisonOperateur comparateur) {
-        super(id, zone);
+    public ComparaisonDate(Integer id, String zone, Boolean affichageEtiquette,  String sousZone, Integer positionStart, Integer positionEnd, String zoneCible, String sousZoneCible, Integer positionStartCible, Integer positionEndCible, ComparaisonOperateur comparateur) {
+        super(id, zone, affichageEtiquette);
         this.sousZone = sousZone;
         this.positionStart = positionStart;
         this.positionEnd = positionEnd;
@@ -64,16 +64,16 @@ public class ComparaisonDate extends SimpleRule implements Serializable {
         this.comparateur = comparateur;
     }
 
-    public ComparaisonDate(Integer id, String zone, String sousZone, String zoneCible, String sousZoneCible, ComparaisonOperateur comparateur) {
-        super(id, zone);
+    public ComparaisonDate(Integer id, String zone, Boolean affichageEtiquette,  String sousZone, String zoneCible, String sousZoneCible, ComparaisonOperateur comparateur) {
+        super(id, zone, affichageEtiquette);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
         this.comparateur = comparateur;
     }
 
-    public ComparaisonDate(Integer id, String zone, String sousZone, Integer positionStart, Integer positionEnd, String zoneCible, String sousZoneCible, ComparaisonOperateur comparateur) {
-        super(id, zone);
+    public ComparaisonDate(Integer id, String zone, Boolean affichageEtiquette, String sousZone, Integer positionStart, Integer positionEnd, String zoneCible, String sousZoneCible, ComparaisonOperateur comparateur) {
+        super(id, zone, affichageEtiquette);
         this.sousZone = sousZone;
         this.positionStart = positionStart;
         this.positionEnd = positionEnd;
@@ -82,8 +82,8 @@ public class ComparaisonDate extends SimpleRule implements Serializable {
         this.comparateur = comparateur;
     }
 
-    public ComparaisonDate(Integer id, String zone, String sousZone, String zoneCible, String sousZoneCible, Integer positionStartCible, Integer positionEndCible, ComparaisonOperateur comparateur) {
-        super(id, zone);
+    public ComparaisonDate(Integer id, String zone, Boolean affichageEtiquette, String sousZone, String zoneCible, String sousZoneCible, Integer positionStartCible, Integer positionEndCible, ComparaisonOperateur comparateur) {
+        super(id, zone, affichageEtiquette);
         this.sousZone = sousZone;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;

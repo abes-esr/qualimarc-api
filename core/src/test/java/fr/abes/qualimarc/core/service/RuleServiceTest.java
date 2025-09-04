@@ -145,9 +145,9 @@ public class RuleServiceTest {
         typesThese.add(TypeThese.REPRO);
         Set<RuleSet> ruleSet = new HashSet<>();
 
-        listeRegles.add(new ComplexRule(1, "La zone 010 est présente", Priority.P1, familleDoc1, typesThese, ruleSet, new PresenceZone(1, "010", true)));
-        listeRegles.add(new ComplexRule(2, "La zone 011 est absente", Priority.P1, new PresenceZone(2, "011", false)));
-        listeRegles.add(new ComplexRule(3, "La zone 012 est présente", Priority.P1, new PresenceZone(3, "012",  true)));
+        listeRegles.add(new ComplexRule(1, "La zone 010 est présente", Priority.P1, familleDoc1, typesThese, ruleSet, new PresenceZone(1, "010",true, true)));
+        listeRegles.add(new ComplexRule(2, "La zone 011 est absente", Priority.P1, new PresenceZone(2, "011",true, false)));
+        listeRegles.add(new ComplexRule(3, "La zone 012 est présente", Priority.P1, new PresenceZone(3, "012",true,  true)));
     }
 
     @Test
@@ -319,7 +319,7 @@ public class RuleServiceTest {
     @Test
     void checkRulesOnNoticesQuick() {
         Set<ComplexRule> rules = new HashSet<>();
-        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010", true)));
+        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010",false, true)));
 
         Mockito.when(complexRulesRepository.findByPriority(Priority.P1)).thenReturn(rules);
 
@@ -334,8 +334,8 @@ public class RuleServiceTest {
     @Test
     void checkRulesOnNoticesComplete() {
         List<ComplexRule> rules = new ArrayList<>();
-        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010", true)));
-        rules.add(new ComplexRule(2, "Zone 200 obligatoire", Priority.P2, new PresenceZone(2, "200", true)));
+        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010",false, true)));
+        rules.add(new ComplexRule(2, "Zone 200 obligatoire", Priority.P2, new PresenceZone(2, "200",false, true)));
 
         Mockito.when(complexRulesRepository.findAll()).thenReturn(rules);
 
@@ -352,7 +352,7 @@ public class RuleServiceTest {
         Set<FamilleDocument> typesDoc = new HashSet<>();
         typesDoc.add(new FamilleDocument("B", "Audiovisuel"));
         Set<ComplexRule> rulesIn = new HashSet<>();
-        rulesIn.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, typesDoc, Sets.newHashSet(), null, new PresenceZone(1, "010", true)));
+        rulesIn.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, typesDoc, Sets.newHashSet(), null, new PresenceZone(1, "010",false, true)));
 
         Mockito.when(complexRulesRepository.findByFamillesDocuments(Mockito.any())).thenReturn(rulesIn);
 
@@ -368,7 +368,7 @@ public class RuleServiceTest {
         Set<FamilleDocument> typeDoc = new HashSet<>();
         typeDoc.add(new FamilleDocument("A", "Monographie"));
         Set<ComplexRule> rules = new HashSet<>();
-        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, typeDoc, Sets.newHashSet(), null, new PresenceZone(1, "010", true)));
+        rules.add(new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, typeDoc, Sets.newHashSet(), null, new PresenceZone(1, "010",false, true)));
 
         Mockito.when(noticeService.getBiblioByPpn("123456789")).thenReturn(noticeAutorite1);
 
@@ -386,7 +386,7 @@ public class RuleServiceTest {
     void checkRulesOnNoticesFocusedRuleSet() {
         RuleSet ruleSet = new RuleSet(1, "Zones 210/214 (publication, production, diffusion)");
         Set<ComplexRule> rulesIn = new HashSet<>();
-        ComplexRule rule = new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010", true));
+        ComplexRule rule = new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010",false, true));
         rule.addRuleSet(ruleSet);
         rulesIn.add(rule);
 
@@ -406,7 +406,7 @@ public class RuleServiceTest {
     @Test
     void checkRulesOnNoticesFocusedTypeThese() {
         Set<ComplexRule> rulesIn = new HashSet<>();
-        ComplexRule rule = new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010", true));
+        ComplexRule rule = new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010",false, true));
         rule.addTypeThese(TypeThese.REPRO);
         rulesIn.add(rule);
 
@@ -430,8 +430,8 @@ public class RuleServiceTest {
         Set<FamilleDocument> typesDoc = new HashSet<>();
         typesDoc.add(new FamilleDocument("B", "Audiovisuel"));
 
-        ComplexRule rule1 = new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010", true));
-        ComplexRule rule2 = new ComplexRule(2, "Zone 200 obligatoire", Priority.P1, typesDoc, Sets.newHashSet(), null, new PresenceZone(2, "200", true));
+        ComplexRule rule1 = new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010",false, true));
+        ComplexRule rule2 = new ComplexRule(2, "Zone 200 obligatoire", Priority.P1, typesDoc, Sets.newHashSet(), null, new PresenceZone(2, "200",false, true));
 
         //déclaration du set de rule utilisé pour vérifier le résultat de l'appel à la méthode testée
         Set<ComplexRule> rulesIn = new HashSet<>();
@@ -465,8 +465,8 @@ public class RuleServiceTest {
     void checkRulesOnNoticesFocusedTypeTheseRuleSet() {
         RuleSet ruleSet = new RuleSet(1, "Zones 210/214 (publication, production, diffusion)");
 
-        ComplexRule rule1 = new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010", true));
-        ComplexRule rule2 = new ComplexRule(2, "Zone 200 obligatoire", Priority.P1, new PresenceZone(2, "200", true));
+        ComplexRule rule1 = new ComplexRule(1, "Zone 010 obligatoire", Priority.P1, new PresenceZone(1, "010",false, true));
+        ComplexRule rule2 = new ComplexRule(2, "Zone 200 obligatoire", Priority.P1, new PresenceZone(2, "200",false, true));
 
         //déclaration du set de rule utilisé pour vérifier le résultat de l'appel à la méthode testée
         Set<ComplexRule> rulesIn = new HashSet<>();
@@ -501,9 +501,9 @@ public class RuleServiceTest {
         List<String> ppns = new ArrayList<>();
         ppns.add("143519379");
 
-        ComplexRule rule = new ComplexRule(1, "Message", Priority.P1, new PresenceZone(1, "200", true));
+        ComplexRule rule = new ComplexRule(1, "Message", Priority.P1, new PresenceZone(1, "200",false, true));
         rule.addOtherRule(new DependencyRule(1, "607", "3", TypeNoticeLiee.AUTORITE, 1, rule));
-        rule.addOtherRule(new LinkedRule(new PresenceZone(2, "152", true), BooleanOperateur.ET, 2, rule));
+        rule.addOtherRule(new LinkedRule(new PresenceZone(2, "152",false, true), BooleanOperateur.ET, 2, rule));
         Set<ComplexRule> listeReglesDependency = new HashSet<>();
         listeReglesDependency.add(rule);
 

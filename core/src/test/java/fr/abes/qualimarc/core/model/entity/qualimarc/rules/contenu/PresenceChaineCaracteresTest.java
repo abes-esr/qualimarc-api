@@ -43,7 +43,7 @@ public class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Texte imprimé", null);
         TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(0, "999", "", TypeVerification.STRICTEMENT, listChaineCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(0, "999",false, "", TypeVerification.STRICTEMENT, listChaineCaracteres);
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
     }
 
@@ -53,7 +53,7 @@ public class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Texte imprimé", null);
         TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres presenceChaineCaracteres0 = new PresenceChaineCaracteres(0, "200", "g", TypeVerification.STRICTEMENT, listChaineCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres0 = new PresenceChaineCaracteres(0, "200",false, "g", TypeVerification.STRICTEMENT, listChaineCaracteres);
         Assertions.assertFalse(presenceChaineCaracteres0.isValid(notice));
     }
 
@@ -63,7 +63,7 @@ public class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Texte imprimé", null);
         TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.STRICTEMENT, listChaineCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "200",false, "b", TypeVerification.STRICTEMENT, listChaineCaracteres);
         Assertions.assertTrue(presenceChaineCaracteres1.isValid(notice));
     }
 
@@ -73,7 +73,7 @@ public class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Texte imprime", null);
         TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.STRICTEMENT, listChaineCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "200",false, "b", TypeVerification.STRICTEMENT, listChaineCaracteres);
         Assertions.assertFalse(presenceChaineCaracteres1.isValid(notice));
     }
 
@@ -85,7 +85,7 @@ public class PresenceChaineCaracteresTest {
         TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.STRICTEMENT, listChainesCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200",false, "b", TypeVerification.STRICTEMENT, listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
     }
@@ -98,7 +98,7 @@ public class PresenceChaineCaracteresTest {
         TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.STRICTEMENT, listChainesCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200",false, "b", TypeVerification.STRICTEMENT, listChainesCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
     }
@@ -109,7 +109,7 @@ public class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Texte", null);
         TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.COMMENCE, listChaineCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200",false, "b", TypeVerification.COMMENCE, listChaineCaracteres);
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
     }
 
@@ -119,7 +119,7 @@ public class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Convention", null);
         TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.COMMENCE, listChaineCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200",false, "b", TypeVerification.COMMENCE, listChaineCaracteres);
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
     }
 
@@ -131,7 +131,7 @@ public class PresenceChaineCaracteresTest {
         TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.COMMENCE, listChainesCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200",false,"b", TypeVerification.COMMENCE, listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
     }
@@ -144,7 +144,7 @@ public class PresenceChaineCaracteresTest {
         TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.COMMENCE, listChainesCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200",false, "b", TypeVerification.COMMENCE, listChainesCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
     }
@@ -155,7 +155,7 @@ public class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "imprimé", null);
         TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.TERMINE, listChaineCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200",false, "b", TypeVerification.TERMINE, listChaineCaracteres);
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
     }
 
@@ -165,7 +165,7 @@ public class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "imprime", null);
         TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.TERMINE, listChaineCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200",false, "b", TypeVerification.TERMINE, listChaineCaracteres);
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
     }
 
@@ -177,7 +177,7 @@ public class PresenceChaineCaracteresTest {
         TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.TERMINE, listChainesCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200",false,"b", TypeVerification.TERMINE, listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
     }
@@ -190,7 +190,7 @@ public class PresenceChaineCaracteresTest {
         TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.TERMINE, listChainesCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200",false, "b", TypeVerification.TERMINE, listChainesCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
     }
@@ -201,7 +201,7 @@ public class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "xte imp", null);
         TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.CONTIENT, listChaineCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", false,"b", TypeVerification.CONTIENT, listChaineCaracteres);
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
     }
 
@@ -211,7 +211,7 @@ public class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "xteimp", null);
         TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.CONTIENT, listChaineCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200",false, "b", TypeVerification.CONTIENT, listChaineCaracteres);
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
     }
 
@@ -223,7 +223,7 @@ public class PresenceChaineCaracteresTest {
         TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.CONTIENT, listChainesCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200",false, "b", TypeVerification.CONTIENT, listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
     }
@@ -236,7 +236,7 @@ public class PresenceChaineCaracteresTest {
         TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.CONTIENT, listChainesCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", false,"b", TypeVerification.CONTIENT, listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
     }
@@ -249,7 +249,7 @@ public class PresenceChaineCaracteresTest {
         TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.CONTIENT, listChainesCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", false,"b", TypeVerification.CONTIENT, listChainesCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
     }
@@ -262,7 +262,7 @@ public class PresenceChaineCaracteresTest {
         TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
         listChaineCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "990", "b", TypeVerification.STRICTEMENT, listChaineCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres1 = new PresenceChaineCaracteres(1, "990", false,"b", TypeVerification.STRICTEMENT, listChaineCaracteres);
         Assertions.assertTrue(presenceChaineCaracteres1.isValid(notice));
     }
 
@@ -272,7 +272,7 @@ public class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Convention", null);
         TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.NECONTIENTPAS, listChaineCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200",false, "b", TypeVerification.NECONTIENTPAS, listChaineCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
     }
@@ -283,7 +283,7 @@ public class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "Texte", null);
         TreeSet<ChaineCaracteres> listChaineCaracteres = new TreeSet<>();
         listChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.NECONTIENTPAS, listChaineCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", false,"b", TypeVerification.NECONTIENTPAS, listChaineCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
     }
@@ -296,7 +296,7 @@ public class PresenceChaineCaracteresTest {
         TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "990", "b", TypeVerification.NECONTIENTPAS, listChainesCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "990",false, "b", TypeVerification.NECONTIENTPAS, listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
     }
@@ -309,7 +309,7 @@ public class PresenceChaineCaracteresTest {
         TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.NECONTIENTPAS, listChainesCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", false,"b", TypeVerification.NECONTIENTPAS, listChainesCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
     }
@@ -322,7 +322,7 @@ public class PresenceChaineCaracteresTest {
         TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.NECONTIENTPAS, listChainesCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", false,"b", TypeVerification.NECONTIENTPAS, listChainesCaracteres);
 
         Assertions.assertTrue(presenceChaineCaracteres.isValid(notice));
     }
@@ -335,7 +335,7 @@ public class PresenceChaineCaracteresTest {
         TreeSet<ChaineCaracteres> listChainesCaracteres = new TreeSet<>();
         listChainesCaracteres.add(chaineCaracteres1);
         listChainesCaracteres.add(chaineCaracteres2);
-        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200", "b", TypeVerification.NECONTIENTPAS, listChainesCaracteres);
+        PresenceChaineCaracteres presenceChaineCaracteres = new PresenceChaineCaracteres(1, "200",false, "b", TypeVerification.NECONTIENTPAS, listChainesCaracteres);
 
         Assertions.assertFalse(presenceChaineCaracteres.isValid(notice));
     }
@@ -346,7 +346,7 @@ public class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres();
         TreeSet<ChaineCaracteres> list1ChaineCaracteres = new TreeSet<>();
         list1ChaineCaracteres.add(chaineCaracteres);
-        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "020", "a", TypeVerification.STRICTEMENT, list1ChaineCaracteres);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "020", false,"a", TypeVerification.STRICTEMENT, list1ChaineCaracteres);
 
         Assertions.assertEquals(1, rule.getZones().size());
         Assertions.assertEquals("020$a", rule.getZones().get(0));
