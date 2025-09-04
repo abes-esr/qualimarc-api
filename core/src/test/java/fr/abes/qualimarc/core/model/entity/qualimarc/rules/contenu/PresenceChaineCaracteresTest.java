@@ -377,6 +377,30 @@ public class PresenceChaineCaracteresTest {
     }
 
     @Test
+    @DisplayName("test détection de caractères vides dans une sous zone")
+    void isValid30() {
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "[VIDE]", null);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "105",true, "a", TypeVerification.CONTIENT);
+        rule.addChaineCaracteres(chaineCaracteres);
+
+        Assertions.assertTrue(rule.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("test détection de trois premiers caractères vides dans une sous zone")
+    void isValid31() {
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "[VIDE][VIDE][VIDE]", null);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "105",true, "a", 0, 2, TypeVerification.STRICTEMENT);
+        rule.addChaineCaracteres(chaineCaracteres);
+
+        Assertions.assertTrue(rule.isValid(notice));
+    }
+
+
+
+
+
+    @Test
     @DisplayName("test getZones")
     void getZones() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres();
