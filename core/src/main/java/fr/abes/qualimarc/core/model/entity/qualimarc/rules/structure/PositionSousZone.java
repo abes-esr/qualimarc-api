@@ -30,8 +30,8 @@ public class PositionSousZone extends SimpleRule implements Serializable {
     @Column(name = "SOUS_ZONE")
     private String sousZone;
     @Column(name = "POSITION")
-    @OneToMany(mappedBy = "positionSousZone", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "positionSousZone", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.JOIN)
     private List<PositionsOperator> positions;
     @Column(name = "OPERATEUR")
     @Enumerated(EnumType.STRING)
