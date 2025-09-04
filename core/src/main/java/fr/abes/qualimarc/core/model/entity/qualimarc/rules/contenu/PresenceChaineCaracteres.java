@@ -39,6 +39,12 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     @Enumerated(EnumType.STRING)
     private TypeVerification typeDeVerification;
 
+    @Column(name = "POSITIONSTART")
+    private Integer positionStart;
+
+    @Column(name = "POSITIONEND")
+    private Integer positionEnd;
+
     @OneToMany(mappedBy = "presenceChaineCaracteres", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<ChaineCaracteres> listChainesCaracteres;
 
@@ -72,6 +78,16 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         this.listChainesCaracteres = listChainesCaracteres;
     }
 
+    public PresenceChaineCaracteres(Integer id, String zone, Boolean affichageEtiquette, String sousZone, Integer positionStart, Integer positionEnd, TypeVerification typeDeVerification) {
+        super(id, zone, affichageEtiquette);
+        this.sousZone = sousZone;
+        this.positionStart = positionStart;
+        this.positionEnd = positionEnd;
+        this.typeDeVerification = typeDeVerification;
+        this.listChainesCaracteres = new TreeSet<>();
+    }
+
+
     /**
      * Méthode qui ajoute une chaine de caractères à la liste de chaines de caractères
      * @param chaine chaine de caractères à rechercher
@@ -97,7 +113,19 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
         }
 
         // Récupération de la liste des zones qui MATCH avec la règle
-        List<Datafield> zonesValid = zones.stream().filter(datafield -> datafield.getSubFields().stream().anyMatch(subField -> (subField.getCode().equals(sousZone)) && isValueValidWithChaineCaracteres(subField.getValue(), typeDeVerification))).collect(Collectors.toList());
+        List<Datafield> zonesValid = null;
+        if (positionStart == null && positionEnd == null) {
+            zonesValid = zones.stream().filter(datafield -> datafield.getSubFields().stream().anyMatch(subField -> (subField.getCode().equals(sousZone)) && isValueValidWithChaineCaracteres(subField.getValue(), typeDeVerification))).collect(Collectors.toList());
+        }
+        if (positionStart != null && positionEnd == null) {
+            zonesValid = zones.stream().filter(datafield -> datafield.getSubFields().stream().anyMatch(subField -> (subField.getCode().equals(sousZone)) && isValueValidWithChaineCaracteres(subField.getValue().substring(positionStart), typeDeVerification))).collect(Collectors.toList());
+        }
+        if (positionStart == null && positionEnd != null) {
+            zonesValid = zones.stream().filter(datafield -> datafield.getSubFields().stream().anyMatch(subField -> (subField.getCode().equals(sousZone)) && isValueValidWithChaineCaracteres(subField.getValue().substring(0, positionEnd+1), typeDeVerification))).collect(Collectors.toList());
+        }
+        if (positionStart != null && positionEnd != null) {
+            zonesValid = zones.stream().filter(datafield -> datafield.getSubFields().stream().anyMatch(subField -> (subField.getCode().equals(sousZone)) && isValueValidWithChaineCaracteres(subField.getValue().substring(positionStart, positionEnd+1), typeDeVerification))).collect(Collectors.toList());
+        }
 
         if (this.getComplexRule() != null && this.getComplexRule().isMemeZone()){
             this.getComplexRule().setSavedZone(zonesValid);

@@ -341,6 +341,42 @@ public class PresenceChaineCaracteresTest {
     }
 
     @Test
+    @DisplayName("Controle d'une chaîne de caractère sur une plage de positions spécifiée")
+    void isValid25() {
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "fre", null);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "100",true, "a", 22, 24, TypeVerification.STRICTEMENT);
+        rule.addChaineCaracteres(chaineCaracteres);
+        Assertions.assertTrue(rule.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Controle d'une chaîne de caractère sur une plage de positions spécifiée avec la mauvaise borne de fin")
+    void isValid27() {
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "fre", null);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "100",true, "a", 22, 29, TypeVerification.STRICTEMENT);
+        rule.addChaineCaracteres(chaineCaracteres);
+        Assertions.assertFalse(rule.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Controle d'une chaîne de caractère sur une position de début spécifiée, mais sans position de fin spécifiée")
+    void isValid28() {
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "fre", null);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "100",true, "a", 22, null, TypeVerification.CONTIENT);
+        rule.addChaineCaracteres(chaineCaracteres);
+        Assertions.assertTrue(rule.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Controle d'une chaîne de caractère sur une position de fin spécifiée, mais sans position de début spécifiée")
+    void isValid29() {
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "fre", null);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "100",true, "a", null, 24, TypeVerification.CONTIENT);
+        rule.addChaineCaracteres(chaineCaracteres);
+        Assertions.assertTrue(rule.isValid(notice));
+    }
+
+    @Test
     @DisplayName("test getZones")
     void getZones() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres();

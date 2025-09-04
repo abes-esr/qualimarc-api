@@ -684,7 +684,7 @@ public class WebDtoMapper {
      * @return PresenceChaineCaracteres
      */
     private PresenceChaineCaracteres constructPresenceChaineCaracteres(PresenceChaineCaracteresWebDto source) {
-        PresenceChaineCaracteres target = new PresenceChaineCaracteres(source.getId(), source.getZone(), source.isAffichageEtiquette(), source.getSousZone(), getTypeDeVerification(source.getTypeDeVerification()));
+        PresenceChaineCaracteres target = new PresenceChaineCaracteres(source.getId(), source.getZone(), source.isAffichageEtiquette(), source.getSousZone(), source.getPositionStart(), source.getPositionEnd(), getTypeDeVerification(source.getTypeDeVerification()));
         if (source.getListChaineCaracteres() != null && !source.getListChaineCaracteres().isEmpty()) {
             int i = 0;
             for (PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaine : source.getListChaineCaracteres()) {
