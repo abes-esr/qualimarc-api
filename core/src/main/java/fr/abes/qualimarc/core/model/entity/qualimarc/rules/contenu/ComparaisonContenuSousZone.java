@@ -32,6 +32,15 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
     @NotNull
     private String sousZone;
 
+    @Column(name ="POSITION_START")
+    private Integer positionStart;
+
+    @Column(name ="POSITION_END")
+    private Integer positionEnd;
+
+    @Column(name ="POSITION")
+    private Integer position;
+
     @Column(name ="ENUM_TYPE_DE_VERIFICATION")
     @Enumerated(EnumType.STRING)
     @NotNull
@@ -47,6 +56,15 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
     @Column(name ="SOUS_ZONE_CIBLE")
     @NotNull
     private String sousZoneCible;
+
+    @Column(name ="POSITION_START_CIBLE")
+    private Integer positionStartCible;
+
+    @Column(name ="POSITION_END_CIBLE")
+    private Integer positionEndCible;
+
+    @Column(name ="POSITION_CIBLE")
+    private Integer positionCible;
 
     /**
      * Constructeur sans liste de chaine de caractères avec zoneCible
@@ -111,7 +129,17 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
             if(subFieldSource == null){
                 return false;
             }
-            sousZoneSourceValue = subFieldSource.getValue();
+            if(positionStart != null && positionEnd != null){
+                sousZoneSourceValue = subFieldSource.getValue().substring(positionStart, positionEnd+1);
+            } else if (positionStart != null){
+                sousZoneSourceValue = subFieldSource.getValue().substring(positionStart);
+            } else if (positionEnd != null){
+                sousZoneSourceValue = subFieldSource.getValue().substring(0,positionEnd+1);
+            } else if (position != null){
+                sousZoneSourceValue = subFieldSource.getValue().substring(position,position+1);
+            } else {
+                sousZoneSourceValue = subFieldSource.getValue();
+            }
         }
 
 
@@ -131,49 +159,44 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
             //  Sur toutes les occurences de sousZoneCible
             for (SubField sousZoneCible : zoneCible.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZoneCible)).collect(Collectors.toList())) {
                 String caractereSearch = sousZoneCible.getValue();
+                if(positionStartCible != null && positionEndCible != null){
+                    caractereSearch = caractereSearch.substring(positionStartCible, positionEndCible+1);
+                } else if (positionStartCible != null){
+                    caractereSearch = caractereSearch.substring(positionStartCible);
+                } else if (positionEndCible != null){
+                    caractereSearch = caractereSearch.substring(0,positionEndCible+1);
+                } else if (positionCible != null){
+                    caractereSearch = caractereSearch.substring(positionCible,positionCible+1);
+                }
+
                 switch (typeVerification) {
                     case STRICTEMENT:
                         isComparisonValid = sousZoneSourceValue.equals(caractereSearch);
-                        if (isComparisonValid) {
-                            return true;
-                        }
                         break;
                     case STRICTEMENTDIFFERENT:
                         isComparisonValid = !sousZoneSourceValue.equals(caractereSearch);
-                        if (isComparisonValid) {
-                            return true;
-                        }
                         break;
                     case CONTIENT:
                         isComparisonValid = sousZoneSourceValue.contains(caractereSearch);
-                        if (isComparisonValid) {
-                            return true;
-                        }
                         break;
                     case NECONTIENTPAS:
                         isComparisonValid = !sousZoneSourceValue.contains(caractereSearch);
-                        if (isComparisonValid) {
-                            return true;
-                        }
                         break;
                     case COMMENCE:
                         if(nombreCaracteres != null && nombreCaracteres !=0){
                             caractereSearch = sousZoneCible.getValue().substring(0, nombreCaracteres);
                         }
                         isComparisonValid = sousZoneSourceValue.startsWith(caractereSearch);
-                        if (isComparisonValid) {
-                            return true;
-                        }
                         break;
                     case TERMINE:
                         if(nombreCaracteres != null && nombreCaracteres !=0){
-                            caractereSearch = sousZoneCible.getValue().substring((sousZoneCible.getValue().length() - nombreCaracteres), sousZoneCible.getValue().length());
+                            caractereSearch = sousZoneCible.getValue().substring((sousZoneCible.getValue().length() - nombreCaracteres));
                         }
                         isComparisonValid = sousZoneSourceValue.endsWith(caractereSearch);
-                        if (isComparisonValid) {
-                            return true;
-                        }
                         break;
+                }
+                if (isComparisonValid) {
+                    return true;
                 }
             }
         }
