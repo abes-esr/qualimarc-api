@@ -501,7 +501,7 @@ public class WebDtoMapper {
                     if (source.getTypesDoc() != null)
                         target.setFamillesDocuments(getFamilleDocument(source.getTypesDoc()));
                     checkTypeThese(source.getTypesThese());
-                    if (source.getTypesThese() != null && source.getTypesThese().size() != 0) {
+                    if (source.getTypesThese() != null && !source.getTypesThese().isEmpty()) {
                         target.setTypesThese(getTypeThese(source.getTypesThese()));
                     }
                     boolean isPreviousRegleDependency = false;
@@ -625,9 +625,9 @@ public class WebDtoMapper {
                     typesDoc.append(", ");
                 });
                 if (!source.getTypesThese().isEmpty()) {
-                    source.getTypesThese().stream().forEach(tt -> typesDoc.append((tt.equals(TypeThese.REPRO) ? "Thèse de reproduction, " : "Thèse de soutenance, ")));
+                    source.getTypesThese().forEach(tt -> typesDoc.append((tt.equals(TypeThese.REPRO) ? "Thèse de reproduction, " : "Thèse de soutenance, ")));
                 }
-                if (source.getFamillesDocuments().size() == 0 && source.getTypesThese().size() == 0) {
+                if (source.getFamillesDocuments().isEmpty() && source.getTypesThese().isEmpty()) {
                     ruleWebDto.setTypeDoc("Tous");
                 } else {
                     ruleWebDto.setTypeDoc(typesDoc.substring(0, typesDoc.length() - 2));
@@ -762,7 +762,7 @@ public class WebDtoMapper {
             throw new IllegalArgumentException("Règle " + source.getId() + " : le champ type-de-verification est obligatoire");
         if (source.getPosition() == null)
             throw new IllegalArgumentException("Règle " + source.getId() + " : le champ position est obligatoire");
-        if (source.getPosition() != null && (source.getPosition() == 0 || source.getPosition() > 4))
+        if (source.getPosition() == 0 || source.getPosition() > 4)
             throw new IllegalArgumentException("Règle " + source.getId() + " : le champ position ne peut être compris qu'entre 1 et 4");
         return new TypeDocument(source.getId(), source.isAffichageEtiquette(), getTypeDeVerification(source.getTypeDeVerification()), source.getPosition(), source.getValeur());
     }
@@ -860,7 +860,7 @@ public class WebDtoMapper {
     }
 
     private void checkTypeThese(List<String> typesThese) {
-        if (typesThese != null && typesThese.size() != 0) {
+        if (typesThese != null && !typesThese.isEmpty()) {
             if (typesThese.stream().noneMatch(tt -> EnumUtils.isValidEnum(TypeThese.class, tt))) {
                 StringBuilder message = new StringBuilder("Les types de thèses ne peuvent prendre que les valeurs ");
                 int j = 0;
