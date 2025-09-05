@@ -114,6 +114,28 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
         this.positionCible = positionCible;
     }
 
+    public ComparaisonContenuSousZone(Integer id, String zone, Boolean affichageEtiquette, String sousZone, Integer positionStart, Integer positionEnd, TypeVerification typeVerification, String zoneCible, String sousZoneCible, Integer positionStartCible, Integer positionEndCible) {
+        super(id, zone, affichageEtiquette);
+        this.sousZone = sousZone;
+        this.positionStart = positionStart;
+        this.positionEnd = positionEnd;
+        this.typeVerification = typeVerification;
+        this.zoneCible = zoneCible;
+        this.sousZoneCible = sousZoneCible;
+        this.positionStartCible = positionStartCible;
+        this.positionEndCible = positionEndCible;
+    }
+
+    public ComparaisonContenuSousZone(Integer id, String zone, Boolean affichageEtiquette, String sousZone, Integer position, TypeVerification typeVerification, String zoneCible, String sousZoneCible, Integer positionCible) {
+        super(id, zone, affichageEtiquette);
+        this.sousZone = sousZone;
+        this.position = position;
+        this.typeVerification = typeVerification;
+        this.zoneCible = zoneCible;
+        this.sousZoneCible = sousZoneCible;
+        this.positionCible = positionCible;
+    }
+
     /**
      * Méthode qui teste la présence d'une zone et sous-zone et qui compare
      * la position ou la conformité d'une ou plusieurs chaine de caractères
