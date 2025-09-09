@@ -162,49 +162,39 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
         if(datafieldSource.getSubFields().stream().noneMatch(subField -> subField.getCode().equals(this.sousZone))){
             return false;
         }else {
-            SubField subFieldSource = datafieldSource.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).findFirst().orElse(null);
-            if(subFieldSource == null){
+            SubField sousZoneSource = datafieldSource.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZone)).findFirst().orElse(null);
+            if(sousZoneSource == null){
                 return false;
             }
-            if(positionStart != null && positionEnd != null){
-                sousZoneSourceValue = subFieldSource.getValue().substring(positionStart, positionEnd+1);
-            } else if (positionStart != null){
-                sousZoneSourceValue = subFieldSource.getValue().substring(positionStart);
-            } else if (positionEnd != null){
-                sousZoneSourceValue = subFieldSource.getValue().substring(0,positionEnd+1);
-            } else if (position != null){
-                sousZoneSourceValue = subFieldSource.getValue().substring(position,position+1);
-            } else {
-                sousZoneSourceValue = subFieldSource.getValue();
-            }
+            sousZoneSourceValue = getCaracteresByPosition(sousZoneSource, positionStart, positionEnd, position);
         }
 
 
-        //  Récupérer les zonesCible excepté la première occurence
         List<Datafield> zoneCibleList = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.zoneCible)).collect(Collectors.toList());
 
         //  Si la zoneSource est identique à la zoneCible et que la sousZoneSource est identique à la sousZoneCible, alors on supprime la première occurence DataField
-        if(this.getZone().equals(this.zoneCible) && this.sousZone.equals(this.sousZoneCible)) {
+        if(this.zone.equals(this.zoneCible) && this.sousZone.equals(this.sousZoneCible)) {
             if (!zoneCibleList.isEmpty()) {
                 zoneCibleList.remove(0);
             }
         }
 
-        //  Pour chaque occurence de la zone cible
-        for (Datafield zoneCible : zoneCibleList) {
+        List<SubField> sousZoneCibleList = zoneCibleList.stream().flatMap(zoneCible -> zoneCible.getSubFields().stream()).filter(subField -> subField.getCode().equals(this.sousZoneCible)).collect(Collectors.toList());
 
-            //  Sur toutes les occurences de sousZoneCible
-            for (SubField sousZoneCible : zoneCible.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZoneCible)).collect(Collectors.toList())) {
-                String caractereSearch = sousZoneCible.getValue();
-                if(positionStartCible != null && positionEndCible != null){
-                    caractereSearch = caractereSearch.substring(positionStartCible, positionEndCible+1);
-                } else if (positionStartCible != null){
-                    caractereSearch = caractereSearch.substring(positionStartCible);
-                } else if (positionEndCible != null){
-                    caractereSearch = caractereSearch.substring(0,positionEndCible+1);
-                } else if (positionCible != null){
-                    caractereSearch = caractereSearch.substring(positionCible,positionCible+1);
-                }
+        if(
+                this.typeVerification.equals(TypeVerification.AUCUNCONTIENT) ||
+                this.typeVerification.equals(TypeVerification.TOUTCONTIENT)
+        ) {
+            switch (this.typeVerification) {
+                case AUCUNCONTIENT:
+                    return sousZoneCibleList.stream().noneMatch(sousZoneCible -> getCaracteresByPosition(sousZoneCible, positionStartCible, positionEndCible, positionCible).contains(sousZoneSourceValue));
+                case TOUTCONTIENT:
+                    return sousZoneCibleList.stream().allMatch(sousZoneCible -> getCaracteresByPosition(sousZoneCible, positionStartCible, positionEndCible, positionCible).contains(sousZoneSourceValue));
+            }
+        } else {
+
+            for (SubField sousZoneCible : sousZoneCibleList) {
+                String caractereSearch = getCaracteresByPosition(sousZoneCible, positionStartCible, positionEndCible, positionCible);
 
                 switch (typeVerification) {
                     case STRICTEMENT:
@@ -220,13 +210,13 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
                         isComparisonValid = !sousZoneSourceValue.contains(caractereSearch);
                         break;
                     case COMMENCE:
-                        if(nombreCaracteres != null && nombreCaracteres !=0){
+                        if (nombreCaracteres != null && nombreCaracteres != 0) {
                             caractereSearch = sousZoneCible.getValue().substring(0, nombreCaracteres);
                         }
                         isComparisonValid = sousZoneSourceValue.startsWith(caractereSearch);
                         break;
                     case TERMINE:
-                        if(nombreCaracteres != null && nombreCaracteres !=0){
+                        if (nombreCaracteres != null && nombreCaracteres != 0) {
                             caractereSearch = sousZoneCible.getValue().substring((sousZoneCible.getValue().length() - nombreCaracteres));
                         }
                         isComparisonValid = sousZoneSourceValue.endsWith(caractereSearch);
@@ -238,6 +228,19 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
             }
         }
         return false;
+    }
+    private String getCaracteresByPosition(SubField sousZone, Integer positionStart, Integer positionEnd, Integer position) {
+        String caractereSearch = sousZone.getValue();
+        if (positionStart != null && positionEnd != null) {
+            caractereSearch = caractereSearch.substring(positionStart, positionEnd + 1);
+        } else if (positionStart != null) {
+            caractereSearch = caractereSearch.substring(positionStart);
+        } else if (positionEnd != null) {
+            caractereSearch = caractereSearch.substring(0, positionEnd + 1);
+        } else if (position != null) {
+            caractereSearch = caractereSearch.substring(position, position + 1);
+        }
+        return caractereSearch;
     }
 
     /**
