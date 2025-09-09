@@ -392,13 +392,17 @@ public class PresenceChaineCaracteresTest {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "[VIDE][VIDE][VIDE]", null);
         PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "105",true, "a", 0, 2, TypeVerification.STRICTEMENT);
         rule.addChaineCaracteres(chaineCaracteres);
-
         Assertions.assertTrue(rule.isValid(notice));
     }
 
-
-
-
+    @Test
+    @DisplayName("test sur zone 110")
+    void isValid32() {
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "[VIDE]", null);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(2, "110", true, "a", 4, 4, TypeVerification.STRICTEMENT);
+        rule.addChaineCaracteres(chaineCaracteres);
+        Assertions.assertTrue(rule.isValid(notice));
+    }
 
     @Test
     @DisplayName("test getZones")
