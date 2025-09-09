@@ -155,7 +155,7 @@ public class PresenceChaineCaracteres extends SimpleRule implements Serializable
     private boolean isValueValidWithChaineCaracteres(String value, TypeVerification typeDeVerification) {
         Boolean isOk = null;
         TreeSet<ChaineCaracteres> orderedListChaine = new TreeSet<>(listChainesCaracteres);
-        for( ChaineCaracteres chaineCaractere : orderedListChaine) {
+        for(ChaineCaracteres chaineCaractere : orderedListChaine) {
             boolean isValid = chaineCaractere.isValid(value, typeDeVerification);
             if(isOk == null) {
                 isOk = isValid;
