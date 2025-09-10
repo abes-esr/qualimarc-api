@@ -103,9 +103,7 @@ public class RuleService {
                 result.addMessage(ex.getMessage());
                 resultAnalyse.addResultRule(result);
             }
-            if(this.idToCn.get(id) == null){
-                this.idToCn.put(id, new AtomicInteger(0));
-            }
+            this.idToCn.computeIfAbsent(id, k -> new AtomicInteger(0));
             this.idToCn.get(id).addAndGet(1);
         }
         //on alimente la liste des journaux de messages dans le résultat du thread (uniquement si on l'analyse n'est pas rejouée ) (pour les statsMessage
@@ -160,7 +158,7 @@ public class RuleService {
         //si pas de type de document renseigné, la règle est appliquée quoi qu'il arrive
         if (rule.getFamillesDocuments().isEmpty()) {
             //on force la vérification sur la famille de document pour lever une exception le cas échéant
-            if (!Objects.equals(notice.getFamilleDocument(), "") && rule.getTypesThese().size() != 0) {
+            if (!Objects.equals(notice.getFamilleDocument(), "") && !rule.getTypesThese().isEmpty()) {
                 return rule.getTypesThese().stream().anyMatch(tt -> tt.equals(notice.getTypeThese()));
             }
             return true;

@@ -426,6 +426,68 @@ class ComparaisonContenuSousZoneTest {
         Assertions.assertFalse(rule1.isValid(notice));
     }
 
+
+    @Test
+    @DisplayName("Toute les 801$a (FR) contienne la 102$a (FR) TRUE")
+    void isValid31() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "102",
+                true,
+                "a",
+                TypeVerification.TOUTCONTIENT,
+                "801",
+                "a"
+        );
+        Assertions.assertTrue(rule1.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Aucune des 801$a (FR) contienne la 101$a (Fre) TRUE")
+    void isValid32() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "101",
+                true,
+                "a",
+                TypeVerification.AUCUNCONTIENT,
+                "801",
+                "a"
+        );
+        Assertions.assertTrue(rule1.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Toute les 600$a (blabla & cracra) contienne la 338$b (blabla) FALSE")
+    void isValid33() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "338",
+                true,
+                "b",
+                TypeVerification.TOUTCONTIENT,
+                "600",
+                "a"
+        );
+        Assertions.assertFalse(rule1.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Aucune des 600$a (blabla & cracra) contienne la 338$b (blabla) FALSE")
+    void isValid34() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "338",
+                true,
+                "b",
+                TypeVerification.AUCUNCONTIENT,
+                "600",
+                "a"
+        );
+        Assertions.assertFalse(rule1.isValid(notice));
+    }
+
+
     @Test
     @DisplayName("Test de la récupération des zones")
     void getZones() {
