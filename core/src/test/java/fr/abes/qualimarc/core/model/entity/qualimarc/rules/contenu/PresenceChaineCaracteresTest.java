@@ -396,10 +396,10 @@ public class PresenceChaineCaracteresTest {
     }
 
     @Test
-    @DisplayName("test sur zone 110")
+    @DisplayName("test sur zone 110 de recherche d'un caractère vide à la position 7")
     void isValid32() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "[VIDE]", null);
-        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(2, "110", true, "a", 4, 4, TypeVerification.STRICTEMENT);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(2, "110", true, "a", 7, 7, TypeVerification.STRICTEMENT);
         rule.addChaineCaracteres(chaineCaracteres);
         Assertions.assertTrue(rule.isValid(notice));
     }
