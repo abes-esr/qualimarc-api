@@ -27,21 +27,29 @@ public class DependencyRule extends OtherRule {
 
     private TypeNoticeLiee typeNoticeLiee;
 
+    private Integer positionSousZoneSource;
 
-    public DependencyRule(Integer id, String zoneSource, String sousZoneSource, TypeNoticeLiee typeNoticeLiee, Integer position, ComplexRule complexRule) {
+    public DependencyRule(Integer id, String zoneSource, String sousZoneSource, TypeNoticeLiee typeNoticeLiee,Integer positionSousZoneSource, Integer position , ComplexRule complexRule) {
         super(id, position, complexRule);
         this.zoneSource = zoneSource;
         this.sousZoneSource = sousZoneSource;
         this.typeNoticeLiee = typeNoticeLiee;
+        this.positionSousZoneSource = positionSousZoneSource;
     }
-
     public Set<String> getPpnsNoticeLiee(NoticeXml notice) {
         Set<String> listPpn = new HashSet<>();
-        List<Datafield> datafields = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.getZoneSource())).collect(Collectors.toList());
+        List<Datafield> datafields = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.zoneSource)).collect(Collectors.toList());
         for (Datafield datafield : datafields) {
             List<SubField> subFields = datafield.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZoneSource)).collect(Collectors.toList());
+
             if(!subFields.isEmpty()) {
-                listPpn.add(subFields.get(0).getValue());
+                if (positionSousZoneSource == null){
+                    listPpn.addAll(subFields.stream().map(SubField::getValue).collect(Collectors.toSet()));
+                } else if (positionSousZoneSource == -1){
+                    listPpn.add(subFields.get(subFields.size() - 1).getValue());
+                } else if( positionSousZoneSource <= subFields.size() ) {
+                    listPpn.add(subFields.get(this.positionSousZoneSource - 1).getValue());
+                }
             }
         }
         return listPpn;

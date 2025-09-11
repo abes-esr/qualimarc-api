@@ -599,7 +599,9 @@ public class WebDtoMapper {
                             if (i == (source.getRegles().size() - 2))
                                 throw new IllegalArgumentException("Une règle de dépendance doit toujours être suivie d'une règle simple");
                             checkDependencyRule((DependencyWebDto) otherRegle);
-                            target.addOtherRule(new DependencyRule(otherRegle.getId(), otherRegle.getZone(), ((DependencyWebDto) otherRegle).getSousZone(), getTypeNoticeLiee(((DependencyWebDto) otherRegle).getTypeNoticeLiee()), i++, target));
+                            DependencyWebDto dependencyWebDto = (DependencyWebDto) otherRegle;
+
+                            target.addOtherRule(new DependencyRule(otherRegle.getId(), otherRegle.getZone(), dependencyWebDto.getSousZone(), getTypeNoticeLiee(dependencyWebDto.getTypeNoticeLiee()),convertStringToInteger(dependencyWebDto.getPosition()), i++, target));
                             isDependencyRuleCreated = true;
                         }
                         else {
@@ -919,6 +921,9 @@ public class WebDtoMapper {
             throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de famille de documents");
         if (!regle.getTypesThese().isEmpty())
             throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir de type thèse");
+        Integer positionSousZoneCible = convertStringToInteger(regle.getPosition());
+        if(positionSousZoneCible != null && positionSousZoneCible < -1 )
+            throw new IllegalArgumentException("Une règle de dépendance ne peut pas avoir une position en dessous de -1");
     }
 
     private void checkOtherRule(SimpleRuleWebDto source) {
