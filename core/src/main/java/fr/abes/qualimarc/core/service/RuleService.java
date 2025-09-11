@@ -53,6 +53,8 @@ public class RuleService {
     @Qualifier("asyncExecutor")
     private Executor asyncExecutor;
 
+
+    //Map d'id de session d'utilisateur avec son pourcentage d'avancement d'analyse (threadsafe)
     private final Map<Integer,AtomicInteger> idToCn = new HashMap<>();
 
     @Async("asyncExecutor")
