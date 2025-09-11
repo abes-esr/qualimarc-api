@@ -28,6 +28,19 @@ public class ComparaisonContenuSousZoneWebDto extends SimpleRuleWebDto {
     @JsonProperty("souszone")
     private String sousZone;
 
+    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positionstart ne peut contenir que 3 chiffres au maximum.")
+    @JsonProperty("positionstart")
+    private String positionStart;
+
+    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positionend ne peut contenir que 3 chiffres au maximum.")
+    @JsonProperty("positionend")
+    private String positionEnd;
+
+
+    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ position ne peut contenir que 3 chiffres au maximum.")
+    @JsonProperty("position")
+    private String position;
+
     @Pattern(regexp = "STRICTEMENT|CONTIENT|COMMENCE|TERMINE|NECONTIENTPAS|STRICTEMENTDIFFERENT", message = "Le champ niveau de verification ne peut contenir que STRICTEMENT, CONTIENT, COMMENCE, TERMINE, NECONTIENTPAS, STRICTEMENTDIFFERENT")
     @JsonProperty("type-de-verification")
     @NotNull
@@ -47,6 +60,21 @@ public class ComparaisonContenuSousZoneWebDto extends SimpleRuleWebDto {
     @NotNull(message = "Le champ souszonecible est obligatoire")
     @JsonProperty("souszonecible")
     private String sousZoneCible;
+
+
+    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positionstartcible ne peut contenir que 3 chiffres au maximum.")
+    @JsonProperty("positionstartcible")
+    private String positionStartCible;
+
+
+    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positionendcible ne peut contenir que 3 chiffres au maximum.")
+    @JsonProperty("positionendcible")
+    private String positionEndCible;
+
+
+    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positioncible ne peut contenir que 3 chiffres au maximum.")
+    @JsonProperty("positioncible")
+    private String positionCible;
 
     /**
      *
@@ -93,5 +121,45 @@ public class ComparaisonContenuSousZoneWebDto extends SimpleRuleWebDto {
         this.nombreCaracteres = nombreCaracteres;
         this.zoneCible = zoneCible;
         this.sousZoneCible = sousZoneCible;
+    }
+
+    public ComparaisonContenuSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String positionStart, String positionEnd, String typeVerification, String nombreCaracteres, String zoneCible, String sousZoneCible, String positionStartCible, String positionEndCible) {
+        super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
+        this.sousZone = sousZone;
+        this.positionStart = positionStart;
+        this.positionEnd = positionEnd;
+        this.typeVerification = typeVerification;
+        this.nombreCaracteres = nombreCaracteres;
+        this.zoneCible = zoneCible;
+        this.sousZoneCible = sousZoneCible;
+        this.positionStartCible = positionStartCible;
+        this.positionEndCible = positionEndCible;
+    }
+
+
+    public ComparaisonContenuSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String position, String typeVerification, String nombreCaracteres, String zoneCible, String sousZoneCible, String positionCible) {
+        super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
+        this.sousZone = sousZone;
+        this.position = position;
+        this.typeVerification = typeVerification;
+        this.nombreCaracteres = nombreCaracteres;
+        this.zoneCible = zoneCible;
+        this.sousZoneCible = sousZoneCible;
+        this.positionCible = positionCible;
+    }
+
+    public ComparaisonContenuSousZoneWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String positionStart, String positionEnd, String position, String typeVerification, String nombreCaracteres, String zoneCible, String sousZoneCible, String positionStartCible, String positionEndCible, String positionCible) {
+        super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
+        this.sousZone = sousZone;
+        this.positionStart = positionStart;
+        this.positionEnd = positionEnd;
+        this.position = position;
+        this.typeVerification = typeVerification;
+        this.nombreCaracteres = nombreCaracteres;
+        this.zoneCible = zoneCible;
+        this.sousZoneCible = sousZoneCible;
+        this.positionStartCible = positionStartCible;
+        this.positionEndCible = positionEndCible;
+        this.positionCible = positionCible;
     }
 }

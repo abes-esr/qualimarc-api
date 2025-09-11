@@ -318,6 +318,177 @@ class ComparaisonContenuSousZoneTest {
     }
 
     @Test
+    @DisplayName("Avec position start et end , position start cible et end cible avec STRICTEMENT TRUE")
+    void isValid25() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "035",
+                true,
+                "a",
+                0,
+                10,
+                TypeVerification.STRICTEMENT,
+                "035",
+                "z",
+                0,
+                10
+        );
+        Assertions.assertTrue(rule1.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Avec position start et end , position start cible et end cible avec STRICTEMENT FALSE")
+    void isValid26() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "035",
+                true,
+                "a",
+                0,
+                10,
+                TypeVerification.STRICTEMENT,
+                "035",
+                "z",
+                2,
+                12
+        );
+        Assertions.assertFalse(rule1.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Avec position , position cible  avec STRICTEMENT True")
+    void isValid27() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "035",
+                true,
+                "a",
+                2,
+                TypeVerification.STRICTEMENT,
+                "035",
+                "z",
+                2
+        );
+        Assertions.assertTrue(rule1.isValid(notice));
+    }
+    @Test
+    @DisplayName("Avec position , position cible  avec STRICTEMENT False")
+    void isValid28() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "035",
+                true,
+                "a",
+                2,
+                TypeVerification.STRICTEMENT,
+                "035",
+                "z",
+                4
+        );
+        Assertions.assertFalse(rule1.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Avec position , position cible  avec STRICTEMENT False")
+    void isValid29() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "035",
+                true,
+                "a",
+                null,
+                10,
+                TypeVerification.STRICTEMENT,
+                "035",
+                "z",
+                null,
+                10
+        );
+        Assertions.assertTrue(rule1.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Avec position start, position start cible  avec STRICTEMENT False")
+    void isValid30() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "035",
+                true,
+                "a",
+                5,
+                null,
+                TypeVerification.STRICTEMENT,
+                "035",
+                "z",
+                5,
+                null
+        );
+        Assertions.assertFalse(rule1.isValid(notice));
+    }
+
+
+    @Test
+    @DisplayName("Toute les 801$a (FR) contienne la 102$a (FR) TRUE")
+    void isValid31() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "102",
+                true,
+                "a",
+                TypeVerification.TOUTCONTIENT,
+                "801",
+                "a"
+        );
+        Assertions.assertTrue(rule1.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Aucune des 801$a (FR) contienne la 101$a (Fre) TRUE")
+    void isValid32() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "101",
+                true,
+                "a",
+                TypeVerification.AUCUNCONTIENT,
+                "801",
+                "a"
+        );
+        Assertions.assertTrue(rule1.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Toute les 600$a (blabla & cracra) contienne la 338$b (blabla) FALSE")
+    void isValid33() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "338",
+                true,
+                "b",
+                TypeVerification.TOUTCONTIENT,
+                "600",
+                "a"
+        );
+        Assertions.assertFalse(rule1.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Aucune des 600$a (blabla & cracra) contienne la 338$b (blabla) FALSE")
+    void isValid34() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "338",
+                true,
+                "b",
+                TypeVerification.AUCUNCONTIENT,
+                "600",
+                "a"
+        );
+        Assertions.assertFalse(rule1.isValid(notice));
+    }
+
+
+    @Test
     @DisplayName("Test de la récupération des zones")
     void getZones() {
         ComparaisonContenuSousZone rule2 =  new ComparaisonContenuSousZone(1, "300",false, "a", TypeVerification.STRICTEMENT, "400", "b");

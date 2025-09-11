@@ -249,7 +249,49 @@ public class WebDtoMapper {
             public ComplexRule convert(MappingContext<ComparaisonContenuSousZoneWebDto, ComplexRule> context) {
                 ComparaisonContenuSousZoneWebDto source = context.getSource();
                 checkOtherRule(source);
-                return new ComplexRule(source.getId(), source.getMessage(), getPriority(source.getPriority()), getFamilleDocument(source.getTypesDoc()), getTypeThese(source.getTypesThese()), getRuleSet(source.getRuleSetList()), new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.isAffichageEtiquette(), source.getSousZone(), getTypeDeVerification(source.getTypeVerification()), convertNombreCaracteres(source.getNombreCaracteres()), source.getZoneCible(), source.getSousZoneCible()));
+
+                Integer positionStart = convertStringToInteger(source.getPositionStart());
+                Integer positionEnd = convertStringToInteger(source.getPositionEnd());
+                Integer position = convertStringToInteger(source.getPosition());
+                Integer positionStartCible = convertStringToInteger(source.getPositionStartCible());
+                Integer positionEndCible = convertStringToInteger(source.getPositionEndCible());
+                Integer positionCible = convertStringToInteger(source.getPositionCible());
+
+                if((positionStart != null || positionEnd != null) && position != null) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut position ne peut pas etre present en meme temps que positionstart ou positionend");
+                }
+                if((positionStartCible != null || positionEndCible != null) && positionCible != null) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut positioncible ne peut pas etre present en meme temps que positionstartcible ou positionendcible");
+                }
+                if(positionStart != null && positionEnd != null && positionStart > positionEnd) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut positionstart ne peut pas etre plus grand que positionend");
+                }
+                if(positionStartCible != null && positionEndCible != null && positionStartCible > positionEndCible) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut positionstartcible ne peut pas etre plus grand que positionendcible");
+                }
+                return new ComplexRule(
+                        source.getId(),
+                        source.getMessage(),
+                        getPriority(source.getPriority()),
+                        getFamilleDocument(source.getTypesDoc()),
+                        getTypeThese(source.getTypesThese()),
+                        getRuleSet(source.getRuleSetList()),
+                        new ComparaisonContenuSousZone(
+                                source.getId(),
+                                source.getZone(),
+                                source.isAffichageEtiquette(),
+                                source.getSousZone(),
+                                positionStart,
+                                positionEnd,
+                                position,
+                                getTypeDeVerification(source.getTypeVerification()),
+                                convertStringToInteger(source.getNombreCaracteres()),
+                                source.getZoneCible(), source.getSousZoneCible(),
+                                positionStartCible,
+                                positionEndCible,
+                                positionCible
+                        )
+                );
             }
         };
         mapper.addConverter(myConverter);
@@ -378,7 +420,41 @@ public class WebDtoMapper {
         Converter<ComparaisonContenuSousZoneWebDto, SimpleRule> myConverter = new Converter<ComparaisonContenuSousZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<ComparaisonContenuSousZoneWebDto, SimpleRule> context) {
                 ComparaisonContenuSousZoneWebDto source = context.getSource();
-                return new ComparaisonContenuSousZone(source.getId(), source.getZone(), source.isAffichageEtiquette(), source.getSousZone(), getTypeDeVerification(source.getTypeVerification()), convertNombreCaracteres(source.getNombreCaracteres()), source.getZoneCible(), source.getSousZoneCible());
+                Integer positionStart = convertStringToInteger(source.getPositionStart());
+                Integer positionEnd = convertStringToInteger(source.getPositionEnd());
+                Integer position = convertStringToInteger(source.getPosition());
+                Integer positionStartCible = convertStringToInteger(source.getPositionStartCible());
+                Integer positionEndCible = convertStringToInteger(source.getPositionEndCible());
+                Integer positionCible = convertStringToInteger(source.getPositionCible());
+
+                if((positionStart != null || positionEnd != null) && position != null) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut position ne peut pas etre present en meme temps que positionstart ou positionend");
+                }
+                if((positionStartCible != null || positionEndCible != null) && positionCible != null) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut positioncible ne peut pas etre present en meme temps que positionstartcible ou positionendcible");
+                }
+                if(positionStart != null && positionEnd != null && positionStart > positionEnd) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut positionstart ne peut pas etre plus grand que positionend");
+                }
+                if(positionStartCible != null && positionEndCible != null && positionStartCible > positionEndCible) {
+                    throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut positionstartcible ne peut pas etre plus grand que positionendcible");
+                }
+                return new ComparaisonContenuSousZone(
+                        source.getId(),
+                        source.getZone(),
+                        source.isAffichageEtiquette(),
+                        source.getSousZone(),
+                        positionStart,
+                        positionEnd,
+                        position,
+                        getTypeDeVerification(source.getTypeVerification()),
+                        convertStringToInteger(source.getNombreCaracteres()),
+                        source.getZoneCible(),
+                        source.getSousZoneCible(),
+                        positionStartCible,
+                        positionEndCible,
+                        positionCible
+                );
             }
         };
         mapper.addConverter(myConverter);
@@ -767,10 +843,10 @@ public class WebDtoMapper {
         return new TypeDocument(source.getId(), source.isAffichageEtiquette(), getTypeDeVerification(source.getTypeDeVerification()), source.getPosition(), source.getValeur());
     }
 
-    private Integer convertNombreCaracteres(String nombreCarateres) {
-        if(nombreCarateres == null)
+    private Integer convertStringToInteger(String myIntegerInString) {
+        if(myIntegerInString == null)
             return null;
-        return Integer.valueOf(nombreCarateres);
+        return Integer.valueOf(myIntegerInString);
     }
 
     // ---------------------------------------- Get Enum From String ----------------------------------------
