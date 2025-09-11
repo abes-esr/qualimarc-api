@@ -46,6 +46,9 @@
     <datafield tag="106" ind1=" " ind2=" ">
         <subfield code="a">r</subfield>
     </datafield>
+    <datafield tag="110" ind1="#" ind2="#">
+        <subfield code="a">by|@@|| xx0</subfield>
+    </datafield>
     <datafield tag="181" ind1=" " ind2=" ">
         <subfield code="6">z01</subfield>
         <subfield code="c">txt</subfield>

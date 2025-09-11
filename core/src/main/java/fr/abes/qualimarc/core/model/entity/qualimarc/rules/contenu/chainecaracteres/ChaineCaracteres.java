@@ -64,7 +64,7 @@ public class ChaineCaracteres implements Comparable {
     }
 
     public boolean isValid(String value, TypeVerification typeVerification){
-        value = (value != null) ? value : ""; //meme traitement de null que si c'etait une chaine vide
+        value = (value != null) ? value.replaceAll("[| #]","[VIDE]") : ""; //meme traitement de null que si c'etait une chaine vide
         switch (typeVerification) {
             case STRICTEMENT:
                 return value.equals(chaineCaracteres);
