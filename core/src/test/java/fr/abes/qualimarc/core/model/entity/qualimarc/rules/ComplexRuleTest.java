@@ -106,7 +106,7 @@ public class ComplexRuleTest {
         NoticeXml noticeAutorite = mapper.readValue(xml2, NoticeXml.class);
 
         ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "200", false, true));
-        complexRule.addOtherRule(new DependencyRule(1, "606", "3", TypeNoticeLiee.AUTORITE, 0, complexRule));
+        complexRule.addOtherRule(new DependencyRule(1, "606", "3", TypeNoticeLiee.AUTORITE,1, 0, complexRule));
 
         complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(4, "152", false, "b", true), BooleanOperateur.ET, 1, complexRule));
         Assertions.assertTrue(complexRule.isValid(noticeBiblio, noticeAutorite));
@@ -128,7 +128,7 @@ public class ComplexRuleTest {
         NoticeXml noticeAutorite = mapper.readValue(xml2, NoticeXml.class);
 
         ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "200", false, true));
-        complexRule.addOtherRule(new DependencyRule(1, "606", "3", TypeNoticeLiee.BIBLIO, 0, complexRule));
+        complexRule.addOtherRule(new DependencyRule(1, "606", "3", TypeNoticeLiee.BIBLIO, 1,0, complexRule));
         complexRule.addOtherRule(new LinkedRule(new Reciprocite(4, "459", false, "0"), BooleanOperateur.ET, 1, complexRule));
 
         Assertions.assertFalse(complexRule.isValid(noticeBiblio, noticeAutorite));
@@ -628,7 +628,7 @@ public class ComplexRuleTest {
         Assertions.assertEquals("300", complexRule.getZonesFromChildren().get(1));
 
 
-        complexRule.addOtherRule(new DependencyRule(1, "600", "a", TypeNoticeLiee.AUTORITE,3,complexRule));
+        complexRule.addOtherRule(new DependencyRule(1, "600", "a", TypeNoticeLiee.AUTORITE,1,3,complexRule));
         complexRule.addOtherRule(new LinkedRule(new PresenceZone(3, "400",  true, false), BooleanOperateur.OU, 4, complexRule));
         Assertions.assertEquals(2, complexRule.getZonesFromChildren().size());
     }
