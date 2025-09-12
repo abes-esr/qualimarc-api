@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class NoticeService {
-    private static final List<String> zonesLocales = List.of("012", "035", "316", "317", "318", "319", "606", "608", "701", "702","712", "722");
+    private static final List<String> zonesLocales = List.of("012", "035", "316", "317", "318", "600", "601", "602", "606", "607", "608", "676", "680", "681", "701", "702", "712", "722");
+    private static final List<String> zonesExemplaires = List.of("012", "316", "317", "318", "621", "702", "712", "722", "856");
     @Autowired
     private NoticesBibioRepository repositoryBiblio;
 
@@ -34,7 +35,10 @@ public class NoticeService {
         Optional<NoticesBibio> noticesBibio = repositoryBiblio.getByPpn(ppn);
         if (noticesBibio.isPresent()) {
             NoticeXml noticeXml = getMapper().readValue(noticesBibio.get().getDataXml().getCharacterStream(), NoticeXml.class);
-            List<Datafield> datafields = noticeXml.getDatafields().stream().filter(zone -> (!zone.getTag().startsWith("9") && !(zonesLocales.contains(zone.getTag()) && zone.getSubFields().stream().anyMatch(sousZone -> sousZone.getCode().equals("1"))))).collect(Collectors.toList());
+            List<Datafield> datafields = noticeXml.getDatafields().stream().filter(zone -> (
+                    !(zonesLocales.contains(zone.getTag()) && zone.getSubFields().stream().anyMatch(sousZone -> sousZone.getCode().equals("1"))) &&
+                    !(zonesExemplaires.contains(zone.getTag()) && zone.getSubFields().stream().anyMatch(sousZone -> sousZone.getCode().equals("5")))
+            )).collect(Collectors.toList());
             noticeXml.setDatafields(datafields);
             return noticeXml;
         }
