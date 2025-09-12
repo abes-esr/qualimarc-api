@@ -189,6 +189,10 @@
         <subfield code="g">AFNOR</subfield>
         <subfield code="2">intermrc</subfield>
     </datafield>
+    <datafield tag="856" ind1=" " ind2="0">
+        <subfield code="5">trululu</subfield>
+        <subfield code="u">http://www.test.com</subfield>
+    </datafield>
     <datafield tag="990" ind1=" " ind2=" ">
         <subfield code="a">Notice réd. d&apos;après la couv.</subfield>
         <subfield code="b">Test</subfield>
