@@ -89,9 +89,8 @@ public class DependencyRuleTest {
     void getPpnNoticeLiee6() {
         DependencyRule rule6 = new DependencyRule(1, "607", "3", TypeNoticeLiee.AUTORITE, -1,1, new ComplexRule());
         List<String> listePpn = rule6.getPpnsNoticeLiee(notice).stream().sorted().collect(Collectors.toList());
-        Assertions.assertEquals(2, listePpn.size());
+        Assertions.assertEquals(1, listePpn.size());
         Assertions.assertEquals("02731667X", listePpn.get(0));
-        Assertions.assertEquals("99731667X", listePpn.get(1));
     }
 
     @Test

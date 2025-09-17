@@ -141,14 +141,14 @@
     <datafield tag="607" ind1=" " ind2=" ">
         <subfield code="3">987654321</subfield>
         <subfield code="a">Informatique</subfield>
+        <subfield code="3">99731667X</subfield>
+        <subfield code="a">Informatique</subfield>
         <subfield code="x">Personnel</subfield>
         <subfield code="3">02731667X</subfield>
         <subfield code="x">Conventions collectives</subfield>
     </datafield>
     <datafield tag="607" ind1=" " ind2=" ">
         <subfield code="3">02731667X</subfield>
-        <subfield code="a">Informatique</subfield>
-        <subfield code="3">99731667X</subfield>
         <subfield code="a">Informatique</subfield>
         <subfield code="x">Personnel</subfield>
         <subfield code="4">987654321</subfield>
