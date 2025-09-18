@@ -27,15 +27,37 @@ public class DependencyRule extends OtherRule {
 
     private TypeNoticeLiee typeNoticeLiee;
 
-    private Integer positionSousZoneSource;
+    private Integer positionSousZoneSourceStart;
+
+    private Integer positionSousZoneSourceEnd;
 
     public DependencyRule(Integer id, String zoneSource, String sousZoneSource, TypeNoticeLiee typeNoticeLiee,Integer positionSousZoneSource, Integer position , ComplexRule complexRule) {
         super(id, position, complexRule);
         this.zoneSource = zoneSource;
         this.sousZoneSource = sousZoneSource;
         this.typeNoticeLiee = typeNoticeLiee;
-        this.positionSousZoneSource = positionSousZoneSource;
+        this.positionSousZoneSourceStart = positionSousZoneSource;
+        this.positionSousZoneSourceEnd = positionSousZoneSource;
     }
+
+    public DependencyRule(Integer id, String zoneSource, String sousZoneSource, TypeNoticeLiee typeNoticeLiee, Integer positionSousZoneSource, Integer positionSousZoneSourceStart, Integer positionSousZoneSourceEnd, Integer position , ComplexRule complexRule) {
+        super(id, position, complexRule);
+        this.zoneSource = zoneSource;
+        this.sousZoneSource = sousZoneSource;
+        this.typeNoticeLiee = typeNoticeLiee;
+        this.positionSousZoneSourceStart = positionSousZoneSource != null ? positionSousZoneSource : positionSousZoneSourceStart;
+        this.positionSousZoneSourceEnd = positionSousZoneSource != null ? positionSousZoneSource : positionSousZoneSourceEnd;
+    }
+
+    public DependencyRule(Integer id, String zoneSource, String sousZoneSource, TypeNoticeLiee typeNoticeLiee,Integer positionSousZoneSourceStart, Integer positionSousZoneSourceEnd, Integer position , ComplexRule complexRule) {
+        super(id, position, complexRule);
+        this.zoneSource = zoneSource;
+        this.sousZoneSource = sousZoneSource;
+        this.typeNoticeLiee = typeNoticeLiee;
+        this.positionSousZoneSourceStart = positionSousZoneSourceStart;
+        this.positionSousZoneSourceEnd = positionSousZoneSourceEnd;
+    }
+
     public Set<String> getPpnsNoticeLiee(NoticeXml notice) {
         Set<String> listPpn = new HashSet<>();
         List<Datafield> datafields = notice.getDatafields().stream().filter(datafield -> datafield.getTag().equals(this.zoneSource)).collect(Collectors.toList());
@@ -43,17 +65,34 @@ public class DependencyRule extends OtherRule {
             List<SubField> subFields = datafield.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZoneSource)).collect(Collectors.toList());
 
             if(!subFields.isEmpty()) {
-                if (positionSousZoneSource == null){
-                    listPpn.addAll(subFields.stream().map(SubField::getValue).collect(Collectors.toSet()));
-                } else if (positionSousZoneSource == -1){
-                    listPpn.add(subFields.get(subFields.size() - 1).getValue());
-                } else if( positionSousZoneSource <= subFields.size() ) {
-                    listPpn.add(subFields.get(this.positionSousZoneSource - 1).getValue());
+                Integer startInterval = resolveIndex(this.positionSousZoneSourceStart, subFields.size(), 0);
+                Integer endInterval = resolveIndex(this.positionSousZoneSourceEnd,   subFields.size(), subFields.size() - 1);
+                if(startInterval != null && endInterval != null) {
+                    if(startInterval <= endInterval) {
+                        listPpn.addAll(subFields.subList(startInterval, endInterval + 1).stream().map(SubField::getValue).collect(Collectors.toSet()));
+                    } else {
+                        listPpn.addAll(subFields.subList(0, endInterval + 1).stream().map(SubField::getValue).collect(Collectors.toSet()));
+                        listPpn.addAll(subFields.subList(startInterval, subFields.size()).stream().map(SubField::getValue).collect(Collectors.toSet()));
+                    }
                 }
             }
         }
         return listPpn;
     }
+
+    private Integer resolveIndex(Integer configuredIndex, int size, int defaultIfNull) {
+        if (configuredIndex == null) {
+            return defaultIfNull;
+        }
+        if (configuredIndex < 0 && -configuredIndex <= size) {
+            return size + configuredIndex;
+        }
+        if (configuredIndex < size && configuredIndex >= 0) {
+            return configuredIndex;
+        }
+        return null;
+    }
+
 
     @Override
     public List<String> getZones() {

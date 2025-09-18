@@ -27,10 +27,22 @@ public class DependencyWebDto extends SimpleRuleWebDto {
     @JsonProperty("position")
     private String position;
 
-    public DependencyWebDto(Integer id, String zone, String sousZone, String typeNoticeLiee, String position) {
+
+    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positionStart ne peut contenir que 3 chiffres au maximum.")
+    @JsonProperty("positionStart")
+    private String positionStart;
+
+
+    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positionEnd ne peut contenir que 3 chiffres au maximum.")
+    @JsonProperty("positionEnd")
+    private String positionEnd;
+
+    public DependencyWebDto(Integer id, String zone, String sousZone, String typeNoticeLiee, String position, String positionStart, String positionEnd) {
         super(id, zone);
         this.sousZone = sousZone;
         this.typeNoticeLiee = typeNoticeLiee;
         this.position = position;
+        this.positionStart = positionStart;
+        this.positionEnd = positionEnd;
     }
 }

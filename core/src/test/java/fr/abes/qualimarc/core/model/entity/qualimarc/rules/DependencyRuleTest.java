@@ -38,9 +38,9 @@ public class DependencyRuleTest {
     }
 
     @Test
-    @DisplayName("Récupération du ppn 1")
+    @DisplayName("Récupération du ppn 0")
     void getPpnNoticeLiee1() {
-        DependencyRule rule1 = new DependencyRule(1, "606", "3", TypeNoticeLiee.AUTORITE, 1, 1, new ComplexRule());
+        DependencyRule rule1 = new DependencyRule(1, "606", "3", TypeNoticeLiee.AUTORITE, 0, 1, new ComplexRule());
         Assertions.assertTrue(rule1.getPpnsNoticeLiee(notice).stream().findFirst().isPresent());
         Assertions.assertEquals("02787088X", rule1.getPpnsNoticeLiee(notice).stream().findFirst().get());
     }
@@ -63,7 +63,7 @@ public class DependencyRuleTest {
     @Test
     @DisplayName("Récupération de PLUSIEUR ppn")
     void getPpnNoticeLiee4() {
-        DependencyRule rule4 = new DependencyRule(1, "607", "3", TypeNoticeLiee.AUTORITE, 1,1, new ComplexRule());
+        DependencyRule rule4 = new DependencyRule(1, "607", "3", TypeNoticeLiee.AUTORITE, 0,1, new ComplexRule());
         List<String> listePpn = rule4.getPpnsNoticeLiee(notice).stream().sorted().collect(Collectors.toList());
         Assertions.assertEquals(3, listePpn.size());
         Assertions.assertEquals("02731667X", listePpn.get(0));
@@ -98,10 +98,39 @@ public class DependencyRuleTest {
     void getPpnNoticeLiee7() {
         DependencyRule rule6 = new DependencyRule(1, "607", "3", TypeNoticeLiee.AUTORITE, 1,1, new ComplexRule());
         List<String> listePpn = rule6.getPpnsNoticeLiee(notice).stream().sorted().collect(Collectors.toList());
+        Assertions.assertEquals(2, listePpn.size());
+        Assertions.assertEquals("02731667X", listePpn.get(0));
+        Assertions.assertEquals("99731667X", listePpn.get(1));
+    }
+
+    @Test
+    @DisplayName("Récupération des ppns en avant derniere position")
+    void getPpnNoticeLiee8() {
+        DependencyRule rule6 = new DependencyRule(1, "607", "3", TypeNoticeLiee.AUTORITE, -2,1, new ComplexRule());
+        List<String> listePpn = rule6.getPpnsNoticeLiee(notice).stream().sorted().collect(Collectors.toList());
+        Assertions.assertEquals(2, listePpn.size());
+        Assertions.assertEquals("02787088X", listePpn.get(0));
+        Assertions.assertEquals("99731667X", listePpn.get(1));
+    }
+
+    @Test
+    @DisplayName("Récupération des ppns en interval ")
+    void getPpnNoticeLiee9() {
+        DependencyRule rule6 = new DependencyRule(1, "607", "3", TypeNoticeLiee.AUTORITE, 1,2,1, new ComplexRule());
+        List<String> listePpn = rule6.getPpnsNoticeLiee(notice).stream().sorted().collect(Collectors.toList());
+        Assertions.assertEquals(2, listePpn.size());
+        Assertions.assertEquals("02731667X", listePpn.get(0));
+        Assertions.assertEquals("99731667X", listePpn.get(1));
+    }
+
+    @Test
+    @DisplayName("Récupération des ppns en interval inversé ][")
+    void getPpnNoticeLiee10() {
+        DependencyRule rule6 = new DependencyRule(1, "607", "3", TypeNoticeLiee.AUTORITE, 2,1,1, new ComplexRule());
+        List<String> listePpn = rule6.getPpnsNoticeLiee(notice).stream().sorted().collect(Collectors.toList());
         Assertions.assertEquals(3, listePpn.size());
         Assertions.assertEquals("02731667X", listePpn.get(0));
-        Assertions.assertEquals("02787088X", listePpn.get(1));
-        Assertions.assertEquals("987654321", listePpn.get(2));
+        Assertions.assertEquals("987654321", listePpn.get(1));
     }
 
     @Test
