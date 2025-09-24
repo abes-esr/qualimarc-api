@@ -6,6 +6,7 @@ import fr.abes.qualimarc.core.utils.TypeVerification;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -17,6 +18,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @NoArgsConstructor
+@Slf4j
 @Table(name = "CHAINE_CARACTERES")
 public class ChaineCaracteres implements Comparable {
 
@@ -65,6 +67,7 @@ public class ChaineCaracteres implements Comparable {
 
     public boolean isValid(String value, TypeVerification typeVerification){
         value = (value != null) ? value.replaceAll("[| #]","[VIDE]") : ""; //meme traitement de null que si c'etait une chaine vide
+        chaineCaracteres = (chaineCaracteres != null) ? chaineCaracteres.replaceAll("[| #]","[VIDE]") : "";
         switch (typeVerification) {
             case STRICTEMENT:
                 return value.equals(chaineCaracteres);
