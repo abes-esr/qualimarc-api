@@ -90,13 +90,15 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
      * @param priority priorité de la règle
      * @param typesDoc type de document de la notice sur laquelle appliquer la règle
      * @param sousZone sous-zone sur laquelle appliquer la règle
-     * @param positionstart position dans la sous-zone où commence le contrôle
-     * @param positionend position dans la sous-zone où s'arrête le contrôle
+     * @param positionStart position dans la sous-zone où commence le contrôle
+     * @param positionEnd position dans la sous-zone où s'arrête le contrôle
      * @param typeDeVerifications type de vérification à appliquer pour la règle
      */
     public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeDeVerifications, Integer positionStart, Integer positionEnd, List<ChaineCaracteresWebDto> listChaineCaracteres) {
         super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
+        this.positionStart = positionStart;
+        this.positionEnd = positionEnd;
         this.typeDeVerification = typeDeVerifications;
         this.listChaineCaracteres = listChaineCaracteres;
     }
