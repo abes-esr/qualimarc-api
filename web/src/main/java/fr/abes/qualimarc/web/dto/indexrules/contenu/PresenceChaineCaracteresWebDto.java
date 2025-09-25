@@ -35,11 +35,17 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
     @JsonProperty("chaines-caracteres")
     private List<ChaineCaracteresWebDto> listChaineCaracteres;
 
-    @JsonProperty("positionstart")
-    private Integer positionStart;
+    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ position ne peut contenir que 3 chiffres au maximum.")
+    @JsonProperty("position")
+    private String position;
 
+    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positionstart ne peut contenir que 3 chiffres au maximum.")
+    @JsonProperty("positionstart")
+    private String positionStart;
+
+    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positionend ne peut contenir que 3 chiffres au maximum.")
     @JsonProperty("positionend")
-    private Integer positionEnd;
+    private String positionEnd;
 
     /**
      * Constructeur sans liste de chaines de caractères
@@ -72,7 +78,7 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
      * @param positionEnd position dans la sous-zone où s'arrête le contrôle
      * @param typeDeVerifications type de vérification à appliquer pour la règle
      */
-    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message,  boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, Integer positionStart, Integer positionEnd, String typeDeVerifications, List<ChaineCaracteresWebDto> listChaineCaracteres) {
+    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message,  boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String positionStart, String positionEnd, String typeDeVerifications, List<ChaineCaracteresWebDto> listChaineCaracteres) {
         super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
         this.positionStart = positionStart;
@@ -94,9 +100,10 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
      * @param positionEnd position dans la sous-zone où s'arrête le contrôle
      * @param typeDeVerifications type de vérification à appliquer pour la règle
      */
-    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeDeVerifications, Integer positionStart, Integer positionEnd, List<ChaineCaracteresWebDto> listChaineCaracteres) {
+    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeDeVerifications, String position, String positionStart, String positionEnd, List<ChaineCaracteresWebDto> listChaineCaracteres) {
         super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
+        this.position = position;
         this.positionStart = positionStart;
         this.positionEnd = positionEnd;
         this.typeDeVerification = typeDeVerifications;

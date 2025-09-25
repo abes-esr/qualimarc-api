@@ -406,7 +406,8 @@ public class WebDtoMapper {
     public void converterPresenceChaineCaracteresToLinkedRule() {
         Converter<PresenceChaineCaracteresWebDto, SimpleRule> myConverter = new Converter<PresenceChaineCaracteresWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<PresenceChaineCaracteresWebDto, SimpleRule> context) {
-                return constructPresenceChaineCaracteres(context.getSource());
+                PresenceChaineCaracteresWebDto source = context.getSource();
+                    return constructPresenceChaineCaracteres(context.getSource());
             }
         };
         mapper.addConverter(myConverter);
@@ -760,7 +761,21 @@ public class WebDtoMapper {
      * @return PresenceChaineCaracteres
      */
     private PresenceChaineCaracteres constructPresenceChaineCaracteres(PresenceChaineCaracteresWebDto source) {
-        PresenceChaineCaracteres target = new PresenceChaineCaracteres(source.getId(), source.getZone(), source.isAffichageEtiquette(), source.getSousZone(), source.getPositionStart(), source.getPositionEnd(), getTypeDeVerification(source.getTypeDeVerification()));
+        Integer positionStart = convertStringToInteger(source.getPositionStart());
+        Integer positionEnd = convertStringToInteger(source.getPositionEnd());
+        Integer position = convertStringToInteger(source.getPosition());
+        if((positionStart != null || positionEnd != null) && position != null) {
+            throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut position ne peut pas etre present en meme temps que positionstart ou positionend");
+        }
+        if(positionStart != null && positionEnd != null && positionStart > positionEnd) {
+            throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut positionstart ne peut pas etre plus grand que positionend");
+        }
+        PresenceChaineCaracteres target;
+        if(position != null){
+            target = new PresenceChaineCaracteres(source.getId(), source.getZone(), source.isAffichageEtiquette(), source.getSousZone(), position, position, getTypeDeVerification(source.getTypeDeVerification()));
+        }else{
+            target = new PresenceChaineCaracteres(source.getId(), source.getZone(), source.isAffichageEtiquette(), source.getSousZone(), positionStart, positionEnd, getTypeDeVerification(source.getTypeDeVerification()));
+        }
         if (source.getListChaineCaracteres() != null && !source.getListChaineCaracteres().isEmpty()) {
             int i = 0;
             for (PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaine : source.getListChaineCaracteres()) {
