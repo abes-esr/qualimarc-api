@@ -599,7 +599,9 @@ public class WebDtoMapper {
                             if (i == (source.getRegles().size() - 2))
                                 throw new IllegalArgumentException("Une règle de dépendance doit toujours être suivie d'une règle simple");
                             checkDependencyRule((DependencyWebDto) otherRegle);
-                            target.addOtherRule(new DependencyRule(otherRegle.getId(), otherRegle.getZone(), ((DependencyWebDto) otherRegle).getSousZone(), getTypeNoticeLiee(((DependencyWebDto) otherRegle).getTypeNoticeLiee()), i++, target));
+                            DependencyWebDto dependencyWebDto = (DependencyWebDto) otherRegle;
+
+                            target.addOtherRule(new DependencyRule(otherRegle.getId(), otherRegle.getZone(), dependencyWebDto.getSousZone(), getTypeNoticeLiee(dependencyWebDto.getTypeNoticeLiee()),convertStringToInteger(dependencyWebDto.getPosition()), convertStringToInteger(dependencyWebDto.getPositionStart()), convertStringToInteger(dependencyWebDto.getPositionEnd()), i++, target));
                             isDependencyRuleCreated = true;
                         }
                         else {
