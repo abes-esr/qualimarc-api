@@ -231,16 +231,19 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
     }
     private String getCaracteresByPosition(SubField sousZone, Integer positionStart, Integer positionEnd, Integer position) {
         String caractereSearch = sousZone.getValue();
-        if (positionStart != null && positionEnd != null) {
-            caractereSearch = caractereSearch.substring(positionStart, positionEnd + 1);
-        } else if (positionStart != null) {
-            caractereSearch = caractereSearch.substring(positionStart);
-        } else if (positionEnd != null) {
-            caractereSearch = caractereSearch.substring(0, positionEnd + 1);
-        } else if (position != null) {
-            caractereSearch = caractereSearch.substring(position, position + 1);
+        if (!(positionStart != null && positionStart >= caractereSearch.length()) && !(positionEnd != null && (positionEnd + 1) >= caractereSearch.length()) && !(position != null && (position + 1) >= caractereSearch.length())) {
+            if (positionStart != null && positionEnd != null) {
+                caractereSearch = caractereSearch.substring(positionStart, positionEnd + 1);
+            } else if (positionStart != null) {
+                caractereSearch = caractereSearch.substring(positionStart);
+            } else if (positionEnd != null) {
+                caractereSearch = caractereSearch.substring(0, positionEnd + 1);
+            } else if (position != null) {
+                caractereSearch = caractereSearch.substring(position, position + 1);
+            }
+            return caractereSearch;
         }
-        return caractereSearch;
+        return null;
     }
 
     /**
