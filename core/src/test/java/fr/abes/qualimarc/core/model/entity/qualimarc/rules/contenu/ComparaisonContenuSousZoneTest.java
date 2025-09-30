@@ -487,6 +487,24 @@ class ComparaisonContenuSousZoneTest {
         Assertions.assertFalse(rule1.isValid(notice));
     }
 
+    @Test
+    @DisplayName(" position cible avec position hors de la valeur de la sous zone False")
+    void isValid35() {
+        ComparaisonContenuSousZone rule1 = new ComparaisonContenuSousZone(
+                1,
+                "035",
+                true,
+                "a",
+                0,
+                10,
+                TypeVerification.STRICTEMENT,
+                "035",
+                "z",
+                0,
+                15
+        );
+        Assertions.assertFalse(rule1.isValid(notice));
+    }
 
     @Test
     @DisplayName("Test de la récupération des zones")
