@@ -35,6 +35,18 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
     @JsonProperty("chaines-caracteres")
     private List<ChaineCaracteresWebDto> listChaineCaracteres;
 
+    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ position ne peut contenir que 3 chiffres au maximum.")
+    @JsonProperty("position")
+    private String position;
+
+    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positionstart ne peut contenir que 3 chiffres au maximum.")
+    @JsonProperty("positionstart")
+    private String positionStart;
+
+    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positionend ne peut contenir que 3 chiffres au maximum.")
+    @JsonProperty("positionend")
+    private String positionEnd;
+
     /**
      * Constructeur sans liste de chaines de caractères
      * @param id identifiant de la règle
@@ -49,6 +61,51 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
     public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message,  boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeDeVerifications, List<ChaineCaracteresWebDto> listChaineCaracteres) {
         super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
         this.sousZone = sousZone;
+        this.typeDeVerification = typeDeVerifications;
+        this.listChaineCaracteres = listChaineCaracteres;
+    }
+
+    /**
+     * Constructeur sans liste de chaines de caractères
+     * @param id identifiant de la règle
+     * @param idExcel identifiant excel de la règle
+     * @param message message à renvoyer si la règle est vérifiée
+     * @param zone zone sur laquelle appliquer la règle
+     * @param priority priorité de la règle
+     * @param typesDoc type de document de la notice sur laquelle appliquer la règle
+     * @param sousZone sous-zone sur laquelle appliquer la règle
+     * @param positionStart position dans la sous-zone où commence le contrôle
+     * @param positionEnd position dans la sous-zone où s'arrête le contrôle
+     * @param typeDeVerifications type de vérification à appliquer pour la règle
+     */
+    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message,  boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String positionStart, String positionEnd, String typeDeVerifications, List<ChaineCaracteresWebDto> listChaineCaracteres) {
+        super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
+        this.sousZone = sousZone;
+        this.positionStart = positionStart;
+        this.positionEnd = positionEnd;
+        this.typeDeVerification = typeDeVerifications;
+        this.listChaineCaracteres = listChaineCaracteres;
+    }
+
+    /**
+     * Constructeur sans liste de chaines de caractères
+     * @param id identifiant de la règle
+     * @param idExcel identifiant excel de la règle
+     * @param message message à renvoyer si la règle est vérifiée
+     * @param zone zone sur laquelle appliquer la règle
+     * @param priority priorité de la règle
+     * @param typesDoc type de document de la notice sur laquelle appliquer la règle
+     * @param sousZone sous-zone sur laquelle appliquer la règle
+     * @param positionStart position dans la sous-zone où commence le contrôle
+     * @param positionEnd position dans la sous-zone où s'arrête le contrôle
+     * @param typeDeVerifications type de vérification à appliquer pour la règle
+     */
+    public PresenceChaineCaracteresWebDto(Integer id, Integer idExcel, List<Integer> ruleSetList, String message, boolean affichageEtiquette, String zone, String priority, List<String> typesDoc, List<String> typesThese, String sousZone, String typeDeVerifications, String position, String positionStart, String positionEnd, List<ChaineCaracteresWebDto> listChaineCaracteres) {
+        super(id, idExcel, ruleSetList, message, affichageEtiquette, zone, priority, typesDoc, typesThese);
+        this.sousZone = sousZone;
+        this.position = position;
+        this.positionStart = positionStart;
+        this.positionEnd = positionEnd;
         this.typeDeVerification = typeDeVerifications;
         this.listChaineCaracteres = listChaineCaracteres;
     }
