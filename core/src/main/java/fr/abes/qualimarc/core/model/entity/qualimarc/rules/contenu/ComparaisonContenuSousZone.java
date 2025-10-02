@@ -241,9 +241,8 @@ public class ComparaisonContenuSousZone extends SimpleRule implements Serializab
             } else if (position != null) {
                 caractereSearch = caractereSearch.substring(position, position + 1);
             }
-            return caractereSearch;
         }
-        return null;
+        return caractereSearch;
     }
 
     /**
