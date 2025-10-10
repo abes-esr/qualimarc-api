@@ -13,8 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.sql.Clob;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,7 +35,15 @@ public class NoticeService {
             throw new IllegalPpnException("Le PPN ne peut pas être null");
         Optional<NoticesBibio> noticesBibio = repositoryBiblio.getByPpn(ppn);
         if (noticesBibio.isPresent()) {
-            NoticeXml noticeXml = getMapper().readValue(noticesBibio.get().getDataXml().getCharacterStream(), NoticeXml.class);
+            NoticeXml noticeXml;
+            Clob clob = noticesBibio.get().getDataXml();
+
+            try (Reader reader = clob.getCharacterStream()){
+                noticeXml = getMapper().readValue(reader, NoticeXml.class);
+            } finally {
+                clob.free();
+            }
+
             List<Datafield> datafields = noticeXml.getDatafields().stream().filter(zone -> (
                     !(zonesLocales.contains(zone.getTag()) && zone.getSubFields().stream().anyMatch(sousZone -> sousZone.getCode().equals("1"))) &&
                     !(zonesExemplaires.contains(zone.getTag()) && zone.getSubFields().stream().anyMatch(sousZone -> sousZone.getCode().equals("5")))
@@ -50,7 +59,13 @@ public class NoticeService {
             throw new IllegalPpnException("Le PPN ne peut pas être null");
         Optional<NoticesAutorite> noticesAutorite = repositoryAutorite.getByPpn(ppn);
         if (noticesAutorite.isPresent()) {
-            return getMapper().readValue(noticesAutorite.get().getDataXml().getCharacterStream(), NoticeXml.class);
+            Clob clob = noticesAutorite.get().getDataXml();
+
+            try (Reader reader = clob.getCharacterStream()){
+                return getMapper().readValue(reader, NoticeXml.class);
+            } finally {
+                clob.free();
+            }
         }
         throw new IllegalPpnException("le PPN " + ppn + " n'existe pas");
     }
