@@ -692,11 +692,12 @@ public class WebDtoMapper {
 
                 RuleWebDto ruleWebDto = new RuleWebDto();
                 ruleWebDto.setId(source.getId());
-                if(source.getZonesFromChildren().size() == 1) {
-                    ruleWebDto.setZoneUnm1(source.getZonesFromChildren().get(0));
+                List<String> zonesFromChildren = source.getZonesFromChildren();
+                if(!zonesFromChildren.isEmpty()) {
+                    ruleWebDto.setZoneUnm1(zonesFromChildren.get(0));
                 }
-                if (source.getZonesFromChildren().size() > 1) {
-                    ruleWebDto.setZoneUnm2(source.getZonesFromChildren().get(1));
+                if (zonesFromChildren.size() > 1) {
+                    ruleWebDto.setZoneUnm2(zonesFromChildren.get(1));
                 }
                 ruleWebDto.setMessage(source.getMessage());
                 StringBuilder typesDoc = new StringBuilder();
