@@ -4,12 +4,15 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
@@ -23,8 +26,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletionException;
@@ -51,7 +52,7 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
      * @return l'objet du message d'erreur
      */
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         String error = "Requête YAML mal formée";
         if (ex.getCause() instanceof InvalidTypeIdException) {
             log.debug(ex.getLocalizedMessage());
@@ -100,7 +101,7 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
      * @return l'objet du message d'erreur
      */
     @Override
-    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         String error = "Method is not supported for this request";
         log.error(ex.getLocalizedMessage());
         return buildResponseEntity(new ApiReturnError(HttpStatus.METHOD_NOT_ALLOWED, error, ex));
@@ -116,7 +117,7 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
      * @return l'objet du message d'erreur
      */
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         String error = "Les paramètres ne sont pas valides";
         BindingResult result = ex.getBindingResult();
         List<FieldError> fieldErrors = result.getFieldErrors();
@@ -138,7 +139,7 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
      * @return l'objet du message d'erreur
      */
     @Override
-    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         String error = "Page not found";
         log.error(ex.getLocalizedMessage());
         return buildResponseEntity(new ApiReturnError(HttpStatus.NOT_FOUND, error, ex));
@@ -154,7 +155,7 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
      * @return l'objet du message d'erreur
      */
     @Override
-    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         String error = "Missing request parameter";
         log.error(ex.getLocalizedMessage());
         return buildResponseEntity(new ApiReturnError(HttpStatus.BAD_REQUEST, error, ex));

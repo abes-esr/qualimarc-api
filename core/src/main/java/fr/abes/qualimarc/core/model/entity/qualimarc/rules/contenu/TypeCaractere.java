@@ -5,14 +5,14 @@ import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.notice.SubField;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
 import fr.abes.qualimarc.core.utils.TypeCaracteres;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;

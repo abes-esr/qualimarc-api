@@ -19,15 +19,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -45,13 +43,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = {RuleController.class}) //  Active le Model-View-Controller, nécessaire pour éviter le code d'erreur 415 lors du lancement du test checkPpn
 @ExtendWith({SpringExtension.class})
-@ContextConfiguration(classes = {WebConfig.class,AsyncConfiguration.class})
+@ContextConfiguration(classes = {WebConfig.class, AsyncConfiguration.class, ExceptionControllerHandler.class})
 public class RuleControllerTest {
     @Autowired
     WebApplicationContext context;
-
-    @InjectMocks
-    RuleController ruleController;
 
     @Autowired
     MappingJackson2HttpMessageConverter yamlHttpConverter;
@@ -67,29 +62,27 @@ public class RuleControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
     RuleService ruleService;
 
-    @MockBean
+    @MockitoBean
     NoticeService noticeService;
 
-    @MockBean
+    @MockitoBean
     ReferenceService referenceService;
 
-    @MockBean
+    @MockitoBean
     JournalService journalService;
 
-    @MockBean
+    @MockitoBean
     UtilsMapper utilsMapper;
 
 
     @BeforeEach
     void init() {
-        MockitoAnnotations.openMocks(this);
+        // Utiliser le contexte Web complet pour bénéficier des @ControllerAdvice et converters enregistrés
         this.mockMvc = MockMvcBuilders
-                .standaloneSetup(context.getBean(RuleController.class))
-                .setMessageConverters(this.yamlHttpConverter, this.jsonHttpConverter)
-                .setControllerAdvice(new ExceptionControllerHandler())
+                .webAppContextSetup(context)
                 .build();
     }
 
@@ -183,7 +176,7 @@ public class RuleControllerTest {
                 "      presence:    false\n";
 
         this.mockMvc.perform(post("/api/v1/indexRules")
-                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .contentType("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
                 .content(yaml).characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isOk());
     }
@@ -200,7 +193,7 @@ public class RuleControllerTest {
                         "      souszone:    a";
 
         this.mockMvc.perform(post("/api/v1/indexRules")
-                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .contentType("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
                 .content(yaml).characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> result.getResponse().getContentAsString().contains("debugMessage: Une règle simple ne peut pas être une règle de dépendance"));
@@ -218,7 +211,7 @@ public class RuleControllerTest {
                         "      souszone:    a";
 
         this.mockMvc.perform(post("/api/v1/indexRules")
-                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .contentType("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
                 .content(yaml).characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> result.getResponse().getContentAsString().contains("debugMessage: Une règle simple ne peut pas être de type reciprocite"));
@@ -251,7 +244,7 @@ public class RuleControllerTest {
 
 
         this.mockMvc.perform(post("/api/v1/indexComplexRules")
-                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .contentType("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
                 .content(yaml).characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isOk());
     }

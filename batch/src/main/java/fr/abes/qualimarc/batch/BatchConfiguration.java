@@ -8,30 +8,28 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersIncrementer;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.persistence.EntityManagerFactory;
 
 @Slf4j
 @EnableBatchProcessing
 @Configuration
 public class BatchConfiguration {
     @Autowired
-    private JobBuilderFactory jobs;
-
-    @Autowired
     private JobExplorer jobExplorer;
 
     @Autowired
-    private StepBuilderFactory steps;
+    private JobRepository jobRepository;
+
+    @Autowired
+    private org.springframework.transaction.PlatformTransactionManager transactionManager;
 
     @Autowired
     private RuleSetRepository ruleSetRepository;
@@ -55,41 +53,45 @@ public class BatchConfiguration {
     private String uploadPath;
 
     @Bean
-    public BatchConfigurer configurer(EntityManagerFactory entityManagerFactory) {
-        return new QualimarcBatchConfigurer(entityManagerFactory);
-    }
-
-    @Bean
     public Job jobExportStatistiques() {
-        return jobs.get("exportStatistiques").incrementer(incrementer())
+        return new JobBuilder("exportStatistiques", jobRepository)
+                .incrementer(incrementer())
                 .start(stepVerifierParams()).on("FAILED").end()
                 .from(stepVerifierParams()).on("COMPLETED").to(stepExportStatistiques())
-                .build().build();
+                .build()
+                .build();
     }
 
     @Bean
     public Job jobFlushStatistiques() {
-        return jobs.get("flushStatistiques").incrementer(incrementer())
+        return new JobBuilder("flushStatistiques", jobRepository)
+                .incrementer(incrementer())
                 .start(stepFlushStatistiques()).on("FAILED").end()
                 .from(stepFlushStatistiques()).on("COMPLETED").end()
-                .build().build();
+                .build()
+                .build();
     }
 
     private Step stepFlushStatistiques() {
-        return steps.get("flushStatistiques")
-                .tasklet(new FlushStatistiquesTasklet(journalAnalyseRepository, journalMessagesRepository, journalFamilleRepository, journalRuleSetRepository)).build();
+        return new StepBuilder("flushStatistiques", jobRepository)
+                .tasklet(new FlushStatistiquesTasklet(journalAnalyseRepository, journalMessagesRepository, journalFamilleRepository, journalRuleSetRepository), transactionManager)
+                .build();
     }
 
     @Bean
     public Step stepVerifierParams() {
-        return steps.get("stepVerifierParams").allowStartIfComplete(true)
-                .tasklet(new VerifierParamsTasklet()).build();
+        return new StepBuilder("stepVerifierParams", jobRepository)
+                .allowStartIfComplete(true)
+                .tasklet(new VerifierParamsTasklet(), transactionManager)
+                .build();
     }
 
     @Bean
     public Step stepExportStatistiques() {
-        return steps.get("stepExportStatistiques").allowStartIfComplete(true)
-                .tasklet(new ExportStatistiquesTasklet(ruleSetRepository, familleDocumentRepository, journalAnalyseRepository, journalMessagesRepository, journalFamilleRepository, journalRuleSetRepository, uploadPath)).build();
+        return new StepBuilder("stepExportStatistiques", jobRepository)
+                .allowStartIfComplete(true)
+                .tasklet(new ExportStatistiquesTasklet(ruleSetRepository, familleDocumentRepository, journalAnalyseRepository, journalMessagesRepository, journalFamilleRepository, journalRuleSetRepository, uploadPath), transactionManager)
+                .build();
     }
 
 

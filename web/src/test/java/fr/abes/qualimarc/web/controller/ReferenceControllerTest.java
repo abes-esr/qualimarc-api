@@ -6,7 +6,6 @@ import fr.abes.qualimarc.core.service.ReferenceService;
 import fr.abes.qualimarc.core.utils.UtilsMapper;
 import fr.abes.qualimarc.web.configuration.WebConfig;
 import fr.abes.qualimarc.web.exception.ExceptionControllerHandler;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,14 +14,13 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -54,7 +52,7 @@ public class ReferenceControllerTest {
 
     MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     ReferenceService referenceService;
 
     @Autowired
@@ -112,7 +110,7 @@ public class ReferenceControllerTest {
         Mockito.doNothing().when(referenceService).saveAllRuleSets(Mockito.any());
 
         this.mockMvc.perform(post("/api/v1/indexRuleSet")
-                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .contentType("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
                 .content(yaml).characterEncoding(StandardCharsets.UTF_8)).andExpect(status().isOk());
     }
 
@@ -132,7 +130,7 @@ public class ReferenceControllerTest {
         Mockito.doThrow(DataIntegrityViolationException.class).when(referenceService).saveAllRuleSets(Mockito.any());
 
         this.mockMvc.perform(post("/api/v1/indexRuleSet")
-                .contentType("text/yml").characterEncoding(StandardCharsets.UTF_8)
+                .contentType("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
                 .content(yaml).characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isBadRequest())
                 .andExpect(result1 -> result1.getResponse().getContentAsString().contains("debugMessage: Un jeu de règles avec l'identifiant null existe déjà"));

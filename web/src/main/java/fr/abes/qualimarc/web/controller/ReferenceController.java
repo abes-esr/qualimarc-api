@@ -10,13 +10,13 @@ import fr.abes.qualimarc.web.dto.reference.AnalyseWebDto;
 import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
 import fr.abes.qualimarc.web.dto.reference.RuleSetResponseWebDto;
 import fr.abes.qualimarc.web.dto.rulesets.RuleSetsRequestDto;
+import jakarta.validation.Valid;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -34,7 +34,7 @@ public class ReferenceController {
         return service.getRuleSets();
     }
 
-    @PostMapping(value = "/indexRuleSet", consumes = {"text/yaml", "text/yml"})
+    @PostMapping(value = "/indexRuleSet", consumes = {"text/yaml", "text/yml","application/x-yaml"})
     public void indexRuleSet(@Valid @RequestBody RuleSetsRequestDto ruleSetsRequestDto) {
         List<RuleSet> ruleSetList = mapper.mapList(ruleSetsRequestDto.getRuleSetWebDtos(), RuleSet.class);
         try {

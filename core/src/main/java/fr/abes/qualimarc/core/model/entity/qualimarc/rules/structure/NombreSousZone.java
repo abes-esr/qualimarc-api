@@ -3,14 +3,14 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure;
 import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.SimpleRule;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

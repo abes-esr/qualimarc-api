@@ -2,7 +2,7 @@ package fr.abes.qualimarc.web.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  */
 @Data
 public class ApiReturnError {
-    private HttpStatus status;
+    private HttpStatusCode status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime timestamp;
     private String message;
@@ -22,26 +22,26 @@ public class ApiReturnError {
         timestamp = LocalDateTime.now();
     }
 
-    ApiReturnError(HttpStatus status) {
+    ApiReturnError(HttpStatusCode status) {
         this();
         this.status = status;
     }
 
-    ApiReturnError(HttpStatus status, Throwable ex) {
+    ApiReturnError(HttpStatusCode status, Throwable ex) {
         this();
         this.status = status;
         this.message = "Unexpected error";
         this.debugMessage = ex.getLocalizedMessage();
     }
 
-    ApiReturnError(HttpStatus status, String message, Throwable ex) {
+    ApiReturnError(HttpStatusCode status, String message, Throwable ex) {
         this();
         this.status = status;
         this.message = message;
         this.debugMessage = ex.getLocalizedMessage();
     }
 
-    ApiReturnError(HttpStatus status, String message) {
+    ApiReturnError(HttpStatusCode status, String message) {
         this();
         this.status = status;
         this.message = message;
