@@ -3,12 +3,12 @@ package fr.abes.qualimarc.batch;
 import fr.abes.qualimarc.batch.webstats.ExportStatistiquesTasklet;
 import fr.abes.qualimarc.batch.webstats.FlushStatistiquesTasklet;
 import fr.abes.qualimarc.batch.webstats.VerifierParamsTasklet;
+import fr.abes.qualimarc.core.configuration.QualimarcConfiguration;
 import fr.abes.qualimarc.core.repository.qualimarc.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersIncrementer;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
@@ -19,8 +19,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Slf4j
-@EnableBatchProcessing
 @Configuration
+@QualimarcConfiguration
 public class BatchConfiguration {
     @Autowired
     private JobExplorer jobExplorer;
@@ -58,7 +58,7 @@ public class BatchConfiguration {
                 .incrementer(incrementer())
                 .start(stepVerifierParams()).on("FAILED").end()
                 .from(stepVerifierParams()).on("COMPLETED").to(stepExportStatistiques())
-                .build()
+                .end()
                 .build();
     }
 
