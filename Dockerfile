@@ -57,7 +57,7 @@ RUN dnf install -y cronie gettext && \
 COPY ./docker/batch/tasks.tmpl /etc/cron.d/tasks.tmpl
 RUN yum install -y procps
 # Le JAR et le script pour le batch de LN
-RUN dnf install -y java-11-openjdk
+RUN dnf install -y java-21-openjdk
 COPY ./docker/batch/qualimarc-batch.sh /scripts/qualimarc-batch.sh
 RUN chmod +x /scripts/qualimarc-batch.sh
 COPY ./docker/batch/qualimarc-batch-flush.sh /scripts/qualimarc-batch-flush.sh
