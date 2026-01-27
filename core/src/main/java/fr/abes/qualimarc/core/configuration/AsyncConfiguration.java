@@ -12,13 +12,13 @@ import java.util.concurrent.Executor;
 @EnableAsync
 @AsyncConfig
 public class AsyncConfiguration {
-    @Value("${spring.task.execution.pool.core-size}")
+    @Value("${spring.task.execution.pool.core-size:2}")
     private Integer coreSize;
-    @Value("${spring.task.execution.pool.max-size}")
+    @Value("${spring.task.execution.pool.max-size:5}")
     private Integer maxSize;
-    @Value("${spring.task.execution.pool.queue-capacity}")
+    @Value("${spring.task.execution.pool.queue-capacity:100}")
     private Integer queueSize;
-    @Value("${spring.task.execution.thread-name-prefix}")
+    @Value("${spring.task.execution.thread-name-prefix:AsyncThread-}")
     private String threadName;
 
     @Bean

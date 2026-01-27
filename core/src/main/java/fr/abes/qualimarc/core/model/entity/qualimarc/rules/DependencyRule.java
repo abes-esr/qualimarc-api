@@ -4,11 +4,11 @@ import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
 import fr.abes.qualimarc.core.model.entity.notice.SubField;
 import fr.abes.qualimarc.core.utils.TypeNoticeLiee;
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

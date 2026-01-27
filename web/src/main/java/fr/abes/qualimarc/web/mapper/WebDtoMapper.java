@@ -26,11 +26,11 @@ import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
 import fr.abes.qualimarc.web.dto.rulesets.RuleSetWebDto;
+import jakarta.annotation.PostConstruct;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.EnumUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -47,7 +47,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle PresenceZoneWebDto en modèle ComplexRule
      */
-    @Bean
+    @PostConstruct
     public void converterPresenceZoneToComplexRule() {
         Converter<PresenceZoneWebDto, ComplexRule> myConverter = new Converter<PresenceZoneWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<PresenceZoneWebDto, ComplexRule> context) {
@@ -62,7 +62,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle PresenceSousZoneWebDto en modèle ComplexRule
      */
-    @Bean
+    @PostConstruct
     public void converterPresenceSousZoneToComplexRule() {
         Converter<PresenceSousZoneWebDto, ComplexRule> myConverter = new Converter<PresenceSousZoneWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<PresenceSousZoneWebDto, ComplexRule> context) {
@@ -77,7 +77,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle NombreZoneWebDto en modèle ComplexRule
      */
-    @Bean
+    @PostConstruct
     public void converterNombreZoneToComplexRule() {
         Converter<NombreZoneWebDto, ComplexRule> myConverter = new Converter<NombreZoneWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<NombreZoneWebDto, ComplexRule> context) {
@@ -95,7 +95,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle NombreSousZoneWebDto en modèle ComplexRule
      */
-    @Bean
+    @PostConstruct
     public void converterNombreSousZoneToComplexRule() {
         Converter<NombreSousZoneWebDto, ComplexRule> myConverter = new Converter<NombreSousZoneWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<NombreSousZoneWebDto, ComplexRule> context) {
@@ -110,7 +110,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle PositionSousZoneWebDto en modèle ComplexRule
      */
-    @Bean
+    @PostConstruct
     public void converterPositionSousZoneToComplexRule() {
         Converter<PositionSousZoneWebDto, ComplexRule> myConverter = new Converter<PositionSousZoneWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<PositionSousZoneWebDto, ComplexRule> context) {
@@ -127,7 +127,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle PresenceSousZonesMemeZoneWebDto en modèle ComplexRule
      */
-    @Bean
+    @PostConstruct
     public void converterPresenceSousZonesMemeZoneToComplexRule() {
         Converter<PresenceSousZonesMemeZoneWebDto, ComplexRule> myConverter = new Converter<PresenceSousZonesMemeZoneWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<PresenceSousZonesMemeZoneWebDto, ComplexRule> context) {
@@ -143,7 +143,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle IndicateurWebDto en modèle ComplexRule
      */
-    @Bean
+    @PostConstruct
     public void converterIndicateurToComplexRule() {
         Converter<IndicateurWebDto, ComplexRule> myConverter = new Converter<IndicateurWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<IndicateurWebDto, ComplexRule> context) {
@@ -163,7 +163,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle NombreCaracteresWebDto en modèle ComplexRule
      */
-    @Bean
+    @PostConstruct
     public void converterNombreCaractereToComplexRule() {
         Converter<NombreCaracteresWebDto, ComplexRule> myConverter = new Converter<NombreCaracteresWebDto, ComplexRule>() {
             @Override
@@ -179,7 +179,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle TypeCaractereWebDto en modèle ComplexRule
      */
-    @Bean
+    @PostConstruct
     public void converterTypeCaractereToComplexRule() {
         Converter<TypeCaractereWebDto, ComplexRule> myConverter = new Converter<TypeCaractereWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<TypeCaractereWebDto, ComplexRule> context) {
@@ -194,7 +194,7 @@ public class WebDtoMapper {
     /**
      * Conversion d'un modèle PresenceChaineCaracteresWebDto en modèle ComplexRule
      */
-    @Bean
+    @PostConstruct
     public void converterPresenceChaineCaracteresToComplexRule() {
         Converter<PresenceChaineCaracteresWebDto, ComplexRule> myConverter = new Converter<PresenceChaineCaracteresWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<PresenceChaineCaracteresWebDto, ComplexRule> context) {
@@ -210,7 +210,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle ComparaisonDateWebDto en modèle ComplexRule
      */
-    @Bean
+    @PostConstruct
     public void converterComparaisonDateToComplexRule() {
         Converter<ComparaisonDateWebDto, ComplexRule> myConverter = new Converter<ComparaisonDateWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<ComparaisonDateWebDto, ComplexRule> context) {
@@ -226,7 +226,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle TypeDocumentWebDto en modèle ComplexRule
      */
-    @Bean
+    @PostConstruct
     public void converterTypeDocumentToComplexRule() {
         Converter<TypeDocumentWebDto, ComplexRule> myConverter = new Converter<TypeDocumentWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<TypeDocumentWebDto, ComplexRule> context) {
@@ -242,7 +242,7 @@ public class WebDtoMapper {
     /**
      * Conversion d'un modèle ComparaisonContenuSousZoneWebDto en modèle ComplexRule
      */
-    @Bean
+    @PostConstruct
     public void converterComparaisonContenuSousZoneToComplexRule() {
         Converter<ComparaisonContenuSousZoneWebDto, ComplexRule> myConverter = new Converter<ComparaisonContenuSousZoneWebDto, ComplexRule>() {
             @Override
@@ -300,7 +300,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle PresenceZoneWebDto en modèle SimpleRule (LinkedRule)
      */
-    @Bean
+    @PostConstruct
     public void converterPresenceZoneToLinkedRule() {
         Converter<PresenceZoneWebDto, SimpleRule> myConverter = new Converter<PresenceZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<PresenceZoneWebDto, SimpleRule> context) {
@@ -314,7 +314,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle PresenceSousZoneWebDto en modèle SimpleRule (LinkedRule)
      */
-    @Bean
+    @PostConstruct
     public void converterPresenceSousZoneToLinkedRule() {
         Converter<PresenceSousZoneWebDto, SimpleRule> myConverter = new Converter<PresenceSousZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<PresenceSousZoneWebDto, SimpleRule> context) {
@@ -328,7 +328,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle NombreZoneWebDto en modèle SimpleRule (LinkedRule)
      */
-    @Bean
+    @PostConstruct
     public void converterNombreZoneToLinkedRule() {
         Converter<NombreZoneWebDto, SimpleRule> myConverter = new Converter<NombreZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<NombreZoneWebDto, SimpleRule> context) {
@@ -345,7 +345,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle NombreSousZoneWebDto en modèle SimpleRule (LinkedRule)
      */
-    @Bean
+    @PostConstruct
     public void converterNombreSousZoneToLinkedRule() {
         Converter<NombreSousZoneWebDto, SimpleRule> myConverter = new Converter<NombreSousZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<NombreSousZoneWebDto, SimpleRule> context) {
@@ -359,7 +359,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle PositionSousZoneWebDto en modèle SimpleRule (LinkedRule)
      */
-    @Bean
+    @PostConstruct
     public void converterPositionSousZoneToLinkedRule() {
         Converter<PositionSousZoneWebDto, SimpleRule> myConverter = new Converter<PositionSousZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<PositionSousZoneWebDto, SimpleRule> context) {
@@ -377,7 +377,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle PresenceSousZonesMemeZoneWebDto en modèle SimpleRule (LinkedRule)
      */
-    @Bean
+    @PostConstruct
     public void converterPresenceSousZonesMemeZoneToLinkedRule() {
         Converter<PresenceSousZonesMemeZoneWebDto, SimpleRule> myConverter = new Converter<PresenceSousZonesMemeZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<PresenceSousZonesMemeZoneWebDto, SimpleRule> context) {
@@ -391,7 +391,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle TypeCaractereWebDto en modèle SimpleRule (LinkedRule)
      */
-    @Bean
+    @PostConstruct
     public void converterTypeCaractereToLinkedRule() {
         Converter<TypeCaractereWebDto, SimpleRule> myConverter = new Converter<TypeCaractereWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<TypeCaractereWebDto, SimpleRule> context) {
@@ -402,7 +402,7 @@ public class WebDtoMapper {
         mapper.addConverter(myConverter);
     }
 
-    @Bean
+    @PostConstruct
     public void converterPresenceChaineCaracteresToLinkedRule() {
         Converter<PresenceChaineCaracteresWebDto, SimpleRule> myConverter = new Converter<PresenceChaineCaracteresWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<PresenceChaineCaracteresWebDto, SimpleRule> context) {
@@ -415,7 +415,7 @@ public class WebDtoMapper {
     /**
      * Conversion d'un modèle ComparaisonContenuSousZoneWebDto en modèle ComparaisonContenuSousZone (linkedRule)
      */
-    @Bean
+    @PostConstruct
     public void converterComparaisonContenuSousZoneToLinkedRule() {
         Converter<ComparaisonContenuSousZoneWebDto, SimpleRule> myConverter = new Converter<ComparaisonContenuSousZoneWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<ComparaisonContenuSousZoneWebDto, SimpleRule> context) {
@@ -463,7 +463,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle IndicateurWebDto en modèle SimpleRule (LinkedRule)
      */
-    @Bean
+    @PostConstruct
     public void converterIndicateurToLinkedRule() {
         Converter<IndicateurWebDto, SimpleRule> myConverter = new Converter<IndicateurWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<IndicateurWebDto, SimpleRule> context) {
@@ -483,7 +483,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle NombreCaracteresWebDto en modèle SimpleRule (LinkedRule)
      */
-    @Bean
+    @PostConstruct
     public void converterNombreCaractereToLinkedRule() {
         Converter<NombreCaracteresWebDto, SimpleRule> myConverter = new Converter<NombreCaracteresWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<NombreCaracteresWebDto, SimpleRule> context) {
@@ -497,7 +497,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle ReciprociteWebDto en modèle SimpleRule (LinkedRule)
      */
-    @Bean
+    @PostConstruct
     public void converterReciprociteToLinkedRule() {
         Converter<ReciprociteWebDto, SimpleRule> myConverter = new Converter<ReciprociteWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<ReciprociteWebDto, SimpleRule> context) {
@@ -511,7 +511,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle ComparaisonDateWebDto en modèle SimpleRule (LinkedRule)
      */
-    @Bean
+    @PostConstruct
     public void converterComparaisonDateToLinkedRule() {
         Converter<ComparaisonDateWebDto, SimpleRule> myConverter = new Converter<ComparaisonDateWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<ComparaisonDateWebDto, SimpleRule> context) {
@@ -524,7 +524,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle TypeDocumentWebdto en modèle SimpleRule (LinkedRule)
      */
-    @Bean
+    @PostConstruct
     public void converterTypeDocumentToLinkedRule() {
         Converter<TypeDocumentWebDto, SimpleRule> myConverter = new Converter<TypeDocumentWebDto, SimpleRule>() {
             public SimpleRule convert(MappingContext<TypeDocumentWebDto, SimpleRule> context) {
@@ -538,7 +538,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle ComplexRuleWebDto en ComplexRule
      */
-    @Bean
+    @PostConstruct
     public void converterComplexRule() {
         Converter<ComplexRuleWebDto, ComplexRule> myConverter = new Converter<ComplexRuleWebDto, ComplexRule>() {
             public ComplexRule convert(MappingContext<ComplexRuleWebDto, ComplexRule> context) {
@@ -631,7 +631,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle ResultAnalyse en modèle ResultAnalyseResponseDto
      */
-    @Bean
+    @PostConstruct
     public void converterResultAnalyse() {
         Converter<ResultAnalyse, ResultAnalyseResponseDto> myConverter = new Converter<ResultAnalyse, ResultAnalyseResponseDto>() {
             @SneakyThrows
@@ -683,7 +683,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un modèle ComplexRule en modèle RuleWebDto
      */
-    @Bean
+    @PostConstruct
     public void converterComplexRuleToRuleWebDto() {
         Converter<ComplexRule, RuleWebDto> myConverter = new Converter<ComplexRule, RuleWebDto>() {
             @SneakyThrows
@@ -723,7 +723,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un object FamilleDocument en FamilleDocumentWebDto
      */
-    @Bean
+    @PostConstruct
     public void converterFamilleDocument() {
         Converter<FamilleDocument, FamilleDocumentWebDto> myConverter = new Converter<FamilleDocument, FamilleDocumentWebDto>() {
             public FamilleDocumentWebDto convert(MappingContext<FamilleDocument, FamilleDocumentWebDto> context) {
@@ -737,7 +737,7 @@ public class WebDtoMapper {
     /**
      * Convertion d'un objet RuleSetWebDto en RuleSet
      */
-    @Bean
+    @PostConstruct
     public void converterRuleSetWebDtoToRuleSet() {
         Converter<RuleSetWebDto, RuleSet> myConverter = new Converter<RuleSetWebDto, RuleSet>() {
             public RuleSet convert(MappingContext<RuleSetWebDto, RuleSet> context) {

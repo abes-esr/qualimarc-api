@@ -1,8 +1,5 @@
 package fr.abes.qualimarc.batch;
 
-import fr.abes.qualimarc.core.configuration.AsyncConfig;
-import fr.abes.qualimarc.core.configuration.BaseXMLConfiguration;
-import fr.abes.qualimarc.core.configuration.QualimarcConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
@@ -13,29 +10,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScans;
-import org.springframework.context.annotation.FilterType;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
-@SpringBootApplication
-@ComponentScans(value = {
-        @ComponentScan(basePackages = {"fr.abes.qualimarc.core.repository"},
-                excludeFilters = {
-                        @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = BaseXMLConfiguration.class)
-                },
-                includeFilters = {
-                        @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = QualimarcConfiguration.class)}
-        ),
-        @ComponentScan(basePackages = {"fr.abes.qualimarc.core.configuration"},
-                excludeFilters = {
-                        @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = AsyncConfig.class),
-                        @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = BaseXMLConfiguration.class)
-                })
-})
+@SpringBootApplication(scanBasePackages = {"fr.abes.qualimarc"})
 @EntityScan("fr.abes.qualimarc.core.model.entity.qualimarc")
 @Slf4j
 public class Application implements CommandLineRunner {
