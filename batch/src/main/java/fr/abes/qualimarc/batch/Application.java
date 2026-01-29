@@ -44,8 +44,15 @@ public class Application implements CommandLineRunner {
                 log.debug("Param " + i + " " + key + " / " + value);
                 params.put(key, value);
             }
-            JobParameters jobParameters = new JobParametersBuilder().addString("annee", params.get("annee"))
-                    .addString("mois", params.get("mois")).addLong("time", System.currentTimeMillis()).toJobParameters();
+            JobParametersBuilder jobb = new JobParametersBuilder();
+            if( params.containsKey("annee") ){
+                jobb.addString("annee", params.get("annee"));
+            }
+            if( params.containsKey("mois") ){
+                jobb.addString("mois", params.get("mois"));
+            }
+            jobb.addLong("time", System.currentTimeMillis()).toJobParameters();
+            JobParameters jobParameters = jobb.toJobParameters();
 
             jobLauncher.run(jobExportStatistiques, jobParameters);
         } else {

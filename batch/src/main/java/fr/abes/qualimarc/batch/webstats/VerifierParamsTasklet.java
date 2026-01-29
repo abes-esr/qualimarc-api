@@ -11,6 +11,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Objects;
 
 @Slf4j
 public class VerifierParamsTasklet implements Tasklet, StepExecutionListener {
@@ -20,13 +21,12 @@ public class VerifierParamsTasklet implements Tasklet, StepExecutionListener {
     @Override
     public void beforeStep(StepExecution stepExecution) {
         if (stepExecution.getJobExecution().getJobParameters().getString("annee") != null && stepExecution.getJobExecution().getJobParameters().getString("mois") != null) {
-            this.annee = Integer.valueOf(stepExecution.getJobExecution().getJobParameters().getString("annee"));
-            this.mois = Integer.valueOf(stepExecution.getJobExecution().getJobParameters().getString("mois"));
-        }
-        else {
+            this.annee = Integer.valueOf(Objects.requireNonNull(stepExecution.getJobExecution().getJobParameters().getString("annee")));
+            this.mois = Integer.valueOf(Objects.requireNonNull(stepExecution.getJobExecution().getJobParameters().getString("mois")));
+        } else {
             Calendar dateJour = Calendar.getInstance();
-            this.annee = Integer.valueOf(dateJour.get(Calendar.YEAR));
-            this.mois = Integer.valueOf(dateJour.get(Calendar.MONTH));
+            this.annee = dateJour.get(Calendar.YEAR);
+            this.mois = dateJour.get(Calendar.MONTH);
             if (this.mois == 0) {
                 this.mois = 12;
                 this.annee--;
