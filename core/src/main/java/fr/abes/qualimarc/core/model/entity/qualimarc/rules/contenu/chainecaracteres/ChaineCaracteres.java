@@ -3,12 +3,11 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaract
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
 import fr.abes.qualimarc.core.utils.BooleanOperateur;
 import fr.abes.qualimarc.core.utils.TypeVerification;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 /**
  * Classe qui définie une chaine de caractères et son opérateur logique (ET/OU)

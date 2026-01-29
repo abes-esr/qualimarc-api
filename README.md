@@ -12,6 +12,8 @@ Et l'application qualimarc complète peut être déployée via Docker à l'aide 
 
 Règles de qualimarc: https://github.com/abes-esr/qualimarc-rules/
 
+(swagger : http://monUrlqualimarc:0000/swagger-ui/index.html)
+
 
 ## Développements
 

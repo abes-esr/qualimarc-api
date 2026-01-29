@@ -7,11 +7,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import fr.abes.qualimarc.web.dto.indexrules.contenu.*;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,7 +106,6 @@ public abstract class SimpleRuleWebDto {
     /**
      * Constructeur de règle complexe (linked Rules)
      */
-    @JsonCreator
     public SimpleRuleWebDto(@JsonProperty("id") Integer id,
                             @JsonProperty("zone") String zone,
                             @JsonProperty("operateur") String booleanOperator) {

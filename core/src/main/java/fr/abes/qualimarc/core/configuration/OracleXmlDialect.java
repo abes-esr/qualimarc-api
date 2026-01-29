@@ -1,14 +1,11 @@
 package fr.abes.qualimarc.core.configuration;
 
-import oracle.xdb.XMLType;
-import org.hibernate.dialect.Oracle12cDialect;
+import org.hibernate.dialect.OracleDialect;
 
 @BaseXMLConfiguration
-public class OracleXmlDialect extends Oracle12cDialect {
-    public OracleXmlDialect() {
-        registerHibernateType(XMLType._SQL_TYPECODE, "XMLTYPE");
-        registerColumnType(XMLType._SQL_TYPECODE, "XMLTYPE");
-    }
+public class OracleXmlDialect extends OracleDialect {
+    public OracleXmlDialect() {}
+
 
     @Override
     public boolean useInputStreamToInsertBlob() {

@@ -9,9 +9,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.text.SimpleDateFormat;
@@ -23,14 +23,14 @@ public class StatutServiceTest {
     @Autowired
     StatutsService service;
 
-    @MockBean
+    @MockitoBean
     NoticesBibioRepository noticeRepository;
 
-    @MockBean
+    @MockitoBean
     @Qualifier("baseXmlJdbcTemplate")
     private JdbcTemplate baseXmlJdbcTemplate;
 
-    @MockBean
+    @MockitoBean
     @Qualifier("qualimarcJdbcTemplate")
     private JdbcTemplate qualimarcJdbcTemplate;
 

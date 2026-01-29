@@ -27,8 +27,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,16 +43,16 @@ public class RuleServiceTest {
     @Autowired
     RuleService service;
 
-    @MockBean
+    @MockitoBean
     NoticeService noticeService;
 
-    @MockBean
+    @MockitoBean
     ComplexRulesRepository complexRulesRepository;
 
-    @MockBean
+    @MockitoBean
     ReferenceService referenceService;
 
-    @MockBean
+    @MockitoBean
     JournalService journalService;
 
     @Value("classpath:143519379.xml")

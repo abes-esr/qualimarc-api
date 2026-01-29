@@ -14,8 +14,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.rowset.serial.SerialClob;
@@ -33,10 +33,10 @@ public class NoticeServiceTest {
     @Autowired
     private NoticeService service;
 
-    @MockBean
+    @MockitoBean
     private NoticesBibioRepository repositoryBiblio;
 
-    @MockBean
+    @MockitoBean
     private NoticesAutoriteRepository repositoryAutorite;
 
     @Value("classpath:143519379.xml")

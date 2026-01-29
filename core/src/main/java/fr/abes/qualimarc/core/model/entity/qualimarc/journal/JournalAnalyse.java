@@ -1,11 +1,11 @@
 package fr.abes.qualimarc.core.model.entity.qualimarc.journal;
 
 import fr.abes.qualimarc.core.utils.TypeAnalyse;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 

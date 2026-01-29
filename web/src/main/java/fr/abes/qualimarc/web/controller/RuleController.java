@@ -23,6 +23,7 @@ import fr.abes.qualimarc.web.dto.indexrules.contenu.*;
 import fr.abes.qualimarc.web.dto.indexrules.dependance.ReciprociteWebDto;
 import fr.abes.qualimarc.web.dto.indexrules.structure.*;
 import fr.abes.qualimarc.web.dto.reference.FamilleDocumentWebDto;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +34,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
@@ -149,7 +149,7 @@ public class RuleController {
     }
 
 
-    @PostMapping(value = "/indexRules", consumes = {"text/yaml", "text/yml"})
+    @PostMapping(value = "/indexRules", consumes = {"application/x-yaml", "application/yaml", "text/yaml", "text/yml"})
     public void indexRules(@Valid @RequestBody ListRulesWebDto rules) {
         List<ComplexRule> rulesEntity = handleRulesWebDto(rules);
         try {
@@ -214,7 +214,7 @@ public class RuleController {
         return id * 100 + i;
     }
 
-    @PostMapping(value = "/indexComplexRules", consumes = {"text/yaml", "text/yml"})
+    @PostMapping(value = "/indexComplexRules", consumes = {"application/x-yaml", "application/yaml", "text/yaml", "text/yml"})
     public void indexComplexRules(@Valid @RequestBody ListComplexRulesWebDto rules) {
         List<ComplexRule> rulesEntity = handleComplexRulesWebDto(rules);
         try {

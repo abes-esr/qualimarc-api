@@ -16,14 +16,12 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
-    private static final MediaType MEDIA_TYPE_YAML = MediaType.valueOf("text/yaml");
-    private static final MediaType MEDIA_TYPE_YML = MediaType.valueOf("text/yml");
+
 
     @Override
     public void  configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -38,10 +36,13 @@ public class WebConfig implements WebMvcConfigurer {
                 .favorParameter(false)
                 .ignoreAcceptHeader(false)
                 .defaultContentType(MediaType.APPLICATION_JSON)
-                .mediaType(MediaType.APPLICATION_JSON.getSubtype(),
-                        MediaType.APPLICATION_JSON)
-                .mediaType(MEDIA_TYPE_YML.getSubtype(), MEDIA_TYPE_YML)
-                .mediaType(MEDIA_TYPE_YAML.getSubtype(), MEDIA_TYPE_YAML);
+                .mediaType("json", MediaType.APPLICATION_JSON)
+                // YAML: extensions yml/yaml
+                .mediaType("yaml", MediaType.valueOf("application/x-yaml"))
+                .mediaType("yaml", MediaType.valueOf("application/yaml"))
+                .mediaType("yaml", MediaType.valueOf("text/yaml"))
+                .mediaType("yml", MediaType.valueOf("application/x-yaml"))
+                .mediaType("yml", MediaType.valueOf("text/yml"));
     }
 
     @Bean
@@ -66,9 +67,12 @@ public class WebConfig implements WebMvcConfigurer {
         mapper.registerModule(new JavaTimeModule());
         MappingJackson2HttpMessageConverter yamlConverter =
                 new MappingJackson2HttpMessageConverter(mapper);
-        yamlConverter.setSupportedMediaTypes(
-                Arrays.asList(MEDIA_TYPE_YML, MEDIA_TYPE_YAML)
-        );
+        yamlConverter.setSupportedMediaTypes(List.of(
+                MediaType.valueOf("application/x-yaml"),
+                MediaType.valueOf("application/yaml"),
+                MediaType.valueOf("text/yaml"),
+                MediaType.valueOf("text/yml")
+        ));
         yamlConverter.setDefaultCharset(StandardCharsets.UTF_8);
         return yamlConverter;
     }

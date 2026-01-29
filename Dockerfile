@@ -1,6 +1,6 @@
 ###
 # Image pour la compilation
-FROM maven:3-eclipse-temurin-11 as build-image
+FROM maven:3-eclipse-temurin-21 as build-image
 WORKDIR /build/
 # Installation et configuration de la locale FR
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y install locales
@@ -18,24 +18,24 @@ COPY ./pom.xml /build/pom.xml
 COPY ./core/pom.xml /build/core/pom.xml
 COPY ./web/pom.xml /build/web/pom.xml
 COPY ./batch/pom.xml /build/batch/pom.xml
-RUN mvn verify --fail-never
 # et la compilation du code Java
 COPY ./core/   /build/core/
 COPY ./web/    /build/web/
 COPY ./batch/  /build/batch/
+
+RUN mvn verify --fail-never
 RUN mvn --batch-mode \
         -Dmaven.test.skip=false \
         -Duser.timezone=Europe/Paris \
         -Duser.language=fr \
         package
 
-
 ###
 # Image pour le module API
 #FROM tomcat:9-jdk11 as api-image
 #COPY --from=build-image /build/web/target/*.war /usr/local/tomcat/webapps/ROOT.war
 #CMD [ "catalina.sh", "run" ]
-FROM eclipse-temurin:11-jre as api-image
+FROM eclipse-temurin:21-jre as api-image
 WORKDIR /app/
 COPY --from=build-image /build/web/target/*.jar /app/qualimarc.jar
 ENV TZ=Europe/Paris
@@ -57,7 +57,7 @@ RUN dnf install -y cronie gettext && \
 COPY ./docker/batch/tasks.tmpl /etc/cron.d/tasks.tmpl
 RUN yum install -y procps
 # Le JAR et le script pour le batch de LN
-RUN dnf install -y java-11-openjdk
+RUN dnf install -y java-21-openjdk
 COPY ./docker/batch/qualimarc-batch.sh /scripts/qualimarc-batch.sh
 RUN chmod +x /scripts/qualimarc-batch.sh
 COPY ./docker/batch/qualimarc-batch-flush.sh /scripts/qualimarc-batch-flush.sh
