@@ -15,6 +15,11 @@ import java.util.List;
 /**
  * Classe WebDto qui définie une règle permettant de tester la présence d'une zone et sous-zone ainsi que la présence,
  * la position ou la conformité d'une ou plusieurs chaines de caractères dans une sous-zone.
+ *
+ * Indexation des positions:
+ * - Les champs positionstart et positionend sont en index base 0.
+ * - 0 correspond au premier caractere.
+ * - Exemple: positionstart=3 et positionend=3 cible le 4e caractere.
  */
 @Getter
 @Setter
@@ -39,10 +44,12 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
     @JsonProperty("position")
     private String position;
 
+    // Index base 0: 0 = premier caractere.
     @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positionstart ne peut contenir que 3 chiffres au maximum.")
     @JsonProperty("positionstart")
     private String positionStart;
 
+    // Index base 0: 0 = premier caractere.
     @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positionend ne peut contenir que 3 chiffres au maximum.")
     @JsonProperty("positionend")
     private String positionEnd;
@@ -191,6 +198,7 @@ public class PresenceChaineCaracteresWebDto extends SimpleRuleWebDto {
 Liste des champs propres au type de règle présence chaine caractères:
 * souszone : **obligatoire** - de type caractère. La sous-zone à vérifier. ATTENTION : le $ du format Unimarc de catalogage ne doit pas être renseigné
 * type-de-verification : **obligatoire** - ne peut être que `STRICTEMENT` ou `COMMENCE` ou `TERMINE` ou `CONTIENT` ou `NECONTIENTPAS`
+* positionstart/positionend : **optionnel** - indexation base 0 (0 = premier caractère). Pour cibler un seul caractère : positionstart = positionend
 * chaines-caracteres : **obligatoire** - de type liste d'objets. La liste des chaine-caracteres à vérifier. Les champs d'un objet de la liste sont les suivants :
     * operateur : de type opérateur logique. ne peut être que `ET` ou `OU`.
     * chaine-caracteres :  la chaine de caractères à vérifier
