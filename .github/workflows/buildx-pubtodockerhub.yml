@@ -40,7 +40,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: "Buildx and push web image"
+      - name: "Buildx and push api image"
         id: push_api_image
         uses: docker/build-push-action@v6
         with:
