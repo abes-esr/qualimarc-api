@@ -41,12 +41,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: "Buildx and push web image"
-        id: push_web_image
+        id: push_api_image
         uses: docker/build-push-action@v6
         with:
           push: ${{ github.event_name != 'pull_request'  && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) }}
-          target: web-image
-          tags: ${{ steps.docker_tag_meta.outputs.tags }}-web
+          target: api-image
+          tags: ${{ steps.docker_tag_meta.outputs.tags }}-api
       - name: "Buildx and push batch image"
         id: push_batch_image
         uses: docker/build-push-action@v6
