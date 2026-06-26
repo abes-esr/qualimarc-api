@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record>
+    <leader>     ccd0 22        450 </leader>
+    <controlfield tag="001">092850324</controlfield>
+    <controlfield tag="003">https://www.sudoc.fr/092850324</controlfield>
+    <controlfield tag="004">20051122</controlfield>
+    <controlfield tag="005">20201110194821.000</controlfield>
+    <controlfield tag="006">590092238</controlfield>
+    <controlfield tag="007">1999</controlfield>
+    <controlfield tag="008">Mdx3</controlfield>
+    <datafield tag="100" ind1="#" ind2="#">
+        <subfield code="a">20051122f19      m  y0frey50      ba</subfield>
+    </datafield>
+    <datafield tag="101" ind1="0" ind2="#">
+        <subfield code="a">hun</subfield>
+        <subfield code="2">639-2</subfield>
+    </datafield>
+    <datafield tag="102" ind1="#" ind2="#">
+        <subfield code="a">HU</subfield>
+    </datafield>
+    <datafield tag="104" ind1="#" ind2="#">
+        <subfield code="a">m</subfield>
+        <subfield code="b">y</subfield>
+        <subfield code="c">y</subfield>
+        <subfield code="d">ba</subfield>
+        <subfield code="e">0</subfield>
+        <subfield code="f">fre</subfield>
+    </datafield>
+    <datafield tag="110" ind1="#" ind2="#">
+        <subfield code="a">by|||||0xx0</subfield>
+    </datafield>
+    <datafield tag="181" ind1="#" ind2="#">
+        <subfield code="6">z01</subfield>
+        <subfield code="c">ntm</subfield>
+        <subfield code="2">rdacontent</subfield>
+    </datafield>
+    <datafield tag="181" ind1="#" ind2="1">
+        <subfield code="6">z01</subfield>
+        <subfield code="a">d#</subfield>
+        <subfield code="b">axxe##</subfield>
+    </datafield>
+    <datafield tag="182" ind1="#" ind2="#">
+        <subfield code="6">z01</subfield>
+        <subfield code="c">n</subfield>
+        <subfield code="2">rdamedia</subfield>
+    </datafield>
+    <datafield tag="182" ind1="#" ind2="1">
+        <subfield code="6">z01</subfield>
+        <subfield code="a">n</subfield>
+    </datafield>
+    <datafield tag="200" ind1="0" ind2="#">
+        <subfield code="a">Musica sacra</subfield>
+        <subfield code="d">= Gedrückte Musik</subfield>
+    </datafield>
+    <datafield tag="210" ind1="#" ind2="#">
+        <subfield code="a">Budapest</subfield>
+        <subfield code="c">Editio Musica</subfield>
+        <subfield code="d">[19??]-</subfield>
+    </datafield>
+    <datafield tag="215" ind1="#" ind2="#">
+        <subfield code="d">27 cm</subfield>
+    </datafield>
+    <datafield tag="301" ind1="#" ind2="#">
+        <subfield code="a">Demande de numérotation ISSN en cours par le CR 49</subfield>
+    </datafield>
+    <datafield tag="303" ind1="#" ind2="#">
+        <subfield code="a">Notice rédigée d&apos;après un vol. publié en 1974</subfield>
+    </datafield>
+    <datafield tag="326" ind1="#" ind2="#">
+        <subfield code="a">Collection</subfield>
+    </datafield>
+    <datafield tag="530" ind1="1" ind2="#">
+        <subfield code="a">Musica sacra</subfield>
+        <subfield code="b">(Budapest)</subfield>
+    </datafield>
+    <datafield tag="801" ind1="#" ind2="3">
+        <subfield code="a">FR</subfield>
+        <subfield code="b">Abes</subfield>
+        <subfield code="c">20201110</subfield>
+        <subfield code="g">AFNOR</subfield>
+    </datafield>
+</record>

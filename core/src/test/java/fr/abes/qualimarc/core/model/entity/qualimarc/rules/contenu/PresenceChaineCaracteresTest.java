@@ -341,6 +341,70 @@ public class PresenceChaineCaracteresTest {
     }
 
     @Test
+    @DisplayName("Controle d'une chaîne de caractère sur une plage de positions spécifiée")
+    void isValid25() {
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "fre", null);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "100",true, "a", 22, 24, TypeVerification.STRICTEMENT);
+        rule.addChaineCaracteres(chaineCaracteres);
+        Assertions.assertTrue(rule.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Controle d'une chaîne de caractère sur une plage de positions spécifiée avec la mauvaise borne de fin")
+    void isValid27() {
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "fre", null);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "100",true, "a", 22, 29, TypeVerification.STRICTEMENT);
+        rule.addChaineCaracteres(chaineCaracteres);
+        Assertions.assertFalse(rule.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Controle d'une chaîne de caractère sur une position de début spécifiée, mais sans position de fin spécifiée")
+    void isValid28() {
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "fre", null);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "100",true, "a", 22, null, TypeVerification.CONTIENT);
+        rule.addChaineCaracteres(chaineCaracteres);
+        Assertions.assertTrue(rule.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("Controle d'une chaîne de caractère sur une position de fin spécifiée, mais sans position de début spécifiée")
+    void isValid29() {
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "fre", null);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "100",true, "a", null, 24, TypeVerification.CONTIENT);
+        rule.addChaineCaracteres(chaineCaracteres);
+        Assertions.assertTrue(rule.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("test détection de caractères vides dans une sous zone")
+    void isValid30() {
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "[VIDE]", null);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "105",true, "a", TypeVerification.CONTIENT);
+        rule.addChaineCaracteres(chaineCaracteres);
+
+        Assertions.assertTrue(rule.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("test détection de trois premiers caractères vides dans une sous zone")
+    void isValid31() {
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "[VIDE][VIDE][VIDE]", null);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(1, "105",true, "a", 0, 2, TypeVerification.STRICTEMENT);
+        rule.addChaineCaracteres(chaineCaracteres);
+        Assertions.assertTrue(rule.isValid(notice));
+    }
+
+    @Test
+    @DisplayName("test sur zone 110 de recherche d'un caractère vide à la position 7")
+    void isValid32() {
+        ChaineCaracteres chaineCaracteres = new ChaineCaracteres(1, "[VIDE]", null);
+        PresenceChaineCaracteres rule = new PresenceChaineCaracteres(2, "110", true, "a", 7, 7, TypeVerification.STRICTEMENT);
+        rule.addChaineCaracteres(chaineCaracteres);
+        Assertions.assertTrue(rule.isValid(notice));
+    }
+
+    @Test
     @DisplayName("test getZones")
     void getZones() {
         ChaineCaracteres chaineCaracteres = new ChaineCaracteres();
