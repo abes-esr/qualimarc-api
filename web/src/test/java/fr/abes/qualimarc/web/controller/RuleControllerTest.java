@@ -249,4 +249,36 @@ public class RuleControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @DisplayName("test creation regle complexe avec dependance et position negative")
+    void testIndexComplexRuleDependencyWithNegativePosition() throws Exception {
+        String yaml =
+                "---\n" +
+                "rules:\n" +
+                "   - id: 2\n" +
+                "     id-excel: 2\n" +
+                "     message: test dependance -1\n" +
+                "     priorite: P2\n" +
+                "     regles:\n" +
+                "       - id: 1\n" +
+                "         type: presencezone\n" +
+                "         zone: '606'\n" +
+                "         presence: true\n" +
+                "       - id: 2\n" +
+                "         type: dependance\n" +
+                "         zone: '606'\n" +
+                "         souszone: '3'\n" +
+                "         type-notice-liee: AUTORITE\n" +
+                "         position: -1\n" +
+                "       - id: 3\n" +
+                "         type: presencezone\n" +
+                "         zone: '200'\n" +
+                "         presence: true\n";
+
+        this.mockMvc.perform(post("/api/v1/indexComplexRules")
+                .contentType("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk());
+    }
+
 }

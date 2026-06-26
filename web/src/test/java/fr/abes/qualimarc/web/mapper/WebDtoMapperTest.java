@@ -1140,4 +1140,24 @@ public class WebDtoMapperTest {
         Assertions.assertEquals("L'identifiant du jeu de règles est obligatoire", exception.getCause().getMessage());
 
     }
+
+    @Test
+    @DisplayName("Test Mapper regle complexe avec regle de dependance et position negative")
+    void converterComplexRuleWithDependencyRuleAndNegativePosition() {
+        ComplexRuleWebDto complexRuleWebDto = new ComplexRuleWebDto();
+        complexRuleWebDto.setId(1);
+        complexRuleWebDto.setIdExcel(1);
+        complexRuleWebDto.setMessage("message test");
+        complexRuleWebDto.setPriority("P1");
+        complexRuleWebDto.addRegle(new PresenceZoneWebDto(1, "200", null, true));
+        complexRuleWebDto.addRegle(new DependencyWebDto(2, "200", "a", "AUTORITE", "-1", null, null));
+        complexRuleWebDto.addRegle(new PresenceZoneWebDto(3, "210", null, false));
+
+        ComplexRule complexRule = mapper.map(complexRuleWebDto, ComplexRule.class);
+
+        Assertions.assertTrue(complexRule.getOtherRules().get(0) instanceof DependencyRule);
+        DependencyRule dependencyRule = (DependencyRule) complexRule.getOtherRules().get(0);
+        Assertions.assertEquals(-1, dependencyRule.getPositionSousZoneSourceStart());
+        Assertions.assertEquals(-1, dependencyRule.getPositionSousZoneSourceEnd());
+    }
 }
