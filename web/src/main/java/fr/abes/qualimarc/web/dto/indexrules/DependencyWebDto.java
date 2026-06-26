@@ -22,17 +22,17 @@ public class DependencyWebDto extends SimpleRuleWebDto {
     @NotNull(message = "Le champ type-notice-liee est obligatoire")
     private String typeNoticeLiee;
 
-    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ position ne peut contenir que 3 chiffres au maximum.")
+    @Pattern(regexp = "^-?[0-9]{1,3}$", message = "le champ position ne peut contenir qu'un entier signe de 3 chiffres au maximum.")
     @JsonProperty("position")
     private String position;
 
 
-    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positionStart ne peut contenir que 3 chiffres au maximum.")
+    @Pattern(regexp = "^-?[0-9]{1,3}$", message = "le champ positionStart ne peut contenir qu'un entier signe de 3 chiffres au maximum.")
     @JsonProperty("positionStart")
     private String positionStart;
 
 
-    @Pattern(regexp = "(\\b([0-9]{0,3})\\b)", message = "le champ positionEnd ne peut contenir que 3 chiffres au maximum.")
+    @Pattern(regexp = "^-?[0-9]{1,3}$", message = "le champ positionEnd ne peut contenir qu'un entier signe de 3 chiffres au maximum.")
     @JsonProperty("positionEnd")
     private String positionEnd;
 
