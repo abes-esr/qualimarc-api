@@ -766,8 +766,8 @@ public class WebDtoMapper {
      * @return PresenceChaineCaracteres
      */
     private PresenceChaineCaracteres constructPresenceChaineCaracteres(PresenceChaineCaracteresWebDto source) {
-        Integer positionStart = convertStringToInteger(source.getPositionStart());
-        Integer positionEnd = convertStringToInteger(source.getPositionEnd());
+        Integer positionStart = source.getPositionStart();
+        Integer positionEnd = source.getPositionEnd();
         Integer position = convertStringToInteger(source.getPosition());
         if((positionStart != null || positionEnd != null) && position != null) {
             throw new IllegalArgumentException("Règle " + source.getId() + " : L'attribut position ne peut pas etre present en meme temps que positionstart ou positionend");
