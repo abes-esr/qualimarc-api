@@ -575,6 +575,41 @@ public class WebDtoMapperTest {
     }
 
     @Test
+    @DisplayName("Test Mapper converterPresenceChaineCaracteres avec positionStart/positionEnd")
+    void converterPresenceChaineCaracteresAvecPositionTest() {
+        //  Préparation d'un objet PresenceChaineCaracteresWebDto avec positionStart/positionEnd
+        ArrayList<String> typeDoc = new ArrayList<>();
+        typeDoc.add("A");
+
+        List<Integer> ruleSetsList = new ArrayList<>();
+        ruleSetsList.add(1);
+
+        PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto chaineCaracteresWebDto = new PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto("fre");
+        List<PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto> chaineCaracteresWebDtoList = new ArrayList<>();
+        chaineCaracteresWebDtoList.add(chaineCaracteresWebDto);
+
+        PresenceChaineCaracteresWebDto presenceChaineCaracteresWebDto = new PresenceChaineCaracteresWebDto(1, 1, ruleSetsList, "Erreur position", true, "100", "P1", typeDoc, new ArrayList<>(), "a", 22, 24, "NECONTIENTPAS", chaineCaracteresWebDtoList);
+
+        //  Appel du mapper
+        ComplexRule complexRule = mapper.map(presenceChaineCaracteresWebDto, ComplexRule.class);
+
+        //  Contrôle de la bonne conformité des résultats
+        PresenceChaineCaracteres simpleRule = (PresenceChaineCaracteres) complexRule.getFirstRule();
+        Assertions.assertEquals(presenceChaineCaracteresWebDto.getId(), complexRule.getId());
+        Assertions.assertEquals(presenceChaineCaracteresWebDto.getSousZone(), simpleRule.getSousZone());
+        Assertions.assertEquals(Integer.valueOf(22), simpleRule.getPositionStart());
+        Assertions.assertEquals(Integer.valueOf(24), simpleRule.getPositionEnd());
+        Assertions.assertEquals(presenceChaineCaracteresWebDto.getTypeDeVerification(), simpleRule.getTypeDeVerification().toString());
+        Assertions.assertEquals(1, simpleRule.getListChainesCaracteres().size());
+        Assertions.assertEquals("fre", simpleRule.getListChainesCaracteres().iterator().next().getChaineCaracteres());
+
+        //  Test avec positionStart > positionEnd : doit lever une exception (wrappée dans MappingException)
+        PresenceChaineCaracteresWebDto dtoInvalide = new PresenceChaineCaracteresWebDto(2, 1, ruleSetsList, "Erreur", true, "100", "P1", typeDoc, new ArrayList<>(), "a", 25, 24, "NECONTIENTPAS", chaineCaracteresWebDtoList);
+        MappingException mappingEx = Assertions.assertThrows(MappingException.class, () -> mapper.map(dtoInvalide, ComplexRule.class));
+        Assertions.assertTrue(mappingEx.getCause().getMessage().contains("positionstart ne peut pas etre plus grand que positionend"));
+    }
+
+    @Test
     @DisplayName("Test mapper converterComparaisonContenuSousZone")
     void converterComparaisonContenuSousZoneTest(){
         //  Préparation d'un objet ComparaisonContenuSousZone
