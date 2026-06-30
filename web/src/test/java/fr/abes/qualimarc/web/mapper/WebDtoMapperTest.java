@@ -1044,6 +1044,35 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(complexRuleWebDto1.getRegles().size(),complexRule.getOtherRules().size() + 1);
     }
 
+    @Test
+    @DisplayName("test mapper groupe meme zone imbrique")
+    void converterComplexRuleWithSameZoneGroup() {
+        ComplexRuleWebDto complexRuleWebDto = new ComplexRuleWebDto();
+        complexRuleWebDto.setId(9200);
+        complexRuleWebDto.setMessage("message test");
+        complexRuleWebDto.setPriority("P1");
+
+        List<PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto> chaines = new ArrayList<>();
+        chaines.add(new PresenceChaineCaracteresWebDto.ChaineCaracteresWebDto("microfiche"));
+        complexRuleWebDto.addRegle(new PresenceChaineCaracteresWebDto(9201, "215", null, "a", "CONTIENT", chaines));
+
+        PositionSousZoneWebDto.PositionsOperatorWebDto positionsOperatorWebDto = new PositionSousZoneWebDto.PositionsOperatorWebDto(1, ComparaisonOperateur.DIFFERENT);
+        List<fr.abes.qualimarc.web.dto.indexrules.SimpleRuleWebDto> reglesGroupe = new ArrayList<>();
+        reglesGroupe.add(new PositionSousZoneWebDto(9203, null, null, "z", Lists.newArrayList(positionsOperatorWebDto), BooleanOperateur.OU));
+        complexRuleWebDto.addRegle(new SameZoneRuleGroupWebDto(9202, "328", "ET", reglesGroupe));
+
+        ComplexRule complexRule = mapper.map(complexRuleWebDto, ComplexRule.class);
+
+        Assertions.assertEquals(1, complexRule.getOtherRules().size());
+        Assertions.assertTrue(complexRule.getOtherRules().get(0) instanceof LinkedRule);
+        LinkedRule linkedRule = (LinkedRule) complexRule.getOtherRules().get(0);
+        Assertions.assertTrue(linkedRule.getRule() instanceof GroupeMemeZone);
+        GroupeMemeZone groupeMemeZone = (GroupeMemeZone) linkedRule.getRule();
+        Assertions.assertEquals("328", groupeMemeZone.getZone());
+        Assertions.assertTrue(groupeMemeZone.getFirstRule() instanceof PositionSousZone);
+        Assertions.assertEquals("328", groupeMemeZone.getFirstRule().getZone());
+    }
+
     /**
      * Test du mapper converterResultAnalyseTest
      */

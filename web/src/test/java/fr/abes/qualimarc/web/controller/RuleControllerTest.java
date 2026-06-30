@@ -281,4 +281,41 @@ public class RuleControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @DisplayName("test creation regle complexe avec groupe meme zone imbrique")
+    void testIndexComplexRuleWithNestedSameZoneGroup() throws Exception {
+        String yaml =
+                "---\n" +
+                "rules:\n" +
+                "   - id: 9200\n" +
+                "     id-excel: 95555\n" +
+                "     message: test groupe meme zone\n" +
+                "     priorite: P1\n" +
+                "     regles:\n" +
+                "       - id: 9201\n" +
+                "         type: presencechainecaracteres\n" +
+                "         zone: '215'\n" +
+                "         souszone: 'a'\n" +
+                "         type-de-verification: CONTIENT\n" +
+                "         chaines-caracteres:\n" +
+                "           - chaine-caracteres: microfiche\n" +
+                "       - id: 9202\n" +
+                "         type: groupememezone\n" +
+                "         zone: '328'\n" +
+                "         operateur-booleen: ET\n" +
+                "         regles:\n" +
+                "           - id: 9203\n" +
+                "             type: positionsouszone\n" +
+                "             souszone: 'z'\n" +
+                "             positions:\n" +
+                "               - position: 1\n" +
+                "                 comparateur: DIFFERENT\n" +
+                "             operateur: OU\n";
+
+        this.mockMvc.perform(post("/api/v1/indexComplexRules")
+                        .contentType("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
+                        .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk());
+    }
+
 }

@@ -389,6 +389,19 @@ public class WebDtoMapper {
     }
 
     /**
+     * Convertion d'un modÃ¨le SameZoneRuleGroupWebDto en modÃ¨le SimpleRule (LinkedRule)
+     */
+    @PostConstruct
+    public void converterSameZoneRuleGroupToLinkedRule() {
+        Converter<SameZoneRuleGroupWebDto, SimpleRule> myConverter = new Converter<SameZoneRuleGroupWebDto, SimpleRule>() {
+            public SimpleRule convert(MappingContext<SameZoneRuleGroupWebDto, SimpleRule> context) {
+                return constructGroupeMemeZone(context.getSource());
+            }
+        };
+        mapper.addConverter(myConverter);
+    }
+
+    /**
      * Convertion d'un modèle TypeCaractereWebDto en modèle SimpleRule (LinkedRule)
      */
     @PostConstruct
@@ -977,5 +990,36 @@ public class WebDtoMapper {
         if(rule.getZone() != null){
             throw new IllegalArgumentException("Les règles complexe ne peuvent pas contenir de règles simples avec des zones différentes");
         }
+    }
+    private GroupeMemeZone constructGroupeMemeZone(SameZoneRuleGroupWebDto source) {
+        if (source.getZone() == null) {
+            throw new IllegalArgumentException("RÃ¨gle " + source.getId() + " : La zone est obligatoire pour un groupe meme zone");
+        }
+        if (source.getRegles() == null || source.getRegles().isEmpty()) {
+            throw new IllegalArgumentException("RÃ¨gle " + source.getId() + " : Le groupe meme zone doit contenir au moins une regle");
+        }
+
+        Iterator<SimpleRuleWebDto> reglesIt = source.getRegles().iterator();
+        SimpleRuleWebDto firstRegle = reglesIt.next();
+        if (firstRegle.getBooleanOperator() != null) {
+            throw new IllegalArgumentException("RÃ¨gle " + firstRegle.getId() + " : La premiÃ¨re rÃ¨gle d'un groupe meme zone ne doit pas contenir d'opÃ©rateur");
+        }
+        checkRuleWebDtoIsAInstanseMemeZoneRules(firstRegle);
+        firstRegle.setZone(source.getZone());
+
+        GroupeMemeZone groupeMemeZone = new GroupeMemeZone(source.getId(), source.getZone(), source.isAffichageEtiquette(), mapper.map(firstRegle, SimpleRule.class));
+
+        int position = 0;
+        while (reglesIt.hasNext()) {
+            SimpleRuleWebDto otherRegle = reglesIt.next();
+            if (otherRegle.getBooleanOperator() == null) {
+                throw new IllegalArgumentException("RÃ¨gle " + otherRegle.getId() + " : Les rÃ¨gles suivantes d'un groupe meme zone doivent avoir un opÃ©rateur");
+            }
+            checkRuleWebDtoIsAInstanseMemeZoneRules(otherRegle);
+            otherRegle.setZone(source.getZone());
+            groupeMemeZone.addRegle(mapper.map(otherRegle, SimpleRule.class), getOperateur(otherRegle.getBooleanOperator()), position++);
+        }
+
+        return groupeMemeZone;
     }
 }

@@ -7,6 +7,7 @@ import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.Indicateur;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.PresenceChaineCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.contenu.chainecaracteres.ChaineCaracteres;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.dependance.Reciprocite;
+import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.GroupeMemeZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PositionSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceSousZone;
 import fr.abes.qualimarc.core.model.entity.qualimarc.rules.structure.PresenceZone;
@@ -33,6 +34,12 @@ public class ComplexRuleTest {
 
     @Value("classpath:02787088X.xml")
     private Resource xmlFileNoticeAutorite;
+
+    @Value("classpath:soa182-microfiche-invalid-328.xml")
+    private Resource xmlFileMicroficheInvalid328;
+
+    @Value("classpath:soa182-microfiche-valid-328.xml")
+    private Resource xmlFileMicroficheValid328;
 
     @Test
     @DisplayName("test méthode isValid règle complexe avec une seule règle simple")
@@ -609,6 +616,31 @@ public class ComplexRuleTest {
         complexRule2.addOtherRule(new LinkedRule(new PositionSousZone(3, "607", false, "3", Lists.newArrayList(positionsOperator), BooleanOperateur.OU), BooleanOperateur.ET, 0, complexRule2));
 
         Assertions.assertTrue(complexRule2.isValid(noticeBiblio));
+    }
+
+    @Test
+    @DisplayName("test groupe meme zone combine 215 microfiche et controle 328")
+    void testGroupeMemeZoneWithMicroficheRule() throws IOException {
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(false);
+        XmlMapper mapper = new XmlMapper(module);
+
+        String xmlInvalid = IOUtils.toString(new FileInputStream(xmlFileMicroficheInvalid328.getFile()), StandardCharsets.UTF_8);
+        NoticeXml invalidNotice = mapper.readValue(xmlInvalid, NoticeXml.class);
+
+        String xmlValid = IOUtils.toString(new FileInputStream(xmlFileMicroficheValid328.getFile()), StandardCharsets.UTF_8);
+        NoticeXml validNotice = mapper.readValue(xmlValid, NoticeXml.class);
+
+        TreeSet<ChaineCaracteres> chaines = new TreeSet<>();
+        chaines.add(new ChaineCaracteres(1, "microfiche", null));
+
+        ComplexRule complexRule = new ComplexRule(9200, "test", Priority.P1, new PresenceChaineCaracteres(9201, "215", false, "a", TypeVerification.CONTIENT, chaines));
+        PositionsOperator positionsOperator = new PositionsOperator(1, 1, ComparaisonOperateur.DIFFERENT);
+        GroupeMemeZone groupeMemeZone = new GroupeMemeZone(9202, "328", false, new PositionSousZone(9203, "328", false, "z", Lists.newArrayList(positionsOperator), BooleanOperateur.OU));
+        complexRule.addOtherRule(new LinkedRule(groupeMemeZone, BooleanOperateur.ET, 0, complexRule));
+
+        Assertions.assertTrue(complexRule.isValid(invalidNotice));
+        Assertions.assertFalse(complexRule.isValid(validNotice));
     }
 
         @Test
