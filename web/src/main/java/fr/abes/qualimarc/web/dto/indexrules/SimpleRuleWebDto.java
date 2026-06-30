@@ -25,6 +25,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = NombreSousZoneWebDto.class, name = "nombresouszone"),
         @JsonSubTypes.Type(value = PositionSousZoneWebDto.class, name="positionsouszone"),
         @JsonSubTypes.Type(value = PresenceSousZonesMemeZoneWebDto.class, name="presencesouszonesmemezone"),
+        @JsonSubTypes.Type(value = SameZoneRuleGroupWebDto.class, name="groupememezone"),
         @JsonSubTypes.Type(value = IndicateurWebDto.class, name="indicateur"),
         @JsonSubTypes.Type(value = NombreCaracteresWebDto.class, name = "nombrecaractere"),
         @JsonSubTypes.Type(value = TypeCaractereWebDto.class, name = "typecaractere"),

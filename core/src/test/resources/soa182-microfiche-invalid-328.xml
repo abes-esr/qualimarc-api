@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record>
+    <leader>00000nam0 2200000   450 </leader>
+    <controlfield tag="001">soa182-invalid</controlfield>
+    <datafield tag="215" ind1=" " ind2=" ">
+        <subfield code="a">1 microfiche</subfield>
+        <subfield code="d">11 x 15 cm</subfield>
+    </datafield>
+    <datafield tag="328" ind1=" " ind2=" ">
+        <subfield code="b">Thèse</subfield>
+        <subfield code="z">Reproduction</subfield>
+        <subfield code="c">Informatique</subfield>
+    </datafield>
+</record>
