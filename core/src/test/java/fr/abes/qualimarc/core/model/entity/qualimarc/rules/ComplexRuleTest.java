@@ -41,6 +41,9 @@ public class ComplexRuleTest {
     @Value("classpath:soa182-microfiche-valid-328.xml")
     private Resource xmlFileMicroficheValid328;
 
+    @Value("classpath:soa182-microfiche-missing-328z.xml")
+    private Resource xmlFileMicroficheMissing328z;
+
     @Test
     @DisplayName("test méthode isValid règle complexe avec une seule règle simple")
     void isValidWithOneRule() throws IOException {
@@ -641,6 +644,27 @@ public class ComplexRuleTest {
 
         Assertions.assertTrue(complexRule.isValid(invalidNotice));
         Assertions.assertFalse(complexRule.isValid(validNotice));
+    }
+
+    @Test
+    @DisplayName("test groupe meme zone combine 215 microfiche et controle 328 sans sous-zone z")
+    void testGroupeMemeZoneWithMicroficheRuleAndMissingZ() throws IOException {
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(false);
+        XmlMapper mapper = new XmlMapper(module);
+
+        String xmlMissingZ = IOUtils.toString(new FileInputStream(xmlFileMicroficheMissing328z.getFile()), StandardCharsets.UTF_8);
+        NoticeXml missingZNotice = mapper.readValue(xmlMissingZ, NoticeXml.class);
+
+        TreeSet<ChaineCaracteres> chaines = new TreeSet<>();
+        chaines.add(new ChaineCaracteres(1, "microfiche", null));
+
+        ComplexRule complexRule = new ComplexRule(9300, "test", Priority.P1, new PresenceChaineCaracteres(9301, "215", false, "a", TypeVerification.CONTIENT, chaines));
+        PositionsOperator positionsOperator = new PositionsOperator(1, 1, ComparaisonOperateur.DIFFERENT);
+        GroupeMemeZone groupeMemeZone = new GroupeMemeZone(9302, "328", false, new PositionSousZone(9303, "328", false, "z", Lists.newArrayList(positionsOperator), BooleanOperateur.OU));
+        complexRule.addOtherRule(new LinkedRule(groupeMemeZone, BooleanOperateur.ET, 0, complexRule));
+
+        Assertions.assertTrue(complexRule.isValid(missingZNotice));
     }
 
         @Test
