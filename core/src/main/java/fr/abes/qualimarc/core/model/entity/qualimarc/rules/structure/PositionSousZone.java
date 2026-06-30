@@ -131,7 +131,7 @@ public class PositionSousZone extends SimpleRule implements Serializable {
             }
 
             if (occurrences.isEmpty()) {
-                return false;
+                return matchesWhenSubfieldIsMissing(posOp.getComparaisonOperateur());
             }
 
             // Vérifie si au moins une occurrence valide la condition
@@ -149,6 +149,10 @@ public class PositionSousZone extends SimpleRule implements Serializable {
             case SUPERIEUR_EGAL: return index >= expectedIndex;
             default: return false;
         }
+    }
+
+    private boolean matchesWhenSubfieldIsMissing(ComparaisonOperateur comparaisonOperateur) {
+        return comparaisonOperateur == ComparaisonOperateur.DIFFERENT;
     }
 
     @Override

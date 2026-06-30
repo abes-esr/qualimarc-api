@@ -77,6 +77,21 @@ public class PositionSousZoneTest {
     }
 
     @Test
+    @DisplayName("positionsouszone different doit etre valide si la sous-zone est absente")
+    void isValidWhenSubfieldIsMissingAndComparatorIsDifferent() throws IOException {
+        String xml = IOUtils.toString(new FileInputStream(xmlFileNotice1.getFile()), StandardCharsets.UTF_8);
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(false);
+        XmlMapper mapper = new XmlMapper(module);
+        NoticeXml notice = mapper.readValue(xml, NoticeXml.class);
+
+        PositionsOperator positionsOperatorDifferent = new PositionsOperator(1, 1, ComparaisonOperateur.DIFFERENT);
+        PositionSousZone rule = new PositionSousZone(1, "607", false, "v", Lists.newArrayList(positionsOperatorDifferent), BooleanOperateur.OU);
+
+        Assertions.assertTrue(rule.isValid(notice));
+    }
+
+    @Test
     @DisplayName("test getZones")
     void getZones() {
         PositionsOperator positionsOperator2 = new PositionsOperator(2, 2, ComparaisonOperateur.EGAL);
