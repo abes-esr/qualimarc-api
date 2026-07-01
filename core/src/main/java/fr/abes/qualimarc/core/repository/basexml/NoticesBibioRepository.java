@@ -2,12 +2,11 @@ package fr.abes.qualimarc.core.repository.basexml;
 
 import fr.abes.qualimarc.core.configuration.BaseXMLConfiguration;
 import fr.abes.qualimarc.core.model.entity.basexml.NoticesBibio;
-import jakarta.persistence.QueryHint;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.QueryHints;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Calendar;
+import java.util.Date;
 import java.util.Optional;
 
 @BaseXMLConfiguration
@@ -15,6 +14,18 @@ import java.util.Optional;
 public interface NoticesBibioRepository extends JpaRepository<NoticesBibio, Integer> {
     Optional<NoticesBibio> getByPpn(String ppn);
 
-    @QueryHints(@QueryHint(name = "jakarta.persistence.query.timeout", value = "2000"))
-    NoticesBibio findFirstByDateEtatBeforeOrderByDateEtatDesc(Calendar date);
+    @Query(
+            value = """
+                    SELECT DATE_ETAT
+                    FROM (
+                        SELECT /*+ INDEX_DESC(NB INDEX_DATE_ETAT_BIBIO) */ NB.DATE_ETAT
+                        FROM AUTORITES.NOTICESBIBIO NB
+                        WHERE NB.DATE_ETAT < SYSDATE
+                        ORDER BY NB.DATE_ETAT DESC
+                    )
+                    WHERE ROWNUM = 1
+                    """,
+            nativeQuery = true
+    )
+    Date findLatestDateEtat();
 }
