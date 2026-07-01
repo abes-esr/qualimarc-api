@@ -72,6 +72,6 @@ public class StatutServiceTest {
     @Test
     void testGetDateLastPpnSynchronisedError() {
         Mockito.doThrow(CannotGetJdbcConnectionException.class).when(noticeRepository).findFirstByDateEtatBeforeOrderByDateEtatDesc(Mockito.any());
-        Assertions.assertEquals("Impossible de récupérer le dernier PPN connnu", service.getDateLastPpnSynchronised());
+        Assertions.assertEquals("Impossible de recuperer le dernier PPN connu", service.getDateLastPpnSynchronised());
     }
 }
