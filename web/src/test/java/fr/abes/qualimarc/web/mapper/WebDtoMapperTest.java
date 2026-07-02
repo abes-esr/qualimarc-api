@@ -384,9 +384,9 @@ public class WebDtoMapperTest {
         Integer ruleSetWebDto = 1;
         ruleSetsList.add(ruleSetWebDto);
 
-        PresenceSousZonesMemeZoneWebDto rule5 = new PresenceSousZonesMemeZoneWebDto(1, 1, ruleSetsList, "test", false, "200", "P1", typeDoc, typeThese, new LinkedList<>());
-        rule5.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("a", true));
-        rule5.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("b", false, BooleanOperateur.ET));
+        PresenceSousZonesMemeZoneWebDto rule5 = new PresenceSousZonesMemeZoneWebDto(1, 1, ruleSetsList, "test", true, "200", "P1", typeDoc, typeThese, new LinkedList<>());
+        rule5.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("a", true, false));
+        rule5.addSousZone(new PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto("b", false, BooleanOperateur.ET, true));
 
         ComplexRule complexRule = mapper.map(rule5, ComplexRule.class);
 
@@ -396,12 +396,16 @@ public class WebDtoMapperTest {
         Assertions.assertEquals(rule5.getPriority(), complexRule.getPriority().toString());
         PresenceSousZonesMemeZone firstRule = (PresenceSousZonesMemeZone) complexRule.getFirstRule();
         Assertions.assertEquals(rule5.getZone(), firstRule.getZone());
+        Assertions.assertEquals(1, complexRule.getZonesFromChildren().size());
+        Assertions.assertEquals("200$b", complexRule.getZonesFromChildren().get(0));
         Assertions.assertEquals(2, firstRule.getSousZoneOperators().size());
         Assertions.assertEquals("a", firstRule.getSousZoneOperators().get(0).getSousZone());
         Assertions.assertTrue(firstRule.getSousZoneOperators().get(0).isPresent());
+        Assertions.assertFalse(firstRule.getSousZoneOperators().get(0).isAffichageEtiquette());
         Assertions.assertEquals("b", firstRule.getSousZoneOperators().get(1).getSousZone());
         Assertions.assertEquals(BooleanOperateur.ET, firstRule.getSousZoneOperators().get(1).getOperateur());
         Assertions.assertFalse(firstRule.getSousZoneOperators().get(1).isPresent());
+        Assertions.assertTrue(firstRule.getSousZoneOperators().get(1).isAffichageEtiquette());
         Assertions.assertEquals(rule5.getTypesDoc().size(), complexRule.getFamillesDocuments().size());
         Assertions.assertTrue(complexRule.getFamillesDocuments().stream().findFirst().isPresent());
         Assertions.assertEquals(rule5.getTypesDoc().get(0), complexRule.getFamillesDocuments().stream().findFirst().get().getId());

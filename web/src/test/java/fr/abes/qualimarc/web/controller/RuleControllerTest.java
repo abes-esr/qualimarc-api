@@ -250,6 +250,31 @@ public class RuleControllerTest {
     }
 
     @Test
+    @DisplayName("test creation regle complexe presencesouszonesmemezone avec affichage-etiquette sur une sous-zone")
+    void testIndexComplexRulePresenceSousZonesMemeZoneWithSousZoneAffichageEtiquette() throws Exception {
+        String yaml =
+                "rules:\n" +
+                "   - id: 605\n" +
+                "     id-excel: 433\n" +
+                "     type: presencesouszonesmemezone\n" +
+                "     message: test 6XX sous-zone cachee\n" +
+                "     zone: '6XX'\n" +
+                "     priorite: P1\n" +
+                "     souszones:\n" +
+                "       - souszone: '2'\n" +
+                "         presence: false\n" +
+                "       - souszone: 'a'\n" +
+                "         presence: true\n" +
+                "         affichage-etiquette: false\n" +
+                "         operateur-booleen: ET\n";
+
+        this.mockMvc.perform(post("/api/v1/indexRules")
+                .contentType("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
+                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     @DisplayName("test creation regle complexe avec dependance et position negative")
     void testIndexComplexRuleDependencyWithNegativePosition() throws Exception {
         String yaml =

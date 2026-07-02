@@ -47,6 +47,7 @@ public class PresenceSousZonesMemeZoneWebDto extends SimpleRuleWebDto {
     }
 
     @Getter
+    @Setter
     @NoArgsConstructor
     public static class SousZoneOperatorWebDto {
 
@@ -59,6 +60,9 @@ public class PresenceSousZonesMemeZoneWebDto extends SimpleRuleWebDto {
         @JsonProperty("presence")
         private boolean isPresent;
 
+        @JsonProperty(value = "affichage-etiquette", defaultValue = "true")
+        private boolean affichageEtiquette = true;
+
         @JsonProperty("operateur-booleen")
         private BooleanOperateur operator;
 
@@ -66,13 +70,23 @@ public class PresenceSousZonesMemeZoneWebDto extends SimpleRuleWebDto {
          * Constructeur utilisé pour le premier souszoneoperateur
          */
         public SousZoneOperatorWebDto(String sousZone, boolean isPresent) {
+            this(sousZone, isPresent, true);
+        }
+
+        public SousZoneOperatorWebDto(String sousZone, boolean isPresent, boolean affichageEtiquette) {
             this.sousZone = sousZone;
             this.isPresent = isPresent;
+            this.affichageEtiquette = affichageEtiquette;
         }
 
         public SousZoneOperatorWebDto(String sousZone, boolean isPresent, BooleanOperateur operator) {
+            this(sousZone, isPresent, operator, true);
+        }
+
+        public SousZoneOperatorWebDto(String sousZone, boolean isPresent, BooleanOperateur operator, boolean affichageEtiquette) {
             this.sousZone = sousZone;
             this.isPresent = isPresent;
+            this.affichageEtiquette = affichageEtiquette;
             this.operator = operator;
         }
     }
