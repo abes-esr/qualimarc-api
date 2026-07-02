@@ -29,6 +29,9 @@ public class SousZoneOperator implements Serializable {
     @NotNull
     private boolean isPresent;
 
+    @Column(name = "AFFICHAGE_ETIQUETTE")
+    private Boolean affichageEtiquette;
+
     @Column(name="OPERATEUR")
     private BooleanOperateur operateur;
 
@@ -36,15 +39,30 @@ public class SousZoneOperator implements Serializable {
     @JoinColumn(name = "ID_PRESENCE_SOUS_ZONE_MEME_ZONE")
     private PresenceSousZonesMemeZone presenceSousZonesMemeZone;
 
-    public SousZoneOperator(String sousZone, boolean isPresent, BooleanOperateur operateur, PresenceSousZonesMemeZone presenceSousZonesMemeZone) {
+    public SousZoneOperator(String sousZone, boolean isPresent, Boolean affichageEtiquette, BooleanOperateur operateur, PresenceSousZonesMemeZone presenceSousZonesMemeZone) {
         this.sousZone = sousZone;
         this.isPresent = isPresent;
+        this.affichageEtiquette = affichageEtiquette;
         this.operateur = operateur;
         this.presenceSousZonesMemeZone = presenceSousZonesMemeZone;
     }
-    public SousZoneOperator(String sousZone, boolean isPresent, PresenceSousZonesMemeZone presenceSousZonesMemeZone) {
+
+    public SousZoneOperator(String sousZone, boolean isPresent, BooleanOperateur operateur, PresenceSousZonesMemeZone presenceSousZonesMemeZone) {
+        this(sousZone, isPresent, true, operateur, presenceSousZonesMemeZone);
+    }
+
+    public SousZoneOperator(String sousZone, boolean isPresent, Boolean affichageEtiquette, PresenceSousZonesMemeZone presenceSousZonesMemeZone) {
         this.sousZone = sousZone;
         this.isPresent = isPresent;
+        this.affichageEtiquette = affichageEtiquette;
         this.presenceSousZonesMemeZone = presenceSousZonesMemeZone;
+    }
+
+    public SousZoneOperator(String sousZone, boolean isPresent, PresenceSousZonesMemeZone presenceSousZonesMemeZone) {
+        this(sousZone, isPresent, true, presenceSousZonesMemeZone);
+    }
+
+    public boolean isAffichageEtiquette() {
+        return this.affichageEtiquette == null || this.affichageEtiquette;
     }
 }
