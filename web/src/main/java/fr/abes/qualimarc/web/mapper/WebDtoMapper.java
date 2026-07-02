@@ -817,11 +817,11 @@ public class WebDtoMapper {
             Iterator<PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto> sousZoneOperatorIt = source.getSousZones().listIterator();
             PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto firstSousZone = sousZoneOperatorIt.next();
             if (null == firstSousZone.getOperator()) {
-                target.addSousZoneOperator(new SousZoneOperator(firstSousZone.getSousZone(), firstSousZone.isPresent(), target));
+                target.addSousZoneOperator(new SousZoneOperator(firstSousZone.getSousZone(), firstSousZone.isPresent(), firstSousZone.isAffichageEtiquette(), target));
                 while (sousZoneOperatorIt.hasNext()) {
                     PresenceSousZonesMemeZoneWebDto.SousZoneOperatorWebDto nextSousZone = sousZoneOperatorIt.next();
                     if (null != nextSousZone.getOperator()) {
-                        target.addSousZoneOperator(new SousZoneOperator(nextSousZone.getSousZone(), nextSousZone.isPresent(), nextSousZone.getOperator(), target));
+                        target.addSousZoneOperator(new SousZoneOperator(nextSousZone.getSousZone(), nextSousZone.isPresent(), nextSousZone.isAffichageEtiquette(), nextSousZone.getOperator(), target));
                     } else {
                         throw new IllegalArgumentException("Règle " + source.getId() + " : Les sous-zones en dehors de la première doivent avoir un opérateur booléen");
                     }

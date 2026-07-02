@@ -78,6 +78,9 @@ public class PresenceSousZonesMemeZone extends SimpleRule implements Serializabl
     public List<String> getZones() {
         List<String> listZone = new ArrayList<>();
         for (int i =0; i < sousZoneOperators.size(); i++) {
+            if (!sousZoneOperators.get(i).isAffichageEtiquette()) {
+                continue;
+            }
             StringBuilder zone = new StringBuilder();
             zone.append(this.zone);
             zone.append("$");
