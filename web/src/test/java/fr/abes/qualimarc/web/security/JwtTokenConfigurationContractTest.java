@@ -33,4 +33,20 @@ class JwtTokenConfigurationContractTest {
         assertThat(resolver.getProperty("jwt.anonymousUser")).isEqualTo("qualimarcUser");
         assertThat(resolver.resolveRequiredPlaceholders(resolver.getProperty("jwt.token"))).isEqualTo("token-admin-injecte");
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "application-dev.properties",
+            "application-test.properties",
+            "application-prod.properties"
+    })
+    void profilePropertiesFallbackToLegacyJwtSecretWhenJwtTokenIsAbsent(String profileProperties) throws IOException {
+        Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource(profileProperties));
+        MutablePropertySources propertySources = new MutablePropertySources();
+        propertySources.addFirst(new MapPropertySource("injectedEnvironment", Map.of("JWT_SECRET", "token-admin-legacy")));
+        propertySources.addLast(new PropertiesPropertySource("profileProperties", properties));
+        PropertySourcesPropertyResolver resolver = new PropertySourcesPropertyResolver(propertySources);
+
+        assertThat(resolver.resolveRequiredPlaceholders(resolver.getProperty("jwt.token"))).isEqualTo("token-admin-legacy");
+    }
 }
