@@ -1,59 +1,38 @@
 package fr.abes.qualimarc.web.security;
 
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.security.MessageDigest;
 
 @Component
-@Slf4j
 public class JwtTokenProvider {
 
-    @Value("${jwt.secret}")
-    private String secret;
+    @Value("${jwt.token:}")
+    private String configuredToken;
 
     @Value("${jwt.anonymousUser}")
     private String anonymousUser;
 
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    @PostConstruct
+    void validateConfiguration() {
+        if (!StringUtils.hasText(configuredToken)) {
+            throw new IllegalStateException("La propriété jwt.token doit être renseignée.");
+        }
     }
 
-    public String generateToken() {
-        Calendar now = new GregorianCalendar(2099, 12, 31);
-        Date expiryDate = now.getTime();
-
-        return Jwts.builder()
-                .subject(anonymousUser)
-                .issuedAt(new Date())
-                .expiration(expiryDate)
-                .claim("role", "ANONYMOUS")
-                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
-                .compact();
-    }
     public boolean validateToken(String authToken) {
-        try {
-            Jwts.parser()
-                    .verifyWith(getSigningKey())
-                    .build()
-                    .parseSignedClaims(authToken);
-            return true;
-
-        } catch (JwtException ex) {
-            log.error("Erreur d'authentification: {}", ex.getMessage());
+        if (!StringUtils.hasText(configuredToken) || !StringUtils.hasText(authToken)) {
             return false;
         }
+        return MessageDigest.isEqual(
+                configuredToken.getBytes(StandardCharsets.UTF_8),
+                authToken.getBytes(StandardCharsets.UTF_8)
+        );
     }
 
     public String getJwtFromRequest(HttpServletRequest request) {
@@ -65,11 +44,9 @@ public class JwtTokenProvider {
     }
 
     public String getUsernameFromJwtToken(String token) {
-        return Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .getSubject();
+        if (!validateToken(token)) {
+            throw new IllegalArgumentException("Token API invalide");
+        }
+        return anonymousUser;
     }
 }
