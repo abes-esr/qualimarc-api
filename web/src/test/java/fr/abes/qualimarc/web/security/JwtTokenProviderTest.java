@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JwtTokenProviderTest {
 
     private static final String EXPECTED_ANONYMOUS_USER = "jwt.anonymousUser=qualimarcUser";
-    private static final String EXPECTED_TOKEN = "jwt.token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJxdWFsaW1hcmNVc2VyIiwiaWF0IjoxNzcwODI4NTU0LCJleHAiOjQxMDUwMzMyMDAsInJvbGUiOiJBTk9OWU1PVVMifQ.sTZjyv0reSj0JgL5KbuXkJ20BxkIoVpjQM8AhcusBYv30Liq0kpaoPFqibWcmo5sd4ZP3H8b90IMisYJJOgeig";
+    private static final String EXPECTED_TOKEN = "jwt.token=${JWT_TOKEN:}";
 
     private JwtTokenProvider createProvider() {
         JwtTokenProvider provider = new JwtTokenProvider();
