@@ -30,13 +30,6 @@ class JwtTokenProviderTest {
     }
 
     @Test
-    void generateTokenReturnsConfiguredToken() {
-        JwtTokenProvider provider = createProvider();
-
-        assertThat(provider.generateToken()).isEqualTo("token-admin-qualimarc");
-    }
-
-    @Test
     void getJwtFromRequestExtractsBearerToken() {
         JwtTokenProvider provider = createProvider();
         MockHttpServletRequest request = new MockHttpServletRequest();

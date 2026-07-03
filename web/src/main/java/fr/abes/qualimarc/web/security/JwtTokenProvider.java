@@ -17,10 +17,6 @@ public class JwtTokenProvider {
     @Value("${jwt.anonymousUser}")
     private String anonymousUser;
 
-    public String generateToken() {
-        return configuredToken;
-    }
-
     public boolean validateToken(String authToken) {
         if (!StringUtils.hasText(configuredToken) || !StringUtils.hasText(authToken)) {
             return false;
