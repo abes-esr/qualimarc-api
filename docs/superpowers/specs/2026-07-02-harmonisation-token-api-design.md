@@ -31,15 +31,15 @@ Hors perimetre pour cette etape:
 
 L'application ne doit plus generer de JWT au boot et ne doit plus l'afficher sur la sortie standard. Le contexte de securite initialise localement au demarrage sera retire.
 
-### 2. Conserver la validation JWT cote filtre
+### 2. Conserver la validation du token cote filtre
 
-Le filtre HTTP continue de valider les JWT recus via le header `Authorization: Bearer ...`, mais uniquement a partir du secret configure par environnement.
+Le filtre HTTP continue de valider le bearer token recu via le header `Authorization: Bearer ...`, mais en le comparant directement a la valeur configuree par environnement plutot qu'en recalculant une signature JWT.
 
 ### 3. Harmoniser la configuration des environnements
 
-Les fichiers `application-dev.properties`, `application-test.properties` et `application-prod.properties` seront alignes sur la meme valeur de `jwt.anonymousUser` et de `jwt.secret`, en coherence avec le token de production transmis pour Ansible.
+Les fichiers `application-dev.properties`, `application-test.properties` et `application-prod.properties` seront alignes sur le meme contrat `jwt.anonymousUser` et `jwt.token`, avec une injection par variable d'environnement `JWT_TOKEN` pour eviter de versionner le secret dans le depot.
 
-Important: la valeur du secret configure doit etre compatible avec le token deja utilise en production. Le but de cette etape est la compatibilite d'exploitation, pas l'amelioration finale du modele de secret.
+Important: la valeur operationnelle du token reste celle deja utilisee en production pour Ansible. Le but de cette etape est la compatibilite d'exploitation sans exposition du secret dans Git.
 
 ## Impacts attendus
 
@@ -55,7 +55,7 @@ Important: la valeur du secret configure doit etre compatible avec le token deja
 
 ## Risques et garde-fous
 
-- risque: mauvais couple `jwt.anonymousUser` / `jwt.secret` et rupture des appels Ansible
+- risque: mauvais couple `jwt.anonymousUser` / `jwt.token` et rupture des appels Ansible
   garde-fou: ajouter un test avec le token partage fourni
 - risque: dependance implicite a l'initialisation du `SecurityContextHolder` au boot
   garde-fou: supprimer le code de boot puis verifier les tests web
