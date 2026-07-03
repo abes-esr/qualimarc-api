@@ -1,6 +1,7 @@
 package fr.abes.qualimarc.web.security;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -16,6 +17,13 @@ public class JwtTokenProvider {
 
     @Value("${jwt.anonymousUser}")
     private String anonymousUser;
+
+    @PostConstruct
+    void validateConfiguration() {
+        if (!StringUtils.hasText(configuredToken)) {
+            throw new IllegalStateException("La propriété jwt.token doit être renseignée.");
+        }
+    }
 
     public boolean validateToken(String authToken) {
         if (!StringUtils.hasText(configuredToken) || !StringUtils.hasText(authToken)) {

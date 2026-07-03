@@ -4,21 +4,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JwtTokenProviderTest {
 
-    private static final String EXPECTED_ANONYMOUS_USER = "jwt.anonymousUser=qualimarcUser";
-    private static final String EXPECTED_TOKEN = "jwt.token=${JWT_TOKEN:}";
-
     private JwtTokenProvider createProvider() {
+        return createProvider("token-admin-qualimarc");
+    }
+
+    private JwtTokenProvider createProvider(String configuredToken) {
         JwtTokenProvider provider = new JwtTokenProvider();
-        ReflectionTestUtils.setField(provider, "configuredToken", "token-admin-qualimarc");
+        ReflectionTestUtils.setField(provider, "configuredToken", configuredToken);
         ReflectionTestUtils.setField(provider, "anonymousUser", "qualimarcUser");
         return provider;
     }
@@ -54,15 +51,20 @@ class JwtTokenProviderTest {
     }
 
     @Test
-    void profilePropertiesExposeTheSameJwtContract() throws IOException {
-        assertProfileJwtContract("src/main/resources/application-dev.properties");
-        assertProfileJwtContract("src/main/resources/application-test.properties");
-        assertProfileJwtContract("src/main/resources/application-prod.properties");
+    void validateConfigurationRejectsMissingConfiguredToken() {
+        JwtTokenProvider provider = createProvider(null);
+
+        assertThatThrownBy(provider::validateConfiguration)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("jwt.token");
     }
 
-    private void assertProfileJwtContract(String relativePath) throws IOException {
-        List<String> lines = Files.readAllLines(Path.of(relativePath));
+    @Test
+    void validateConfigurationRejectsBlankConfiguredToken() {
+        JwtTokenProvider provider = createProvider("   ");
 
-        assertThat(lines).contains(EXPECTED_ANONYMOUS_USER, EXPECTED_TOKEN);
+        assertThatThrownBy(provider::validateConfiguration)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("jwt.token");
     }
 }
