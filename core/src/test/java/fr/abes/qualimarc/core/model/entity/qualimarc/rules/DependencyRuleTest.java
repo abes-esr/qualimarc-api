@@ -2,7 +2,9 @@ package fr.abes.qualimarc.core.model.entity.qualimarc.rules;
 
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import fr.abes.qualimarc.core.model.entity.notice.Datafield;
 import fr.abes.qualimarc.core.model.entity.notice.NoticeXml;
+import fr.abes.qualimarc.core.model.entity.notice.SubField;
 import fr.abes.qualimarc.core.utils.TypeNoticeLiee;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,6 +97,24 @@ public class DependencyRuleTest {
     }
 
     @Test
+    @DisplayName("Recuperation du dernier ppn seulement s'il existe au moins deux sous-zones dans la meme zone")
+    void getPpnNoticeLieeLastPositionRequiresAtLeastTwoSubfieldsInSameZone() {
+        NoticeXml noticeWithSeveralZones = buildNoticeWithFields(
+                build606("ppn-11", "ppn-12", "ppn-13"),
+                build606("ppn-21"),
+                build606("ppn-31", "ppn-32")
+        );
+
+        DependencyRule dependencyRule = new DependencyRule(1, "606", "3", TypeNoticeLiee.AUTORITE, -1, 1, new ComplexRule());
+
+        List<String> listePpn = dependencyRule.getPpnsNoticeLiee(noticeWithSeveralZones).stream().sorted().collect(Collectors.toList());
+
+        Assertions.assertEquals(2, listePpn.size());
+        Assertions.assertEquals("ppn-13", listePpn.get(0));
+        Assertions.assertEquals("ppn-32", listePpn.get(1));
+    }
+
+    @Test
     @DisplayName("Récupération des ppns en deuxieme position")
     void getPpnNoticeLiee7() {
         DependencyRule rule6 = new DependencyRule(1, "607", "3", TypeNoticeLiee.AUTORITE, 1,1, new ComplexRule());
@@ -139,5 +160,27 @@ public class DependencyRuleTest {
         DependencyRule rule1 = new DependencyRule(1, "607", "3", TypeNoticeLiee.AUTORITE, 1,1, new ComplexRule());
         Assertions.assertEquals(1, rule1.getZones().size());
         Assertions.assertEquals("607$3", rule1.getZones().get(0));
+    }
+
+    private NoticeXml buildNoticeWithFields(Datafield... datafields) {
+        NoticeXml noticeXml = new NoticeXml();
+        noticeXml.setDatafields(Arrays.asList(datafields));
+        return noticeXml;
+    }
+
+    private Datafield build606(String... ppns) {
+        Datafield datafield = new Datafield();
+        datafield.setTag("606");
+        datafield.setInd1(" ");
+        datafield.setInd2(" ");
+        datafield.setSubFields(Arrays.stream(ppns).map(this::buildSubField3).collect(Collectors.toList()));
+        return datafield;
+    }
+
+    private SubField buildSubField3(String value) {
+        SubField subField = new SubField();
+        subField.setCode("3");
+        subField.setValue(value);
+        return subField;
     }
 }

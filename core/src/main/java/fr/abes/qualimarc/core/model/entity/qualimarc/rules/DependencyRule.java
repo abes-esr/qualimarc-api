@@ -65,6 +65,9 @@ public class DependencyRule extends OtherRule {
             List<SubField> subFields = datafield.getSubFields().stream().filter(subField -> subField.getCode().equals(this.sousZoneSource)).collect(Collectors.toList());
 
             if(!subFields.isEmpty()) {
+                if (requiresAtLeastTwoSubFieldsForLastSelection() && subFields.size() < 2) {
+                    continue;
+                }
                 Integer startInterval = resolveIndex(this.positionSousZoneSourceStart, subFields.size(), 0);
                 Integer endInterval = resolveIndex(this.positionSousZoneSourceEnd,   subFields.size(), subFields.size() - 1);
                 if(startInterval != null && endInterval != null) {
@@ -78,6 +81,11 @@ public class DependencyRule extends OtherRule {
             }
         }
         return listPpn;
+    }
+
+    private boolean requiresAtLeastTwoSubFieldsForLastSelection() {
+        return Integer.valueOf(-1).equals(this.positionSousZoneSourceStart)
+                && Integer.valueOf(-1).equals(this.positionSousZoneSourceEnd);
     }
 
     private Integer resolveIndex(Integer configuredIndex, int size, int defaultIfNull) {
