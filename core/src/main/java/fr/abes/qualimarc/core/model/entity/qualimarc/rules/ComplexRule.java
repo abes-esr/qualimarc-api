@@ -77,6 +77,9 @@ public class ComplexRule implements Serializable {
     @Transient
     private List<Datafield> savedZone = new ArrayList<>();
 
+    @Transient
+    private List<OtherRule> orderedOtherRules;
+
     protected ComplexRule(){}
 
     public ComplexRule(Integer id, String message, Priority priority, Set<FamilleDocument> famillesDocuments, Set<TypeThese> typesThese, SimpleRule firstRule, List<OtherRule> otherRules) {
@@ -143,6 +146,12 @@ public class ComplexRule implements Serializable {
 
     public void addOtherRule(OtherRule otherRule) {
         this.otherRules.add(otherRule);
+        this.orderedOtherRules = null;
+    }
+
+    public void setOtherRules(List<OtherRule> otherRules) {
+        this.otherRules = otherRules;
+        this.orderedOtherRules = null;
     }
 
     /**
@@ -195,7 +204,7 @@ public class ComplexRule implements Serializable {
     private boolean isValidTwoNotices(NoticeXml notice, NoticeXml noticeLiee) {
         boolean isValid = firstRule.isValid(notice);
         boolean isDependencyFound = false;
-        for (OtherRule otherRule : otherRules.stream().sorted(Comparator.comparing(OtherRule::getPosition)).collect(Collectors.toList())) {
+        for (OtherRule otherRule : getOrderedOtherRules()) {
             if (otherRule instanceof DependencyRule) {
                 //dès qu'on trouve une règle de dépendance dans les linked rule, on informe le programme qu'il doit appliquer les règles suivantes sur la notice liée
                 isDependencyFound = true;
@@ -232,7 +241,7 @@ public class ComplexRule implements Serializable {
         this.savedZone.clear();
         boolean isValid = firstRule.isValid(notice);
 
-        for (OtherRule otherRule : otherRules.stream().sorted(Comparator.comparing(OtherRule::getPosition)).collect(Collectors.toList())) {
+        for (OtherRule otherRule : getOrderedOtherRules()) {
             LinkedRule linkedRule = (LinkedRule) otherRule;
             switch (linkedRule.getOperateur()) {
                 case ET:
@@ -248,6 +257,18 @@ public class ComplexRule implements Serializable {
             }
         }
         return isValid;
+    }
+
+    List<OtherRule> getOrderedOtherRules() {
+        if (otherRules == null || otherRules.isEmpty()) {
+            return Collections.emptyList();
+        }
+        if (orderedOtherRules == null) {
+            orderedOtherRules = otherRules.stream()
+                    .sorted(Comparator.comparing(OtherRule::getPosition))
+                    .toList();
+        }
+        return orderedOtherRules;
     }
 
     public List<String> getZonesFromChildren() {

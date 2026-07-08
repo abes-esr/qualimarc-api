@@ -25,6 +25,7 @@ import org.springframework.core.io.Resource;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.TreeSet;
 
 @SpringBootTest(classes = {ComplexRule.class})
@@ -77,6 +78,19 @@ public class ComplexRuleTest {
 
         complexRule.addOtherRule(new LinkedRule(new PresenceSousZone(4, "033", false, "a", true), BooleanOperateur.OU, 1, complexRule));
         Assertions.assertTrue(complexRule.isValid(notice));
+    }
+
+    @Test
+    void complexRuleUsesLinkedRulesInPositionOrder() {
+        ComplexRule complexRule = new ComplexRule(1, "test", Priority.P1, new PresenceZone(1, "010", false, true));
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(3, "200", false, true), BooleanOperateur.ET, 3, complexRule));
+        complexRule.addOtherRule(new LinkedRule(new PresenceZone(2, "011", false, false), BooleanOperateur.ET, 2, complexRule));
+
+        List<Integer> positions = complexRule.getOrderedOtherRules().stream()
+                .map(OtherRule::getPosition)
+                .toList();
+
+        Assertions.assertEquals(List.of(2, 3), positions);
     }
 
     @Test
