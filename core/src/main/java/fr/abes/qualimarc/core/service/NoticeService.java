@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 public class NoticeService {
     private static final List<String> zonesLocales = List.of("012", "035", "316", "317", "318", "600", "601", "602", "606", "607", "608", "676", "680", "681", "701", "702", "712", "722");
     private static final List<String> zonesExemplaires = List.of("012", "316", "317", "318", "621", "702", "712", "722", "856");
+    private static final XmlMapper XML_MAPPER = buildXmlMapper();
+
     @Autowired
     private NoticesBibioRepository repositoryBiblio;
 
@@ -71,6 +73,10 @@ public class NoticeService {
     }
 
     private XmlMapper getMapper() {
+        return XML_MAPPER;
+    }
+
+    private static XmlMapper buildXmlMapper() {
         JacksonXmlModule module = new JacksonXmlModule();
         module.setDefaultUseWrapper(false);
         return new XmlMapper(module);

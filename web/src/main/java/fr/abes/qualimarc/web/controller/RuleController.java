@@ -117,11 +117,17 @@ public class RuleController {
         this.mapIdToNbTotalPpn.put(requestBody.getId(), requestBody.getPpnList().size());
         List<List<String>> splittedList = Lists.partition(requestBody.getPpnList(), requestBody.getPpnList().size() / nbThread + 1);
         List<CompletableFuture<ResultAnalyse>> resultList = new ArrayList<>();
+        Set<ComplexRule> rulesToApply = ruleService.getResultRulesList(
+                requestBody.getTypeAnalyse(),
+                familleDocuments,
+                typeThese,
+                ruleSets
+        );
 
         ResultAnalyse resultAnalyse;
         if(splittedList.size() > 1) {
             for (List<String> ppnList : splittedList)
-                resultList.add(ruleService.checkRulesOnNotices(requestBody.getId(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), ppnList, requestBody.isReplayed()));
+                resultList.add(ruleService.checkRulesOnNotices(requestBody.getId(), rulesToApply, ppnList, requestBody.isReplayed()));
 
             //biFunction permet de prendre le résultat de 2 traitements en parallèle et de les fusionner en un troisième qui est retourné
             BiFunction<ResultAnalyse, ResultAnalyse, ResultAnalyse> biFunction = (res1, res2) -> {
@@ -132,7 +138,7 @@ public class RuleController {
             //on récupère chaque traitement lancé en parallèle et on le combine au précédent en fusionnant les résultats
             resultAnalyse = resultList.stream().reduce((res1, res2) -> res1.thenCombineAsync(res2, biFunction, asyncExecutor)).orElse(CompletableFuture.completedFuture(new ResultAnalyse())).join();
         } else {
-            resultAnalyse = ruleService.checkRulesOnNotices(requestBody.getId(), ruleService.getResultRulesList(requestBody.getTypeAnalyse(), familleDocuments, typeThese, ruleSets), requestBody.getPpnList(), requestBody.isReplayed()).join();
+            resultAnalyse = ruleService.checkRulesOnNotices(requestBody.getId(), rulesToApply, requestBody.getPpnList(), requestBody.isReplayed()).join();
         }
 
         journalAnalyse.setNbPpnAnalyse(resultAnalyse.getPpnAnalyses().size());

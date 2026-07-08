@@ -33,6 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -161,6 +162,33 @@ public class RuleControllerTest {
                 .andExpect(jsonPath("$.resultRules[1].ppn").value("123456789"))
                 .andExpect(jsonPath("$.resultRules[2].ppn").value("987654321"))
                 .andExpect(jsonPath("$.resultRules[3].ppn").value("654987321"));
+    }
+
+    @Test
+    void checkPpnWithMultiThreadLoadsRulesOnlyOnce() throws Exception {
+        Mockito.doNothing().when(journalService).saveJournalAnalyse(Mockito.any());
+        Mockito.when(utilsMapper.map(any(), any())).thenReturn(new ResultAnalyseResponseDto());
+        Mockito.when(ruleService.getResultRulesList(Mockito.eq(TypeAnalyse.QUICK), Mockito.anySet(), Mockito.anySet(), Mockito.anySet()))
+                .thenReturn(Collections.emptySet());
+
+        ResultAnalyse resultAnalyse = new ResultAnalyse();
+        resultAnalyse.setPpnAnalyses(Sets.newLinkedHashSet("143519379", "123456789", "987654321", "654987321"));
+        Mockito.when(ruleService.checkRulesOnNotices(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+                .thenReturn(CompletableFuture.completedFuture(resultAnalyse));
+
+        PpnWithRuleSetsRequestDto request = new PpnWithRuleSetsRequestDto();
+        request.setId(42);
+        request.setPpnList(List.of("143519379", "123456789", "987654321", "654987321"));
+        request.setTypeAnalyse(TypeAnalyse.QUICK);
+
+        this.mockMvc.perform(post("/api/v1/check")
+                        .accept(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+
+        Mockito.verify(ruleService, Mockito.times(1))
+                .getResultRulesList(Mockito.eq(TypeAnalyse.QUICK), Mockito.anySet(), Mockito.anySet(), Mockito.anySet());
     }
 
     @Test

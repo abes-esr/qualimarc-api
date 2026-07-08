@@ -267,4 +267,46 @@ public class NoticeXmlTest {
         Assertions.assertEquals("143519379", notice.getPpn());
     }
 
+    @Test
+    void refreshDatafieldLookupWhenDatafieldsChange() throws ZoneNotFoundException {
+        NoticeXml notice = new NoticeXml();
+        Datafield firstTitleField = new Datafield();
+        firstTitleField.setTag("200");
+        SubField firstTitle = new SubField();
+        firstTitle.setCode("a");
+        firstTitle.setValue("Premier titre");
+        firstTitleField.setSubFields(Lists.newArrayList(firstTitle));
+        notice.setDatafields(Lists.newArrayList(firstTitleField));
+
+        Assertions.assertEquals("Premier titre", notice.getTitre());
+
+        Datafield secondTitleField = new Datafield();
+        secondTitleField.setTag("200");
+        SubField secondTitle = new SubField();
+        secondTitle.setCode("a");
+        secondTitle.setValue("Second titre");
+        secondTitleField.setSubFields(Lists.newArrayList(secondTitle));
+        notice.setDatafields(Lists.newArrayList(secondTitleField));
+
+        Assertions.assertEquals("Second titre", notice.getTitre());
+    }
+
+    @Test
+    void refreshControlfieldLookupWhenControlfieldsChange() {
+        NoticeXml notice = new NoticeXml();
+        Controlfield firstControlfield = new Controlfield();
+        firstControlfield.setTag("001");
+        firstControlfield.setValue("111111111");
+        notice.setControlfields(Lists.newArrayList(firstControlfield));
+
+        Assertions.assertEquals("111111111", notice.getPpn());
+
+        Controlfield secondControlfield = new Controlfield();
+        secondControlfield.setTag("001");
+        secondControlfield.setValue("222222222");
+        notice.setControlfields(Lists.newArrayList(secondControlfield));
+
+        Assertions.assertEquals("222222222", notice.getPpn());
+    }
+
 }
