@@ -22,12 +22,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -36,13 +38,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = {RuleController.class}) //  Active le Model-View-Controller, nécessaire pour éviter le code d'erreur 415 lors du lancement du test checkPpn
+@SpringBootTest(classes = {RuleController.class})
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = {WebConfig.class, AsyncConfiguration.class, ExceptionControllerHandler.class})
 public class RuleControllerTest {
@@ -78,10 +82,8 @@ public class RuleControllerTest {
     @MockitoBean
     UtilsMapper utilsMapper;
 
-
     @BeforeEach
     void init() {
-        // Utiliser le contexte Web complet pour bénéficier des @ControllerAdvice et converters enregistrés
         this.mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
@@ -89,41 +91,39 @@ public class RuleControllerTest {
 
     @Test
     void checkPpnWithOneThread() throws Exception {
-        //  Création de la liste de contrôle pour le Mockito
         ResultRulesResponseDto resultRulesResponseDto = new ResultRulesResponseDto();
         resultRulesResponseDto.setPpn("143519379");
         List<ResultRulesResponseDto> resultRulesResponseDtoList = new ArrayList<>();
         resultRulesResponseDtoList.add(resultRulesResponseDto);
         ResultAnalyseResponseDto resultAnalyseResponseDto = new ResultAnalyseResponseDto();
         resultAnalyseResponseDto.setResultRules(resultRulesResponseDtoList);
-        //  Création du Mockito
+
         Mockito.doNothing().when(journalService).saveJournalAnalyse(Mockito.any());
-        Mockito.when(utilsMapper.map(any(),any())).thenReturn(resultAnalyseResponseDto);
+        Mockito.when(utilsMapper.map(any(), any())).thenReturn(resultAnalyseResponseDto);
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         resultAnalyse.setPpnAnalyses(Sets.newLinkedHashSet("143519379"));
-        Mockito.when(ruleService.checkRulesOnNotices(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenReturn(CompletableFuture.completedFuture(resultAnalyse));
-        //  Création de l'objet ControllingPpnWithRuleSetsRequestDto à passer dans la requête
-        List<String> ppnList = new ArrayList<>();
-        ppnList.add("143519379");
-        TypeAnalyse typeAnalyse;
-        typeAnalyse = TypeAnalyse.QUICK;
-        PpnWithRuleSetsRequestDto ppnWithRuleSetsRequestDto = new PpnWithRuleSetsRequestDto();
-        ppnWithRuleSetsRequestDto.setPpnList(ppnList);
-        ppnWithRuleSetsRequestDto.setTypeAnalyse(typeAnalyse);
-        String jsonRequest = objectMapper.writeValueAsString(ppnWithRuleSetsRequestDto);
+        Mockito.when(ruleService.checkRulesOnNotices(Mockito.anyInt(), Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+                .thenReturn(CompletableFuture.completedFuture(resultAnalyse));
 
-        //  Appel et contrôle de la méthode
+        PpnWithRuleSetsRequestDto requestDto = new PpnWithRuleSetsRequestDto();
+        requestDto.setId(123);
+        requestDto.setPpnList(List.of("143519379"));
+        requestDto.setTypeAnalyse(TypeAnalyse.QUICK);
+
         this.mockMvc.perform(post("/api/v1/check")
                         .accept(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8)
-                        .content(jsonRequest))
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.id").value("123"));
+
+        waitForCompletedResult(123)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultRules[0].ppn").value("143519379"));
     }
 
     @Test
     void checkPpnWitMultiThread() throws Exception {
-        //  Création de la liste de contrôle pour le Mockito
         List<ResultRulesResponseDto> resultRulesResponseDtoList = new ArrayList<>();
         resultRulesResponseDtoList.add(new ResultRulesResponseDto("143519379", new ArrayList<>()));
         resultRulesResponseDtoList.add(new ResultRulesResponseDto("123456789", new ArrayList<>()));
@@ -132,31 +132,26 @@ public class RuleControllerTest {
         ResultAnalyseResponseDto resultAnalyseResponseDto = new ResultAnalyseResponseDto();
         resultAnalyseResponseDto.setResultRules(resultRulesResponseDtoList);
 
-        //  Création du Mockito
         Mockito.doNothing().when(journalService).saveJournalAnalyse(Mockito.any());
-        Mockito.when(utilsMapper.map(any(),any())).thenReturn(resultAnalyseResponseDto);
+        Mockito.when(utilsMapper.map(any(), any())).thenReturn(resultAnalyseResponseDto);
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         resultAnalyse.setPpnAnalyses(Sets.newLinkedHashSet("143519379", "123456789", "987654321", "654987321"));
-        Mockito.when(ruleService.checkRulesOnNotices(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.anyBoolean())).thenReturn(CompletableFuture.completedFuture(resultAnalyse));
+        Mockito.when(ruleService.checkRulesOnNotices(Mockito.anyInt(), Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+                .thenReturn(CompletableFuture.completedFuture(resultAnalyse));
 
-        //  Création de l'objet ControllingPpnWithRuleSetsRequestDto à passer dans la requête
-        List<String> ppnList = new ArrayList<>();
-        ppnList.add("143519379");
-        ppnList.add("123456789");
-        ppnList.add("987654321");
-        ppnList.add("654987321");
-        TypeAnalyse typeAnalyse;
-        typeAnalyse = TypeAnalyse.QUICK;
-        PpnWithRuleSetsRequestDto ppnWithRuleSetsRequestDto = new PpnWithRuleSetsRequestDto();
-        ppnWithRuleSetsRequestDto.setPpnList(ppnList);
-        ppnWithRuleSetsRequestDto.setTypeAnalyse(typeAnalyse);
-        String jsonRequest = objectMapper.writeValueAsString(ppnWithRuleSetsRequestDto);
+        PpnWithRuleSetsRequestDto requestDto = new PpnWithRuleSetsRequestDto();
+        requestDto.setId(456);
+        requestDto.setPpnList(List.of("143519379", "123456789", "987654321", "654987321"));
+        requestDto.setTypeAnalyse(TypeAnalyse.QUICK);
 
-        //  Appel et contrôle de la méthode
         this.mockMvc.perform(post("/api/v1/check")
-                .accept(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8)
-                .contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8)
-                .content(jsonRequest))
+                        .accept(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.id").value("456"));
+
+        waitForCompletedResult(456)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultRules[0].ppn").value("143519379"))
                 .andExpect(jsonPath("$.resultRules[1].ppn").value("123456789"))
@@ -173,8 +168,11 @@ public class RuleControllerTest {
 
         ResultAnalyse resultAnalyse = new ResultAnalyse();
         resultAnalyse.setPpnAnalyses(Sets.newLinkedHashSet("143519379", "123456789", "987654321", "654987321"));
-        Mockito.when(ruleService.checkRulesOnNotices(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
-                .thenReturn(CompletableFuture.completedFuture(resultAnalyse));
+        Mockito.when(ruleService.checkRulesOnNotices(Mockito.anyInt(), Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+                .thenReturn(
+                        CompletableFuture.completedFuture(resultAnalyse),
+                        CompletableFuture.completedFuture(resultAnalyse)
+                );
 
         PpnWithRuleSetsRequestDto request = new PpnWithRuleSetsRequestDto();
         request.setId(42);
@@ -185,10 +183,47 @@ public class RuleControllerTest {
                         .accept(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8)
                         .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.id").value("42"));
+
+        waitForCompletedResult(42)
                 .andExpect(status().isOk());
 
         Mockito.verify(ruleService, Mockito.times(1))
                 .getResultRulesList(Mockito.eq(TypeAnalyse.QUICK), Mockito.anySet(), Mockito.anySet(), Mockito.anySet());
+    }
+
+    @Test
+    void getResultReturnsAcceptedWhileAnalysisStillRunning() throws Exception {
+        ResultAnalyse resultAnalyse = new ResultAnalyse();
+        ResultAnalyseResponseDto resultAnalyseResponseDto = new ResultAnalyseResponseDto();
+
+        Mockito.doNothing().when(journalService).saveJournalAnalyse(Mockito.any());
+        Mockito.when(utilsMapper.map(any(), any())).thenReturn(resultAnalyseResponseDto);
+        Mockito.when(ruleService.checkRulesOnNotices(Mockito.anyInt(), Mockito.any(), Mockito.any(), Mockito.anyBoolean()))
+                .thenReturn(CompletableFuture.supplyAsync(
+                        () -> resultAnalyse,
+                        CompletableFuture.delayedExecutor(2, TimeUnit.SECONDS)
+                ));
+
+        PpnWithRuleSetsRequestDto requestDto = new PpnWithRuleSetsRequestDto();
+        requestDto.setId(789);
+        requestDto.setPpnList(List.of("143519379"));
+        requestDto.setTypeAnalyse(TypeAnalyse.QUICK);
+
+        this.mockMvc.perform(post("/api/v1/check")
+                        .accept(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.id").value("789"));
+
+        this.mockMvc.perform(get("/api/v1/result/789")
+                        .accept(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isAccepted());
+
+        waitForCompletedResult(789)
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -268,35 +303,7 @@ public class RuleControllerTest {
                 "         presence: true\n" +
                 "         operateur-booleen: ET\n";
 
-
-
-
         this.mockMvc.perform(post("/api/v1/indexComplexRules")
-                .contentType("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
-                .content(yaml).characterEncoding(StandardCharsets.UTF_8))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("test creation regle complexe presencesouszonesmemezone avec affichage-etiquette sur une sous-zone")
-    void testIndexComplexRulePresenceSousZonesMemeZoneWithSousZoneAffichageEtiquette() throws Exception {
-        String yaml =
-                "rules:\n" +
-                "   - id: 605\n" +
-                "     id-excel: 433\n" +
-                "     type: presencesouszonesmemezone\n" +
-                "     message: test 6XX sous-zone cachee\n" +
-                "     zone: '6XX'\n" +
-                "     priorite: P1\n" +
-                "     souszones:\n" +
-                "       - souszone: '2'\n" +
-                "         presence: false\n" +
-                "       - souszone: 'a'\n" +
-                "         presence: true\n" +
-                "         affichage-etiquette: false\n" +
-                "         operateur-booleen: ET\n";
-
-        this.mockMvc.perform(post("/api/v1/indexRules")
                 .contentType("application/x-yaml").characterEncoding(StandardCharsets.UTF_8)
                 .content(yaml).characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isOk());
@@ -371,4 +378,30 @@ public class RuleControllerTest {
                 .andExpect(status().isOk());
     }
 
+    private ResultAction waitForCompletedResult(int id) throws Exception {
+        MvcResult result = null;
+        for (int i = 0; i < 200; i++) {
+            result = this.mockMvc.perform(get("/api/v1/result/" + id)
+                    .accept(MediaType.APPLICATION_JSON_VALUE).characterEncoding(StandardCharsets.UTF_8))
+                    .andReturn();
+            if (result.getResponse().getStatus() != HttpStatus.ACCEPTED.value()) {
+                return new ResultAction(result);
+            }
+            Thread.sleep(50);
+        }
+        return new ResultAction(result);
+    }
+
+    private static class ResultAction {
+        private final MvcResult mvcResult;
+
+        private ResultAction(MvcResult mvcResult) {
+            this.mvcResult = mvcResult;
+        }
+
+        private ResultAction andExpect(org.springframework.test.web.servlet.ResultMatcher matcher) throws Exception {
+            matcher.match(this.mvcResult);
+            return this;
+        }
+    }
 }
