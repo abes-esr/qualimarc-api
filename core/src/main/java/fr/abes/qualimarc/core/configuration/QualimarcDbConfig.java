@@ -27,11 +27,11 @@ import javax.sql.DataSource;
 public class QualimarcDbConfig extends AbstractConfig {
     @Value("${spring.jpa.qualimarc.show-sql}")
     protected boolean showsql;
-    @Value("${spring.jpa.qualimarc.properties.hibernate.dialect}")
+    @Value("${spring.jpa.qualimarc.properties.hibernate.dialect:}")
     protected String dialect;
     @Value("${spring.jpa.qualimarc.hibernate.ddl-auto}")
     protected String ddlAuto;
-    @Value("${spring.jpa.qualimarc.database-platform}")
+    @Value("${spring.jpa.qualimarc.database-platform:}")
     protected String platform;
     @Value("${spring.jpa.qualimarc.generate-ddl}")
     protected boolean generateDdl;
@@ -68,7 +68,7 @@ public class QualimarcDbConfig extends AbstractConfig {
 
     @Primary
     @Bean
-    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+    public static PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
     }
 
