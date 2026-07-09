@@ -33,3 +33,7 @@ Vous pouvez utiliser la même procédure pour générer en local l'image docker 
 
 
 Cette commande suppose que vous disposez d'un environnement Docker en local : cf la [FAQ dans la poldev](https://github.com/abes-esr/abes-politique-developpement/blob/main/10-FAQ.md#configuration-dun-environnement-docker-sous-windows-10).
+
+## Documentation technique
+
+- [Documentation du type YAML `groupememezone`](./docs/rules/groupememezone.md)
