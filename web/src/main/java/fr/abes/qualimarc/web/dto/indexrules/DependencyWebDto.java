@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.web.dto.indexrules;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.validation.constraints.NotNull;
@@ -27,13 +28,15 @@ public class DependencyWebDto extends SimpleRuleWebDto {
     private String position;
 
 
-    @Pattern(regexp = "^-?[0-9]{1,3}$", message = "le champ positionStart ne peut contenir qu'un entier signe de 3 chiffres au maximum.")
-    @JsonProperty("positionStart")
+    @Pattern(regexp = "^-?[0-9]{1,3}$", message = "le champ positionstart ne peut contenir qu'un entier signe de 3 chiffres au maximum.")
+    @JsonProperty("positionstart")
+    @JsonAlias("positionStart")
     private String positionStart;
 
 
-    @Pattern(regexp = "^-?[0-9]{1,3}$", message = "le champ positionEnd ne peut contenir qu'un entier signe de 3 chiffres au maximum.")
-    @JsonProperty("positionEnd")
+    @Pattern(regexp = "^-?[0-9]{1,3}$", message = "le champ positionend ne peut contenir qu'un entier signe de 3 chiffres au maximum.")
+    @JsonProperty("positionend")
+    @JsonAlias("positionEnd")
     private String positionEnd;
 
     public DependencyWebDto(Integer id, String zone, String sousZone, String typeNoticeLiee, String position, String positionStart, String positionEnd) {
