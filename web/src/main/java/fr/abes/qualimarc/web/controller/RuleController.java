@@ -45,10 +45,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.task.TaskRejectedException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -70,7 +72,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
-import java.util.function.BiFunction;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @RestController
@@ -93,9 +95,25 @@ public class RuleController {
     @Value("${spring.task.execution.pool.core-size}")
     private Integer nbThread;
 
+    // FIX incident TEST du 31/08/2026 : duree maximale d'une analyse. Au-dela, le future
+    // est declare en echec (TimeoutException) pour qu'une analyse bloquee ne reste plus
+    // jamais pendante indefiniment.
+    @Value("${qualimarc.analysis.timeout-minutes:30}")
+    private long analysisTimeoutMinutes;
+
+    // FIX incident TEST du 31/08/2026 : nombre maximal d'analyses simultanees. Le pool
+    // asynchrone est limite (8 threads) et chaque analyse en mobilise plusieurs ; au-dela
+    // de cette limite les analyses s'affameraient entre elles jusqu'a la panne.
+    @Value("${qualimarc.analysis.max-concurrent:2}")
+    private int maxConcurrentAnalyses;
+
     private final Map<Integer,Integer> mapIdToNbTotalPpn = new ConcurrentHashMap<>();
 
     private final Map<Integer, CompletableFuture<ResultAnalyseResponseDto>> analysisResultsById = new ConcurrentHashMap<>();
+
+    // FIX incident TEST du 31/08/2026 : date de lancement de chaque analyse, utilisee par
+    // la purge periodique pour detecter les analyses qui ne se terminent jamais.
+    private final Map<Integer, Long> analysisStartTimesById = new ConcurrentHashMap<>();
 
     public RuleController(NoticeService noticeService, RuleService ruleService, ReferenceService referenceService, JournalService journalService, UtilsMapper mapper, @Qualifier("asyncExecutor") Executor asyncExecutor) {
         this.noticeService = noticeService;
@@ -115,21 +133,45 @@ public class RuleController {
     public ResponseEntity<AnalysisLaunchResponseDto> checkPpn(@Valid @RequestBody PpnWithRuleSetsRequestDto requestBody) {
         int analysisId = requestBody.getId();
 
+        // FIX incident TEST du 31/08/2026 : garde-fou contre la saturation du pool.
+        // Tant que le nombre maximal d'analyses en cours est atteint, on refuse la
+        // nouvelle analyse avec un HTTP 503 explicite (le client peut reessayer) au
+        // lieu de l'empiler dans la file jusqu'au rejet global du service.
+        long runningAnalyses = analysisResultsById.values().stream().filter(future -> !future.isDone()).count();
+        if (runningAnalyses >= maxConcurrentAnalyses) {
+            log.warn("Analyse {} refusee : {} analyses deja en cours (maximum {})", analysisId, runningAnalyses, maxConcurrentAnalyses);
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        }
+
         cleanupAnalysis(analysisId);
         ruleService.resetCn(analysisId);
         mapIdToNbTotalPpn.put(analysisId, requestBody.getPpnList().size());
 
         long start = System.currentTimeMillis();
-        CompletableFuture<ResultAnalyseResponseDto> analysisFuture = CompletableFuture.supplyAsync(
-                () -> executeAnalysis(requestBody, start),
-                asyncExecutor
-        );
+        CompletableFuture<ResultAnalyseResponseDto> analysisFuture;
+        try {
+            analysisFuture = CompletableFuture.supplyAsync(
+                    () -> executeAnalysis(requestBody, start),
+                    asyncExecutor
+            );
+        } catch (TaskRejectedException ex) {
+            // FIX incident TEST du 31/08/2026 : quand le pool et sa file d'attente sont
+            // satures, la tache est rejetee. Avant ce correctif, l'exception remontait en
+            // HTTP 500 opaque ; on renvoie desormais un 503 clair et on nettoie l'etat.
+            log.warn("Analyse {} rejetee : le pool d'analyse est sature", analysisId, ex);
+            cleanupAnalysis(analysisId);
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        }
+        // FIX incident TEST du 31/08/2026 : une analyse ne doit plus jamais durer
+        // indefiniment (barre de progression figee a zero pour l'utilisateur).
+        analysisFuture.orTimeout(analysisTimeoutMinutes, TimeUnit.MINUTES);
         analysisFuture.whenComplete((result, throwable) -> {
             if (throwable != null) {
                 log.error("Erreur inattendue pendant l'analyse {}", analysisId, throwable);
             }
         });
         analysisResultsById.put(analysisId, analysisFuture);
+        analysisStartTimesById.put(analysisId, start);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(new AnalysisLaunchResponseDto(analysisId));
     }
@@ -201,12 +243,17 @@ public class RuleController {
                 resultList.add(ruleService.checkRulesOnNotices(requestBody.getId(), rulesToApply, ppnList, requestBody.isReplayed()));
             }
 
-            BiFunction<ResultAnalyse, ResultAnalyse, ResultAnalyse> biFunction = (res1, res2) -> {
-                res1.merge(res2);
-                return res1;
-            };
-
-            resultAnalyse = resultList.stream().reduce((res1, res2) -> res1.thenCombineAsync(res2, biFunction, asyncExecutor)).orElse(CompletableFuture.completedFuture(new ResultAnalyse())).join();
+            // FIX incident TEST du 31/08/2026 : la fusion des resultats passait par
+            // thenCombineAsync soumis au meme pool que les analyses elles-memes. Quand
+            // plusieurs analyses tournaient en parallele, ces taches de fusion entraient en
+            // concurrence avec les partitions d'analyse et pouvaient affamer le pool.
+            // La fusion se fait desormais de maniere synchrone, une fois toutes les
+            // partitions terminees : plus aucune tache supplementaire n'est soumise au pool.
+            CompletableFuture.allOf(resultList.toArray(new CompletableFuture[0])).join();
+            resultAnalyse = resultList.get(0).join();
+            for (int i = 1; i < resultList.size(); i++) {
+                resultAnalyse.merge(resultList.get(i).join());
+            }
         } else {
             resultAnalyse = ruleService.checkRulesOnNotices(requestBody.getId(), rulesToApply, requestBody.getPpnList(), requestBody.isReplayed()).join();
         }
@@ -227,7 +274,32 @@ public class RuleController {
     private void cleanupAnalysis(Integer id) {
         analysisResultsById.remove(id);
         mapIdToNbTotalPpn.remove(id);
+        analysisStartTimesById.remove(id);
         ruleService.clearCn(id);
+    }
+
+    /**
+     * FIX incident TEST du 31/08/2026 : purge periodique des analyses orphelines.
+     * Avant ce correctif, une entree d'analysisResultsById n'etait retiree que si le
+     * client revenait chercher son resultat : si l'utilisateur fermait son onglet, le
+     * future (et son contexte) restait en memoire indefiniment. Toutes les 5 minutes on
+     * retire donc les analyses terminees, ainsi que celles qui ont depasse le double du
+     * delai d'analyse (elles sont considerees perdues).
+     */
+    @Scheduled(fixedDelayString = "PT5M")
+    public void purgeFinishedAnalyses() {
+        long maxAgeMillis = TimeUnit.MINUTES.toMillis(analysisTimeoutMinutes) * 2;
+        long now = System.currentTimeMillis();
+        for (Map.Entry<Integer, CompletableFuture<ResultAnalyseResponseDto>> entry : analysisResultsById.entrySet()) {
+            boolean finished = entry.getValue().isDone();
+            boolean lost = now - analysisStartTimesById.getOrDefault(entry.getKey(), now) > maxAgeMillis;
+            if (finished || lost) {
+                if (lost && !finished) {
+                    log.warn("Purge de l'analyse {} qui ne s'est jamais terminee", entry.getKey());
+                }
+                cleanupAnalysis(entry.getKey());
+            }
+        }
     }
 
     @PostMapping(value = "/indexRules", consumes = {"application/x-yaml", "application/yaml", "text/yaml", "text/yml"})
