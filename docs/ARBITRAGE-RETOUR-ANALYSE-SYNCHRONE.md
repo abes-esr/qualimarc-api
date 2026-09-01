@@ -1,13 +1,15 @@
-# Arbitrage — moteur d'analyse : synchrone (retour arrière) vs asynchrone (durci)
+# Retour au moteur d'analyse synchrone (option retenue par l'équipe)
 
 **Branche** : `revert/analyse-synchrone-avant-4dbbe9d`
-**Date** : 31/08/2026
-**Objet** : donner à l'équipe une base concrète pour trancher entre les deux options,
-à la suite de l'incident TEST du 28 au 31/08/2026 (épuisement du pool asynchrone sur
-lectures Oracle BaseXML sans timeout).
+**Date** : 31/08/2026 — **décision du 01/09/2026 : option synchrone retenue**
+**Objet** : retour au moteur synchrone à la suite de l'incident TEST du 28 au 31/08/2026
+(épuisement du pool asynchrone sur lectures Oracle BaseXML sans timeout).
 
-> ⚠️ Cette PR est une **option de travail**. Elle ne doit être mergée qu'après décision
-> de l'équipe, et uniquement en coordination avec le retour arrière côté front.
+> ✅ **Décision d'équipe du 01/09/2026 : retour au mode synchrone.**
+> À merger en coordination avec la contrepartie front :
+> [qualimarc-front PR #207](https://github.com/abes-esr/qualimarc-front/pull/207).
+> L'option « asynchrone durci » (PR #235) est fermée ; les timeouts JDBC BaseXML
+> (volet indépendant du choix de moteur) ont été reportés sur cette branche.
 
 ---
 
@@ -17,7 +19,8 @@ Retour de l'API à l'état **pré-`4dbbe9d`** (« Rend l'analyse de l'API asynch
 c'est-à-dire le moteur d'analyse **synchrone** :
 
 - `/api/v1/check` redevient synchrone : il renvoie directement le résultat complet
-  (plus de 202 + polling `/getStatus` + `/result/{id}`) ;
+  (plus de 202 + récupération différée via `/result/{id}` ; la barre de progression
+  conserve le polling `/getStatus` qui existait avant l'asynchronisation) ;
 - suppression du fan-out des PPN en partitions parallèles et de l'attente `.join()` ;
 - suppression du DTO `AnalysisLaunchResponseDto` ;
 - annulation de l'optimisation « chemin chaud » liée au suivi de progression (PR #230,

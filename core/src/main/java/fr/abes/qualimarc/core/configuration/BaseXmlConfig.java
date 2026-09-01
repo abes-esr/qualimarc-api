@@ -1,6 +1,7 @@
 package fr.abes.qualimarc.core.configuration;
 
 
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -32,10 +33,28 @@ public class BaseXmlConfig extends AbstractConfig{
     @Value("${spring.sql.basexml.init.mode}")
     protected String initMode;
 
+    // FIX incident TEST du 31/08/2026 : delais maximaux des appels JDBC vers Oracle BaseXML.
+    // Avant ce correctif, aucun timeout n'etait defini : quand l'Oracle BaseXML ne repondait
+    // plus, le thread de traitement restait bloque indefiniment sur la lecture du CLOB de
+    // la notice. Ce volet est independant du choix synchrone/asynchrone du moteur.
+    @Value("${qualimarc.basexml.connect-timeout:10000}")
+    private int basexmlConnectTimeout;
+
+    @Value("${qualimarc.basexml.read-timeout:60000}")
+    private int basexmlReadTimeout;
+
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.basexml")
     public DataSource baseXmlDataSource() {
-        return DataSourceBuilder.create().build();
+        HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).build();
+        // FIX incident TEST du 31/08/2026 : timeouts transmis au pilote Oracle.
+        // - oracle.net.CONNECT_TIMEOUT : duree max (ms) d'etablissement d'une connexion ;
+        // - oracle.jdbc.ReadTimeout : duree max (ms) d'attente d'une reponse, y compris
+        //   pendant la lecture du CLOB XML de la notice.
+        // Une lecture qui depasse ce delai echoue proprement et libere le thread.
+        dataSource.addDataSourceProperty("oracle.net.CONNECT_TIMEOUT", basexmlConnectTimeout);
+        dataSource.addDataSourceProperty("oracle.jdbc.ReadTimeout", basexmlReadTimeout);
+        return dataSource;
     }
 
     @Bean
