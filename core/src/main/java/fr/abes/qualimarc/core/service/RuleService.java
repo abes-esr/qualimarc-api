@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -56,7 +55,7 @@ public class RuleService {
 
 
     //Map d'id de session d'utilisateur avec son pourcentage d'avancement d'analyse (threadsafe)
-    private final Map<Integer,AtomicInteger> idToCn = new ConcurrentHashMap<>();
+    private final Map<Integer,AtomicInteger> idToCn = new HashMap<>();
 
     @Async("asyncExecutor")
     public CompletableFuture<ResultAnalyse> checkRulesOnNotices(Integer id, Set<ComplexRule> rulesList, List<String> ppns, boolean isReplayed) {
@@ -248,15 +247,14 @@ public class RuleService {
     }
 
     public void resetCn(Integer id) {
-        this.idToCn.computeIfAbsent(id, k -> new AtomicInteger(0)).getAndSet(0);
-    }
-
-    public void clearCn(Integer id) {
-        this.idToCn.remove(id);
+        if(!isCnPresent(id)){
+            this.idToCn.put(id,new AtomicInteger(0));
+        }
+        this.idToCn.get(id).getAndSet(0);
     }
 
     public boolean isCnPresent(Integer id){
-        return this.idToCn.containsKey(id);
+        return !(this.idToCn.get(id) == null);
 
     }
     public List<ComplexRule> getAllComplexRules() {
