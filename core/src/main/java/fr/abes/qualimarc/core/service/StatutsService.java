@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.GregorianCalendar;
 
 @Service
 @Slf4j
@@ -48,11 +48,12 @@ public class StatutsService {
     public String getDateLastPpnSynchronised() {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         try {
-            Date lastSyncDate = noticeRepository.findLatestDateEtat();
-            if (lastSyncDate == null) {
-                return "Impossible de récupérer le dernier PPN connnu";
-            }
-            return format.format(lastSyncDate);
+            return format.format(
+                    noticeRepository
+                            .findFirstByDateEtatBeforeOrderByDateEtatDesc(new GregorianCalendar())
+                            .getDateEtat()
+                            .getTime()
+            );
         } catch (Exception ex) {
             return "Impossible de récupérer le dernier PPN connnu";
         }
