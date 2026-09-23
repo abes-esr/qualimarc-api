@@ -78,8 +78,12 @@ jobs:
           git push
           
           # merge la préparation de la nouvelle version sur develop
+          # -X theirs : en cas de conflit (typiquement les pom.xml dont la
+          # version differe entre main et develop), on prend systematiquement
+          # la version de main. Les developpeurs n'ont qu'a rebaser leur
+          # SNAPSHOT ensuite.
           git switch develop
-          git merge main -m "Merge main to develop [skip ci]"
+          git merge -X theirs main -m "Merge main to develop [skip ci]"
           git push
           
           # switch version to snapshot version
