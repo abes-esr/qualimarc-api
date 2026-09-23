@@ -1,5 +1,6 @@
 package fr.abes.qualimarc.core.service;
 
+import fr.abes.qualimarc.core.model.entity.basexml.NoticesBibio;
 import fr.abes.qualimarc.core.repository.basexml.NoticesBibioRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {StatutsService.class})
@@ -62,15 +62,16 @@ public class StatutServiceTest {
     void testGetDateLastPpnSynchronised() {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Calendar now = Calendar.getInstance();
-        Date lastSyncDate = now.getTime();
-        Mockito.when(noticeRepository.findLatestDateEtat()).thenReturn(lastSyncDate);
+        NoticesBibio notice = new NoticesBibio();
+        notice.setDateEtat(now);
+        Mockito.when(noticeRepository.findFirstByDateEtatBeforeOrderByDateEtatDesc(Mockito.any())).thenReturn(notice);
 
-        Assertions.assertEquals(format.format(lastSyncDate), service.getDateLastPpnSynchronised());
+        Assertions.assertEquals(format.format(now.getTime()), service.getDateLastPpnSynchronised());
     }
 
     @Test
     void testGetDateLastPpnSynchronisedError() {
-        Mockito.doThrow(CannotGetJdbcConnectionException.class).when(noticeRepository).findLatestDateEtat();
-        Assertions.assertEquals("Impossible de recuperer le dernier PPN connu", service.getDateLastPpnSynchronised());
+        Mockito.doThrow(CannotGetJdbcConnectionException.class).when(noticeRepository).findFirstByDateEtatBeforeOrderByDateEtatDesc(Mockito.any());
+        Assertions.assertEquals("Impossible de récupérer le dernier PPN connnu", service.getDateLastPpnSynchronised());
     }
 }
